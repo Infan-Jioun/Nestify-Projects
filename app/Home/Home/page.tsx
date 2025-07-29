@@ -1,7 +1,10 @@
 import React from 'react'
+import BannerPage from '../Banner/page'
 
 export default function HomePage() {
   return (
-    <div>Home</div>
+    <div>
+      <BannerPage/>
+    </div>
   )
 }
