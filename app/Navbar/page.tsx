@@ -12,35 +12,35 @@ export default function NavbarPage() {
   const navLinks = <>
     <Link
       href="/"
-      className="font-semibold relative inline-block transition-colors duration-300 
-             before:content-[''] before:absolute before:bottom-[-2px] 
-             before:w-full   before:h-[2px] before:bg-green-500
-             before:scale-0 
-             before:transition-transform before:duration-300 hover:before:scale-100 rounded"
+      className="font-semibold relative inline-block  duration-300 
+             before:content-[''] before:absolute before:bottom-[-4px] 
+             before:w-full   before:h-[2px] before:origin-left before:bg-green-500
+             before:scale-x-0
+             before:transition-transform before:duration-300 hover:before:scale-x-100 rounded "
     >
       Home
     </Link>
 
-    <Link href="/Properties" className="   font-semibold relative inline-block transition-colors duration-300 
-             before:content-[''] before:absolute before:bottom-[-2px] 
-             before:w-full   before:h-[2px] before:bg-green-500
-             before:scale-0 
-             before:transition-transform before:duration-300 hover:before:scale-100 rounded transition">Properties</Link>
-    <Link href="/AddProperty" className="  font-semibold relative inline-block transition-colors duration-300 
-             before:content-[''] before:absolute before:bottom-[-2px] 
-             before:w-full   before:h-[2px] before:bg-green-500
-             before:scale-0 
-             before:transition-transform before:duration-300 hover:before:scale-100 rounded transition">AddProperty</Link>
-    <Link href="/Contact" className="      font-semibold relative inline-block transition-colors duration-300 
-             before:content-[''] before:absolute before:bottom-[-2px] 
-             before:w-full   before:h-[2px] before:bg-green-500
-             before:scale-0 
-             before:transition-transform before:duration-300 hover:before:scale-100 rounded transition">Contact</Link>
-    <Link href="/About" className="        font-semibold relative inline-block transition-colors duration-300 
-             before:content-[''] before:absolute before:bottom-[-2px] 
-             before:w-full   before:h-[2px] before:bg-green-500
-             before:scale-0 
-             before:transition-transform before:duration-300 hover:before:scale-100 rounded transition">About</Link>
+    <Link href="/Properties" className="   font-semibold relative inline-block  duration-300 
+             before:content-[''] before:absolute before:bottom-[-4px] 
+             before:w-full   before:h-[2px] before:origin-left before:bg-green-500
+             before:scale-x-0
+             before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ">Properties</Link>
+    <Link href="/AddProperty" className="  font-semibold relative inline-block  duration-300 
+             before:content-[''] before:absolute before:bottom-[-4px] 
+             before:w-full   before:h-[2px] before:origin-left before:bg-green-500
+             before:scale-x-0
+             before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ">AddProperty</Link>
+    <Link href="/Contact" className="      font-semibold relative inline-block  duration-300 
+             before:content-[''] before:absolute before:bottom-[-4px] 
+             before:w-full   before:h-[2px] before:origin-left before:bg-green-500
+             before:scale-x-0
+             before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ">Contact</Link>
+    <Link href="/About" className="        font-semibold relative inline-block  duration-300 
+             before:content-[''] before:absolute before:bottom-[-4px] 
+             before:w-full   before:h-[2px] before:origin-left before:bg-green-500
+             before:scale-x-0
+             before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ">About</Link>
 
   </>
   const [scrolled, setScrolled] = useState(false);
@@ -61,10 +61,10 @@ export default function NavbarPage() {
   }, [])
   return (
     <div className=' '>
-      <div className={`navbar bg-white   px-3 md:px-3 lg:px-44  p-3 lg:p-5 translation-all duration-300 ease-in-out ${scrolled ? "fixed top-0 left-0 w-full translate-y-0 " : ""} z-50`}>
+      <div className={`navbar bg-white   px-3 md:px-3 lg:px-44  p-3 lg:p-5 translation-all duration-300 ease-in-out ${scrolled ? "fixed top-0 left-0 w-full translate-y-0  " : "before:transition-transform before:duration-75 hover:before:scale-x-100"} z-50`}>
         <div className="navbar-start">
           <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+            <div tabIndex={0} role="button" className="btn btn-outline lg:hidden">
               <img className='w-5 h-5 ' src="https://i.ibb.co/cSZyRY8N/menu-navigation-grid-1528-svgrepo-com.png" alt="" />
             </div>
             <ul
@@ -95,7 +95,15 @@ export default function NavbarPage() {
           <div className='flex  justify-center items-center gap-1'>
             <Link href={"/Login"} className='text-xl h-5 w-5 mr-2'><RxAvatar /></Link>
             <div className='mr-10 hidden lg:flex'>
-              <a href="/Login" className='text-[16px]'>Login</a>/ <a href="/Register" className='text-[16px]'>Register</a>
+              <Link href="/Login" className="not-odd:text-[16px] font-semibold relative inline-block  duration-300 
+             before:content-[''] before:absolute before:bottom-[-4px] 
+             before:w-full   before:h-[2px] before:origin-left before:bg-green-500
+             before:scale-x-0
+             before:transition-transform before:duration-300 hover:before:scale-x-100 rounded">Login</Link>/ <Link href="/Register" className="text-[16px]font-semibold relative inline-block  duration-300 
+             before:content-[''] before:absolute before:bottom-[-4px] 
+             before:w-full   before:h-[2px] before:origin-left before:bg-green-500
+             before:scale-x-0
+             before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ">Register</Link>
             </div>
           </div>
           <div className='hidden md:block'>

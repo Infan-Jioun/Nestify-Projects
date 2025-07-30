@@ -25,7 +25,7 @@ export default function RootLayout({
         
       >
        <HelmetWrapper>
-       <div className={`${poppins.className} bg-white min-h-screen font- text-black`}>
+       <div className={`${poppins.className} bg-white min-h-screen  text-black`}>
         <Navbar/>
         {children}
         </div>

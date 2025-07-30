@@ -5,6 +5,10 @@ export default function HomePage() {
   return (
     <div>
       <BannerPage/>
+      <BannerPage/>
+      <BannerPage/>
+      <BannerPage/>
+      <BannerPage/>
     </div>
   )
 }
