@@ -107,10 +107,10 @@ export default function PropertiesByCity() {
                   onLoad={() => handleImageLoad(index)}
                   className="rounded-full w-full  object-cover transition-opacity duration-700"
                 />
-                <h3 className="text-lg font-semibold text-center mt-4 text-black">
+                <h3 className="text-lg font-semibold r mt-4 text-black">
                   {card.title}
                 </h3>
-                <p className="text-sm text-center text-gray-600 mt-1">
+                <p className="text-sm  text-gray-600 mt-1">
                   {card.propertiesLength} <span>Properties</span>
                 </p>
               </motion.div>
