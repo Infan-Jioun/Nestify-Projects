@@ -2,10 +2,9 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { MdArrowOutward } from 'react-icons/md';
 import { RxAvatar } from 'react-icons/rx';
 import { motion } from "framer-motion";
-import { FaArrowRight } from "react-icons/fa";
+
 
 export default function NavbarPage() {
 
@@ -69,7 +68,7 @@ export default function NavbarPage() {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content  rounded-box z-1 mt-3 w-52 p-2 shadow">
+              className="menu menu-sm dropdown-content   z-1 mt-3 w-52 p-2 shadow">
               {navLinks}
             </ul>
           </div>
