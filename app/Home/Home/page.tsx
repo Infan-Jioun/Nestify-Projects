@@ -15,8 +15,7 @@ export default function HomePage() {
       <PropertiesByCity />
       <PopularProperties/>
       <BannerService/>
-       <br />
-       <br />
+  
     </div>
   )
 }
