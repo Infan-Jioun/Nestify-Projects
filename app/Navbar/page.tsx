@@ -60,10 +60,10 @@ export default function NavbarPage() {
   }, [])
   return (
     <div className=' '>
-      <div className={`navbar bg-white   px-3 md:px-3 lg:px-44  p-3 lg:p-5 translation-all duration-300 ease-in-out ${scrolled ? "fixed top-0 left-0 w-full translate-y-0  " : "before:transition-transform before:duration-75 hover:before:scale-x-100"} z-50`}>
+      <div className={`navbar bg-white   px-8 md:px-7 lg:px-44  p-3 lg:p-5 translation-all duration-300 ease-in-out ${scrolled ? "fixed top-0 left-0 w-full translate-y-0  " : "before:transition-transform before:duration-75 hover:before:scale-x-100"} z-50`}>
         <div className="navbar-start">
           <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-outline lg:hidden">
+            <div tabIndex={0} role="button" className=" lg:hidden">
               <img className='w-5 h-5 ' src="https://i.ibb.co/cSZyRY8N/menu-navigation-grid-1528-svgrepo-com.png" alt="" />
             </div>
             <ul

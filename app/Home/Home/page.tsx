@@ -1,13 +1,16 @@
+"use client";
+
 import React from 'react'
 import BannerPage from '../Banner/page'
+import PropertiesByCity from '../PropertiesByCity/page';
+
 
 export default function HomePage() {
   return (
     <div>
-      <div className='px-4'>
-      <BannerPage />
-      </div>
 
+      <BannerPage />
+      <PropertiesByCity />
     </div>
   )
 }
