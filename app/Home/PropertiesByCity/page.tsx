@@ -97,8 +97,8 @@ export default function PropertiesByCity() {
           {cards.map((card, index) => (
             <SwiperSlide key={index} className="flex justify-center items-center ">
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.90 }}
                 className="w-[160px] sm:w-[220px] md:w-[230px] bg-white  rounded-2xl  px-2 md:px-3 lg:px-4   transition-all duration-300"
               >
                 <img
@@ -107,10 +107,10 @@ export default function PropertiesByCity() {
                   onLoad={() => handleImageLoad(index)}
                   className="rounded-full w-full  object-cover transition-opacity duration-700"
                 />
-                <h3 className="text-lg font-semibold r mt-4 text-black">
+                <h3 className="text-lg text-center font-semibold r mt-4 text-black">
                   {card.title}
                 </h3>
-                <p className="text-sm  text-gray-600 mt-1">
+                <p className="text-sm text-center  text-gray-600 mt-1">
                   {card.propertiesLength} <span>Properties</span>
                 </p>
               </motion.div>
