@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Navbar/page";
 import HelmetWrapper from "@/providers/page";
+import Footer from "./Footer/page";
 
 
 const poppins  = Poppins({
@@ -28,6 +29,7 @@ export default function RootLayout({
        <div className={`${poppins.className} bg-white min-h-screen  text-black`}>
         <Navbar/>
         {children}
+        <Footer/>
         </div>
        </HelmetWrapper>
       </body>

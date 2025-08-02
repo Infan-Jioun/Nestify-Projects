@@ -8,6 +8,9 @@ import BannerService from '../BannerServices/page';
 import ApartmentTypes from '../ApartmentTypes/page';
 import FeaturedAgents from '../FeaturedAgents/page';
 import Ratings from '../Raitngs/page';
+import TrustedCompany from '../TrustedCompany/page';
+import OurBlog from '../OurBlog/page';
+import RegisterInfo from '../RegisterInfo/page';
 
 
 export default function HomePage() {
@@ -21,6 +24,11 @@ export default function HomePage() {
       <ApartmentTypes />
       <FeaturedAgents/>
       <Ratings/>
+      <TrustedCompany/>
+      <OurBlog/>
+      <RegisterInfo/>
+  
+
 
     </div>
   )
