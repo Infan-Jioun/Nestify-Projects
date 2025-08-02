@@ -8,12 +8,12 @@ import CountUp from './CountUp';
 export default function BannerService() {
     return (
         <div className='px-4 lg:px-20 mt-16'>
-            <div className="bg-gray-100 rounded-xl lg:rounded-3xl shadow-lg px-10 p-4 py-3 lg:p-10">
-                <div className='flex flex-col lg:flex-row justify-between items-center h-[600px] lg:h-[700px] gap-10'>
+            <div className="bg-gray-200 rounded-xl lg:rounded-3xl shadow-lg px-10 mt-5 p-4 py-3 lg:p-10">
+                <div className='flex flex-col lg:flex-row justify-between items-center px-0 lg:px-14   md:h-[500px] lg:h-[700px] gap-10'>
 
                     {/* Left Content */}
-                    <div className='flex-1 space-y-6'>
-                        <h2 className='text-2xl lg:text-4xl font-semibold text-gray-800'>
+                    <div className='flex-1 space-y-7 mt-5 '>
+                        <h2 className='text-xl lg:text-4xl font-semibold text-gray-800'>
                             Let’s find the right
                             selling option for you
                         </h2>
@@ -61,13 +61,13 @@ export default function BannerService() {
                         </div>
 
                         {/* Button */}
-                        <button className='mt-4 inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition'>
+                        <button className='mt-4 inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition ml-16 mb-5'>
                             Learn More <GoArrowUpRight size={16} />
                         </button>
                     </div>
 
                     {/* Right Image */}
-                    <div className='md:block hidden'>
+                    <div className='hidden lg:flex'>
                         <img
                             className=' w-[500px] mx-auto h-[400px] lg:h-[777px]  rounded-xl'
                             src="https://i.ibb.co/2YZJYYy0/man-holding-little-house.png"
@@ -77,7 +77,7 @@ export default function BannerService() {
                 </div>
             </div>
             <div className='md:block hidden'>
-            <div className='flex justify-around items-center mt-16 mb-4 px-44 '>
+            <div className='flex justify-around items-center mt-16  px-44 '>
                 <div className='text-center '>
                     <CountUp
                         from={0}
@@ -117,7 +117,7 @@ export default function BannerService() {
                 </div>
             </div>
             <hr />
-            <br />
+            
             </div>
         </div>
     )

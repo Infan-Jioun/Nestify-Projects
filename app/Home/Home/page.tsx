@@ -5,6 +5,7 @@ import BannerPage from '../Banner/page'
 import PropertiesByCity from '../PropertiesByCity/page';
 import PopularProperties from '../PopularProperties/page';
 import BannerService from '../BannerServices/page';
+import ApartmentTypes from '../ApartmentTypes/page';
 
 
 export default function HomePage() {
@@ -13,9 +14,10 @@ export default function HomePage() {
 
       <BannerPage />
       <PropertiesByCity />
-      <PopularProperties/>
-      <BannerService/>
-  
+      <PopularProperties />
+      <BannerService />
+      <ApartmentTypes />
+
     </div>
   )
 }

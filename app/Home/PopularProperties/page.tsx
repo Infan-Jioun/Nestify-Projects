@@ -92,8 +92,8 @@ export default function PropertiesTab() {
       {/* Header & Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold mb-1">Discover Popular Properties</h2>
-          <p className="text-gray-500">Aliquam lacinia diam quis lacus euismod</p>
+          <h2 className="text-xl text-center sm:text-left font-bold mb-1">Discover Popular Properties</h2>
+          <p className="text-gray-500 text-center sm:text-left">Aliquam lacinia diam quis lacus euismod</p>
         </div>
         <div className="flex space-x-3 px-1">
           {tabs.map((tab) => (
