@@ -4,12 +4,13 @@ import "./globals.css";
 import Navbar from "./Navbar/page";
 import HelmetWrapper from "@/providers/page";
 import Footer from "./Footer/page";
+import SessionWrapping from "@/lib/SessionWrapping";
 
 
 
-const poppins  = Poppins({
-  subsets : ['latin'],
-  weight : ['200' , "400" , "600" , "800"]
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['200', "400", "600", "800"]
 })
 export const metadata: Metadata = {
   title: "Nestify",
@@ -22,22 +23,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        
-      >
-       <HelmetWrapper>
-       <div className={`${poppins.className} bg-white min-h-screen  text-black`}>
-        <div>
-        <Navbar/>
-        </div>
-        {children}
-        <div>
-        <Footer/>
-        </div>
-        </div>
-       </HelmetWrapper>
-      </body>
-    </html>
+    <SessionWrapping>
+      <html lang="en">
+        <body
+
+        >
+          <HelmetWrapper>
+            <div className={`${poppins.className} bg-white min-h-screen  text-black`}>
+              <div>
+                <Navbar />
+              </div>
+              {children}
+              <div>
+                <Footer />
+              </div>
+            </div>
+          </HelmetWrapper>
+        </body>
+      </html>
+    </SessionWrapping>
   );
 }

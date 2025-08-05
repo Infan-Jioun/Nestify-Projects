@@ -3,6 +3,7 @@ import React from 'react'
 import MyHelmet from '../Hooks/MyHelmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
 
 
 type Inputs = {
@@ -11,11 +12,18 @@ type Inputs = {
 
 }
 export default function RegisterPage() {
+  const {data: session} = useSession();
   const router = useRouter();
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log("Form", data);
     router.push("/")
+  }
+  const handelGoogleRegister = () => {
+    signIn("google", {callbackUrl : "/"});
+  }
+  const handelGithubRegister = () => {
+    signIn("github", {callbackUrl : "/"});
   }
   return (
     <div>
@@ -41,6 +49,8 @@ export default function RegisterPage() {
                   <div><a className="link link-hover">Forgot password?</a></div>
                   <button type='submit' className="btn btn-neutral mt-4">Login</button>
                 </fieldset>
+                <button onClick={handelGoogleRegister} className='btn btn-outline'>Google</button>
+                <button onClick={handelGithubRegister} className='btn btn-outline'>Github</button>
               </form>
             </div>
           </div>
