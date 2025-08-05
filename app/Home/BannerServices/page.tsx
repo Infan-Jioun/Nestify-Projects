@@ -7,7 +7,7 @@ import CountUp from './CountUp';
 
 export default function BannerService() {
     return (
-        <div className='px-4 lg:px-20 mt-16 border-b-2 border-gray-400 '>
+        <div className='px-4 lg:px-20 mt-20 border-b-2 border-gray-400 '>
             <div className="bg-gray-200 rounded-xl lg:rounded-3xl shadow-lg px-10 mt-5 p-4 py-3 lg:p-10">
                 <div className='flex flex-col lg:flex-row justify-between items-center px-0 lg:px-14   md:h-[500px] lg:h-[700px] gap-10'>
 
@@ -77,7 +77,7 @@ export default function BannerService() {
                 </div>
             </div>
             <div className='md:block hidden mb-5'>
-            <div className='flex justify-around items-center mt-16  px-44 '>
+            <div className='flex justify-around items-center mt-20  px-44 '>
                 <div className='text-center '>
                     <CountUp
                         from={0}

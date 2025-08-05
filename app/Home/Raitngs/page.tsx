@@ -67,7 +67,7 @@ export default function Testimonials() {
   const nextRef = useRef(null);
 
   return (
-    <div className="mt-16 px-4  lg:px-44">
+    <div className="mt-20 px-4  lg:px-44">
       {/* Testimonial Section Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center px-5 mb-8 gap-3">
   {/* Title Section */}

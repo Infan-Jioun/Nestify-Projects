@@ -52,7 +52,7 @@ export default function PropertiesByCity() {
   };
 
   return (
-    <div className="mt-16 px-4 md:px-4 lg:px-44">
+    <div className="mt-20 px-4 md:px-4 lg:px-44">
       {/* Heading Section */}
       <section className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-3">
         <div className="text-center sm:text-left">

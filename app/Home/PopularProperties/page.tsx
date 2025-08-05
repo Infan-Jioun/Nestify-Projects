@@ -88,7 +88,7 @@ export default function PropertiesTab() {
   );
 
   return (
-    <div className="mt-16 px-4 lg:px-44">
+    <div className="mt-20 px-4 lg:px-44">
       {/* Header & Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

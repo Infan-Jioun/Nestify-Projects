@@ -5,6 +5,8 @@ import Navbar from "./Navbar/page";
 import HelmetWrapper from "@/providers/page";
 import Footer from "./Footer/page";
 import SessionWrapping from "@/lib/SessionWrapping";
+import { Toaster } from "react-hot-toast";
+
 
 
 
@@ -24,6 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <SessionWrapping>
+        <Toaster />
       <html lang="en">
         <body
 
@@ -33,6 +36,7 @@ export default function RootLayout({
               <div>
                 <Navbar />
               </div>
+              
               {children}
               <div>
                 <Footer />

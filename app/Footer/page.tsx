@@ -11,7 +11,7 @@ export default function Footer() {
     return null
   }
   return (
-    <footer className="bg-white text-gray-700 border-t mt-16">
+    <footer className="bg-white text-gray-700 border-t mt-20">
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         {/* Column 1: Address and Contact */}
         <div>

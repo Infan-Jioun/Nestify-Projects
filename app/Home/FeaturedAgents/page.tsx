@@ -25,7 +25,7 @@ const agents = [
 
 export default function ExclusiveAgentsSection() {
   return (
-   <div className="px-4 lg:px-20 mt-16">
+   <div className="px-4 lg:px-20 mt-20">
      <section className=" px-10 py-16 flex flex-col lg:flex-row gap-10 items-center justify-between bg-gray-200 rounded-3xl">
       {/* Left - Agents List */}
       <div className="bg-white shadow p-6 rounded-xl w-full lg:w-1/3">

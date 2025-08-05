@@ -4,6 +4,8 @@ import MyHelmet from '../Hooks/MyHelmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { signIn, useSession } from 'next-auth/react'
+import Email from 'next-auth/providers/email'
+import toast from 'react-hot-toast'
 
 
 type Inputs = {
@@ -12,18 +14,29 @@ type Inputs = {
 
 }
 export default function RegisterPage() {
-  const {data: session} = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log("Form", data);
-    router.push("/")
+   const res = await signIn("credentials" , {
+    redirect : false,
+    email : data.email,
+    password : data.password
+   })
+   if(res?.ok){
+    toast.success("Sucessfully Register")
+   }
+   else{
+    alert("Register Failed")
+   }
+   
   }
   const handelGoogleRegister = () => {
-    signIn("google", {callbackUrl : "/"});
+    signIn("google", { callbackUrl: "/" });
   }
   const handelGithubRegister = () => {
-    signIn("github", {callbackUrl : "/"});
+    signIn("github", { callbackUrl: "/" });
   }
   return (
     <div>
@@ -50,7 +63,7 @@ export default function RegisterPage() {
                   <button type='submit' className="btn btn-neutral mt-4">Login</button>
                 </fieldset>
                 <button onClick={handelGoogleRegister} className='btn btn-outline'>Google</button>
-                <button onClick={handelGithubRegister} className='btn btn-outline'>Github</button>
+                <button onClick={handelGithubRegister} className='btn btn-outline'>Google</button>
               </form>
             </div>
           </div>

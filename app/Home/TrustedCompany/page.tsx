@@ -12,7 +12,7 @@ export default function TrustedCompany() {
         "https://i.ibb.co/xPMrFHc/6.webp",
     ];
     return (
-        <div className='mt-16 px-4 lg:px-44 '>
+        <div className='mt-20 px-4 lg:px-44 '>
             {/* Title */}
             <div>
                 <p className='text-center font-bold text-xl mb-6'>
