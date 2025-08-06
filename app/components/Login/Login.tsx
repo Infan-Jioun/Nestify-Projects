@@ -11,8 +11,33 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+type Inputs = {
+  email: string,
+  password: string
 
+}
 export function Login() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log("Form", data);
+    router.push("/")
+
+  }
+  const handelGoogleRegister = () => {
+ 
+    signIn("google", { callbackUrl: "/" });
+  }
+  const handelGithubRegister = () => {
+
+    signIn("github", { callbackUrl: "/" });
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
       <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
@@ -23,11 +48,11 @@ export function Login() {
           </CardDescription>
         </CardHeader>
 
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             <div className="grid gap-1">
               <Label htmlFor="email">Email</Label>
-              <Input
+              <Input {...register("email", { required: true })}
                 id="email"
                 type="email"
                 placeholder="you@example.com"
@@ -39,27 +64,30 @@ export function Login() {
                 <Label htmlFor="password">Password</Label>
                 <a
                   href="#"
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-sm text-green-500 hover:underline"
                 >
                   Forgot password?
                 </a>
               </div>
-              <Input id="password" type="password" required />
+              <Input {...register("password", { required: true })} id="password" type="password" placeholder='Type your password' required />
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-3">
+          <CardFooter className="flex flex-col gap-3 mt-3">
             <Button type="submit" className="w-full">
               Login
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button onClick={handelGoogleRegister} variant="outline" className="w-full">
               Continue with Google
+            </Button>
+            <Button onClick={handelGithubRegister} variant="outline" className="w-full">
+              Continue with Github
             </Button>
             <p className="text-sm text-center text-muted-foreground">
               Don’t have an account?{" "}
-              <a href="#" className="text-blue-600 hover:underline">
-                Sign up
-              </a>
+              <Link href={"/RegisterPage"} className="text-green-500 hover:underline">
+                Sign In
+              </Link>
             </p>
           </CardFooter>
         </form>

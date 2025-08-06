@@ -26,21 +26,20 @@ export default function RootLayout({
 }>) {
   return (
     <SessionWrapping>
-        <Toaster />
+      <Toaster />
       <html lang="en">
         <body
 
         >
           <HelmetWrapper>
             <div className={`${poppins.className} bg-white min-h-screen  text-black`}>
-              <div>
-                <Navbar />
-              </div>
-              
+
+              <Navbar />
+
+
               {children}
-              <div>
-                <Footer />
-              </div>
+              <Footer />
+
             </div>
           </HelmetWrapper>
         </body>

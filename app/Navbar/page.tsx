@@ -5,14 +5,34 @@ import { useEffect, useState } from 'react'
 import { RxAvatar } from 'react-icons/rx';
 import { motion } from "framer-motion";
 import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 
 
 export default function NavbarPage() {
+  const { data: session } = useSession();
   const pathname = usePathname();
-  const noNavbar = pathname === "/LoginPage" || pathname === "/RegisterPage"
-  if (noNavbar) {
-    console.log(noNavbar, "noNavbar work");
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = (): void => {
+      // console.log( "postion", window.scrollY);
+      if (window.scrollY > 50) {
+        setScrolled(true)
+      } else {
+        setScrolled(false)
+      }
+
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage") {
     return null
+  }
+  // SignOut
+  const handleSignOut = async () => {
+    await signOut()
   }
   const navLinks = <>
     <Link
@@ -48,22 +68,7 @@ export default function NavbarPage() {
              before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ">About</Link>
 
   </>
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handleScroll = (): void => {
-      // console.log( "postion", window.scrollY);
-      if (window.scrollY > 50) {
-        setScrolled(true)
-      } else {
-        setScrolled(false)
-      }
 
-    }
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
   return (
     <div className=' '>
       <div className={`navbar bg-white   px-8 md:px-7 lg:px-44  p-3 lg:p-5 translation-all duration-300 ease-in-out ${scrolled ? "fixed top-0 left-0 w-full translate-y-0  " : "before:transition-transform before:duration-75 hover:before:scale-x-100"} z-50`}>
@@ -90,17 +95,27 @@ export default function NavbarPage() {
             <a className=""><img className='w-24  -mt-3' src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" /></a>
           </div>
 
-          <div className=' hidden lg:flex  mr-[400px]'>
-            <ul className="menu menu-horizontal font-semibold   gap-6  text-[16px]">
+          <div className=' hidden lg:flex  mr-[550px]'>
+            <ul className="menu menu-horizontal font-semibold   gap-5  text-[15px]">
               {navLinks}
             </ul>
           </div>
         </div>
-        <div className="navbar-end font-semibold ">
-          <div className='flex  justify-center items-center gap-1'>
-            <Link href={"/LoginPage"} className='text-xl h-5 w-5 mr-2'><RxAvatar /></Link>
-            <div className='mr-10 hidden lg:flex'>
-              <Link href="/LoginPage" className="not-odd:text-[16px] font-semibold relative inline-block  duration-300 
+        <div className='navbar-end font-semibold'>
+          {
+            session ? (
+
+              <div className=''>
+                <p className=''>{session?.user?.name}</p>
+                <button onClick={handleSignOut}>Logout</button>
+              </div>
+
+            ) : (
+              <div className=" ">
+                <div className='flex  justify-center items-center gap-1'>
+                  <Link href={"/LoginPage"} className='text-xl h-5 w-5 mr-2'><RxAvatar /></Link>
+                  <div className='mr-10 hidden lg:flex'>
+                    <Link href="/LoginPage" className="not-odd:text-[16px] font-semibold relative inline-block  duration-300 
              before:content-[''] before:absolute before:bottom-[-4px] 
              before:w-full   before:h-[2px] before:origin-left before:bg-green-500
              before:scale-x-0
@@ -109,18 +124,23 @@ export default function NavbarPage() {
              before:w-full   before:h-[2px] before:origin-left before:bg-green-500
              before:scale-x-0
              before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ">Register</Link>
-            </div>
-          </div>
-          <div className='hidden md:block'>
-            <motion.button
-              whileHover={{ scale: 1.0, rotate: 5 }}
-              whileTap={{ scale: 0.2 }}
-              className="btn h-12 rounded-full bg-white  text-black hover:text-green-500  flex items-center justify-center transition"
-            >
-              Property
-            </motion.button>
-          </div>
+                  </div>
+                </div>
 
+
+              </div>
+
+            )
+          }
+        </div>
+        <div className='hidden md:block'>
+          <motion.button
+            whileHover={{ scale: 1.0, rotate: 5 }}
+            whileTap={{ scale: 0.2 }}
+            className="btn h-12 rounded-full bg-white  text-black hover:text-green-500  flex items-center justify-center transition"
+          >
+            Property
+          </motion.button>
         </div>
       </div>
     </div>
