@@ -3,7 +3,7 @@ const MONGODB_URL = process.env.MONGODB_URL
 if (!MONGODB_URL) {
     throw new Error("please difine mongo environment variable")
 }
-async function connectToDatabsae() {
+async function connectToDatabase() {
     if (mongoose.connection.readyState === 1) {
         return mongoose;
     }
@@ -13,4 +13,4 @@ async function connectToDatabsae() {
     await mongoose.connect(MONGODB_URL!, opts);
     return mongoose
 }
-export default connectToDatabsae;
+export default connectToDatabase;

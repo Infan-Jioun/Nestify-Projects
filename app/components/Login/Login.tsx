@@ -27,11 +27,20 @@ export function Login() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log("Form", data);
-    router.push("/")
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password
+    })
+    if (res?.ok) {
+      router.push("/")
+      toast.success("Successfully Login")
+    }
+
 
   }
   const handelGoogleRegister = () => {
- 
+
     signIn("google", { callbackUrl: "/" });
   }
   const handelGithubRegister = () => {

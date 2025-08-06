@@ -1,5 +1,5 @@
 import User from "@/app/models/user";
-import connectToDatabsae from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs"
 
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: "Password must be 8 digit" }, { status: 400 })
     }
     try {
-        await connectToDatabsae();
+        await connectToDatabase();
         const existisgUser = await User.findOne({ email });
         if (existisgUser) {
             return NextResponse.json({ message: "User Already Exist" }, { status: 400 })

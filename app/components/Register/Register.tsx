@@ -54,10 +54,11 @@ export default function Register() {
 
     }
     const handelGoogleRegister = () => {
-        signIn("google", { callbackUrl: "/" });
+        signIn("google" , {callbackUrl : "/"});
+        
     }
     const handelGithubRegister = () => {
-        signIn("github", { callbackUrl: "/" });
+        signIn("github" , {callbackUrl : "/"});
     }
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
@@ -114,12 +115,7 @@ export default function Register() {
                         <Button type="submit" className="w-full">
                             Sign up
                         </Button>
-                        <Button onClick={handelGoogleRegister} variant="outline" className="w-full">
-                            Continue with Google
-                        </Button>
-                        <Button onClick={handelGithubRegister} variant="outline" className="w-full">
-                            Continue with Github
-                        </Button>
+                    
                         <p className="text-sm text-center text-muted-foreground">
                             Don’t have an account?{" "}
                             <Link href={"/LoginPage"} className="text-green-500 hover:underline">
@@ -128,6 +124,12 @@ export default function Register() {
                         </p>
                     </CardFooter>
                 </form>
+                <Button onClick={handelGoogleRegister} variant="outline" className="w-full">
+                            Continue with Google
+                        </Button>
+                        <Button onClick={handelGithubRegister} variant="outline" className="w-full">
+                            Continue with Github
+                        </Button>
             </Card>
         </div>
     )
