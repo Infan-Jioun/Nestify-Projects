@@ -19,7 +19,7 @@ export const authOption: NextAuthOptions = {
 
     },
     secret: process.env.AUTH_SECRET,
-    pages : {
+    pages: {
         signIn: "/RegisterPage",
 
     }

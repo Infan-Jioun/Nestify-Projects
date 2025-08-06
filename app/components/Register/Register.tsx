@@ -1,10 +1,11 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { signIn, useSession } from 'next-auth/react'
-import toast from 'react-hot-toast'
-
+import toast, { Toaster } from 'react-hot-toast'
+import { BiError } from "react-icons/bi";
+import { MdOutlineCheck } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -20,6 +21,7 @@ import Link from 'next/link'
 
 
 type Inputs = {
+    name: string,
     email: string,
     password: string
 
@@ -27,19 +29,27 @@ type Inputs = {
 export default function Register() {
     const { data: session } = useSession();
     const router = useRouter();
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
     const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        console.log("Form", data);
-        const res = await signIn("credentials", {
-            redirect: false,
-            email: data.email,
-            password: data.password
+    const onSubmit: SubmitHandler<Inputs> = async (formData) => {
+        console.log("Form", formData);
+        const res = await fetch("/api/auth/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+
         })
-        if (res?.ok) {
-            toast.success("Sucessfully Register")
-        }
-        else {
-            alert("Register Failed")
+        const data = await res.json()
+        console.log("user info", res);
+        if (res.ok) {
+            // toast.success(data.message)
+            setSuccess(data.message)
+            router.push("/")
+        } else if (res.status === 400) {
+            setError(data.message)
+        } else if (res.status === 500) {
+            setError(data.message)
         }
 
     }
@@ -58,22 +68,46 @@ export default function Register() {
                         Enter your credentials to access your account
                     </CardDescription>
                 </CardHeader>
+                {!!success && (
+                    <div className='px-3'>
 
+                        <p className='text-white text-center bg-green-500 p-2 rounded-2xl flex justify-center items-center gap-4'><span className='text-xl'><MdOutlineCheck /></span>{success}</p>
+                    </div>
+                )}
+                {!!error && (
+                    <div className='px-3'>
+
+                        <p className='text-red-400 text-center bg-red-100 p-2 rounded-2xl flex justify-center items-center gap-4'><span className='text-xl'><BiError /></span>{error}</p>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <CardContent className="space-y-4">
                         <div className="grid gap-1">
+                            <Label htmlFor="name">Name</Label>
+                            <Input   {...register("name", { required: true })}
+                                id="name"
+                                type="name"
+                                placeholder="exp : Infan Jioun "
+                                required
+                            />
+                              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+                        </div>
+                        <div className="grid gap-1">
                             <Label htmlFor="email">Email</Label>
-                            <Input {...register("email", { required: true })}
+                            <Input   {...register("email", { required: true })}
                                 id="email"
                                 type="email"
                                 placeholder="you@example.com"
                                 required
                             />
+                    {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
                         </div>
                         <div className="grid gap-1">
-                        <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password">Password</Label>
                             <Input {...register("password", { required: true })} id="password" placeholder='Type your password' type="password" required />
+                            {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
                         </div>
+                        
                     </CardContent>
 
                     <CardFooter className="flex flex-col gap-3 mt-7">
