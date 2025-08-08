@@ -1,0 +1,35 @@
+import { SidebarContent } from '@/components/ui/sidebar'
+import { Facebook, Instagram, LinkedinIcon, Twitter } from 'lucide-react'
+import Link from 'next/link'
+import React from 'react'
+
+export default function SidebarFooter() {
+  return (
+    <div>
+        <SidebarContent className='px-5'>
+        <div className='border-b pb-8'>
+        <div className='flex justify-between '>
+          <p className='text-sm text-gray-500'>Total Free Customer Care</p>
+          <p className='text-sm text-gray-500'>Need Live Support?</p>
+          </div>
+          <div className='flex justify-between'>
+            
+<p className='text-sm'>+(0) 123 050 945 02</p>
+<p className='text-sm'>hi@nestify.com</p>
+          </div>
+        </div>
+        <div className='flex justify-between pt-7 px-2'>
+            <div>
+                <p className='font-bold'>Follow us</p>
+            </div>
+            <div className='flex justify-center  gap-2'>
+              <Link  className='text-sm' href={""}><Facebook/> </Link>
+              <Link  className='text-sm' href={""}><Twitter/> </Link>
+              <Link  className='text-sm' href={""}><Instagram/> </Link>
+              <Link  className='text-sm' href={""}><LinkedinIcon/> </Link>
+            </div>
+        </div>
+        </SidebarContent>
+    </div>
+  )
+}

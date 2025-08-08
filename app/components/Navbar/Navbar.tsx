@@ -17,16 +17,34 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { LogInIcon, Menu, X } from "lucide-react";
+import { LogInIcon, LogOutIcon, Menu, SearchIcon, X } from "lucide-react";
 import { FaSignOutAlt } from "react-icons/fa";
 import { SidebarHeader } from "@/components/ui/sidebar";
+import { RxAvatar } from "react-icons/rx";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DropdownMenu, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownAvatar } from "./DropdownAvatar";
+import { Input } from "@/components/ui/input";
+import SearchBar from "./SearchBar";
+import SidebarFooter from "./SidebarFooter";
 
-const links = [
+
+const navlinks = [
   { name: "Home", href: "/" },
   { name: "Properties", href: "/Properties" },
   { name: "Add Property", href: "/AddProperty" },
   { name: "Contact", href: "/Contact" },
   { name: "About", href: "/About" },
+];
+
+const links = [
+  { name: "Apartments", href: "/ApartmentsPage" },
+  { name: "Bungalow", href: "/BungalowPage" },
+  { name: "Houses", href: "/HousesPage" },
+  { name: "Loft", href: "/LoftPage" },
+  { name: "Office", href: "/officePage" },
+  { name: "Townhome", href: "/TownhomePage" },
+  { name: "Vila", href: "/VilaPage" },
 ];
 
 export function Navbar() {
@@ -48,10 +66,10 @@ export function Navbar() {
 
   return (
     <header
-      className={`bg-white transition-all duration-300  ease-in-out ${scrolled ? "fixed top-0 left-0 w-full z-50 shadow-md" : ""
+      className={`bg-white  transition-all   duration-300  ease-in-out ${scrolled ? "fixed top-0 left-0 w-full z-50 shadow-md" : ""
         }`}
     >
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="container  mx-auto px-4 lg:px-24 py-3 flex items-center justify-between">
 
         <div className="lg:hidden flex items-center">
           <Sheet>
@@ -66,16 +84,16 @@ export function Navbar() {
                 <line x1="1" y1="16" x2="16" y2="16" />
               </svg>
             </SheetTrigger>
-            <SheetContent side="left" className="pt-10 px-4">
-        
+            <SheetContent side="left" className="pt-10 ">
+
               <SidebarHeader className="font-bold text-black text-xl text-center border-b-2 mb-5">Welcome To Nestify</SidebarHeader>
               <nav className="space-y-4">
-                {links.map((link) => (
+                {navlinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`block px-3 py-2  text-sm transition-colors hover:bg-green-500 hover:text-white hover:rounded-full text-[16px] font-semibold relative  duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300  rounded ${pathname === link.href
-                      ? "bg-green-500 rounded-full text-white"
+                    className={`block px-5 py-2  text-sm    hover:border-r-4   hover:border-green-500  hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative  duration-300  before:absolute  before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300   ${pathname === link.href
+                      ? "border-r-4  border-green-500  bg-green-100 text-green-600 before:transition-transform before:duration-300   "
                       : ""
                       }`}
                   >
@@ -88,9 +106,9 @@ export function Navbar() {
                     <Button
                       variant="outline"
                       onClick={() => signOut()}
-                      className="w-full  h-10 hover:text-white  px-4 rounded-full bg-green-500 text-white  hover:bg-green-500 transition"
+                      className="w-full  h-10  hover:border-green-500  hover:bg-green-100 hover:text-green-600"
                     >
-                      <FaSignOutAlt /> Logout
+                      <LogOutIcon /> Logout
                     </Button>
                   ) : (
                     <>
@@ -112,33 +130,37 @@ export function Navbar() {
             </SheetContent>
           </Sheet>
         </div>
+        {/* logo */} {/* NavbarLinks */}
+        <div className="flex justify-center items-center  gap-10">
 
 
-        <Link href="/" className="">
-          <img
-            className="w-24 mr-7 -mt-3 mx-auto"
-            src="https://i.ibb.co/RpTRch3g/Nestify.png"
-            alt="logo"
-          />
-        </Link>
+          <Link href="/" className="">
+            <img
+              className="w-24 mr-7 -mt-3 mx-auto"
+              src="https://i.ibb.co/RpTRch3g/Nestify.png"
+              alt="logo"
+            />
+          </Link>
 
 
-        <NavigationMenu className="hidden lg:flex">
-          <NavigationMenuList className="flex space-x-6">
-            {links.map((link) => (
-              <NavigationMenuItem key={link.href}>
-                <Link
-                  href={link.href}
-                  className={`text-[16px] font-semibold relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ${pathname === link.href ? "" : "text-black"
-                    }`}
-                >
-                  {link.name}
-                </Link>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
+          <NavigationMenu className="hidden lg:flex ">
+            <NavigationMenuList className="flex space-x-6">
+              {navlinks.map((link) => (
+                <NavigationMenuItem key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={`text-[15px] font-semibold relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ${pathname === link.href ? "" : "text-black"
+                      }`}
+                  >
+                    {link.name}
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
 
+
+        </div>
 
         <div className="flex items-center gap-4">
 
@@ -153,7 +175,7 @@ export function Navbar() {
             )}
 
             <motion.button
-              whileHover={{ scale: 1.0, rotate: 5 }}
+              whileHover={{ scale: 1.0, rotate: 1 }}
               whileTap={{ scale: 0.95 }}
               className="btn h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
             >
@@ -166,7 +188,7 @@ export function Navbar() {
             <Sheet>
               <SheetTrigger>
                 <svg xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10 mt-3 text-black"
+                  className="h-8 w-8 mt-3 text-black"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -177,49 +199,38 @@ export function Navbar() {
                   <line x1="6" y1="13" x2="20" y2="13" />
                 </svg>
               </SheetTrigger>
-              <SheetContent side="right" className="pt-10">
+              <SheetContent side="right" className="pt-10 ">
+                <SidebarHeader className="font-bold text-black text-xl text-center border-b-2 mb-5">Browse Listings</SidebarHeader>
+            <SearchBar/>
+
                 <nav className="space-y-4">
                   {links.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`block px-3 py-2 rounded text-sm font-medium transition-colors hover:bg-gray-100 ${pathname === link.href
-                        ? "text-green-600"
-                        : "text-gray-700"
+                      className={`block px-5 py-2  text-sm    hover:border-l-4 hover:border-green-500  hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative  duration-300  before:absolute  before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300   ${pathname === link.href
+                        ? " border-l-4 border-green-500  bg-green-100 text-green-600  before:transition-transform before:duration-300 "
+                        : ""
                         }`}
                     >
                       {link.name}
                     </Link>
                   ))}
 
-                  <div className="mt-6 border-t pt-4">
-                    {session ? (
-                      <Button
-                        variant="outline"
-                        onClick={() => signOut()}
-                        className="w-full"
-                      >
-                        Logout
-                      </Button>
-                    ) : (
-                      <>
-                        <Link href="/LoginPage">
-                          <Button variant="ghost" className="w-full mb-2">
-                            Login
-                          </Button>
-                        </Link>
-                        <Link href="/RegisterPage">
-                          <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-                            Register
-                          </Button>
-                        </Link>
-                      </>
-                    )}
+                  <div className="mt-6 border-t   pt-7">
+                  <SidebarFooter/>
                   </div>
                 </nav>
+             
               </SheetContent>
             </Sheet>
           </div>
+          {session ? (<>
+            <DropdownAvatar />
+
+          </>) : (<><div className=" ">
+            <Link href={"/LoginPage"} className="text-xl block lg:hidden"><RxAvatar /></Link>
+          </div> </>)}
         </div>
       </div>
     </header>
