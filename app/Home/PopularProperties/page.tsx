@@ -120,7 +120,7 @@ export default function PropertiesTab() {
             className="relative overflow-hidden group rounded-xl shadow border"
           >
             {/* Image */}
-            <img
+            <Image
               src={property.image}
               alt={property.title}
               className="w-full h-[300px] object-cover transition-transform duration-300 group-hover:scale-110"

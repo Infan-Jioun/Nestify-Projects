@@ -101,7 +101,7 @@ export default function PropertiesByCity() {
                 whileTap={{ scale: 0.90 }}
                 className="w-[160px] sm:w-[220px] md:w-[230px] bg-white  rounded-2xl  px-2 md:px-3 lg:px-4   transition-all duration-300"
               >
-                <img
+                <Image
                   src={card.image}
                   alt={card.title || "Property"}
                   onLoad={() => handleImageLoad(index)}

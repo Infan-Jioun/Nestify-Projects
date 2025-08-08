@@ -68,7 +68,7 @@ export default function BannerService() {
 
                     {/* Right Image */}
                     <div className='hidden lg:flex'>
-                        <img
+                        <Image
                             className=' w-[500px] mx-auto h-[400px] lg:h-[777px]  rounded-xl'
                             src="https://i.ibb.co/2YZJYYy0/man-holding-little-house.png"
                             alt="manImage"

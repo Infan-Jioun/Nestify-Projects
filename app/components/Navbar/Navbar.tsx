@@ -27,6 +27,7 @@ import { DropdownAvatar } from "./DropdownAvatar";
 import { Input } from "@/components/ui/input";
 import SearchBar from "./SearchBar";
 import SidebarFooter from "./SidebarFooter";
+import Image from "next/image";
 
 
 const navlinks = [
@@ -135,7 +136,7 @@ export function Navbar() {
 
 
           <Link href="/" className="">
-            <img
+            <Image
               className="w-24 mr-7 -mt-3 mx-auto"
               src="https://i.ibb.co/RpTRch3g/Nestify.png"
               alt="logo"

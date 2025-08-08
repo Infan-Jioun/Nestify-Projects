@@ -24,7 +24,7 @@ export default function TrustedCompany() {
             <div className="block md:hidden">
                 <Marquee speed={50} gradient={false} pauseOnHover={true}>
                     {logos.map((logo, index) => (
-                        <img
+                        <Image
                             key={index}
                             src={logo}
                             alt={`Trusted logo ${index + 1}`}
@@ -37,7 +37,7 @@ export default function TrustedCompany() {
             {/* Optional: Static display for large screens */}
             <div className="hidden md:flex justify-center gap-12 flex-wrap items-center">
                 {logos.map((logo, index) => (
-                    <img
+                    <Image
                         key={index}
                         src={logo}
                         alt={`Trusted logo static ${index + 1}`}

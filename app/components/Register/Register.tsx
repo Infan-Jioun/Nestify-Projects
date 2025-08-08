@@ -68,7 +68,7 @@ export default function Register() {
                 <Helmet title='RegisterPage | Nestify'/>
             <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
                 <CardHeader className="text-center space-y-2">
-                    <CardTitle className="text-2xl font-bold"><img className='w-20 mx-auto' src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" /></CardTitle>
+                    <CardTitle className="text-2xl font-bold"><Image className='w-20 mx-auto' src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" /></CardTitle>
                     <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
                     Create Your Nestify Account – Fast & Secure Sign Up
                     </CardDescription>

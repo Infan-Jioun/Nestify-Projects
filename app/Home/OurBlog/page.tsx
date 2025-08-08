@@ -51,7 +51,7 @@ export default function OurBlog() {
             className="group bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:-translate-y-1 duration-300"
           >
             <div className="relative overflow-hidden">
-              <img
+              <Image
                 src={post.image}
                 alt={post.title}
                 className="w-full h-[240px] object-cover transform transition-transform duration-500 group-hover:scale-110"
