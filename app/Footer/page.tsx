@@ -2,6 +2,7 @@
 import React from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 export default function Footer() {
   const pathname = usePathname();
   const noFooter = pathname === "/LoginPage" || pathname === "/RegisterPage";
@@ -16,7 +17,7 @@ export default function Footer() {
         {/* Column 1: Address and Contact */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <Imag src="https://i.ibb.co/RpTRch3g/Nestify.png" className='w-24' alt="logo" />
+            <Image src="https://i.ibb.co/RpTRch3g/Nestify.png" width={80} height={80} alt="logo" />
 
           </div>
           <p className="text-sm font-semibold">

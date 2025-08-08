@@ -1,4 +1,5 @@
 
+import Image from 'next/image'
 import React from 'react'
 
 export default function RegisterInfo() {
@@ -16,10 +17,10 @@ export default function RegisterInfo() {
           </button>
         </div>
         <div className="flex justify-center">
-          <Imag
+          <Image
             src="https://i.ibb.co/pjSdXzkf/cta-building-1.webp"
-            alt="Building"
-            className="w-80 h-80 object-contain md:block hidden"
+            alt="Building" width={320} height={320}
+            className="object-contain md:block hidden"
           />
         </div>
       </div>

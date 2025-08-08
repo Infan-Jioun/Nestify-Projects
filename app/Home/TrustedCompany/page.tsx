@@ -8,7 +8,7 @@ export default function TrustedCompany() {
         "https://i.ibb.co/1tmG71wP/1.webp",
         "https://i.ibb.co/L3wT8KM/2.webp",
         "https://i.ibb.co/14w74sB/3.webp",
-        " https://i.ibb.co/Z6kkh7kd/4.webp",
+        "https://i.ibb.co/Z6kkh7kd/4.webp",
         "https://i.ibb.co/gZfD5JQN/5.webp",
         "https://i.ibb.co/xPMrFHc/6.webp",
     ];
@@ -28,8 +28,9 @@ export default function TrustedCompany() {
                         <Image
                             key={index}
                             src={logo}
+                            width={80} height={80}
                             alt={`Trusted logo ${index + 1}`}
-                            className="w-20 text-xl mx-8"
+                            className=" text-xl mx-8"
                         />
                     ))}
                 </Marquee>
@@ -41,8 +42,9 @@ export default function TrustedCompany() {
                     <Image
                         key={index}
                         src={logo}
+                        width={80} height={80}
                         alt={`Trusted logo static ${index + 1}`}
-                        className="mt-3 w-20"
+                        className="mt-3 "
                     />
                 ))}
             </div>

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn, useSession } from "next-auth/react";
+import { signIn} from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,9 +23,8 @@ type Inputs = {
 
 }
 export function Login() {
-  const { data: session } = useSession();
   const router = useRouter();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
+  const { register, handleSubmit } = useForm<Inputs>()
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log("Form", data);
     const res = await signIn("credentials", {
@@ -53,7 +52,12 @@ export function Login() {
       <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl font-bold">
-            <Image className='w-20 mx-auto' src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" />
+          <Image className="mx-auto"
+                            src="https://i.ibb.co/RpTRch3g/Nestify.png"
+                            alt="logo"
+                            width={80}
+                            height={80} />
+                    
             </CardTitle>
           <CardDescription className="text-sm  text-gray-500 dark:text-gray-400">
             Login to Nestify – Access Your Dashboard Securely

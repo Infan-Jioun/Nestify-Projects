@@ -46,7 +46,7 @@ export default function PropertiesByCity() {
     },
   ];
 
-  const [loadedImages, setLoadedImages] = useState({});
+  const [ , setLoadedImages] = useState({});
 
   const handleImageLoad = (index: number) => {
     setLoadedImages((prev) => ({ ...prev, [index]: true }));
@@ -106,6 +106,7 @@ export default function PropertiesByCity() {
                   src={card.image}
                   alt={card.title || "Property"}
                   onLoad={() => handleImageLoad(index)}
+                  width={400} height={400}
                   className="rounded-full w-full  object-cover transition-opacity duration-700"
                 />
                 <h3 className="text-lg text-center font-semibold r mt-4 text-black">

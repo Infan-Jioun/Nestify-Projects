@@ -42,41 +42,39 @@ const apartmentData = [
 ];
 
 export default function ApartmentTypes() {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const prevRef = useRef<HTMLButtonElement | null>(null);
+  const nextRef = useRef<HTMLButtonElement | null>(null);
 
   return (
     <div className="mt-20 px-4 md:px-4 lg:px-44">
       {/* Title Section */}
-<div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-3">
-  {/* Title Section */}
-  <div>
-    <h2 className="text-xl text-center sm:text-left font-bold mb-1">
-      Explore Apartment Types
-    </h2>
-    <p className="text-gray-500 text-center sm:text-left">
-      Aliquam lacinia diam quis lacus euismod
-    </p>
-  </div>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-3">
+        <div>
+          <h2 className="text-xl text-center sm:text-left font-bold mb-1">
+            Explore Apartment Types
+          </h2>
+          <p className="text-gray-500 text-center sm:text-left">
+            Aliquam lacinia diam quis lacus euismod
+          </p>
+        </div>
 
-  {/* Arrows + Pagination */}
-  <div className="flex justify-center items-center gap-4">
-    <button
-      ref={prevRef}
-      className="text-black hover:text-green-500 text-xl transition"
-    >
-      <GoArrowLeft />
-    </button>
-    <div className="custom-pagination flex gap-2" />
-    <button
-      ref={nextRef}
-      className="text-black hover:text-green-500 text-xl transition"
-    >
-      <GoArrowRight />
-    </button>
-  </div>
-</div>
-
+        {/* Arrows + Pagination */}
+        <div className="flex justify-center items-center gap-4">
+          <button
+            ref={prevRef}
+            className="text-black hover:text-green-500 text-xl transition"
+          >
+            <GoArrowLeft />
+          </button>
+          <div className="custom-pagination flex gap-2" />
+          <button
+            ref={nextRef}
+            className="text-black hover:text-green-500 text-xl transition"
+          >
+            <GoArrowRight />
+          </button>
+        </div>
+      </div>
 
       {/* Swiper Section */}
       <Swiper
@@ -90,10 +88,13 @@ export default function ApartmentTypes() {
           el: ".custom-pagination",
         }}
         onInit={(swiper) => {
-          // @ts-ignore
-          swiper.params.navigation.prevEl = prevRef.current;
-          // @ts-ignore
-          swiper.params.navigation.nextEl = nextRef.current;
+          // TypeScript-safe check for navigation params
+          if (swiper.params.navigation) {
+            // @ts-expect-error Navigation object is being assigned manually
+            swiper.params.navigation.prevEl = prevRef.current;
+            // @ts-expect-error Navigation object is being assigned manually
+            swiper.params.navigation.nextEl = nextRef.current;
+          }
           swiper.navigation.init();
           swiper.navigation.update();
         }}
@@ -110,7 +111,7 @@ export default function ApartmentTypes() {
         {apartmentData.map((item, index) => (
           <SwiperSlide key={index}>
             <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300">
-              <Imag
+              <Image
                 src={item.image}
                 alt={item.title}
                 width={400}

@@ -1,9 +1,9 @@
 "use client";
-import { CurrencyDollarIcon } from '@heroicons/react/16/solid';
 import React from 'react'
 import { GoArrowUpRight, GoHome, GoChecklist } from 'react-icons/go'
 import { PiCurrencyDollar } from 'react-icons/pi';
 import CountUp from './CountUp';
+import Image from 'next/image';
 
 export default function BannerService() {
     return (
@@ -68,7 +68,7 @@ export default function BannerService() {
 
                     {/* Right Image */}
                     <div className='hidden lg:flex'>
-                        <Image
+                        <Image width={500} height={400}  
                             className=' w-[500px] mx-auto h-[400px] lg:h-[777px]  rounded-xl'
                             src="https://i.ibb.co/2YZJYYy0/man-holding-little-house.png"
                             alt="manImage"

@@ -124,7 +124,9 @@ export default function PropertiesTab() {
             <Image
               src={property.image}
               alt={property.title}
-              className="w-full h-[300px] object-cover transition-transform duration-300 group-hover:scale-110"
+              width={500}
+              height={500}
+              className="  transition-transform duration-300 group-hover:scale-110"
             />
 
             {/* Top Right Icons */}

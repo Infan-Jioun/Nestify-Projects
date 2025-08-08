@@ -55,7 +55,9 @@ export default function OurBlog() {
               <Image
                 src={post.image}
                 alt={post.title}
-                className="w-full h-[240px] object-cover transform transition-transform duration-500 group-hover:scale-110"
+                width={600}
+                height={350}
+                className=" object-cover transform transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute top-4 right-4 bg-white text-gray-700 text-sm px-3 py-1 rounded-full shadow font-medium">
                 {post.date}

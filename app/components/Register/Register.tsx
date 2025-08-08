@@ -2,8 +2,7 @@
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { signIn, useSession } from 'next-auth/react'
-import toast, { Toaster } from 'react-hot-toast'
+import { signIn} from 'next-auth/react'
 import { BiError } from "react-icons/bi";
 import { MdOutlineCheck } from "react-icons/md";
 import { Button } from "@/components/ui/button";
@@ -18,8 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from 'next/link'
-import MyHelmet from '@/app/Hooks/MyHelmet'
 import { Helmet } from 'react-helmet-async'
+import Image from 'next/image'
 
 
 type Inputs = {
@@ -29,11 +28,11 @@ type Inputs = {
 
 }
 export default function Register() {
-    const { data: session } = useSession();
+
     const router = useRouter();
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
+    const { register, handleSubmit,  formState: { errors } } = useForm<Inputs>()
     const onSubmit: SubmitHandler<Inputs> = async (formData) => {
         console.log("Form", formData);
         const res = await fetch("/api/auth/signup", {
@@ -64,13 +63,19 @@ export default function Register() {
     }
     return (
         <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
-               
-                <Helmet title='RegisterPage | Nestify'/>
+
+            <Helmet title='RegisterPage | Nestify' />
             <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
                 <CardHeader className="text-center space-y-2">
-                    <CardTitle className="text-2xl font-bold"><Image className='w-20 mx-auto' src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" /></CardTitle>
+                    <CardTitle className="text-2xl font-bold">
+                        <Image className="mx-auto"
+                            src="https://i.ibb.co/RpTRch3g/Nestify.png"
+                            alt="logo"
+                            width={80}
+                            height={80} />
+                    </CardTitle>
                     <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
-                    Create Your Nestify Account – Fast & Secure Sign Up
+                        Create Your Nestify Account – Fast & Secure Sign Up
                     </CardDescription>
                 </CardHeader>
                 {!!success && (

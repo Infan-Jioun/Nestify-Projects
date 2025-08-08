@@ -8,7 +8,6 @@ import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { FaStar } from "react-icons/fa";
 
-// Testimonial data matching the image
 const testimonialsData = [
   {
     quote:
@@ -62,42 +61,41 @@ const testimonialsData = [
   },
 ];
 
-export default function Testimonials() {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+export default function Raitngs() {
+  const prevRef = useRef<HTMLButtonElement | null>(null);
+  const nextRef = useRef<HTMLButtonElement | null>(null);
 
   return (
-    <div className="mt-20 px-4  lg:px-44">
+    <div className="mt-20 px-4 lg:px-44">
       {/* Testimonial Section Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center px-5 mb-8 gap-3">
-  {/* Title Section */}
-  <div>
-    <h2 className="text-xl text-center sm:text-left font-bold mb-1">
-    People Love Living with Realton
-    </h2>
-    <p className="text-gray-500 text-center sm:text-left">
-      Aliquam lacinia diam quis lacus euismod
-    </p>
-  </div>
+        {/* Title Section */}
+        <div>
+          <h2 className="text-xl text-center sm:text-left font-bold mb-1">
+            People Love Living with Realton
+          </h2>
+          <p className="text-gray-500 text-center sm:text-left">
+            Aliquam lacinia diam quis lacus euismod
+          </p>
+        </div>
 
-  {/* Arrows + Pagination */}
-  <div className="flex justify-center items-center gap-4">
-    <button
-      ref={prevRef}
-      className="text-black hover:text-green-500 text-xl transition"
-    >
-      <GoArrowLeft />
-    </button>
-    <div className="custom-pagination flex gap-2" />
-    <button
-      ref={nextRef}
-      className="text-black hover:text-green-500 text-xl transition"
-    >
-      <GoArrowRight />
-    </button>
-  </div>
-</div>
-
+        {/* Arrows */}
+        <div className="flex justify-center items-center gap-4">
+          <button
+            ref={prevRef}
+            className="text-black hover:text-green-500 text-xl transition"
+          >
+            <GoArrowLeft />
+          </button>
+          <div className="custom-pagination flex gap-2" />
+          <button
+            ref={nextRef}
+            className="text-black hover:text-green-500 text-xl transition"
+          >
+            <GoArrowRight />
+          </button>
+        </div>
+      </div>
 
       {/* Swiper Section */}
       <Swiper
@@ -107,12 +105,14 @@ export default function Testimonials() {
           nextEl: nextRef.current,
         }}
         onInit={(swiper) => {
-          // @ts-ignore
-          swiper.params.navigation.prevEl = prevRef.current;
-          // @ts-ignore
-          swiper.params.navigation.nextEl = nextRef.current;
-          swiper.navigation.init();
-          swiper.navigation.update();
+          if (swiper.params.navigation) {
+            // @ts-expect-error navigation element type mismatch fixed manually
+            swiper.params.navigation.prevEl = prevRef.current;
+            // @ts-expect-error navigation element type mismatch fixed manually
+            swiper.params.navigation.nextEl = nextRef.current;
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }
         }}
         spaceBetween={20}
         breakpoints={{
@@ -131,9 +131,7 @@ export default function Testimonials() {
               </div>
               {/* Feedback */}
               <h3 className="text-sm font-bold mb-2">Great Work</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                {item.quote}
-              </p>
+              <p className="text-sm text-gray-600 mb-4">{item.quote}</p>
               {/* Rating */}
               <div className="flex mb-4">
                 {Array.from({ length: item.rating }, (_, i) => (
@@ -150,9 +148,7 @@ export default function Testimonials() {
                   className="rounded-full w-12 h-12 object-cover"
                 />
                 <div>
-                  <h4 className="font-semibold text-sm">
-                    {item.author.name}
-                  </h4>
+                  <h4 className="font-semibold text-sm">{item.author.name}</h4>
                   <p className="text-xs text-gray-500">
                     {item.author.company}
                   </p>
