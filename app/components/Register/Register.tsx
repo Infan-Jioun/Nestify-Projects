@@ -18,6 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from 'next/link'
+import MyHelmet from '@/app/Hooks/MyHelmet'
+import { Helmet } from 'react-helmet-async'
 
 
 type Inputs = {
@@ -54,19 +56,21 @@ export default function Register() {
 
     }
     const handelGoogleRegister = () => {
-        signIn("google" , {callbackUrl : "/"});
-        
+        signIn("google", { callbackUrl: "/" });
+
     }
     const handelGithubRegister = () => {
-        signIn("github" , {callbackUrl : "/"});
+        signIn("github", { callbackUrl: "/" });
     }
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
+               
+                <Helmet title='RegisterPage | Nestify'/>
             <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
                 <CardHeader className="text-center space-y-2">
-                    <CardTitle className="text-2xl font-bold">Welcome to Nestify</CardTitle>
+                    <CardTitle className="text-2xl font-bold"><img className='w-20 mx-auto' src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" /></CardTitle>
                     <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
-                        Enter your credentials to access your account
+                    Create Your Nestify Account – Fast & Secure Sign Up
                     </CardDescription>
                 </CardHeader>
                 {!!success && (
@@ -91,7 +95,7 @@ export default function Register() {
                                 placeholder="exp : Infan Jioun "
                                 required
                             />
-                              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+                            {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
                         </div>
                         <div className="grid gap-1">
                             <Label htmlFor="email">Email</Label>
@@ -101,21 +105,21 @@ export default function Register() {
                                 placeholder="you@example.com"
                                 required
                             />
-                    {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+                            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
                         </div>
                         <div className="grid gap-1">
                             <Label htmlFor="password">Password</Label>
                             <Input {...register("password", { required: true })} id="password" placeholder='Type your password' type="password" required />
                             {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
                         </div>
-                        
+
                     </CardContent>
 
                     <CardFooter className="flex flex-col gap-3 mt-7">
-                        <Button type="submit" className="w-full">
+                        <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
                             Sign up
                         </Button>
-                    
+
                         <p className="text-sm text-center text-muted-foreground">
                             Don’t have an account?{" "}
                             <Link href={"/LoginPage"} className="text-green-500 hover:underline">
@@ -124,12 +128,14 @@ export default function Register() {
                         </p>
                     </CardFooter>
                 </form>
-                <Button onClick={handelGoogleRegister} variant="outline" className="w-full">
-                            Continue with Google
-                        </Button>
-                        <Button onClick={handelGithubRegister} variant="outline" className="w-full">
-                            Continue with Github
-                        </Button>
+                <div className='px-6'>
+                    <Button onClick={handelGoogleRegister} variant="outline" className="w-full mb-2">
+                        Continue with Google
+                    </Button>
+                    <Button onClick={handelGithubRegister} variant="outline" className="w-full">
+                        Continue with Github
+                    </Button>
+                </div>
             </Card>
         </div>
     )

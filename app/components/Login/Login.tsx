@@ -48,12 +48,14 @@ export function Login() {
     signIn("github", { callbackUrl: "/" });
   }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+    <div className="min-h-screen bg-green-100 flex items-center justify-center  dark:bg-gray-900 px-4">
       <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
-            Enter your credentials to access your account
+          <CardTitle className="text-2xl font-bold">
+            <img className='w-20 mx-auto' src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" />
+            </CardTitle>
+          <CardDescription className="text-sm  text-gray-500 dark:text-gray-400">
+            Login to Nestify – Access Your Dashboard Securely
           </CardDescription>
         </CardHeader>
 
@@ -83,15 +85,10 @@ export function Login() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-3 mt-3">
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
               Login
             </Button>
-            <Button onClick={handelGoogleRegister} variant="outline" className="w-full">
-              Continue with Google
-            </Button>
-            <Button onClick={handelGithubRegister} variant="outline" className="w-full">
-              Continue with Github
-            </Button>
+
             <p className="text-sm text-center text-muted-foreground">
               Don’t have an account?{" "}
               <Link href={"/RegisterPage"} className="text-green-500 hover:underline">
@@ -100,6 +97,14 @@ export function Login() {
             </p>
           </CardFooter>
         </form>
+        <div className="px-6 ">
+          <Button onClick={handelGoogleRegister} variant="outline" className="w-full mb-2 ">
+            Continue with Google
+          </Button>
+          <Button onClick={handelGithubRegister} variant="outline" className="w-full">
+            Continue with Github
+          </Button>
+        </div>
       </Card>
     </div>
   );
