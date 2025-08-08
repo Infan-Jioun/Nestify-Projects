@@ -16,7 +16,7 @@ export default function Footer() {
         {/* Column 1: Address and Contact */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <Image src="https://i.ibb.co/RpTRch3g/Nestify.png" className='w-24' alt="logo" />
+            <Imag src="https://i.ibb.co/RpTRch3g/Nestify.png" className='w-24' alt="logo" />
 
           </div>
           <p className="text-sm font-semibold">

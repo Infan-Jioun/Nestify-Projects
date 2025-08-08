@@ -110,7 +110,7 @@ export default function ApartmentTypes() {
         {apartmentData.map((item, index) => (
           <SwiperSlide key={index}>
             <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300">
-              <Image
+              <Imag
                 src={item.image}
                 alt={item.title}
                 width={400}

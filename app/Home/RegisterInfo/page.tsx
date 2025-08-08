@@ -16,7 +16,7 @@ export default function RegisterInfo() {
           </button>
         </div>
         <div className="flex justify-center">
-          <Image
+          <Imag
             src="https://i.ibb.co/pjSdXzkf/cta-building-1.webp"
             alt="Building"
             className="w-80 h-80 object-contain md:block hidden"

@@ -1,6 +1,8 @@
 
 "use client";
 
+import Image from "next/image";
+
 export default function BannerPage() {
     return (
         <div className="px-4 drop-shadow-2xl lg:px-15">
