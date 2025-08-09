@@ -47,7 +47,7 @@ export default function Register() {
         if (res.ok) {
             // toast.success(data.message)
             setSuccess(data.message)
-            router.push("/loginPage")
+            router.push("/LoginPage")
         } else if (res.status === 400) {
             setError(data.message)
         } else if (res.status === 500) {
