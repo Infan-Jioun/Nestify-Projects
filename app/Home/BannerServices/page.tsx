@@ -68,7 +68,7 @@ export default function BannerService() {
 
                     {/* Right Image */}
                     <div className='hidden lg:flex'>
-                        <Image width={500} height={400}  
+                        <Image width={500} height={400}
                             className=' w-[500px] mx-auto h-[400px] lg:h-[777px]  rounded-xl'
                             src="https://i.ibb.co/2YZJYYy0/man-holding-little-house.png"
                             alt="manImage"
@@ -76,48 +76,48 @@ export default function BannerService() {
                     </div>
                 </div>
             </div>
-            <div className='md:block hidden mb-5'>
-            <div className='flex justify-around items-center mt-20  px-44 '>
-                <div className='text-center '>
-                    <CountUp
-                        from={0}
-                        to={400}
-                        separator=","
-                        direction="up"
-                        duration={1}
-                        className="count-up-text  text-2xl font-bold"
-                    />
-                    <p className='font-semibold'>Stores around the world</p>
+            <div className=' mb-5'>
+                <div className='flex justify-around items-center mt-20   '>
+                    <div className='text-center '>
+                        <CountUp
+                            from={0}
+                            to={400}
+                            separator=","
+                            direction="up"
+                            duration={1}
+                            className="count-up-text text-xl lg:text-2xl font-bold"
+                        />
+                        <p className=' text-[10px] lg:text-xl '>Stores around the world</p>
+                    </div>
+                    <div className=''>
+                        <div className='flex justify-center items-center '>
+                            <CountUp
+                                from={0}
+                                to={200}
+                                separator=","
+                                direction="up"
+                                duration={1}
+                                className="count-up-text text-2xl font-bold"
+                            /> <p className=' text-2xl font-bold'>+</p>
+                        </div>
+                        <p className=' text-[10px] lg:text-xl'>Stores around the world</p>
+                    </div>
+                    <div className=''>
+                        <div className='flex justify-center items-center'>
+                            <CountUp
+                                from={0}
+                                to={1}
+                                separator=","
+                                direction="up"
+                                duration={1}
+                                className="count-up-text text-2xl font-bold"
+                            /> <p className=' text-2xl font-bold'>K</p>
+                        </div>
+                        <p className=' text-[10px] lg:text-xl'>Stores around the world</p>
+                    </div>
                 </div>
-                <div className=''>
-                <div className='flex justify-center items-center '>
-                <CountUp
-                        from={0}
-                        to={200}
-                        separator=","
-                        direction="up"
-                        duration={1}
-                        className="count-up-text text-2xl font-bold"
-                    /> <p className= ' text-2xl font-bold'>+</p>
-                </div>
-                    <p className='font-semibold'>Stores around the world</p>
-                </div>
-                <div className=''>
-                <div className='flex justify-center items-center'>
-                <CountUp
-                        from={0}
-                        to={1}
-                        separator=","
-                        direction="up"
-                        duration={1}
-                        className="count-up-text text-2xl font-bold"
-                    /> <p className= ' text-2xl font-bold'>K</p>
-                </div>
-                    <p className='font-semibold'>Stores around the world</p>
-                </div>
-            </div>
-            
-            
+
+
             </div>
         </div>
     )
