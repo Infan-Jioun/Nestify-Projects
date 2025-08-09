@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { signIn} from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { BiError } from "react-icons/bi";
 import { MdOutlineCheck } from "react-icons/md";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export default function Register() {
     const router = useRouter();
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
-    const { register, handleSubmit,  formState: { errors } } = useForm<Inputs>()
+    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>()
     const onSubmit: SubmitHandler<Inputs> = async (formData) => {
         console.log("Form", formData);
         const res = await fetch("/api/auth/signup", {
@@ -43,10 +43,11 @@ export default function Register() {
         })
         const data = await res.json()
         console.log("user info", res);
+
         if (res.ok) {
             // toast.success(data.message)
             setSuccess(data.message)
-            router.push("/")
+            router.push("/loginPage")
         } else if (res.status === 400) {
             setError(data.message)
         } else if (res.status === 500) {

@@ -95,8 +95,8 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     className={`block px-5 py-2 text-sm hover:border-r-4 hover:border-green-500 hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative duration-300 before:absolute before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300 ${pathname === link.href
-                        ? "border-r-4 border-green-500 bg-green-100 text-green-600"
-                        : ""
+                      ? "border-r-4 border-green-500 bg-green-100 text-green-600"
+                      : ""
                       }`}
                   >
                     {link.name}
@@ -174,6 +174,7 @@ export function Navbar() {
             )}
 
 
+
           </div>
           {/* Property Button */}
           <div className="hidden sm:block">
@@ -220,8 +221,8 @@ export function Navbar() {
                       key={link.href}
                       href={link.href}
                       className={`block px-5 py-2 text-sm hover:border-l-4 hover:border-green-500 hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative duration-300 before:absolute before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300 ${pathname === link.href
-                          ? "border-l-4 border-green-500 bg-green-100 text-green-600"
-                          : ""
+                        ? "border-l-4 border-green-500 bg-green-100 text-green-600"
+                        : ""
                         }`}
                     >
                       {link.name}
