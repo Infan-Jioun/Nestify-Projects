@@ -39,11 +39,11 @@ export function Login() {
 
 
   }
-  const handelGoogleRegister = () => {
+  const handelGoogleLogin = () => {
 
     signIn("google", { callbackUrl: "/" });
   }
-  const handelGithubRegister = () => {
+  const handelGithubLogin = () => {
 
     signIn("github", { callbackUrl: "/" });
   }
@@ -103,10 +103,10 @@ export function Login() {
           </CardFooter>
         </form>
         <div className="px-6 ">
-          <Button onClick={handelGoogleRegister} variant="outline" className="w-full mb-2 ">
+          <Button onClick={handelGoogleLogin} variant="outline" className="w-full mb-2 ">
             Continue with Google
           </Button>
-          <Button onClick={handelGithubRegister} variant="outline" className="w-full">
+          <Button onClick={handelGithubLogin} variant="outline" className="w-full">
             Continue with Github
           </Button>
         </div>
