@@ -60,11 +60,10 @@ export function Navbar() {
 
   return (
     <header
-      className={`bg-white transition-all duration-300 ease-in-out ${
-        scrolled ? "fixed top-0 left-0 w-full z-50 shadow-md" : ""
-      }`}
+      className={`bg-white transition-all duration-300 ease-in-out ${scrolled ? "fixed top-0 left-0 w-full z-50 shadow-md" : ""
+        }`}
     >
-      <div className="container mx-auto px-4 lg:px-24 py-3 flex items-center justify-between">
+      <div className="container mx-auto px-4 md:px-20 lg:px-24 py-3 flex items-center justify-between">
         {/* Mobile Left Menu */}
         <div className="lg:hidden flex items-center">
           <Sheet>
@@ -95,11 +94,10 @@ export function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`block px-5 py-2 text-sm hover:border-r-4 hover:border-green-500 hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative duration-300 before:absolute before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300 ${
-                      pathname === link.href
+                    className={`block px-5 py-2 text-sm hover:border-r-4 hover:border-green-500 hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative duration-300 before:absolute before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300 ${pathname === link.href
                         ? "border-r-4 border-green-500 bg-green-100 text-green-600"
                         : ""
-                    }`}
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -149,9 +147,8 @@ export function Navbar() {
                 <NavigationMenuItem key={link.href}>
                   <Link
                     href={link.href}
-                    className={`text-[15px] font-semibold relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ${
-                      pathname === link.href ? "" : "text-black"
-                    }`}
+                    className={`text-[15px] font-semibold relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ${pathname === link.href ? "" : "text-black"
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -176,6 +173,10 @@ export function Navbar() {
               </div>
             )}
 
+
+          </div>
+          {/* Property Button */}
+          <div className="hidden sm:block">
             <motion.button
               whileHover={{ scale: 1.0 }}
               whileTap={{ scale: 0.95 }}
@@ -184,7 +185,6 @@ export function Navbar() {
               Property
             </motion.button>
           </div>
-
           {/* Right Menu */}
           <div className="hidden lg:block">
             <Sheet>
@@ -206,7 +206,7 @@ export function Navbar() {
               <SheetContent side="right" className="pt-10">
                 {/* Hidden title for accessibility */}
                 <DialogTitle className="sr-only">
-                  Browse Listings   
+                  Browse Listings
                 </DialogTitle>
 
                 <SidebarHeader className="font-bold text-black text-xl text-center border-b-2 mb-5">
@@ -219,11 +219,10 @@ export function Navbar() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`block px-5 py-2 text-sm hover:border-l-4 hover:border-green-500 hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative duration-300 before:absolute before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300 ${
-                        pathname === link.href
+                      className={`block px-5 py-2 text-sm hover:border-l-4 hover:border-green-500 hover:bg-green-100 hover:text-green-600 text-[15px] font-semibold relative duration-300 before:absolute before:w-full before:h-[2px] before:origin-left before:scale-x-0 before:transition-transform before:duration-300 ${pathname === link.href
                           ? "border-l-4 border-green-500 bg-green-100 text-green-600"
                           : ""
-                      }`}
+                        }`}
                     >
                       {link.name}
                     </Link>

@@ -92,7 +92,9 @@ export default function PropertiesByCity() {
             480: { slidesPerView: 2 },
             640: { slidesPerView: 3 },
             768: { slidesPerView: 3 },
-            1024: { slidesPerView: 5 },
+            1024: { slidesPerView: 3 },
+            1280 : {slidesPerView : 4},
+            
           }}
         >
           {cards.map((card, index) => (
