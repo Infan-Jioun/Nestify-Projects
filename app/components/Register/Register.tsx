@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import Link from 'next/link'
 import { Helmet } from 'react-helmet-async'
 import Image from 'next/image'
+import MyHelmet from '@/app/Hooks/MyHelmet'
 
 
 type Inputs = {
@@ -63,86 +64,89 @@ export default function Register() {
         signIn("github", { callbackUrl: "/" });
     }
     return (
-        <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
+     <div>
+        <MyHelmet title='Register | Nestify'></MyHelmet>
+           <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
 
-            <Helmet title='RegisterPage | Nestify' />
-            <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
-                <CardHeader className="text-center space-y-2">
-                    <CardTitle className="text-2xl font-bold">
-                        <Image className="mx-auto"
-                            src="https://i.ibb.co/RpTRch3g/Nestify.png"
-                            alt="logo"
-                            width={80}
-                            height={80} />
-                    </CardTitle>
-                    <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
-                        Create Your Nestify Account – Fast & Secure Sign Up
-                    </CardDescription>
-                </CardHeader>
-                {!!success && (
-                    <div className='px-3'>
+<Helmet title='RegisterPage | Nestify' />
+<Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
+    <CardHeader className="text-center space-y-2">
+        <CardTitle className="text-2xl font-bold">
+            <Image className="mx-auto"
+                src="https://i.ibb.co/RpTRch3g/Nestify.png"
+                alt="logo"
+                width={80}
+                height={80} />
+        </CardTitle>
+        <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
+            Create Your Nestify Account – Fast & Secure Sign Up
+        </CardDescription>
+    </CardHeader>
+    {!!success && (
+        <div className='px-3'>
 
-                        <p className='text-white text-center bg-green-500 p-2 rounded-2xl flex justify-center items-center gap-4'><span className='text-xl'><MdOutlineCheck /></span>{success}</p>
-                    </div>
-                )}
-                {!!error && (
-                    <div className='px-3'>
-
-                        <p className='text-red-400 text-center bg-red-100 p-2 rounded-2xl flex justify-center items-center gap-4'><span className='text-xl'><BiError /></span>{error}</p>
-                    </div>
-                )}
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <CardContent className="space-y-4">
-                        <div className="grid gap-1">
-                            <Label htmlFor="name">Name</Label>
-                            <Input   {...register("name", { required: true })}
-                                id="name"
-                                type="name"
-                                placeholder="exp : Infan Jioun "
-                                required
-                            />
-                            {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-                        </div>
-                        <div className="grid gap-1">
-                            <Label htmlFor="email">Email</Label>
-                            <Input   {...register("email", { required: true })}
-                                id="email"
-                                type="email"
-                                placeholder="you@example.com"
-                                required
-                            />
-                            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
-                        </div>
-                        <div className="grid gap-1">
-                            <Label htmlFor="password">Password</Label>
-                            <Input {...register("password", { required: true })} id="password" placeholder='Type your password' type="password" required />
-                            {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
-                        </div>
-
-                    </CardContent>
-
-                    <CardFooter className="flex flex-col gap-3 mt-7">
-                        <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
-                            Sign up
-                        </Button>
-
-                        <p className="text-sm text-center text-muted-foreground">
-                            Don’t have an account?{" "}
-                            <Link href={"/LoginPage"} className="text-green-500 hover:underline">
-                                Login
-                            </Link>
-                        </p>
-                    </CardFooter>
-                </form>
-                <div className='px-6'>
-                    <Button onClick={handelGoogleRegister} variant="outline" className="w-full mb-2">
-                        Continue with Google
-                    </Button>
-                    <Button onClick={handelGithubRegister} variant="outline" className="w-full">
-                        Continue with Github
-                    </Button>
-                </div>
-            </Card>
+            <p className='text-white text-center bg-green-500 p-2 rounded-2xl flex justify-center items-center gap-4'><span className='text-xl'><MdOutlineCheck /></span>{success}</p>
         </div>
+    )}
+    {!!error && (
+        <div className='px-3'>
+
+            <p className='text-red-400 text-center bg-red-100 p-2 rounded-2xl flex justify-center items-center gap-4'><span className='text-xl'><BiError /></span>{error}</p>
+        </div>
+    )}
+    <form onSubmit={handleSubmit(onSubmit)}>
+        <CardContent className="space-y-4">
+            <div className="grid gap-1">
+                <Label htmlFor="name">Name</Label>
+                <Input   {...register("name", { required: true })}
+                    id="name"
+                    type="name"
+                    placeholder="exp : Infan Jioun "
+                    required
+                />
+                {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+            </div>
+            <div className="grid gap-1">
+                <Label htmlFor="email">Email</Label>
+                <Input   {...register("email", { required: true })}
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    required
+                />
+                {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+            </div>
+            <div className="grid gap-1">
+                <Label htmlFor="password">Password</Label>
+                <Input {...register("password", { required: true })} id="password" placeholder='Type your password' type="password" required />
+                {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+            </div>
+
+        </CardContent>
+
+        <CardFooter className="flex flex-col gap-3 mt-7">
+            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
+                Sign up
+            </Button>
+
+            <p className="text-sm text-center text-muted-foreground">
+                Don’t have an account?{" "}
+                <Link href={"/LoginPage"} className="text-green-500 hover:underline">
+                    Login
+                </Link>
+            </p>
+        </CardFooter>
+    </form>
+    <div className='px-6'>
+        <Button onClick={handelGoogleRegister} variant="outline" className="w-full mb-2">
+            Continue with Google
+        </Button>
+        <Button onClick={handelGithubRegister} variant="outline" className="w-full">
+            Continue with Github
+        </Button>
+    </div>
+</Card>
+</div>
+     </div>
     )
 }

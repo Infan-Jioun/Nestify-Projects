@@ -1,5 +1,6 @@
 "use client";
 
+import MyHelmet from "@/app/Hooks/MyHelmet";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -48,7 +49,9 @@ export function Login() {
     signIn("github", { callbackUrl: "/" });
   }
   return (
-    <div className="min-h-screen bg-green-100 flex items-center justify-center  dark:bg-gray-900 px-4">
+   <div>
+    <MyHelmet title='Login | Nestify'></MyHelmet>
+     <div className="min-h-screen bg-green-100 flex items-center justify-center  dark:bg-gray-900 px-4">
       <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl font-bold">
@@ -112,5 +115,6 @@ export function Login() {
         </div>
       </Card>
     </div>
+   </div>
   );
 }
