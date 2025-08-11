@@ -99,7 +99,7 @@ export default function BannerService() {
                             duration={1}
                             className="count-up-text text-xl lg:text-2xl font-bold"
                         />
-                        <p className="text-[10px] lg:text-xl">Stores around the world</p>
+                        <p className="text-[9px] lg:text-xl">Stores around the world</p>
                     </div>
 
                     {/* Stat 2 */}
@@ -115,7 +115,7 @@ export default function BannerService() {
                             />
                             <p className="text-xl lg:text-2xl font-bold">+</p>
                         </div>
-                        <p className="text-[10px] lg:text-xl">Stores around the world</p>
+                        <p className="text-[9px] lg:text-xl">Stores around the world</p>
                     </div>
 
                     {/* Stat 3 */}
@@ -123,7 +123,7 @@ export default function BannerService() {
                         <div className="flex justify-center items-center">
                             <CountUp
                                 from={0}
-                                to={1}
+                                to={10}
                                 separator=","
                                 direction="up"
                                 duration={1}
@@ -131,7 +131,7 @@ export default function BannerService() {
                             />
                             <p className="text-xl lg:text-2xl font-bold">K</p>
                         </div>
-                        <p className="text-[10px] lg:text-xl">Stores around the world</p>
+                        <p className="text-[9px] lg:text-xl">Stores around the world</p>
                     </div>
                 </div>
             </div>
