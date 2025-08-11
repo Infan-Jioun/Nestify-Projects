@@ -1,7 +1,7 @@
 
 # Nestify - Real Estate Platform
 
-![Nestify Logo](https://i.ibb.co/RpTRch3g/Nestify.png)
+![Nestify Logo](https://i.ibb.co.com/mFbMTzHT/Nestify.png)
 
 Nestify is a modern real estate platform built with Next.js, providing users with property listings, agent profiles, and various real estate services.
 
