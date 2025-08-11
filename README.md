@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# Nestify - Real Estate Platform
+
+![Nestify Logo](https://i.ibb.co.com/mFbMTzHT/Nestify.png)
+
+Nestify is a modern real estate platform built with Next.js, providing users with property listings, agent profiles, and various real estate services.
+
+## Features
+
+- Property listings by city and type
+- Featured agents section
+- Property search functionality
+- User authentication (Google, GitHub, email/password)
+- Responsive design for all devices
+- Interactive property browsing experience
+
+## Technologies Used
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, DaisyUI
+- **State Management**: React hooks, React Hook Form
+- **Authentication**: NextAuth.js
+- **Database**: MongoDB with Mongoose
+- **UI Components**: ShadCN UI, Radix UI
+- **Animation**: Framer Motion
+- **Other Libraries**: Swiper.js, React Fast Marquee, React Helmet Async
+
+## Project Structure
+
+```
+nestify/
+├── app/                   # App router directory
+│   ├── About/             # About page
+│   ├── AddProperty/       # Property submission page
+│   ├── Contact/           # Contact page
+│   ├── Footer/            # Global footer component
+│   ├── Home/              # Homepage sections
+│   ├── Hooks/             # Custom hooks
+│   ├── LoginPage/         # Login page
+│   ├── NavbarPage/        # Navigation component
+│   ├── Properties/        # Property listings
+│   ├── RegisterPage/      # User registration
+│   ├── api/               # API routes
+│   ├── components/        # Reusable components
+│   └── models/            # Database models
+├── components/            # UI components
+├── lib/                   # Utility functions
+├── public/                # Static assets
+└── styles/                # Global styles
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18+
+- MongoDB Atlas account or local MongoDB instance
+- Google/GitHub OAuth credentials (for social login)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/nestify.git
+   cd nestify
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Learn More
+3. Create a `.env` file in the root directory with the following variables:
+   ```
+   MONGODB_URL=your_mongodb_connection_string
+   NEXTAUTH_SECRET=your_secret_key
+   GOOGLE_ID=your_google_client_id
+   GOOGLE_SECRET=your_google_client_secret
+   GITHUB_ID=your_github_client_id
+   GITHUB_SECRET=your_github_client_secret
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
+- `npm run dev`: Starts the development server
+- `npm run build`: Builds the application for production
+- `npm start`: Starts the production server
+- `npm run lint`: Runs ESLint
+
+## Deployment
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Contributions are welcome! Please fork the repository and create a pull request with your changes.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
+
+This README provides a comprehensive overview of your project, including:
+1. Project description and features
+2. Technology stack
+3. Directory structure
+4. Installation instructions
+5. Environment variables needed
+6. Available scripts
+7. Deployment information
+8. Contribution guidelines
+
+You can customize it further by adding screenshots, demo links, or more detailed documentation about specific features.
