@@ -28,14 +28,19 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      {/* <DisplayLoader /> */}
       <body className={`${poppins.className} bg-white min-h-screen text-black`}>
         <SessionWrapping>
           <Toaster />
 
-          <DisplayLoader />
-          <NavbarPage />
-          {children}
-          <Footer />
+
+
+          <DisplayLoader>
+            <NavbarPage />
+            {children}
+            <Footer />
+
+          </DisplayLoader>
 
         </SessionWrapping>
       </body>
