@@ -1,6 +1,6 @@
 "use client";
 
-import MyHelmet from "@/app/Hooks/MyHelmet";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import NextHead from "../NextHead/page";
 type Inputs = {
   email: string,
   password: string
@@ -50,7 +51,7 @@ export function Login() {
   }
   return (
     <div>
-      <MyHelmet title='Login | Nestify'></MyHelmet>
+      <NextHead title='Login | Nestify'></NextHead>
       <div className="min-h-screen bg-green-100 flex items-center justify-center  dark:bg-gray-900 px-4">
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
           <CardHeader className="text-center space-y-2">

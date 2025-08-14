@@ -8,8 +8,7 @@ export default function AddPropertyPage() {
   return (
     <div>
       <div>
-        <NextHead title="Add Property - Nestify" />
-        <h1 className="text-2xl font-bold">Add Property Page</h1>
+        <NextHead title="Add Property - Nestify" />        
       </div>
 
     </div>

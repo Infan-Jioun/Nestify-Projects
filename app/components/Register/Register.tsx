@@ -19,7 +19,8 @@ import { Label } from "@/components/ui/label";
 import Link from 'next/link'
 import { Helmet } from 'react-helmet-async'
 import Image from 'next/image'
-import MyHelmet from '@/app/Hooks/MyHelmet'
+import NextHead from '../NextHead/page'
+
 
 
 type Inputs = {
@@ -65,7 +66,7 @@ export default function Register() {
     }
     return (
         <div>
-            <MyHelmet title='Register | Nestify'></MyHelmet>
+            <NextHead title='Register | Nestify'></NextHead>
             <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
 
                 <Helmet title='RegisterPage | Nestify' />

@@ -2,6 +2,9 @@ import React from 'react'
 
 export default function PropertiesTitle() {
   return (
-    <div>PropertiesTitle</div>
+    <div>
+      <p className='text-xl font-bold '>Properties For Sale</p>
+
+    </div>
   )
 }
