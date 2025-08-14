@@ -1,26 +1,18 @@
-"use client"
-import { useState } from "react";
-import FilterSidebar, { Filters } from "../components/FilterSidebar/page";
-import NextHead from "../components/NextHead/page";
-import PropertiesTitle from "./PropertiesTitle/page";
-import PropertyCard from "../components/PropertyCard/page";
+import React from 'react'
+import PropertiesTitle from './PropertiesTitle/page'
+import NextHead from '../components/NextHead/page'
+import PropertyCard from '../components/PropertyCard/page'
+import { FilterSidebar } from '../components/FilterSidebar/page'
+
 
 export default function PropertiesPage() {
-  const [filters, setFilters] = useState<Filters | undefined>(undefined);
-
   return (
-    <div className="max-w-7xl mx-auto py-6 px-4 lg:px-0">
-      <NextHead title="Properties - Nestify" />
+    <div className='mt-20 px-4 md:px-20 lg:px-44'>
+      <NextHead title='Porperties - Nestify'></NextHead>
       <PropertiesTitle />
-
-      <div className="flex flex-col lg:flex-row gap-6 mt-6">
-        <div className="lg:w-1/4 w-full">
-          <FilterSidebar onFilterChange={setFilters} />
-        </div>
-        <div className="lg:w-3/4 w-full">
-          <PropertyCard filters={filters} />
-        </div>
-      </div>
+  
+      <PropertyCard />
+     
     </div>
-  );
+  )
 }

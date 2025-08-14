@@ -81,7 +81,7 @@ const properties = [
  
 ];
 
-export default function PropertiesTab() {
+export default function PopularProperties() {
   const [activeTab, setActiveTab] = useState("House");
 
   const filteredProperties = properties.filter(

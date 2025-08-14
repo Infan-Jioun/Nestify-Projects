@@ -1,112 +1,143 @@
-// src/components/PropertyCard.tsx
 "use client";
+
 import Image from "next/image";
-import { Bed, Bath, ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Filters } from "../FilterSidebar/page";
+import { useState } from "react";
+import { FiHeart, FiPlus, FiShare } from "react-icons/fi";
+import { FilterSidebar } from "../FilterSidebar/page";
 
-
-interface Property {
-    title: string;
-    subtitle: string;
-    image: string;
-    status: string;
-    location: string;
-    price: number;
-    beds: number;
-    baths: number;
-    sqft: number;
-}
-
-interface PropertyCardProps {
-    filters?: Filters;
-}
-
-const properties: Property[] = [
-    { title: "Apartments", subtitle: "20 Properties", image: "https://i.ibb.co/pj35Qbjb/image-1.webp", status: "For Sale", location: "New York, USA", price: 250000, beds: 3, baths: 2, sqft: 1200 },
-    { title: "Office", subtitle: "34 Properties", image: "https://i.ibb.co/ks6vMKY3/Image-2.webp", status: "For Rent", location: "California, USA", price: 1500, beds: 0, baths: 1, sqft: 500 },
-    { title: "Villa", subtitle: "42 Properties", image: "https://i.ibb.co/mF08HD2T/Image-3.webp", status: "For Sale", location: "Miami, USA", price: 450000, beds: 4, baths: 3, sqft: 2000 },
-    { title: "House", subtitle: "18 Properties", image: "https://i.ibb.co/YBGd2FkP/Image-4.webp", status: "For Sale", location: "Texas, USA", price: 300000, beds: 3, baths: 2, sqft: 1600 },
-    { title: "Apartments", subtitle: "52 Properties", image: "https://i.ibb.co/xS82zC52/Image-5.webp", status: "For Rent", location: "Chicago, USA", price: 1200, beds: 2, baths: 1, sqft: 900 },
-    { title: "Apartments", subtitle: "14 Properties", image: "https://i.ibb.co/xS82zC52/Image-5.webp", status: "For Sale", location: "Boston, USA", price: 280000, beds: 3, baths: 2, sqft: 1400 },
+const tabs = ["House", "Villa", "Office", "Apartments"];
+const properties = [
+  {
+    id: 1,
+    type: "House",
+    title: "Luxury villa in Rego Park",
+    location: "Los Angeles City, CA, USA",
+    price: "$823,000",
+    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
+  },
+  {
+    id: 2,
+    type: "House",
+    title: "Luxury villa in Rego Park",
+    location: "Los Angeles City, CA, USA",
+    price: "$82,000",
+    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
+  },
+  {
+    id: 3,
+    type: "House",
+    title: "Luxury villa in Rego Park",
+    location: "Los Angeles City, CA, USA",
+    price: "$82,000",
+    image: "https://i.ibb.co/wmtFPZh/image-5.webp",
+  },
+  {
+    id: 4,
+    type: "Office",
+    title: "Equestrian Family Home",
+    location: "Texas City, CA, USA",
+    price: "$14,000",
+    image: "https://i.ibb.co/vCF8pdrR/Image-2.webp",
+  },
+  {
+    id: 5,
+    type: "House",
+    title: "Luxury villa in Rego Park",
+    location: "Los Angeles City, CA, USA",
+    price: "$82,000",
+    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
+  },
+  {
+    id: 6,
+    type: "Apartments",
+    title: "Equestrian Family Home",
+    location: "Texas City, CA, USA",
+    price: "$14,000",
+    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
+  },
+  {
+    id: 7,
+    type: "Apartments",
+    title: "Equestrian Family Home",
+    location: "Texas City, CA, USA",
+    price: "$14,000",
+    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
+  },
+  {
+    id: 8,
+    type: "Villa",
+    title: "Luxury villa in Rego Park",
+    location: "New Jersey City, CA, USA",
+    price: "$82,000",
+    image: "https://i.ibb.co/Pv5hj6rP/Image-3.webp",
+  },
+  {
+    id: 9,
+    type: "House",
+    title: "Luxury villa in Rego Park",
+    location: "Los Angeles City, CA, USA",
+    price: "$12,000",
+    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
+  },
+ 
 ];
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ filters }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const propertiesPerPage = 3;
-    const [filteredProperties, setFilteredProperties] = useState(properties);
+export default function PropertyCard() {
+  const [activeTab, setActiveTab] = useState("House");
 
-    useEffect(() => {
-        let temp = properties;
+  const filteredProperties = properties.filter(
+    (p) => p.type === activeTab
+  );
 
-        if (filters) {
-            // Search filter
-            if (filters.search) {
-                temp = temp.filter(p => p.title.toLowerCase().includes(filters.search.toLowerCase()) || p.location.toLowerCase().includes(filters.search.toLowerCase()));
-            }
+  return (
+    <div className=" ">
 
-            // Status filter
-            if (filters.status !== "all") {
-                temp = temp.filter(p => p.status.toLowerCase() === filters.status.toLowerCase());
-            }
+<div className="">
+    
+<p><FilterSidebar /></p></div>
 
-            // Type filter
-            if (filters.types.length > 0) {
-                temp = temp.filter(p => filters.types.includes(p.title));
-            }
+      {/* Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        {filteredProperties.map((property) => (
+          <div
+            key={property.id}
+            className="relative overflow-hidden group rounded-xl shadow border"
+          >
+            {/* Image */}
+            <Image
+              src={property.image}
+              alt={property.title}
+              width={500}
+              height={500}
+              className="  transition-transform duration-300 group-hover:scale-110"
+            />
 
-            // Price filter
-            temp = temp.filter(p => p.price >= filters.price[0] && p.price <= filters.price[1]);
-        }
-
-        setFilteredProperties(temp);
-        setCurrentPage(1); // reset to first page
-    }, [filters]);
-
-    const indexOfLast = currentPage * propertiesPerPage;
-    const indexOfFirst = indexOfLast - propertiesPerPage;
-    const currentProperties = filteredProperties.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
-
-    return (
-        <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-                {currentProperties.map((property, index) => (
-                    <div key={index} className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                        <div className="relative">
-                            <Image src={property.image} alt={property.title} width={400} height={250} className="w-full object-cover" />
-                            <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
-                                {property.status}
-                            </div>
-                        </div>
-                        <div className="p-4">
-                            <h3 className="text-lg font-bold text-gray-800">{property.title}</h3>
-                            <p className="text-gray-500 text-sm mb-2">{property.location}</p>
-                            <p className="text-2xl font-bold text-red-600 mb-4">${property.price.toLocaleString()}</p>
-                            <div className="flex items-center justify-between text-gray-600">
-                                <div className="flex items-center gap-2"><Bed size={18} /><span>{property.beds} Beds</span></div>
-                                <div className="flex items-center gap-2"><Bath size={18} /><span>{property.baths} Baths</span></div>
-                                <div className="flex items-center gap-2"><ArrowRight size={18} /><span>{property.sqft} sqft</span></div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+            {/* Top Right Icons */}
+            <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+              <button className="bg-white p-2 rounded-full shadow hover:bg-red-100">
+                <FiHeart className="text-xl text-green-500" />
+              </button>
+              <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
+                <FiPlus className="text-xl text-green-500" />
+              </button>
+              <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
+                <FiShare className="text-xl text-green-500" />
+              </button>
             </div>
 
-            {/* Pagination */}
-            <div className="flex justify-center mt-6 space-x-2">
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                        key={i}
-                        className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-red-600 text-white border-red-600" : "bg-white text-gray-700 border-gray-300"}`}
-                        onClick={() => setCurrentPage(i + 1)}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
+            {/* Bottom Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm px-4 py-3 z-10 flex justify-between items-center text-white">
+              <div>
+                <h3 className="font-semibold">{property.title}</h3>
+                <p className="text-sm">{property.location}</p>
+              </div>
+              <div className="bg-white text-black font-semibold px-3 py-1 rounded-2xl hover:bg-black hover:text-white transition">
+                {property.price}
+              </div>
             </div>
-        </div>
-    );
-};
-
-export default PropertyCard;
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
