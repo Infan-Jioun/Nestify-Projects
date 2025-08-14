@@ -1,6 +1,6 @@
 "use client";
 
-import MyHelmet from '../Hooks/MyHelmet'
+import MyHelmet from '../hook/MyHelmet'
 
 export default function ContactPage() {
   return (

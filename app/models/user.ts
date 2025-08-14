@@ -4,7 +4,7 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
-    image?: string | null; // ← এখানে image ফিল্ড যোগ করো
+    image?: string | null;
 }
 
 const userSchema = new Schema<IUser>({

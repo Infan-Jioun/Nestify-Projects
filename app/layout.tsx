@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import HelmetWrapper from "@/providers/page";
+
 import Footer from "./Footer/page";
 import SessionWrapping from "@/lib/SessionWrapping";
 import { Toaster } from "react-hot-toast";
@@ -31,12 +31,12 @@ export default async function RootLayout({
       <body className={`${poppins.className} bg-white min-h-screen text-black`}>
         <SessionWrapping>
           <Toaster />
-          <HelmetWrapper>
-            <DisplayLoader />
-            <NavbarPage />
-            {children}
-            <Footer />
-          </HelmetWrapper>
+
+          <DisplayLoader />
+          <NavbarPage />
+          {children}
+          <Footer />
+
         </SessionWrapping>
       </body>
     </html>

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 export default function Footer() {
   const pathname = usePathname();
-  const noFooter = pathname === "/LoginPage" || pathname === "/RegisterPage";
+  const noFooter = pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/ResetPassword";
 
   if (noFooter) {
     console.log(noFooter, "no footer work");

@@ -54,7 +54,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (pathname === "/LoginPage" || pathname === "/RegisterPage") {
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/ResetPassword") {
     return null;
   }
 

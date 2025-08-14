@@ -11,23 +11,25 @@ import Ratings from '../Raitngs/page';
 import TrustedCompany from '../TrustedCompany/page';
 import OurBlog from '../OurBlog/page';
 import RegisterInfo from '../RegisterInfo/page';
+import NextHead from '@/app/components/NextHead/page';
 
 
 export default function HomePage() {
+
   return (
     <div>
-
+      <NextHead title='Nestify' />
       <BannerPage />
       <PropertiesByCity />
       <PopularProperties />
       <BannerService />
       <ApartmentTypes />
-      <FeaturedAgents/>
-      <Ratings/>
-      <TrustedCompany/>
-      <OurBlog/>
-      <RegisterInfo/>
-  
+      <FeaturedAgents />
+      <Ratings />
+      <TrustedCompany />
+      <OurBlog />
+      <RegisterInfo />
+
 
 
     </div>

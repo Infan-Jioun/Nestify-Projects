@@ -8,9 +8,9 @@ export default function NavbarPage() {
 
   return (
     <div>
-   
-        <Navbar />
-     
+
+      <Navbar />
+
     </div>
   )
 }
