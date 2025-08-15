@@ -2,7 +2,7 @@ import React from 'react'
 import PropertiesTitle from './PropertiesTitle/page'
 import NextHead from '../components/NextHead/page'
 import PropertyCard from '../components/PropertyCard/page'
-import { FilterSidebar } from '../components/FilterSidebar/page'
+
 
 
 export default function PropertiesPage() {

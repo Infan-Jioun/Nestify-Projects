@@ -1,5 +1,5 @@
-
-import React, { useEffect } from 'react'
+"use client";
+import  { useEffect } from 'react'
 
 export default function usePageTitle(title: string) {
     useEffect(() => {

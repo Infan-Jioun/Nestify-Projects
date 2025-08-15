@@ -1,6 +1,4 @@
 "use client";
-
-import { Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import logo from '../../public/image/logo.png'
 import Image from "next/image";

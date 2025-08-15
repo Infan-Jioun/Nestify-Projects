@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from 'next/link'
-import { Helmet } from 'react-helmet-async'
+
 import Image from 'next/image'
 import NextHead from '../NextHead/page'
 
@@ -69,7 +69,6 @@ export default function Register() {
             <NextHead title='Register | Nestify'></NextHead>
             <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
 
-                <Helmet title='RegisterPage | Nestify' />
                 <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
                     <CardHeader className="text-center space-y-2">
                         <CardTitle className="text-2xl font-bold">

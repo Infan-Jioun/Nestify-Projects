@@ -4,8 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { FiHeart, FiPlus, FiShare } from "react-icons/fi";
 import { FilterSidebar } from "../FilterSidebar/page";
-
-const tabs = ["House", "Villa", "Office", "Apartments"];
+import { Button } from "@/components/ui/button";
 const properties = [
   {
     id: 1,
@@ -114,15 +113,15 @@ export default function PropertyCard() {
 
             {/* Top Right Icons */}
             <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-              <button className="bg-white p-2 rounded-full shadow hover:bg-red-100">
+              <Button className="bg-white p-2 rounded-full shadow hover:bg-red-100">
                 <FiHeart className="text-xl text-green-500" />
-              </button>
-              <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
+              </Button>
+              <Button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
                 <FiPlus className="text-xl text-green-500" />
-              </button>
-              <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
+              </Button>
+              <Button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
                 <FiShare className="text-xl text-green-500" />
-              </button>
+              </Button>
             </div>
 
             {/* Bottom Overlay */}

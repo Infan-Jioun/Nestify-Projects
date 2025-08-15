@@ -1,6 +1,6 @@
 "use client";
 
-import { Helmet } from "react-helmet-async";
+
 import NextHead from "../components/NextHead/page";
 
 

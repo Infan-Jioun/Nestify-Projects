@@ -1,7 +1,4 @@
-import {
-
-    SidebarProvider,
-} from "@/components/ui/sidebar"
+"use client";
 import {
     Sheet,
     SheetContent,
@@ -10,15 +7,15 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { FilterXIcon } from "lucide-react"
 import { IoFilterOutline } from "react-icons/io5";
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
+import BedroomBathroomFilter from "../BedroomBathroomFilter/page";
 export function FilterSidebar() {
     return (
         <div className="flex justify-end items-end text-right">
@@ -104,6 +101,9 @@ export function FilterSidebar() {
                                 </div>
                                 <div className="mt-3">
                                 <Slider defaultValue={[33]} max={100} step={1} />
+                                </div>
+                                <div className="mt-5">
+                                  <BedroomBathroomFilter/>
                                 </div>
                             </SheetDescription>
                         </SheetContent>
