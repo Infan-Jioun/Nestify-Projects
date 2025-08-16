@@ -34,7 +34,7 @@ export default function OtherFeatures() {
         }
     }
     return (
-        <div className='w-full max-w-sm border rounded-lg p-4  shadow-sm'>
+        <div className='w-full max-w-sm  rounded-lg p-4  '>
 
             <div>
                 <Button className='bg-green-500 text-white hover:bg-green-600' onClick={() => setOpen(!open)}> <SlidersHorizontal size={18} />

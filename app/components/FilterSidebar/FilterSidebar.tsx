@@ -4,10 +4,11 @@ import {
     Sheet,
     SheetContent,
     SheetDescription,
+    SheetFooter,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import { IoFilterOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -20,90 +21,146 @@ import BedroomBathroomFilter from "../BedroomBathroomFilter/page";
 import OtherFeatures from "../OhterFeatures/page";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LocationFilter } from "../LocationFilter/LocationFilter";
+import SquareComponents from "../SquareComponents/SquareComponents";
+import YearBuildFilter from "../YearBuildFilter/YearBuildFilter";
+import { Button } from "@/components/ui/button";
+
 export function FilterSidebar() {
     return (
         <div className="flex justify-end items-end text-right">
             <Sheet>
-                <SheetTrigger asChild className="flex justify-center items-center gap-3">
-                    <div>
-                        <motion.button
-                            whileHover={{ scale: 1.0 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="btn h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
-                        >
-                            <IoFilterOutline /> Filter
-                        </motion.button>
-                    </div>
+                <SheetTrigger asChild>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 h-10 px-5 rounded-full bg-green-500 text-white font-medium border border-green-600 shadow-md hover:shadow-lg hover:bg-green-600 transition-all"
+                    >
+                        <IoFilterOutline className="text-lg" />
+                        Filter
+                    </motion.button>
                 </SheetTrigger>
 
-                <SheetContent>
+                <SheetContent side="left" className="w-[360px] sm:w-[420px]">
                     <SheetHeader>
-                        <SheetTitle className="ml-4">Filter Your Fovarite</SheetTitle>
+                        <SheetTitle className="ml-2 text-lg font-semibold text-green-600">
+                            Filter Your Favorite
+                        </SheetTitle>
 
-                        {/* Scrollable area */}
-                        <ScrollArea className="h-[100vh]  pr-4" >
-                            <SheetDescription className="px-5 pb-6">
+                        <ScrollArea className="h-[90vh] mt-4 pr-2">
+                            <SheetDescription className="px-3 pb-6 text-sm text-gray-700 space-y-6">
                                 {/* Search */}
-                                <div>
-                                    <p className="text-xs font-bold text-black">Find your Home</p>
-                                    <Input className="mt-3 pl-9 pr-3 py-2 w-full border-black rounded-4xl text-black" type="search" />
-                                    <div className="relative left-2.5 -top-6">
-                                        <p className="text-black"><FaSearch /></p>
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                                    <p className="text-xs font-semibold text-gray-900 mb-2">
+                                        Find your Home
+                                    </p>
+                                    <div className="relative">
+                                        <Input
+                                            className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
+                                            type="search"
+                                            placeholder="Search by name or location..."
+                                        />
+                                        <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
                                     </div>
                                 </div>
 
                                 {/* Listing Status */}
-                                <div className="mt-5">
-                                    <p className="text-xs font-bold text-black mb-3">Listing Status</p>
-                                    <RadioGroup defaultValue="All">
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="All" id="All" />
-                                            <Label htmlFor="All">All</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="Buy" id="Buy" />
-                                            <Label htmlFor="Buy">Buy</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="Rent" id="Rent" />
-                                            <Label htmlFor="Rent">Rent</Label>
-                                        </div>
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                                    <p className="text-xs font-semibold text-gray-900 mb-3">
+                                        Listing Status
+                                    </p>
+                                    <RadioGroup defaultValue="All" className="space-y-2">
+                                        {["All", "Buy", "Rent"].map((status) => (
+                                            <div
+                                                key={status}
+                                                className="flex items-center space-x-2"
+                                            >
+                                                <RadioGroupItem value={status} id={status} />
+                                                <Label htmlFor={status}>{status}</Label>
+                                            </div>
+                                        ))}
                                     </RadioGroup>
                                 </div>
 
                                 {/* Property Type */}
-                                <div className="mt-5">
-                                    <p className="text-xs font-bold text-black mb-3">Property Type</p>
-                                    {["All", "Houses", "Apartments", "Office", "Vila"].map((type) => (
-                                        <div key={type} className="flex gap-3 items-center">
-                                            <Checkbox id={type} className="mt-1" />
-                                            <Label htmlFor={type}>{type}</Label>
-                                        </div>
-                                    ))}
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                                    <p className="text-xs font-semibold text-gray-900 mb-3">
+                                        Property Type
+                                    </p>
+                                    <div className="space-y-2">
+                                        {["All", "Houses", "Apartments", "Office", "Villa"].map(
+                                            (type) => (
+                                                <div
+                                                    key={type}
+                                                    className="flex gap-3 items-center"
+                                                >
+                                                    <Checkbox id={type} />
+                                                    <Label htmlFor={type}>{type}</Label>
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
                                 </div>
 
                                 {/* Price Range */}
-                                <div className="mt-5">
-                                    <p className="text-xs font-bold text-black">Price Range</p>
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                                    <p className="text-xs font-semibold text-gray-900">
+                                        Price Range
+                                    </p>
                                     <div className="mt-3">
                                         <Slider defaultValue={[33]} max={100} step={1} />
+                                        <div className="flex justify-between text-xs text-gray-600 mt-2">
+                                            <span>$0</span>
+                                            <span>$10,000+</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Bedroom & Bathroom Filter */}
-                                <div className="mt-5">
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                     <BedroomBathroomFilter />
                                 </div>
 
-                                {/* Other Features */}
+                                {/* SquareComponents */}
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                                    <SquareComponents />
+                                </div>
 
-                                <div className="mt-5">
+                                {/* YearBuild */}
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                                    <YearBuildFilter />
+                                </div>
+
+                                {/* Other Features */}
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                     <OtherFeatures />
                                 </div>
-                                <br />
-                                <div className="mt-5">
+
+                                {/* Location Filter */}
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                     <LocationFilter />
                                 </div>
+
+                                {/* Footer Actions */}
+                                <SheetFooter className="flex flex-col gap-4 mt-6">
+                                    <Button className="bg-green-500 hover:bg-green-600 shadow-md hover:shadow-lg text-white flex items-center gap-2 px-6 py-2 rounded-full transition-all">
+                                        <FaSearch /> Search
+                                    </Button>
+
+                                    <div className="flex justify-between text-sm font-medium">
+                                        <button
+                                            type="reset"
+                                            className="text-green-600 hover:text-green-800 underline"
+                                        >
+                                            Reset all filters
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="text-green-600 hover:text-green-800 underline"
+                                        >
+                                            Save filters
+                                        </button>
+                                    </div>
+                                </SheetFooter>
                             </SheetDescription>
                         </ScrollArea>
                     </SheetHeader>
