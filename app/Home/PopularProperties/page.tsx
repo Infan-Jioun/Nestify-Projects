@@ -124,8 +124,8 @@ export default function PopularProperties() {
             <Image
               src={property.image}
               alt={property.title}
-              width={500}
-              height={500}
+              width={800}
+              height={800}
               className="  transition-transform duration-300 group-hover:scale-110"
             />
 

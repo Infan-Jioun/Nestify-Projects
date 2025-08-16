@@ -63,14 +63,14 @@ export function Navbar() {
       className={`bg-white transition-all duration-300 ease-in-out ${scrolled ? "fixed top-0 left-0 w-full z-50 shadow-md" : ""
         }`}
     >
-      <div className="container mx-auto px-4 md:px-20 lg:px-28 py-3 flex items-center justify-between">
+      <div className="container mx-auto px-4 md:px-5 lg:px-24 py-3 flex items-center justify-between">
         {/* Mobile Left Menu */}
         <div className="lg:hidden flex items-center">
           <Sheet>
             <SheetTrigger>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 lg:h-10 w-8 lg:w-10 text-black"
+                className="h-8 lg:h-10 w-7 lg:w-10 text-black"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
