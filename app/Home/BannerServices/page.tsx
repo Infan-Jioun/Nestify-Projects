@@ -15,14 +15,14 @@ export default function BannerService() {
         <div className="px-4 md:px-0 lg:px-20 mt-20 border-b-2 border-gray-400">
             {/* Top Section */}
             <div
-                className="bg-gray-200 rounded-xl lg:rounded-3xl shadow-lg px-6 lg:px-10 py-6 lg:py-10 mt-5 "
+                className="bg-gray-200 rounded-xl lg:rounded-3xl shadow-lg px-6 lg:px-10 py-6 lg:py-6 mt-5 "
 
             >
                 <div className="flex flex-col lg:flex-row justify-between items-center px-0 md:px-0 lg:px- md:h-[500px] lg:h-[700px] gap-10">
                     {/* Left Content */}
                     <div className="flex-1 space-y-7 mt-5">
                         <h2 className="text-xl md:text-2xl lg:text-3xl x font-semibold text-gray-800">
-                        Let’s find the right selling option for you
+                            Let’s find the right selling option for you
                         </h2>
 
                         {/* Service Card 1 */}
@@ -77,7 +77,7 @@ export default function BannerService() {
                     <div className="hidden xl:flex  ">
                         <Image
                             width={500}
-                            height={777}
+                            height={1000}
                             className=" rounded-xl object-cover"
                             src="https://i.ibb.co/2YZJYYy0/man-holding-little-house.png"
                             alt="manImage"
