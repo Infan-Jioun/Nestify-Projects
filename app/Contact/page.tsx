@@ -1,6 +1,8 @@
 "use client";
 
-import NextHead from "../components/NextHead/page";
+import NextHead from "../components/NextHead/NextHead";
+
+
 
 
 

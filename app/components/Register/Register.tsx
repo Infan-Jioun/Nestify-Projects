@@ -19,7 +19,8 @@ import { Label } from "@/components/ui/label";
 import Link from 'next/link'
 
 import Image from 'next/image'
-import NextHead from '../NextHead/page'
+import NextHead from '../NextHead/NextHead'
+
 
 
 
@@ -66,7 +67,7 @@ export default function Register() {
     }
     return (
         <div>
-            <NextHead title='Register | Nestify'></NextHead>
+            <NextHead title='Register - Nestify'/>
             <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
 
                 <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">

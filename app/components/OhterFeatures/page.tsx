@@ -23,7 +23,7 @@ export default function OtherFeatures() {
         "Front yard",
         "Refrigerator"
     ];
-    const [selected, setSeclected] = useState<String[]>([
+    const [selected, setSeclected] = useState<string[]>([
         "Attic", "Basketball court", "Air Conditioning", "Lawn"
     ])
     const toggleFeature = (feature: string) => {
@@ -56,8 +56,8 @@ export default function OtherFeatures() {
                                     features.map((feature => (
                                         <label className='flex gap-2 ' key={feature} >
                                             <Checkbox
-                                            checked={selected.includes(feature)}
-                                            onCheckedChange={() => toggleFeature(feature)}
+                                                checked={selected.includes(feature)}
+                                                onCheckedChange={() => toggleFeature(feature)}
                                                 className="mt-1  " id={feature} />
                                             <Label className='text-black' htmlFor={feature}>{feature}</Label>
                                         </label>

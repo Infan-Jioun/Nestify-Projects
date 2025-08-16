@@ -19,12 +19,12 @@ import { Slider } from "@/components/ui/slider";
 import BedroomBathroomFilter from "../BedroomBathroomFilter/page";
 import OtherFeatures from "../OhterFeatures/page";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LocationFilter } from "../LocationFilter/page";
+import { LocationFilter } from "../LocationFilter/LocationFilter";
 export function FilterSidebar() {
     return (
         <div className="flex justify-end items-end text-right">
             <Sheet>
-                <SheetTrigger className="flex justify-center items-center gap-3">
+                <SheetTrigger asChild className="flex justify-center items-center gap-3">
                     <div>
                         <motion.button
                             whileHover={{ scale: 1.0 }}
@@ -41,7 +41,7 @@ export function FilterSidebar() {
                         <SheetTitle className="ml-4">Filter Your Fovarite</SheetTitle>
 
                         {/* Scrollable area */}
-                        <ScrollArea className="h-[100vh]  pr-4" > 
+                        <ScrollArea className="h-[100vh]  pr-4" >
                             <SheetDescription className="px-5 pb-6">
                                 {/* Search */}
                                 <div>
@@ -96,13 +96,13 @@ export function FilterSidebar() {
                                 </div>
 
                                 {/* Other Features */}
-                              
+
                                 <div className="mt-5">
                                     <OtherFeatures />
                                 </div>
                                 <br />
                                 <div className="mt-5">
-                                <LocationFilter/>
+                                    <LocationFilter />
                                 </div>
                             </SheetDescription>
                         </ScrollArea>

@@ -1,7 +1,9 @@
 "use client";
 
+import NextHead from "../components/NextHead/NextHead";
 
-import NextHead from "../components/NextHead/page";
+
+
 
 
 export default function AddPropertyPage() {

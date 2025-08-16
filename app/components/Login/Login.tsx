@@ -18,7 +18,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import NextHead from "../NextHead/page";
+import NextHead from "../NextHead/NextHead";
+
 type Inputs = {
   email: string,
   password: string
@@ -51,7 +52,7 @@ export function Login() {
   }
   return (
     <div>
-      <NextHead title='Login | Nestify'></NextHead>
+      <NextHead title='Login | Nestify'/>
       <div className="min-h-screen bg-green-100 flex items-center justify-center  dark:bg-gray-900 px-4">
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
           <CardHeader className="text-center space-y-2">

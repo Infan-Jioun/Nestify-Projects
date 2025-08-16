@@ -1,5 +1,6 @@
 import React from 'react'
-import NextHead from '../components/NextHead/page'
+import NextHead from '../components/NextHead/NextHead'
+
 
 export default function AboutPage() {
   return (

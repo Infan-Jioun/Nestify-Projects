@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import { FiHeart, FiPlus, FiShare } from "react-icons/fi";
-import { FilterSidebar } from "../FilterSidebar/page";
+
 import { Button } from "@/components/ui/button";
+import { FilterSidebar } from "../FilterSidebar/FilterSidebar";
 const properties = [
   {
     id: 1,
@@ -78,11 +79,11 @@ const properties = [
     price: "$12,000",
     image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
   },
- 
+
 ];
 
 export default function PropertyCard() {
-  const [activeTab, setActiveTab] = useState("House");
+  const [activeTab, ] = useState("House");
 
   const filteredProperties = properties.filter(
     (p) => p.type === activeTab
@@ -91,9 +92,9 @@ export default function PropertyCard() {
   return (
     <div className=" ">
 
-<div className="">
-    
-<p><FilterSidebar /></p></div>
+      <div className="">
+
+        <p><FilterSidebar /></p></div>
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">

@@ -11,7 +11,8 @@ import Ratings from '../Raitngs/page';
 import TrustedCompany from '../TrustedCompany/page';
 import OurBlog from '../OurBlog/page';
 import RegisterInfo from '../RegisterInfo/page';
-import NextHead from '@/app/components/NextHead/page';
+import NextHead from '@/app/components/NextHead/NextHead';
+
 
 
 export default function HomePage() {
