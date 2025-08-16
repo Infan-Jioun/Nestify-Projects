@@ -34,7 +34,7 @@ export default function OtherFeatures() {
         }
     }
     return (
-        <div className='w-full max-w-sm border rounded-lg p-4 bg-green-100 shadow-sm'>
+        <div className='w-full max-w-sm border rounded-lg p-4  shadow-sm'>
 
             <div>
                 <Button className='bg-green-500 text-white hover:bg-green-600' onClick={() => setOpen(!open)}> <SlidersHorizontal size={18} />
@@ -54,7 +54,7 @@ export default function OtherFeatures() {
                             <div className='grid grid-cols-2 gap-3 mt-4'>
                                 {
                                     features.map((feature => (
-                                        <label className='flex gap-2 ' key={feature} >
+                                        <label className='flex gap-2' key={feature} >
                                             <Checkbox
                                                 checked={selected.includes(feature)}
                                                 onCheckedChange={() => toggleFeature(feature)}

@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-const frameworks = [
+const locations = [
   {
     value: "California",
     label: "California",
@@ -51,30 +51,32 @@ export function LocationFilter() {
   const [value, setValue] = React.useState("")
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+ <div>
+  
+  <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-[200px] justify-between "
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
+            ? locations.find((location) => location.value === value)?.label
             : "All Cities"}
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search location..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No location found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {locations.map((location) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={location.value}
+                  value={location.value}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue)
                     setOpen(false)
@@ -83,10 +85,10 @@ export function LocationFilter() {
                   <CheckIcon
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      value === location.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {framework.label}
+                  {location.label}
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -94,5 +96,6 @@ export function LocationFilter() {
         </Command>
       </PopoverContent>
     </Popover>
+ </div>
   )
 }

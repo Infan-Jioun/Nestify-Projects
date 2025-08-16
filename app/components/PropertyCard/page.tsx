@@ -83,16 +83,16 @@ const properties = [
 ];
 
 export default function PropertyCard() {
-  const [activeTab, ] = useState("House");
+  const [activeTab,] = useState("House");
 
   const filteredProperties = properties.filter(
     (p) => p.type === activeTab
   );
 
   return (
-    <div className=" ">
+    <div>
 
-      <div className="">
+      <div>
 
         <p><FilterSidebar /></p></div>
 

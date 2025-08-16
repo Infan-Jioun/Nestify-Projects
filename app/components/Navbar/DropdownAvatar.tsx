@@ -18,7 +18,7 @@ import profileImage from './../../../public/image/businessman-character-avatar-i
 export function DropdownAvatar() {
   const { data: session } = useSession();
   return (
-    <div className="">
+    <div>
       <DropdownMenu >
         <DropdownMenuTrigger asChild>
           {/* <motion.button
