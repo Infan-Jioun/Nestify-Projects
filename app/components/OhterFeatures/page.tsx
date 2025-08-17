@@ -36,8 +36,8 @@ export default function OtherFeatures() {
     return (
         <div className='w-full max-w-sm  rounded-lg p-4  '>
 
-            <div>
-                <Button className='bg-green-500 text-white hover:bg-green-600' onClick={() => setOpen(!open)}> <SlidersHorizontal size={18} />
+            <div className='w-full mx-auto'>
+                <Button className='w-full rounded-3xl bg-green-500  text-white hover:bg-green-600' onClick={() => setOpen(!open)}> <SlidersHorizontal size={18} />
                     Other Features</Button>
             </div>
             <AnimatePresence>

@@ -28,7 +28,7 @@ const FilterSection: React.FC<FilterProps> = ({ label, value, onChange }) => {
             key={item}
             value={item}
             aria-label={item}
-            className={`px-4 py-2 rounded-full text-sm font-medium border transition-all
+            className={`px-3 py-2 rounded-full text-sm font-medium border transition-all
               ${
                 value === item
                   ? "bg-green-500 text-white border-green-500 shadow-md"

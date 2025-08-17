@@ -42,7 +42,7 @@ export function FilterSidebar() {
 
                 <SheetContent side="left" className="w-[360px] sm:w-[420px]">
                     <SheetHeader>
-                        <SheetTitle className="ml-2 text-lg font-semibold text-green-600">
+                        <SheetTitle className="ml-2 text-lg font-semibold text-green-500">
                             Filter Your Favorite
                         </SheetTitle>
 
@@ -62,7 +62,10 @@ export function FilterSidebar() {
                                         <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
                                     </div>
                                 </div>
-
+                                {/* Location Filter */}
+                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                                    <LocationFilter />
+                                </div>
                                 {/* Listing Status */}
                                 <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                     <p className="text-xs font-semibold text-gray-900 mb-3">
@@ -115,6 +118,8 @@ export function FilterSidebar() {
                                     </div>
                                 </div>
 
+
+
                                 {/* Bedroom & Bathroom Filter */}
                                 <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                     <BedroomBathroomFilter />
@@ -135,14 +140,9 @@ export function FilterSidebar() {
                                     <OtherFeatures />
                                 </div>
 
-                                {/* Location Filter */}
-                                <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                                    <LocationFilter />
-                                </div>
-
                                 {/* Footer Actions */}
-                                <SheetFooter className="flex flex-col gap-4 mt-6">
-                                    <Button className="bg-green-500 hover:bg-green-600 shadow-md hover:shadow-lg text-white flex items-center gap-2 px-6 py-2 rounded-full transition-all">
+                                <SheetFooter className="flex flex-col gap-4 mt-6 p-3 ">
+                                    <Button className="bg-green-500 hover:bg-green-600 shadow-md hover:shadow-lg text-white flex items-center gap-2 px-6 py-2 rounded-full transition-all w-64 mx-auto">
                                         <FaSearch /> Search
                                     </Button>
 
