@@ -15,6 +15,7 @@ import { signOut, useSession } from "next-auth/react"
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
+import Link from "next/link";
 export function DropdownAvatar() {
   const { data: session } = useSession();
   return (
@@ -45,6 +46,15 @@ export function DropdownAvatar() {
               Settings
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
+
+
+            <DropdownMenuItem>
+              <Link href={"/DashboardPage"}>
+                Dashboard
+              </Link>
+              <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+            </DropdownMenuItem>
+
 
           </DropdownMenuGroup>
 
