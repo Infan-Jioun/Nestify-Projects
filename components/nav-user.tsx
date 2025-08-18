@@ -29,7 +29,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { useSession } from "next-auth/react"
 import Image from "next/image"
 import profileImage from './../public/image/businessman-character-avatar-isolated.png'
 export function NavUser({
@@ -41,7 +40,6 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { data: session } = useSession();
   const { isMobile } = useSidebar()
 
   return (
