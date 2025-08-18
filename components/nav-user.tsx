@@ -30,7 +30,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
-
+import Image from "next/image"
+import profileImage from './../public/image/businessman-character-avatar-isolated.png'
 export function NavUser({
   user,
 }: {
@@ -40,8 +41,9 @@ export function NavUser({
     avatar: string
   }
 }) {
+  const { data: session } = useSession();
   const { isMobile } = useSidebar()
-  const { data: session } = useSession()
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -51,9 +53,9 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage className="w-10 h-10  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
-
+              <Avatar>
+                <AvatarImage className="w-10 h-10  rounded-full border-2 border-green-100" src={user?.avatar ?? ""} />
+                <AvatarFallback><Image src={profileImage} alt="unavilable" width={40} height={40} className="rounded-full border-2" /></AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -71,8 +73,8 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={user?.avatar ?? ""} alt={user.name} />
+                  <AvatarFallback><Image src={profileImage} alt="unavilable" width={40} height={40} className="rounded-full border-2" /></AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
