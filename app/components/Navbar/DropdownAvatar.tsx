@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { signOut, useSession } from "next-auth/react"
-import { LogOut } from "lucide-react";
+import { LayoutDashboardIcon, LogOut } from "lucide-react";
 import Image from "next/image";
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
 import Link from "next/link";
@@ -49,7 +49,9 @@ export function DropdownAvatar() {
 
 
             <DropdownMenuItem>
-              <Link href={"/DashboardPage"}>
+
+              <Link className="flex  items-center gap-3" href={"/DashboardPage"}>
+                <LayoutDashboardIcon/>
                 Dashboard
               </Link>
               <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
