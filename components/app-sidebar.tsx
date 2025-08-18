@@ -39,11 +39,7 @@ const data = {
     avatar: session?.user.image ?? "../public/image/businessman-character-avatar-isolated.png",
   },
   teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
+
     {
       name: "Acme Corp.",
       logo: AudioWaveform,
