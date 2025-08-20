@@ -133,7 +133,22 @@ export function NavUser({
               }
             </DropdownMenuContent>
           </DropdownMenu>
-        </SidebarMenuItem>) : (<Link href={"/LoginPage"}>Login</Link>)
+        </SidebarMenuItem>) : (<DropdownMenu>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+
+              <Link href="/LoginPage">
+                <motion.button
+                  whileHover={{ scale: 1.0 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full px-4 flex justify-center items-center p-2 gap-2 rounded-full hover:text-white bg-green-500 text-white hover:bg-green-600 font-semibold transition"
+                >
+                  <LogInIcon /> Login
+                </motion.button>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>)
       }
     </SidebarMenu>
   )

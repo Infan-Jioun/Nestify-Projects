@@ -5,14 +5,21 @@ export interface IUser extends Document {
     email: string;
     password: string;
     image?: string | null;
+    resetTokenHash: string;
+    resetTokenExpiry?: Date;
 }
 
 const userSchema = new Schema<IUser>({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    image: { type: String, default: null }, // ← এখানে schema তেও যোগ করো
-});
+    image: { type: String, default: null },
+    resetTokenHash: { type: String },
+    resetTokenExpiry: { type: Date }
+},
+{ timestamps: true }
+);
+
 
 const User = models.User || model<IUser>("User", userSchema);
 
