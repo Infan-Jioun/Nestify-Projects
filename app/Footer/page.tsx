@@ -5,11 +5,8 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 export default function Footer() {
   const pathname = usePathname();
-  const noFooter = pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/ResetPassword" || pathname === "/DashboardPage";
-
-  if (noFooter) {
-    console.log(noFooter, "no footer work");
-    return null
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/ResetPassword" || pathname.startsWith("/Dashboard")) {
+    return null;
   }
   return (
     <footer className="bg-white text-gray-700 border-t mt-20">

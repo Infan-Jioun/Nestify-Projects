@@ -33,8 +33,6 @@ export default async function RootLayout({
         <SessionWrapping>
           <Toaster />
 
-
-
           <DisplayLoader>
             <NavbarPage />
             {children}
