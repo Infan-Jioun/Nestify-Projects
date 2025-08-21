@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     const pathname = usePathname();
     const segments = pathname.split("/").filter(Boolean);
-    const currentPage = segments[segments.length - 1] || "/Dashboard";
+    const currentPage = segments[segments.length - 1] || "/dashboard";
 
     const formattedPage = currentPage.replace(/-/g, "")
         .replace(/\b\w/g, (char) => char.toUpperCase())
@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/Dashboard">Dashboard</BreadcrumbLink>
+                                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                             </BreadcrumbItem>
                             {segments.length > 1 && (
                                 <>

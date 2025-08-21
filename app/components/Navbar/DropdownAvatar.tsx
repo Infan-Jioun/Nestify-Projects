@@ -50,7 +50,7 @@ export function DropdownAvatar() {
 
             <DropdownMenuItem>
 
-              <Link className="flex  items-center gap-3" href={"/Dashboard"}>
+              <Link className="flex  items-center gap-3" href={"/dashboard"}>
                 <LayoutDashboardIcon/>
                 Dashboard
               </Link>
