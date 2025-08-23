@@ -7,6 +7,7 @@ import SessionWrapping from "@/lib/SessionWrapping";
 import { Toaster } from "react-hot-toast";
 import NavbarPage from "./NavbarPage/page";
 import DisplayLoader from "./DisplayLoader/page";
+import Providers from "./Providers/providers";
 
 
 const poppins = Poppins({
@@ -35,7 +36,9 @@ export default async function RootLayout({
 
           <DisplayLoader>
             <NavbarPage />
-            {children}
+            <Providers>
+              {children}
+            </Providers>
             <Footer />
 
           </DisplayLoader>
