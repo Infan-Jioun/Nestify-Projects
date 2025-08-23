@@ -34,14 +34,16 @@ export default async function RootLayout({
         <SessionWrapping>
           <Toaster />
 
-          <DisplayLoader>
-            <NavbarPage />
-            <Providers>
-              {children}
-            </Providers>
-            <Footer />
+          <NavbarPage />
+          <Providers>
+            <DisplayLoader>
 
-          </DisplayLoader>
+              {children}
+            </DisplayLoader>
+
+          </Providers>
+          <Footer />
+
 
         </SessionWrapping>
       </body>

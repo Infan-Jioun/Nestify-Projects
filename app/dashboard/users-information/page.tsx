@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/lib/store'
 import { setUsers } from '@/app/features/user/userAuthSlice'
+import { setLoading } from '@/app/features/loader/loaderSlice'
 type User = {
   id: string
   name: string
@@ -21,10 +22,11 @@ type User = {
   role: string
 }
 export default function UserInformation() {
-  // const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
+
+
   const dispatch = useDispatch<AppDispatch>();
-  const users = useSelector((state: RootState) => state.user.users);
+  const users = useSelector((state: RootState) => state?.user.users);
+  const loading = useSelector((state: RootState) => state?.loader.loading);
   useEffect(() => {
     async function fetchUsers() {
       try {
@@ -32,10 +34,10 @@ export default function UserInformation() {
         const data: User[] = await res.json();
         // setUsers(data);
         dispatch(setUsers(data))
-        setLoading(false);
+        dispatch(setLoading(false))
       } catch (err) {
         console.error("Error fetching users:", err)
-        setLoading(false)
+        dispatch(setLoading(false))
       }
     } fetchUsers();
   }, [dispatch])

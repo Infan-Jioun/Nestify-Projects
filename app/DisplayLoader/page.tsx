@@ -2,14 +2,18 @@
 import React, { useEffect, useState } from "react";
 import logo from '../../public/image/logo.png'
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { setLoading } from "../features/loader/loaderSlice";
 export default function DisplayLoader({ children, }: {
     children?: React.ReactNode;
 }) {
-    const [loading, setLoading] = useState(true);
-
+    // const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch<AppDispatch>()
+    const loading = useSelector((state: RootState) => state.loader.loading)
     useEffect(() => {
         const timer = setTimeout(() => {
-            setLoading(false);
+            dispatch(setLoading(false));
         }, 1500);
         return () => clearTimeout(timer);
     }, []);
