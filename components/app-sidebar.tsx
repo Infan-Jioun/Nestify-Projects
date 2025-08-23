@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
 
-// This is sample data.
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
