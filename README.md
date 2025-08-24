@@ -74,7 +74,7 @@ nestify/
    ```
    MONGODB_URL=your_mongodb_connection_string
    NEXTAUTH_SECRET=your_secret_key
-   GOOGLE_IDS=your_google_client_id
+   GOOGLE_ID=your_google_client_id
    GOOGLE_SECRET=your_google_client_secret
    GITHUB_ID=your_github_client_id
    GITHUB_SECRET=your_github_client_secret
