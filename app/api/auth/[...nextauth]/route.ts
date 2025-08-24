@@ -8,18 +8,23 @@ import NextAuth from "next-auth";
 import { Types } from "mongoose";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/app/models/user";
-
+function pickImage(user: any, profile: any) {
+  if (user?.image) return user.image;
+  if (profile?.picture) return profile.picture;
+  if (profile?.avatar_url) return profile.avatar_url;
+  return null;
+}
 const handel = NextAuth({
   session: { strategy: "jwt" },
 
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET_ID as string,
+      clientId: process.env.GOOGLE_ID! as string,
+      clientSecret: process.env.GOOGLE_SECRET_ID! as string,
     }),
     GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET_ID as string,
+      clientId: process.env.GITHUB_ID! as string,
+      clientSecret: process.env.GITHUB_SECRET_ID! as string,
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -53,31 +58,42 @@ const handel = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user, account }) {
-      try {
-        await connectToDatabase();
-        console.log("User from provider:", user);
+    async signIn({ user, account, profile }) {
+  
+      if (!account || account.provider === "credentials") return true;
 
-        const existingUser = await User.findOne({ email: user.email });
-        if (!existingUser) {
-          const newUser = new User({
-            name: user.name,
-            email: user.email,
-            image: user.image,
-            password: null,
-          });
-          await newUser.save();
-          console.log("New user created:", newUser);
-        } else {
-          console.log("Existing user found:", existingUser);
+      await connectToDatabase();
+
+      const email = user?.email;
+      if (!email) return false;
+
+      const existing = await User.findOne({ email });
+
+      const img = pickImage(user, profile);
+      const base = {
+        name: user?.name || profile?.name || "User",
+        email,
+        image: img,
+        provider: account.provider as "google" | "github",
+        providerAccountId: account.providerAccountId ?? (profile as any)?.id?.toString() ?? null,
+      };
+
+      if (!existing) {
+        await User.create(base);
+      } else {
+        const updates: any = {};
+        if (!existing.provider) updates.provider = base.provider;
+        if (!existing.providerAccountId) updates.providerAccountId = base.providerAccountId;
+        if (!existing.image && base.image) updates.image = base.image;
+        if (existing.name !== base.name && base.name) updates.name = base.name;
+
+        if (Object.keys(updates).length) {
+          await User.updateOne({ _id: existing._id }, { $set: updates });
         }
-
-        return true;
-      } catch (error) {
-        console.error("signIn error:", error);
-        return false;
       }
+      return true; 
     },
+    
 
     async jwt({ token, user }) {
       if (user) {

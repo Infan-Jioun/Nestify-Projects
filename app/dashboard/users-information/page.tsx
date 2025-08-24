@@ -64,7 +64,7 @@ export default function UserInformation() {
         <TableBody>
           {
             users.map((user: User) => (
-              <TableRow key={user.id}>
+              <TableRow key={user.id || user.email}>
                 <TableCell className="font-medium">
                   <Image
                     src={user.image || "/image/businessman-character-avatar-isolated.png"}
