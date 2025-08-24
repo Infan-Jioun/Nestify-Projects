@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/lib/store'
 import { setUsers } from '@/app/features/user/userAuthSlice'
 import { setLoading } from '@/app/features/loader/loaderSlice'
+import NextHead from '@/app/components/NextHead/NextHead'
 type User = {
   id: string
   name: string
@@ -49,6 +50,7 @@ export default function UserInformation() {
   }
   return (
     <div>
+      <NextHead title='User Information - Nestify' />
       <Table>
         <TableCaption>A list of User recent data.</TableCaption>
         <TableHeader>

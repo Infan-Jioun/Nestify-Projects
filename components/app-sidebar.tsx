@@ -2,16 +2,11 @@
 
 import * as React from "react"
 import {
+  AreaChartIcon,
   AudioWaveform,
-  BookOpen,
-  Bot,
   Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  Plus,
+  User,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -27,6 +22,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
 
+// This is sample data.
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
@@ -54,106 +50,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: "User Management",
         url: "#",
-        icon: SquareTerminal,
+        icon: User,
         isActive: true,
         items: [
           {
             title: "Users Information",
             url: "/dashboard/users-information",
           },
-          {
-            title: "Starred",
-            url: "#",
-          },
-          {
-            title: "Settings",
-            url: "#",
-          },
+
         ],
       },
       {
-        title: "Models",
+        title: "Properties",
         url: "#",
-        icon: Bot,
+        icon: Plus,
         items: [
           {
-            title: "Genesis",
-            url: "#",
+            title: "Add Property",
+            url: "/dashboard/add-property",
           },
-          {
-            title: "Explorer",
-            url: "#",
-          },
-          {
-            title: "Quantum",
-            url: "#",
-          },
+
         ],
       },
       {
-        title: "Documentation",
+        title: "Cities",
         url: "#",
-        icon: BookOpen,
+        icon: AreaChartIcon,
         items: [
           {
-            title: "Introduction",
-            url: "#",
+            title: "Add city",
+            url: "/dashboard/add-city",
           },
-          {
-            title: "Get Started",
-            url: "#",
-          },
-          {
-            title: "Tutorials",
-            url: "#",
-          },
-          {
-            title: "Changelog",
-            url: "#",
-          },
+
         ],
       },
-      {
-        title: "Settings",
-        url: "#",
-        icon: Settings2,
-        items: [
-          {
-            title: "General",
-            url: "#",
-          },
-          {
-            title: "Team",
-            url: "#",
-          },
-          {
-            title: "Billing",
-            url: "#",
-          },
-          {
-            title: "Limits",
-            url: "#",
-          },
-        ],
-      },
+
     ],
-    projects: [
-      {
-        name: "Design Engineering",
-        url: "#",
-        icon: Frame,
-      },
-      {
-        name: "Sales & Marketing",
-        url: "#",
-        icon: PieChart,
-      },
-      {
-        name: "Travel",
-        url: "#",
-        icon: Map,
-      },
-    ],
+
   }
 
   return (
@@ -163,7 +96,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

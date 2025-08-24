@@ -1,6 +1,9 @@
 "use client"
 
+import NextHead from "../components/NextHead/NextHead"
+
 export default function DashboardPage() {
+    <NextHead title="Dashboard - Nestify" />
     return (
         <div className="flex flex-col gap-4">
             <div className="grid auto-rows-min gap-4 md:grid-cols-3">

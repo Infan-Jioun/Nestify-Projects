@@ -53,6 +53,26 @@ const handel = NextAuth({
   ],
 
   callbacks: {
+    async signIn({ user, account }) {
+      try {
+        await connectToDatabase();
+        const existinUser = await User.findOne({ email: user.email });
+        if (!existinUser) {
+          const newUser = new User({
+            name: user.name,
+            email: user.email,
+            image: user?.image || null,
+            password: null, // Password is not required for OAuth users
+          })
+          await newUser.save();
+        }
+        return true;
+      } catch (error) {
+           console.log("Error in signIn callback:", error);
+           return false;
+      }
+
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
