@@ -56,23 +56,29 @@ const handel = NextAuth({
     async signIn({ user, account }) {
       try {
         await connectToDatabase();
-        const existinUser = await User.findOne({ email: user.email });
-        if (!existinUser) {
+        console.log("User from provider:", user);
+
+        const existingUser = await User.findOne({ email: user.email });
+        if (!existingUser) {
           const newUser = new User({
             name: user.name,
             email: user.email,
-            image: user?.image || null,
-            password: null, // Password is not required for OAuth users
-          })
+            image: user.image,
+            password: null,
+          });
           await newUser.save();
+          console.log("New user created:", newUser);
+        } else {
+          console.log("Existing user found:", existingUser);
         }
+
         return true;
       } catch (error) {
-           console.log("Error in signIn callback:", error);
-           return false;
+        console.error("signIn error:", error);
+        return false;
       }
-
     },
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
