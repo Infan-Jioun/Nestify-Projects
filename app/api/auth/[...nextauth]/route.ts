@@ -9,20 +9,19 @@ import { Types } from "mongoose";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/app/models/user";
 
-// custom Profile type যাতে id, avatar_url, picture properly থাকে
 interface ExtendedProfile extends Profile {
   id?: string | number;
   picture?: string;
   avatar_url?: string;
 }
 
-// custom User type যাতে আমাদের id থাকে
+
 type ExtendedUser = NextAuthUser & {
   id?: string;
   image?: string | null;
 }
 
-// নির্দিষ্ট ইমেজ পিক করার ফাংশন
+
 function pickImage(
   user: Partial<ExtendedUser> | null | undefined,
   profile: ExtendedProfile | null | undefined
@@ -38,8 +37,8 @@ const handel = NextAuth({
 
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET_ID as string,
+      clientId: process.env.GOOGLE_IDS as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
     }),
     GithubProvider({
       clientId: process.env.GITHUB_ID as string,
