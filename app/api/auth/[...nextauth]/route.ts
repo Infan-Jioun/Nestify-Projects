@@ -9,14 +9,27 @@ import { Types } from "mongoose";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/app/models/user";
 
+// custom Profile type যাতে id, avatar_url, picture properly থাকে
+interface ExtendedProfile extends Profile {
+  id?: string | number;
+  picture?: string;
+  avatar_url?: string;
+}
+
+// custom User type যাতে আমাদের id থাকে
+type ExtendedUser = NextAuthUser & {
+  id?: string;
+  image?: string | null;
+}
+
 // নির্দিষ্ট ইমেজ পিক করার ফাংশন
 function pickImage(
-  user: Partial<NextAuthUser> | null | undefined,
-  profile: Profile | null | undefined
+  user: Partial<ExtendedUser> | null | undefined,
+  profile: ExtendedProfile | null | undefined
 ): string | null {
-  if (user?.image) return user.image as string;
-  if (profile && "picture" in profile && profile.picture) return profile.picture as string;
-  if (profile && "avatar_url" in profile && profile.avatar_url) return profile.avatar_url as string;
+  if (user?.image) return user.image;
+  if (profile?.picture) return profile.picture;
+  if (profile?.avatar_url) return profile.avatar_url;
   return null;
 }
 
@@ -48,7 +61,6 @@ const handel = NextAuth({
           const user = await User.findOne({ email: credentials.email });
           if (!user) throw new Error("User not found");
 
-          // user.password null হলে error
           if (!user.password) throw new Error("No password set for this user");
 
           const isValidPassword = await bcrypt.compare(
@@ -62,7 +74,7 @@ const handel = NextAuth({
             name: user.name,
             email: user.email,
             image: user.image || null,
-          };
+          } as ExtendedUser;
         } catch (err) {
           console.error("Authorize error:", err);
           return null;
@@ -72,8 +84,15 @@ const handel = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user, account, profile }) {
-      // credentials হলে নতুন ইউজার তৈরি করার দরকার নাই
+    async signIn({
+      user,
+      account,
+      profile,
+    }: {
+      user: ExtendedUser;
+      account: Account | null;
+      profile?: ExtendedProfile;
+    }) {
       if (!account || account.provider === "credentials") return true;
 
       await connectToDatabase();
@@ -83,22 +102,23 @@ const handel = NextAuth({
 
       const existing = await User.findOne({ email });
 
-      const img = pickImage(user, profile);
+      const img = pickImage(user, profile || null);
       const base = {
-        name: user?.name || (profile as any)?.name || "User",
+        name: user?.name || profile?.name || "User",
         email,
         image: img,
         provider: account.provider as "google" | "github",
         providerAccountId:
-          account.providerAccountId ?? (profile as any)?.id?.toString() ?? null,
+          account.providerAccountId ?? profile?.id?.toString() ?? null,
       };
 
       if (!existing) {
         await User.create(base);
       } else {
-        const updates: Record<string, any> = {};
+        const updates: Record<string, unknown> = {};
         if (!existing.provider) updates.provider = base.provider;
-        if (!existing.providerAccountId) updates.providerAccountId = base.providerAccountId;
+        if (!existing.providerAccountId)
+          updates.providerAccountId = base.providerAccountId;
         if (!existing.image && base.image) updates.image = base.image;
         if (existing.name !== base.name && base.name) updates.name = base.name;
 
@@ -111,20 +131,27 @@ const handel = NextAuth({
 
     async jwt({ token, user }) {
       if (user) {
-        token.id = (user as any).id;
-        token.name = user.name;
-        token.email = user.email;
-        token.image = user.image || null;
+        const u = user as ExtendedUser;
+        token.id = u.id;
+        token.name = u.name;
+        token.email = u.email;
+        token.image = u.image || null;
       }
       return token;
     },
 
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT & { id?: string; image?: string | null };
+    }) {
       session.user = {
         id: token.id as string,
         name: token.name as string,
         email: token.email as string,
-        image: token.image as string | null,
+        image: token.image ?? null,
       };
       return session;
     },
