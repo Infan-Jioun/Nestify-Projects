@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import logo from '../../public/image/logo.png'
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
