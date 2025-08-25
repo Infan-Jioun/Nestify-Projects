@@ -37,12 +37,12 @@ const handel = NextAuth({
 
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET_ID as string,
+      clientId: process.env.GOOGLE_ID! as string,
+      clientSecret: process.env.GOOGLE_SECRET_ID! as string,
     }),
     GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET_ID as string,
+      clientId: process.env.GITHUB_ID! as string,
+      clientSecret: process.env.GITHUB_SECRET_ID! as string,
     }),
     CredentialsProvider({
       name: "Credentials",
