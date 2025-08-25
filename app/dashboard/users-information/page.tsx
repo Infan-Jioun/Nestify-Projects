@@ -21,6 +21,7 @@ type User = {
   email: string
   image?: string | null
   role: string
+  provider?: string
 }
 export default function UserInformation() {
 
@@ -58,6 +59,7 @@ export default function UserInformation() {
             <TableHead className="w-[100px]"></TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>Provider</TableHead>
             <TableHead className="text-right">Role</TableHead>
           </TableRow>
         </TableHeader>
@@ -75,6 +77,7 @@ export default function UserInformation() {
                 </TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
+                <TableCell>{user?.provider}</TableCell>
                 <TableCell className="text-right">{user.role || "guest"}</TableCell>
               </TableRow>
             ))
