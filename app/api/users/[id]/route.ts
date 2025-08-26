@@ -4,12 +4,13 @@ import connectToDatabase from "@/lib/mongodb";
 import { Types } from "mongoose";
 
 export async function DELETE(
-    req:    NextRequest,
+    req: NextRequest,
     context: { params: { id: string } }
 ) {
     try {
         await connectToDatabase();
-        const id = context.params.id;
+       const url = new URL(req.url);
+       const id = url.pathname.split("/").pop() || context.params.id;
 
         if (!Types.ObjectId.isValid(id)) {
             return NextResponse.json({ error: "Invalid user id" }, { status: 400 });
