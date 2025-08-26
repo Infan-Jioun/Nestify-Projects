@@ -37,7 +37,7 @@ export default async function RootLayout({
           <NavbarPage />
           <Providers>
             <DisplayLoader>
-
+      
               {children}
             </DisplayLoader>
 

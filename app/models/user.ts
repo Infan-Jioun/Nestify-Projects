@@ -8,6 +8,7 @@ export interface IUser extends Document {
     provider?: "credentials" | "google" | "github";
     resetTokenHash: string;
     resetTokenExpiry?: Date;
+    createdAt: string;
 }
 
 const userSchema = new Schema<IUser>({

@@ -1,19 +1,31 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
-    id: string;
+    _id: string;
     name: string;
     email: string;
     role: string;
     image?: string | null;
 }
 interface UserState {
-    users: User[] | null;
+    users: User[];
 }
 
 const initialState: UserState = {
     users: [],
 }
+// delete user slice
+export const deletedUser = createAsyncThunk(
+    "user/deleteUser",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            await fetch(`/api/users/${id}`, { method: "DELETE" })
+            return id;
+        } catch (err: any) {
+            return rejectWithValue(err.message);
+        }
+    }
+)
 const userSlice = createSlice({
     name: "user",
     initialState,
@@ -21,6 +33,11 @@ const userSlice = createSlice({
         setUsers: (state, action: PayloadAction<User[]>) => {
             state.users = action.payload;
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(deletedUser.fulfilled, (state, action) => {
+            state.users = state.users?.filter((user) => user._id !== action.payload);
+        })
     }
 
 })
