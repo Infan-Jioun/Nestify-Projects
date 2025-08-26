@@ -21,8 +21,8 @@ export const deletedUser = createAsyncThunk(
         try {
             await fetch(`/api/users/${id}`, { method: "DELETE" })
             return id;
-        } catch (err) {
-            return rejectWithValue(err);
+        } catch (err: any) {
+            return rejectWithValue(err.message);
         }
     }
 )
