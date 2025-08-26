@@ -93,6 +93,9 @@ export default function UserInformation() {
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               {user.email}
             </p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              {user.provider ? `Provider: ${user.provider}` : "Provider: N/A"}
+            </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Joined:{" "}
               {user.createdAt
