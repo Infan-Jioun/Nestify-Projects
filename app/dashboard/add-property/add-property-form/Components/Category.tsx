@@ -5,10 +5,13 @@ import { Inputs } from '../..//add-property-form/add-property-form/AddPropertyFo
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { SelectLabel } from '@radix-ui/react-select'
+import { Label } from '@/components/ui/label'
 type CategoryProps = {
     register: UseFormRegister<Inputs>
     errors: FieldErrors<Inputs>
@@ -16,22 +19,29 @@ type CategoryProps = {
 export default function Category({ register, errors }: CategoryProps) {
     return (
         <div>
+
+
             <Select>
+                <Label className='mb-2'>Category</Label>
                 <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Theme" />
+                    <SelectValue placeholder="All Cities" />
                 </SelectTrigger>
-                <SelectContent   id="category"
-                {...register("category", { required: true })}>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
+                <SelectContent id="category"
+                    {...register("category", { required: true })}>
+                    <SelectGroup className='px-2 pt-3'>
+                        <SelectLabel className='text-gray-600'>Property Category</SelectLabel>
+                        <SelectItem value="Apartment">Apartment</SelectItem>
+                        <SelectItem value="House">House</SelectItem>
+                        <SelectItem value="Land">Land</SelectItem>
+                        <SelectItem value="Commercial">Commercial</SelectItem>
+
+                    </SelectGroup>
+
                 </SelectContent>
                 {errors.category && (
-                <span className="text-red-500 text-sm">Category is required</span>
-            )}
+                    <span className="text-red-500 text-sm">Category is required</span>
+                )}
             </Select>
-           
-            
         </div>
     )
 }

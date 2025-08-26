@@ -9,7 +9,7 @@ import Category from "../Components/Category"
 
 export type Inputs = {
   title: string
-  
+
   category: "Apartment" | "House" | "Land" | "Commercial"
   price: number
   currency: "BDT" | "USD"
@@ -50,25 +50,36 @@ export default function AddPropertyFormPage() {
 
   return (
     <div className="     mx-auto p-6">
-        <h2 className="text-center font-bold">FORM FILL UP</h2>
+      <h2 className="text-center font-bold">FORM FILL UP</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-6 bg-white rounded-lg shadow-md p-6"
       >
         {/* Title */}
         <div>
-          <Label htmlFor="title">Property Title</Label>
+          <Label className="mb-2" htmlFor="title">Property Title</Label>
           <Input id="title" {...register("title", { required: true })} />
           {errors.title && <span className="text-red-500 text-sm">Title is required</span>}
         </div>
 
         {/* category */}
-       <Category register={register} errors={errors} />
-
+        <section className="grid grid-cols-2 gap-5  ">
+          <div>
+            <Category register={register} errors={errors} />
+          </div>
+          <div>
+            <Label className="mb-2" htmlFor="propertySize">Property Size (sqft)</Label>
+            <Input
+              id="propertySize"
+              type="number"
+              {...register("propertySize", { required: true, valueAsNumber: true })}
+            />
+          </div>
+        </section>
         {/* Price */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="price">Price</Label>
+            <Label className="mb-2" htmlFor="price">Price</Label>
             <Input
               id="price"
               type="number"
@@ -79,25 +90,18 @@ export default function AddPropertyFormPage() {
             )}
           </div>
           <div>
-            <Label htmlFor="currency">Currency</Label>
+            <Label className="mb-2" htmlFor="currency">Currency</Label>
             <Input id="currency" {...register("currency", { required: true })} />
           </div>
         </div>
 
         {/* Property Size */}
-        <div>
-          <Label htmlFor="propertySize">Property Size (sqft)</Label>
-          <Input
-            id="propertySize"
-            type="number"
-            {...register("propertySize", { required: true, valueAsNumber: true })}
-          />
-        </div>
+
 
         {/* Bedrooms & Bathrooms */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="bedrooms">Bedrooms</Label>
+            <Label className="mb-2" htmlFor="bedrooms">Bedrooms</Label>
             <Input
               id="bedrooms"
               type="number"
@@ -105,7 +109,7 @@ export default function AddPropertyFormPage() {
             />
           </div>
           <div>
-            <Label htmlFor="bathrooms">Bathrooms</Label>
+            <Label className="mb-2" htmlFor="bathrooms">Bathrooms</Label>
             <Input
               id="bathrooms"
               type="number"
@@ -116,21 +120,21 @@ export default function AddPropertyFormPage() {
 
         {/* Address */}
         <div>
-          <Label htmlFor="address">Address</Label>
+          <Label className="mb-2" htmlFor="address">Address</Label>
           <Input id="address" {...register("address", { required: true })} />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <Label htmlFor="division">Division</Label>
+            <Label className="mb-2" htmlFor="division">Division</Label>
             <Input id="division" {...register("division", { required: true })} />
           </div>
           <div>
-            <Label htmlFor="district">District</Label>
+            <Label className="mb-2" htmlFor="district">District</Label>
             <Input id="district" {...register("district", { required: true })} />
           </div>
           <div>
-            <Label htmlFor="upazila">Upazila</Label>
+            <Label className="mb-2" htmlFor="upazila">Upazila</Label>
             <Input id="upazila" {...register("upazila")} />
           </div>
         </div>
@@ -138,11 +142,11 @@ export default function AddPropertyFormPage() {
         {/* Contact Info */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="contactNumber">Contact Number</Label>
+            <Label className="mb-2" htmlFor="contactNumber">Contact Number</Label>
             <Input id="contactNumber" {...register("contactNumber", { required: true })} />
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label className="mb-2" htmlFor="email">Email</Label>
             <Input id="email" type="email" {...register("email", { required: true })} />
           </div>
         </div>
