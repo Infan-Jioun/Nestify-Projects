@@ -5,9 +5,9 @@ import AddPropertyFormPage from './add-property-form/add-property-form/AddProper
 export default function AddProperty() {
     return (
         <div>
-            <AddPropertyBanner/>
+            <AddPropertyBanner />
 
-            <AddPropertyFormPage/>
+            <AddPropertyFormPage />
         </div>
     )
 }

@@ -127,7 +127,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                 value={value}
                 onChange={e => onChange(e.target.value)}
                 disabled={isLoading}
-                className={`w-full p-2.5 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${error ? "border-red-500" : "border-gray-300"
+                className={`w-full p-2.5 border rounded-md  ${error ? "border-red-500" : "border-gray-300"
                     } ${isLoading ? "bg-gray-100" : "bg-white"}`}
                 name={name}
             >
@@ -146,18 +146,11 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
         <div className="space-y-6 ">
 
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <Input
-                    {...register("address", { required: "Address is required" })}
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none "
-                    placeholder="Enter full address"
-                />
-            </div>
+         
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+           <div>
+           <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
                 <CustomSelect
                     options={[
                         { value: "Bangladesh", label: "Bangladesh" },
@@ -188,11 +181,12 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                     >
                         {/* Division */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Division</label>
-                            <CustomSelect
+                            <label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Division</label>
+                            <CustomSelect 
                                 options={divisions}
                                 placeholder="Select Division"
                                 isLoading={loading.division}
+                                
                                 value={watchDivision || ""}
                                 onChange={val => {
                                     setValue("division", val, { shouldValidate: true })
@@ -241,6 +235,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                     </motion.div>
                 )}
             </AnimatePresence>
+           </div>
         </div>
     )
 }

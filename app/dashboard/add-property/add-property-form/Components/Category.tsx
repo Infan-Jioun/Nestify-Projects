@@ -24,7 +24,7 @@ export default function Category({ register, errors }: CategoryProps) {
             <Select>
                 <Label className='mb-2'>Category</Label>
                 <SelectTrigger className="w-full">
-                    <SelectValue placeholder="All Cities" />
+                    <SelectValue placeholder="Property" />
                 </SelectTrigger>
                 <SelectContent id="category"
                     {...register("category", { required: true })}>
@@ -36,11 +36,11 @@ export default function Category({ register, errors }: CategoryProps) {
                         <SelectItem value="Commercial">Commercial</SelectItem>
 
                     </SelectGroup>
-
+                    {errors.category && (
+                        <span className="text-red-500 text-sm">Category is required</span>
+                    )}
                 </SelectContent>
-                {errors.category && (
-                    <span className="text-red-500 text-sm">Category is required</span>
-                )}
+
             </Select>
         </div>
     )
