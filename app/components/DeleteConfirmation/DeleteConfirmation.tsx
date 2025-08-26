@@ -6,7 +6,7 @@ type DeleteConfirmationProps = {
     userName: string
     userEmail: string
 }
-export default function DeleteConfirmation({ userId, userName, userEmail, onConfirm, onCancel }: DeleteConfirmationProps & { onConfirm: (id: string) => void; onCancel: () => void }) {
+export default function DeleteConfirmation({ userId, userName, onConfirm, onCancel }: DeleteConfirmationProps & { onConfirm: (id: string) => void; onCancel: () => void }) {
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black/50 z-50">
             <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-96 text-center">

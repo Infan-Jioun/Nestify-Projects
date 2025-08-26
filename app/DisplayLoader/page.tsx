@@ -16,7 +16,7 @@ export default function DisplayLoader({ children, }: {
             dispatch(setLoading(false));
         }, 1500);
         return () => clearTimeout(timer);
-    }, []);
+    }, [dispatch]);
 
     if (loading) {
         return (
