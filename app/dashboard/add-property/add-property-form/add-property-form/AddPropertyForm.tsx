@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import Category from "../Components/Category"
+import PropertyLocation from "../Components/PropertyLocation"
+
 
 export type Inputs = {
   title: string
@@ -20,9 +22,10 @@ export type Inputs = {
   furnishing?: "Furnished" | "Semi-furnished" | "Unfurnished"
 
   address: string
-  division: string
-  district: string
-  upazila?: string
+  country: string;
+  division: string;
+  district: string;
+  upazila: string;
   geoLocation?: { lat: number; lng: number }
 
   images: string[]
@@ -40,7 +43,7 @@ export type Inputs = {
 export default function AddPropertyFormPage() {
   const {
     register,
-    handleSubmit,
+    handleSubmit, watch, setValue,
     formState: { errors },
   } = useForm<Inputs>()
 
@@ -95,7 +98,7 @@ export default function AddPropertyFormPage() {
           </div>
         </div>
 
-        {/* Property Size */}
+
 
 
         {/* Bedrooms & Bathrooms */}
@@ -119,6 +122,8 @@ export default function AddPropertyFormPage() {
         </div>
 
         {/* Address */}
+        <PropertyLocation register={register} errors={errors} watch={watch}
+          setValue={setValue} ></PropertyLocation>
         <div>
           <Label className="mb-2" htmlFor="address">Address</Label>
           <Input id="address" {...register("address", { required: true })} />
