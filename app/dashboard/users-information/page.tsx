@@ -24,7 +24,7 @@ type User = {
 export default function UserInformation() {
   const dispatch = useDispatch<AppDispatch>()
   const users = useSelector((state: RootState) => state?.user.users)
-  const loading = useSelector((state: RootState) => state?.loader.loading)
+  const loading = useSelector((state: RootState) => state?.loader?.loading)
 
   const [deleteUser, setDeleteUser] = React.useState<User | null>(null)
 
@@ -34,7 +34,7 @@ export default function UserInformation() {
         const res = await fetch("/api/users")
         const data: User[] = await res.json()
         dispatch(setUsers(data))
-        dispatch(setLoading(false))
+        // dispatch(setLoading(data.length === 0))
       } catch (err) {
         console.error("Error fetching users:", err)
         dispatch(setLoading(false))
@@ -96,12 +96,12 @@ export default function UserInformation() {
 
             <span
               className={`mt-3 px-4 py-1 rounded-full text-sm font-medium ${user.role === "admin"
-                  ? "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
-                  : user.role === "moderator"
-                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
-                    : user.role === "owner"
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
-                      : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                ? "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
+                : user.role === "moderator"
+                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
+                  : user.role === "owner"
+                    ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
+                    : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                 }`}
             >
               {user.role || "guest"}

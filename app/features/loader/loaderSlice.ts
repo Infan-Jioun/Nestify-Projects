@@ -3,7 +3,7 @@ interface LoaderState {
     loading: boolean;
 }
 const initialState: LoaderState = {
-    loading: false,
+    loading: true,
 }
 const loaderSlice = createSlice({
     name: "loader",
