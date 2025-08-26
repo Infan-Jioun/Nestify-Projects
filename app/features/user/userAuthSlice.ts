@@ -21,8 +21,11 @@ export const deletedUser = createAsyncThunk(
         try {
             await fetch(`/api/users/${id}`, { method: "DELETE" })
             return id;
-        } catch (err: any) {
-            return rejectWithValue(err.message);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                return rejectWithValue(err.message);
+            }
+            return rejectWithValue("An unknown error occurred");
         }
     }
 )
