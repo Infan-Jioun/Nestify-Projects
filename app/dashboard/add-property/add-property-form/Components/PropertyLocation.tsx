@@ -17,12 +17,13 @@ import {
     SelectOption
 } from "../../../../features/location/locationSlice"
 import { Input } from "@/components/ui/input"
+import { Inputs } from "../add-property-form/AddPropertyForm"
 
 interface LocationProps {
-    register: UseFormRegister<any>
-    errors: FieldErrors<any>
-    watch: UseFormWatch<any>
-    setValue: UseFormSetValue<any>
+    register: UseFormRegister<Inputs>
+    errors: FieldErrors<Inputs>
+    watch: UseFormWatch<Inputs>
+    setValue: UseFormSetValue<Inputs>
 }
 
 export default function PropertyLocation({ register, errors, watch, setValue }: LocationProps) {
@@ -143,7 +144,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
 
     return (
         <div className="space-y-6 ">
-            
+
 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
