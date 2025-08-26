@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/models/user";
 import connectToDatabase from "@/lib/mongodb";
 import { Types } from "mongoose";
 
 export async function DELETE(
-    req: Request,
+    req:    NextRequest,
     context: { params: { id: string } }
 ) {
     try {
