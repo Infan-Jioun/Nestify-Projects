@@ -8,6 +8,8 @@ import Category from "../Components/Category"
 import PropertyLocation from "../Components/PropertyLocation"
 import { useSelector } from "react-redux"
 import { RootState } from "@/lib/store"
+import Currency from "../Components/Currency"
+import { Textarea } from "@/components/ui/textarea"
 
 export type Inputs = {
   title: string
@@ -49,8 +51,8 @@ export default function AddPropertyFormPage() {
   }
   const loading = useSelector((state: RootState) => state?.loader?.loading)
   return (
-    <div className=" p-4 sm:p-6 lg:p-10">
-      <h2 className="text-center text-2xl md:text-3xl font-extrabold text-gray-800 mb-6">
+    <div className=" drop-shadow-xl">
+      <h2 className="text-center text-2xl md:text-3xl font-extrabold text-green-500 mb-6 mt-6">
         Add New Property
       </h2>
 
@@ -60,12 +62,12 @@ export default function AddPropertyFormPage() {
       >
         {/* Title */}
         <div>
-          <Label className="mb-2 block text-gray-700" htmlFor="title">
+          <Label className="mb-2 block text-gray-700 text-xs" htmlFor="title">
             Property Title
           </Label>
           <Input
             id="title"
-            className="w-full"
+            className="w-full" placeholder="Type property title"
             {...register("title", { required: true })}
           />
           {errors.title && (
@@ -77,29 +79,32 @@ export default function AddPropertyFormPage() {
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Category register={register} errors={errors} />
           <div>
-            <Label className="mb-2 block text-gray-700" htmlFor="propertySize">
+            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="propertySize">
               Property Size (sqft)
             </Label>
             <Input
               id="propertySize"
-              type="number"
+              type="number" placeholder="Type property size"
               {...register("propertySize", {
                 required: true,
                 valueAsNumber: true,
               })}
             />
+            {errors.propertySize && (
+              <span className="text-red-500 text-sm">PropertySize is required</span>
+            )}
           </div>
         </section>
 
         {/* Price & Currency */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label className="mb-2 block text-gray-700" htmlFor="price">
+            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="price">
               Price
             </Label>
             <Input
               id="price"
-              type="number"
+              type="number" placeholder="Type property price"
               {...register("price", { required: true, valueAsNumber: true })}
             />
             {errors.price && (
@@ -107,37 +112,38 @@ export default function AddPropertyFormPage() {
             )}
           </div>
           <div>
-            <Label className="mb-2 block text-gray-700" htmlFor="currency">
-              Currency
-            </Label>
-            <Input
-              id="currency"
-              {...register("currency", { required: true })}
-            />
+
+            <Currency register={register} errors={errors} />
           </div>
         </div>
 
         {/* Bedrooms & Bathrooms */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label className="mb-2 block text-gray-700" htmlFor="bedrooms">
+            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="bedrooms">
               Bedrooms
             </Label>
             <Input
               id="bedrooms"
-              type="number"
-              {...register("bedrooms", { valueAsNumber: true })}
+              type="number" placeholder="Type number of bedrooms"
+              {...register("bedrooms", { required: "Bedrooms is reqiure", valueAsNumber: true })}
             />
+            {errors.bedrooms && (
+              <span className="text-red-500 text-sm">{errors.bedrooms.message}</span>
+            )}
           </div>
           <div>
-            <Label className="mb-2 block text-gray-700" htmlFor="bathrooms">
+            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="bathrooms">
               Bathrooms
             </Label>
             <Input
               id="bathrooms"
-              type="number"
-              {...register("bathrooms", { valueAsNumber: true })}
+              type="number" placeholder="Type number of bathrooms"
+              {...register("bathrooms", { required: "Bathrooms is reqiured", valueAsNumber: true })}
             />
+            {errors.bathrooms && (
+              <span className="text-red-500 text-sm">{errors.bathrooms.message}</span>
+            )}
           </div>
         </div>
 
@@ -149,38 +155,47 @@ export default function AddPropertyFormPage() {
           setValue={setValue}
         />
         <div>
-          <Label className="mb-2 block text-gray-700">Address</Label>
-          <Input
+          <Label className="mb-2 block text-gray-700 text-xs">Address</Label>
+          <Textarea
             {...register("address", { required: "Address is required" })}
-            type="text"
+
             className="w-full"
             placeholder="Enter full address here"
           />
+          {errors.address && (
+            <span className="text-red-500 text-sm">{errors.address.message}</span>
+          )}
         </div>
 
         {/* Contact Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label
-              className="mb-2 block text-gray-700"
+              className="mb-2 block text-gray-700 text-xs"
               htmlFor="contactNumber"
             >
               Contact Number
             </Label>
             <Input
-              id="contactNumber"
-              {...register("contactNumber", { required: true })}
+              id="contactNumber" placeholder="Type contact number"
+              {...register("contactNumber", { required: "Contect Number is required" })}
             />
+            {errors.contactNumber && (
+              <span className="text-red-500 text-sm">{errors.contactNumber.message}</span>
+            )}
           </div>
           <div>
-            <Label className="mb-2 block text-gray-700" htmlFor="email">
+            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="email">
               Email
             </Label>
             <Input
               id="email"
-              type="email"
-              {...register("email", { required: true })}
+              type="email" placeholder="Type email address"
+              {...register("email", { required: "Email is required" })}
             />
+            {errors.email && (
+              <span className="text-red-500 text-sm">{errors.email.message}</span>
+            )}
           </div>
         </div>
 

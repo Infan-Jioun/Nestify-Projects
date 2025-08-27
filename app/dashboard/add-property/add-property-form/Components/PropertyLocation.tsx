@@ -18,6 +18,7 @@ import {
 } from "../../../../features/location/locationSlice"
 import { Input } from "@/components/ui/input"
 import { Inputs } from "../add-property-form/AddPropertyForm"
+import { Label } from "@/components/ui/label"
 
 interface LocationProps {
     register: UseFormRegister<Inputs>
@@ -146,96 +147,96 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
         <div className="space-y-6 ">
 
 
-         
 
-           <div>
-           <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                <CustomSelect
-                    options={[
-                        { value: "Bangladesh", label: "Bangladesh" },
-                        { value: "Other", label: "Other Country" }
-                    ]}
-                    placeholder="Select Country"
-                    isLoading={false}
-                    value={watchCountry || ""}
-                    onChange={val => {
-                        setValue("country", val, { shouldValidate: true })
-                        setValue("division", "")
-                        setValue("district", "")
-                        setValue("upazila", "")
-                    }}
-                    error={errors.country}
-                    name="country"
-                />
-            </div>
 
-            <AnimatePresence>
-                {watchCountry === "Bangladesh" && (
-                    <motion.div
-                        className="space-y-4"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        {/* Division */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Division</label>
-                            <CustomSelect 
-                                options={divisions}
-                                placeholder="Select Division"
-                                isLoading={loading.division}
-                                
-                                value={watchDivision || ""}
-                                onChange={val => {
-                                    setValue("division", val, { shouldValidate: true })
-                                    setValue("district", "")
-                                    setValue("upazila", "")
-                                }}
-                                error={errors.division}
-                                name="division"
-                            />
-                        </div>
+            <div>
+                <div>
+                    <Label className="mb-2 block text-gray-700 text-xs">Country</Label>
+                    <CustomSelect
+                        options={[
+                            { value: "Bangladesh", label: "Bangladesh" },
+                            { value: "Other", label: "Other Country" }
+                        ]}
+                        placeholder="Select Country"
+                        isLoading={false}
+                        value={watchCountry || ""}
+                        onChange={val => {
+                            setValue("country", val, { shouldValidate: true })
+                            setValue("division", "")
+                            setValue("district", "")
+                            setValue("upazila", "")
+                        }}
+                        error={errors.country}
+                        name="country"
+                    />
+                </div>
 
-                        {/* District */}
-                        {watchDivision && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
+                <AnimatePresence>
+                    {watchCountry === "Bangladesh" && (
+                        <motion.div
+                            className="space-y-4"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            {/* Division */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Division</label>
                                 <CustomSelect
-                                    options={districts}
-                                    placeholder="Select District"
-                                    isLoading={loading.district}
-                                    value={watchDistrict || ""}
+                                    options={divisions}
+                                    placeholder="Select Division"
+                                    isLoading={loading.division}
+
+                                    value={watchDivision || ""}
                                     onChange={val => {
-                                        setValue("district", val, { shouldValidate: true })
+                                        setValue("division", val, { shouldValidate: true })
+                                        setValue("district", "")
                                         setValue("upazila", "")
                                     }}
-                                    error={errors.district}
-                                    name="district"
+                                    error={errors.division}
+                                    name="division"
                                 />
-                            </motion.div>
-                        )}
+                            </div>
 
-                        {/* Upazila */}
-                        {watchDistrict && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Upazila</label>
-                                <CustomSelect
-                                    options={upazilas}
-                                    placeholder="Select Upazila"
-                                    isLoading={loading.upazila}
-                                    value={watch("upazila") || ""}
-                                    onChange={val => setValue("upazila", val, { shouldValidate: true })}
-                                    error={errors.upazila}
-                                    name="upazila"
-                                />
-                            </motion.div>
-                        )}
-                    </motion.div>
-                )}
-            </AnimatePresence>
-           </div>
+                            {/* District */}
+                            {watchDivision && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+                                    <label className="mb-2 block text-gray-700 text-xs">District</label>
+                                    <CustomSelect 
+                                        options={districts}
+                                        placeholder="Select District"
+                                        isLoading={loading.district}
+                                        value={watchDistrict || ""}
+                                        onChange={val => {
+                                            setValue("district", val, { shouldValidate: true })
+                                            setValue("upazila", "")
+                                        }}
+                                        error={errors.district}
+                                        name="district"
+                                    />
+                                </motion.div>
+                            )}
+
+                            {/* Upazila */}
+                            {watchDistrict && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                                    <label className="mb-2 block text-gray-700 text-xs">Upazila</label>
+                                    <CustomSelect
+                                        options={upazilas}
+                                        placeholder="Select Upazila"
+                                        isLoading={loading.upazila}
+                                        value={watch("upazila") || ""}
+                                        onChange={val => setValue("upazila", val, { shouldValidate: true })}
+                                        error={errors.upazila}
+                                        name="upazila"
+                                    />
+                                </motion.div>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     )
 }
