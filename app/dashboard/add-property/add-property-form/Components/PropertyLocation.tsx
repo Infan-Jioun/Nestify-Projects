@@ -129,6 +129,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                 value={value}
                 onValueChange={onChange}
                 disabled={isLoading}
+                {...register("country", { required: "country is required" })}
             >
                 <SelectTrigger className={`w-full ${error ? "border-red-500" : ""}`}>
                     <SelectValue placeholder={isLoading ? "Loading..." : placeholder} />
@@ -153,7 +154,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                 <ShadcnSelect
                     options={[
                         { value: "Bangladesh", label: "Bangladesh" },
-                        { value: "Other", label: "Other Country" }
+
                     ]}
                     placeholder="Select Country"
                     isLoading={false}
@@ -167,6 +168,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                     error={errors.country}
                     name="country"
                 />
+
             </div>
 
             <AnimatePresence>
@@ -183,6 +185,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                         <div>
                             <Label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Division</Label>
                             <ShadcnSelect
+
                                 options={divisions}
                                 placeholder="Select Division"
                                 isLoading={loading.division}
@@ -195,7 +198,9 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                                 error={errors.division}
                                 name="division"
                             />
+
                         </div>
+                        {errors && <p className="mt-1 text-sm text-red-600">Division is required</p>}
 
                         {/* District */}
                         {watchDivision && (
@@ -213,6 +218,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                                     error={errors.district}
                                     name="district"
                                 />
+                                {errors && <p className="mt-1 text-sm text-red-600">District is required</p>}
                             </motion.div>
                         )}
 
@@ -229,6 +235,8 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                                     error={errors.upazila}
                                     name="upazila"
                                 />
+                                {errors && <p className="mt-1 text-sm text-red-600">Upazila is required</p>}
+
                             </motion.div>
                         )}
                     </motion.div>

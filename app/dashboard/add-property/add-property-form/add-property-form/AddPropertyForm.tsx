@@ -19,7 +19,7 @@ import PropertySize from "../Components/PropertySize/PropertySize"
 import PropertyPrice from "../Components/PropertyPrice/PropertyPrice"
 import PropertyAddress from "../Components/PropertyAddress/PropertyAddress"
 import ContactInfo from "../Components/ContactInfo/ContactInfo"
-
+import { motion } from "framer-motion"
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch()
   const {
@@ -78,49 +78,40 @@ export default function AddPropertyFormPage() {
   }
 
   return (
-    <div className="drop-shadow-xl">
-      <h2 className="text-center text-2xl md:text-3xl font-extrabold text-green-500 mb-6 mt-6">
-        Add New Property
-      </h2>
+    <div className="drop-shadow-xl px-3 mt-5 border-t-2">
+
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100"
-      >
-
-        <ImageSection />
-        <PropertyTitle register={register} errors={errors} />
-        {/* Category & Size */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryFrom register={register} errors={errors} watch={watch} setValue={setValue} />
-          <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
-          <PropertySize register={register} errors={errors} />
-        </section>
-
-        {/* Price & Currency */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <PropertyPrice register={register} errors={errors} />
-          <div>
-            <Currency value={watch("currency")} setValue={setValue} errors={errors} />
-          </div>
-        </div>
-
-        {/* Address */}
-
-        <PropertyAddress register={register} errors={errors} />
-        {/* Contact Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        className="mt-7 hover:border-green-400 space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100"
+      > 
+      <ImageSection register={register} setValue={setValue} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <PropertyTitle register={register} errors={errors} />
           <ContactInfo register={register} errors={errors} />
         </div>
 
-        {/* Submit */}
-        <Button
-          type="submit"
-          className="w-full py-3 text-lg font-semibold rounded-xl shadow-md bg-green-500 hover:bg-green-600 transition-all"
-          disabled={loading}
-        >
-          {loading ? "Submitting..." : "Add Property"}
-        </Button>
+        <CategoryFrom register={register} errors={errors} watch={watch} setValue={setValue} />
+        <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <PropertySize register={register} errors={errors} />
+          <PropertyPrice register={register} errors={errors} />
+          <Currency value={watch("currency")} setValue={setValue} errors={errors} />
+
+        </div>
+        <PropertyAddress register={register} errors={errors} />
+
+
+    
+        <div>
+          <motion.button
+            whileHover={{ scale: 1.0 }}
+            whileTap={{ scale: 0.95 }}
+            className="btn h-10 px-4 w-full rounded-full bg-white text-black border border-gray-300 hover:text-green-500 hover:border-green-400 transition"
+          >
+            {loading ? "Submitting..." : "Add Property"}
+          </motion.button>
+        </div>
       </form>
     </div>
   )

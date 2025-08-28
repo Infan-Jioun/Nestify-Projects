@@ -38,6 +38,8 @@ export default function CategoryForm({ register, watch, setValue, errors }: Cate
                 <Select
                     value={category || ""}
                     onValueChange={handleCategoryChange}
+
+                    {...register("category", { required: "Category is required" })}
                 >
                     <SelectTrigger className={`w-full ${errors.category ? "border-red-500" : ""}`}>
                         <SelectValue placeholder="Select Category" />
@@ -70,6 +72,11 @@ export default function CategoryForm({ register, watch, setValue, errors }: Cate
                                     type={field.type || "text"}
                                     {...register(field.name as keyof Inputs)}
                                 />
+                                {errors[field.name as keyof Inputs] && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors[field.name as keyof Inputs]?.message as string}
+                                    </p>
+                                )}
                             </div>
                         ))}
                     </motion.div>

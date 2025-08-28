@@ -19,8 +19,14 @@ import {
     useFileUpload,
 } from "@/hooks/use-file-upload"
 import { Button } from "@/components/ui/button"
+import { FieldErrors, UseFormRegister } from "react-hook-form"
+import { Inputs } from "../Inputs"
 
 // Create some dummy initial files
+type ImageSectionProps = {
+    register: UseFormRegister<Inputs>
+
+}
 const initialFiles = [
     {
         name: "intro.zip",
@@ -131,7 +137,7 @@ const getFilePreview = (file: {
     )
 }
 
-export default function ImageSection() {
+export default function ImageSection({ register }: ImageSectionProps) {
     const maxSizeMB = 10
     const maxSize = maxSizeMB * 400 * 300 // 5MB default
     const maxFiles = 10
