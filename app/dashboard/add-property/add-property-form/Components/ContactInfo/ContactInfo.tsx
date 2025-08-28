@@ -1,7 +1,7 @@
 "use client"
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { FieldErrors, UseFormRegister, Controller, useForm } from 'react-hook-form'
+import { FieldErrors, UseFormRegister, Controller, useForm, UseControllerProps } from 'react-hook-form'
 import { Inputs } from '../Inputs'
 import React, { useId } from "react"
 import { ChevronDownIcon, PhoneIcon } from "lucide-react"
@@ -13,10 +13,10 @@ import { cn } from "@/lib/utils"
 type ContactInfoProps = {
     register: UseFormRegister<Inputs>
     errors: FieldErrors<Inputs>
-    control: any 
+    // control: UseControllerProps<Inputs>
 }
 
-export default function ContactInfo({ register, errors, control }: ContactInfoProps) {
+export default function ContactInfo({ register, errors,  }: ContactInfoProps) {
     const id = useId()
 
     return (
@@ -46,7 +46,7 @@ export default function ContactInfo({ register, errors, control }: ContactInfoPr
                 <Label htmlFor="contactNumber" className='mb-2 block text-gray-700 text-xs'>Phone</Label>
                 <Controller
                     name="contactNumber"
-                    control={control}
+                    // control={control}
                     rules={{ required: "Contact number is required" }}
                     render={({ field }) => (
                         <RPNInput.default
