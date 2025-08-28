@@ -77,7 +77,7 @@ export default function AddPropertyFormPage() {
 
         {/* Category & Size */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Category register={register} errors={errors} />
+          <Category value={watch("category")} setValue={setValue} errors={errors} />
           <div>
             <Label className="mb-2 block text-gray-700 text-xs" htmlFor="propertySize">
               Property Size (sqft)

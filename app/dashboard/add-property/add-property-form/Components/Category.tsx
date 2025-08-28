@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { FieldErrors, UseFormRegister } from 'react-hook-form'
+import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { Inputs } from '../..//add-property-form/add-property-form/AddPropertyForm'
 import {
     Select,
@@ -13,21 +13,23 @@ import {
 import { SelectLabel } from '@radix-ui/react-select'
 import { Label } from '@/components/ui/label'
 type CategoryProps = {
-    register: UseFormRegister<Inputs>
+
     errors: FieldErrors<Inputs>
+    setValue: UseFormSetValue<Inputs>
+    value?: string
 }
-export default function Category({ register, errors }: CategoryProps) {
+export default function Category({ errors, setValue, value }: CategoryProps) {
     return (
         <div>
 
+            <Label className='mb-2 block text-gray-700 text-xs'>Category</Label>
+            <Select onValueChange={(val) => setValue("category", val as Inputs["category"])}>
 
-            <Select>
-                <Label className='mb-2 block text-gray-700 text-xs'>Category</Label>
+
                 <SelectTrigger className="w-full">
                     <SelectValue placeholder="Property" />
                 </SelectTrigger>
-                <SelectContent id="category"
-                    {...register("category", { required: true })}>
+                <SelectContent id="category">
                     <SelectGroup className='px-2 pt-3'>
                         <SelectLabel className='text-gray-600'>Property Category</SelectLabel>
                         <SelectItem value="Apartment">Apartment</SelectItem>
