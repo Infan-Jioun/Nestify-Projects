@@ -8,23 +8,25 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Label } from '@/components/ui/label'
-import { Inputs } from '../add-property-form/AddPropertyForm'
-import { FieldErrors, UseFormRegister as UseFrommRegister } from 'react-hook-form'
+
+import { FieldErrors, UseFormSetValue } from 'react-hook-form'
+import { Inputs } from './Inputs'
 type CurrencyProps = {
-    register: UseFrommRegister<Inputs>
+    value?: string
+    setValue: UseFormSetValue<Inputs>
     errors: FieldErrors<Inputs>
 }
-export default function Currency({ register, errors }: CurrencyProps) {
+export default function Currency({ value, setValue, errors }: CurrencyProps) {
     return (
         <div>
             <Label className="mb-2 block text-gray-700 text-xs" htmlFor="currency">
                 Currency
             </Label>
-            <Select>
+            <Select onValueChange={(val) => setValue("currency", val as Inputs["currency"])}>
                 <SelectTrigger className=" w-full">
                     <SelectValue placeholder="Select your currency" />
                 </SelectTrigger>
-                <SelectContent id="currency" {...register("currency", { required: true, valueAsNumber: true })}>
+                <SelectContent id="currency">
                     <SelectItem value="BD">BD</SelectItem>
                     <SelectItem value="US">US</SelectItem>
 

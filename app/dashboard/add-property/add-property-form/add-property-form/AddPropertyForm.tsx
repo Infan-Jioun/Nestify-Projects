@@ -4,54 +4,54 @@ import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import Category from "../Components/Category"
 import PropertyLocation from "../Components/PropertyLocation"
-import { useSelector } from "react-redux"
-import { RootState } from "@/lib/store"
 import Currency from "../Components/Currency"
 import { Textarea } from "@/components/ui/textarea"
-
-export type Inputs = {
-  title: string
-  category: "Apartment" | "House" | "Land" | "Commercial"
-  price: number
-  currency: "BDT" | "USD"
-  propertySize: number
-  bedrooms?: number
-  bathrooms?: number
-  floor?: number
-  furnishing?: "Furnished" | "Semi-furnished" | "Unfurnished"
-  address: string
-  country: string
-  division: string
-  district: string
-  upazila: string
-  geoLocation?: { lat: number; lng: number }
-  images: string[]
-  videos?: string[]
-  ownerId: string
-  contactNumber: string
-  email: string
-  status: "Available" | "Rented" | "Sold" | "Pending"
-  createdAt: Date
-  updatedAt: Date
-}
+import { Inputs } from "../Components/Inputs"
+import CategoryFrom from "../Components/CategoryForm/CategoryFrom/CategoryFrom"
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "@/lib/store"
+import { setAddPropertyLoader } from "@/app/features/loader/loaderSlice"
+import axios from "axios"
 
 export default function AddPropertyFormPage() {
+  const dispatch = useDispatch()
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     formState: { errors },
-  } = useForm<Inputs>()
+  } = useForm<Inputs>({
+    defaultValues: {
+      currency: "BDT",
+    },
+  })
 
-  const onSubmit = (data: Inputs) => {
-    console.log(data)
-  }
   const loading = useSelector((state: RootState) => state?.loader?.loading)
+
+  const onSubmit = async (data: Inputs) => {
+    try {
+      dispatch(setAddPropertyLoader(true))
+
+      // API call
+      const response = await axios.post("/api/properties", data)
+
+      if (response.status === 201 || response.status === 200) {
+        alert("Property submitted successfully!")
+      } else {
+        alert("Failed to submit property.")
+      }
+    } catch (error) {
+      console.error(error)
+      alert("Failed to submit property.")
+    } finally {
+      dispatch(setAddPropertyLoader(false))
+    }
+  }
+
   return (
-    <div className=" drop-shadow-xl">
+    <div className="drop-shadow-xl">
       <h2 className="text-center text-2xl md:text-3xl font-extrabold text-green-500 mb-6 mt-6">
         Add New Property
       </h2>
@@ -67,31 +67,34 @@ export default function AddPropertyFormPage() {
           </Label>
           <Input
             id="title"
-            className="w-full" placeholder="Type property title"
-            {...register("title", { required: true })}
+            className="w-full"
+            placeholder="Type property title"
+            {...register("title", { required: "Title is required" })}
           />
           {errors.title && (
-            <span className="text-red-500 text-sm">Title is required</span>
+            <span className="text-red-500 text-sm">{errors.title.message}</span>
           )}
         </div>
 
         {/* Category & Size */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Category value={watch("category")} setValue={setValue} errors={errors} />
+          <CategoryFrom register={register} errors={errors} watch={watch} setValue={setValue} />
+          <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
           <div>
             <Label className="mb-2 block text-gray-700 text-xs" htmlFor="propertySize">
               Property Size (sqft)
             </Label>
             <Input
               id="propertySize"
-              type="number" placeholder="Type property size"
+              type="number"
+              placeholder="Type property size"
               {...register("propertySize", {
-                required: true,
+                required: "Property Size is required",
                 valueAsNumber: true,
               })}
             />
             {errors.propertySize && (
-              <span className="text-red-500 text-sm">PropertySize is required</span>
+              <span className="text-red-500 text-sm">{errors.propertySize.message}</span>
             )}
           </div>
         </section>
@@ -104,61 +107,24 @@ export default function AddPropertyFormPage() {
             </Label>
             <Input
               id="price"
-              type="number" placeholder="Type property price"
-              {...register("price", { required: true, valueAsNumber: true })}
+              type="number"
+              placeholder="Type property price"
+              {...register("price", { required: "Price is required", valueAsNumber: true })}
             />
             {errors.price && (
-              <span className="text-red-500 text-sm">Price is required</span>
+              <span className="text-red-500 text-sm">{errors.price.message}</span>
             )}
           </div>
           <div>
-
-            <Currency register={register} errors={errors} />
+            <Currency value={watch("currency")} setValue={setValue} errors={errors} />
           </div>
         </div>
 
-        {/* Bedrooms & Bathrooms */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="bedrooms">
-              Bedrooms
-            </Label>
-            <Input
-              id="bedrooms"
-              type="number" placeholder="Type number of bedrooms"
-              {...register("bedrooms", { required: "Bedrooms is reqiure", valueAsNumber: true })}
-            />
-            {errors.bedrooms && (
-              <span className="text-red-500 text-sm">{errors.bedrooms.message}</span>
-            )}
-          </div>
-          <div>
-            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="bathrooms">
-              Bathrooms
-            </Label>
-            <Input
-              id="bathrooms"
-              type="number" placeholder="Type number of bathrooms"
-              {...register("bathrooms", { required: "Bathrooms is reqiured", valueAsNumber: true })}
-            />
-            {errors.bathrooms && (
-              <span className="text-red-500 text-sm">{errors.bathrooms.message}</span>
-            )}
-          </div>
-        </div>
-
-        {/* Address & Location */}
-        <PropertyLocation
-          register={register}
-          errors={errors}
-          watch={watch}
-          setValue={setValue}
-        />
+        {/* Address */}
         <div>
           <Label className="mb-2 block text-gray-700 text-xs">Address</Label>
           <Textarea
             {...register("address", { required: "Address is required" })}
-
             className="w-full"
             placeholder="Enter full address here"
           />
@@ -170,15 +136,13 @@ export default function AddPropertyFormPage() {
         {/* Contact Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label
-              className="mb-2 block text-gray-700 text-xs"
-              htmlFor="contactNumber"
-            >
+            <Label className="mb-2 block text-gray-700 text-xs" htmlFor="contactNumber">
               Contact Number
             </Label>
             <Input
-              id="contactNumber" placeholder="Type contact number"
-              {...register("contactNumber", { required: "Contect Number is required" })}
+              id="contactNumber"
+              placeholder="Type contact number"
+              {...register("contactNumber", { required: "Contact Number is required" })}
             />
             {errors.contactNumber && (
               <span className="text-red-500 text-sm">{errors.contactNumber.message}</span>
@@ -190,7 +154,8 @@ export default function AddPropertyFormPage() {
             </Label>
             <Input
               id="email"
-              type="email" placeholder="Type email address"
+              type="email"
+              placeholder="Type email address"
               {...register("email", { required: "Email is required" })}
             />
             {errors.email && (
@@ -203,8 +168,9 @@ export default function AddPropertyFormPage() {
         <Button
           type="submit"
           className="w-full py-3 text-lg font-semibold rounded-xl shadow-md bg-green-500 hover:bg-green-600 transition-all"
+          disabled={loading}
         >
-          Add Property
+          {loading ? "Submitting..." : "Add Property"}
         </Button>
       </form>
     </div>

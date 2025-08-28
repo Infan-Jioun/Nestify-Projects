@@ -4,6 +4,7 @@ interface LoaderState {
     division: boolean;
     district: boolean;
     upazila: boolean;
+    addPropertyLoader?: boolean;
 }
 
 const initialState: LoaderState = {
@@ -11,6 +12,7 @@ const initialState: LoaderState = {
     division: false,
     district: false,
     upazila: false,
+    addPropertyLoader: false,
 }
 
 const loaderSlice = createSlice({
@@ -29,8 +31,11 @@ const loaderSlice = createSlice({
         setUpazilaLoading(state, action: PayloadAction<boolean>) {
             state.upazila = action.payload;
         },
+        setAddPropertyLoader(state, action: PayloadAction<boolean>) {
+            state.addPropertyLoader = action.payload;
+        }
 
     }
 })
-export const { setLoading , setDistrictLoading, setDivisionLoading,setUpazilaLoading } = loaderSlice.actions;
+export const { setLoading , setDistrictLoading, setDivisionLoading,setUpazilaLoading , setAddPropertyLoader } = loaderSlice.actions;
 export default loaderSlice.reducer;

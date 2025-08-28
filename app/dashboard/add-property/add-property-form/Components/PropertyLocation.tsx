@@ -16,9 +16,10 @@ import {
     resetLocation,
     SelectOption
 } from "../../../../features/location/locationSlice"
-import { Input } from "@/components/ui/input"
-import { Inputs } from "../add-property-form/AddPropertyForm"
+
 import { Label } from "@/components/ui/label"
+import { Inputs } from "./Inputs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface LocationProps {
     register: UseFormRegister<Inputs>
@@ -105,8 +106,8 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
         }
     }, [watchDistrict, watchDivision, watchCountry, dispatch, setValue])
 
-    // Custom Select
-    const CustomSelect = ({
+    // shadcn Select helper
+    const ShadcnSelect = ({
         options,
         placeholder,
         isLoading,
@@ -124,119 +125,115 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
         name: string
     }) => (
         <div>
-            <select
+            <Select
                 value={value}
-                onChange={e => onChange(e.target.value)}
+                onValueChange={onChange}
                 disabled={isLoading}
-                className={`w-full p-2.5 border rounded-md  ${error ? "border-red-500" : "border-gray-300"
-                    } ${isLoading ? "bg-gray-100" : "bg-white"}`}
-                name={name}
             >
-                <option value="">{isLoading ? "Loading..." : placeholder}</option>
-                {options.map(option => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </select>
+                <SelectTrigger className={`w-full ${error ? "border-red-500" : ""}`}>
+                    <SelectValue placeholder={isLoading ? "Loading..." : placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                    {options.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             {error && <p className="mt-1 text-sm text-red-600">{error.message}</p>}
         </div>
     )
 
     return (
-        <div className="space-y-6 ">
-
-
-
-
+        <div className="space-y-6">
+            {/* Country */}
             <div>
-                <div>
-                    <Label className="mb-2 block text-gray-700 text-xs">Country</Label>
-                    <CustomSelect
-                        options={[
-                            { value: "Bangladesh", label: "Bangladesh" },
-                            { value: "Other", label: "Other Country" }
-                        ]}
-                        placeholder="Select Country"
-                        isLoading={false}
-                        value={watchCountry || ""}
-                        onChange={val => {
-                            setValue("country", val, { shouldValidate: true })
-                            setValue("division", "")
-                            setValue("district", "")
-                            setValue("upazila", "")
-                        }}
-                        error={errors.country}
-                        name="country"
-                    />
-                </div>
+                <Label className="mb-2 block text-gray-700 text-xs">Country</Label>
+                <ShadcnSelect
+                    options={[
+                        { value: "Bangladesh", label: "Bangladesh" },
+                        { value: "Other", label: "Other Country" }
+                    ]}
+                    placeholder="Select Country"
+                    isLoading={false}
+                    value={watchCountry || ""}
+                    onChange={val => {
+                        setValue("country", val, { shouldValidate: true })
+                        setValue("division", "")
+                        setValue("district", "")
+                        setValue("upazila", "")
+                    }}
+                    error={errors.country}
+                    name="country"
+                />
+            </div>
 
-                <AnimatePresence>
-                    {watchCountry === "Bangladesh" && (
-                        <motion.div
-                            className="space-y-4"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            {/* Division */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Division</label>
-                                <CustomSelect
-                                    options={divisions}
-                                    placeholder="Select Division"
-                                    isLoading={loading.division}
+            <AnimatePresence>
+                {watchCountry === "Bangladesh" && (
+                    <motion.div
+                        key="bangladesh-location"
+                        className="space-y-4"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {/* Division */}
+                        <div>
+                            <Label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Division</Label>
+                            <ShadcnSelect
+                                options={divisions}
+                                placeholder="Select Division"
+                                isLoading={loading.division}
+                                value={watchDivision || ""}
+                                onChange={val => {
+                                    setValue("division", val, { shouldValidate: true })
+                                    setValue("district", "")
+                                    setValue("upazila", "")
+                                }}
+                                error={errors.division}
+                                name="division"
+                            />
+                        </div>
 
-                                    value={watchDivision || ""}
+                        {/* District */}
+                        {watchDivision && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+                                <Label className="mb-2 block text-gray-700 text-xs">District</Label>
+                                <ShadcnSelect
+                                    options={districts}
+                                    placeholder="Select District"
+                                    isLoading={loading.district}
+                                    value={watchDistrict || ""}
                                     onChange={val => {
-                                        setValue("division", val, { shouldValidate: true })
-                                        setValue("district", "")
+                                        setValue("district", val, { shouldValidate: true })
                                         setValue("upazila", "")
                                     }}
-                                    error={errors.division}
-                                    name="division"
+                                    error={errors.district}
+                                    name="district"
                                 />
-                            </div>
+                            </motion.div>
+                        )}
 
-                            {/* District */}
-                            {watchDivision && (
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-                                    <label className="mb-2 block text-gray-700 text-xs">District</label>
-                                    <CustomSelect 
-                                        options={districts}
-                                        placeholder="Select District"
-                                        isLoading={loading.district}
-                                        value={watchDistrict || ""}
-                                        onChange={val => {
-                                            setValue("district", val, { shouldValidate: true })
-                                            setValue("upazila", "")
-                                        }}
-                                        error={errors.district}
-                                        name="district"
-                                    />
-                                </motion.div>
-                            )}
-
-                            {/* Upazila */}
-                            {watchDistrict && (
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-                                    <label className="mb-2 block text-gray-700 text-xs">Upazila</label>
-                                    <CustomSelect
-                                        options={upazilas}
-                                        placeholder="Select Upazila"
-                                        isLoading={loading.upazila}
-                                        value={watch("upazila") || ""}
-                                        onChange={val => setValue("upazila", val, { shouldValidate: true })}
-                                        error={errors.upazila}
-                                        name="upazila"
-                                    />
-                                </motion.div>
-                            )}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+                        {/* Upazila */}
+                        {watchDistrict && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                                <Label className="mb-2 block text-gray-700 text-xs">Upazila</Label>
+                                <ShadcnSelect
+                                    options={upazilas}
+                                    placeholder="Select Upazila"
+                                    isLoading={loading.upazila}
+                                    value={watch("upazila") || ""}
+                                    onChange={val => setValue("upazila", val, { shouldValidate: true })}
+                                    error={errors.upazila}
+                                    name="upazila"
+                                />
+                            </motion.div>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

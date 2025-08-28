@@ -1,4 +1,4 @@
-// geo-data
+
 export interface District {
     district: string
     upazilas: string[]
