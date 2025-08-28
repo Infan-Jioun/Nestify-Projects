@@ -11,6 +11,7 @@ const propertySchema = new Schema({
     upazila: { type: String, required: true },
     contactNumber: { type: Number, required: true },
     email: { type: String, required: true },
+    images: [{ type: String }],
     category: {
         name: { type: String, required: true },
         fields: [
@@ -19,10 +20,10 @@ const propertySchema = new Schema({
                 value: { type: Schema.Types.Mixed, required: true }
             }
         ]
-    }
+    },
+  
+}, { timestamps: true });
 
-}, {
-    timestamps: true
-})
-const Property = models?.Property || model("Property", propertySchema)
+const Property = models?.Property || model("Property", propertySchema);
+
 export default Property;

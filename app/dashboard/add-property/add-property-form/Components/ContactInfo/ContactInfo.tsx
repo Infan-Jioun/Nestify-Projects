@@ -1,61 +1,70 @@
 "use client"
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { FieldErrors, UseFormRegister } from 'react-hook-form'
+import { FieldErrors, UseFormRegister, Controller, useForm } from 'react-hook-form'
 import { Inputs } from '../Inputs'
-import React, { useId, useState } from "react"
+import React, { useId } from "react"
 import { ChevronDownIcon, PhoneIcon } from "lucide-react"
 import * as RPNInput from "react-phone-number-input"
 import flags from "react-phone-number-input/flags"
 import { MailIcon } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 
 type ContactInfoProps = {
     register: UseFormRegister<Inputs>
     errors: FieldErrors<Inputs>
+    control: any 
 }
 
-export default function ContactInfo({ register, errors }: ContactInfoProps) {
+export default function ContactInfo({ register, errors, control }: ContactInfoProps) {
     const id = useId()
-    const [value, setValue] = useState("")
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             {/* Email Input */}
             <div>
-                <div className="*:not-first:mt-2">
-                    <Label htmlFor={id}>Input with end icon</Label>
-                    <div className="relative">
-                        <Input id={id} className="peer pe-9" placeholder="Email" type="email"  {...register("email", { required: "Email is required" })} />
-                        {errors.email && (
-                            <span className="text-red-500 text-sm">{errors.email.message}</span>
-                        )}
-                        <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 peer-disabled:opacity-50">
-                            <MailIcon size={16} aria-hidden="true" />
-                        </div>
+                <Label htmlFor={id} className='mb-2 block text-gray-700 text-xs'>Email</Label>
+                <div className="relative">
+                    <Input
+                        id={id}
+                        className="peer pe-9"
+                        placeholder="Email"
+                        type="email"
+                        {...register("email", { required: "Email is required" })}
+                    />
+                    {errors.email && (
+                        <span className="text-red-500 text-sm">{errors.email.message}</span>
+                    )}
+                    <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 peer-disabled:opacity-50">
+                        <MailIcon size={16} aria-hidden="true" />
                     </div>
                 </div>
-
-
             </div>
 
             {/* Phone Input */}
             <div className="*:not-first:mt-2" dir="ltr">
-                <Label htmlFor={id}>Phone number input</Label>
-                <RPNInput.default
-                    className="flex rounded-md shadow-xs"
-                    international
-                    flagComponent={FlagComponent}
-                    countrySelectComponent={CountrySelect}
-                    inputComponent={PhoneInput}
-                    id={id}
-                    placeholder="Enter phone number"
-                    value={value}
-                    onChange={(newValue) => setValue(newValue ?? "")}
-                    
+                <Label htmlFor="contactNumber" className='mb-2 block text-gray-700 text-xs'>Phone</Label>
+                <Controller
+                    name="contactNumber"
+                    control={control}
+                    rules={{ required: "Contact number is required" }}
+                    render={({ field }) => (
+                        <RPNInput.default
+                            {...field}
+                            className="flex rounded-md shadow-xs"
+                            international
+                            flagComponent={FlagComponent}
+                            countrySelectComponent={CountrySelect}
+                            inputComponent={PhoneInput}
+                            placeholder="Enter phone number"
+                            value={field.value || ""}
+                            onChange={(value) => field.onChange(value)}
+                        />
+                    )}
                 />
-
+                {errors.contactNumber && (
+                    <span className="text-red-500 text-sm">{errors.contactNumber.message}</span>
+                )}
             </div>
         </div>
     )
@@ -70,7 +79,6 @@ const PhoneInput = ({ className, ...props }: React.ComponentProps<"input">) => {
                 className
             )}
             {...props}
-            required
         />
     )
 }
@@ -106,15 +114,12 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
                 <option key="default" value="">
                     Select a country
                 </option>
-                {options
-                    .filter((x) => x.value)
-                    .map((option, i) => (
-                        <option key={option.value ?? `empty-${i}`} value={option.value}>
-                            {option.label}{" "}
-                            {option.value &&
-                                `+${RPNInput.getCountryCallingCode(option.value)}`}
-                        </option>
-                    ))}
+                {options.filter((x) => x.value).map((option, i) => (
+                    <option key={option.value ?? `empty-${i}`} value={option.value}>
+                        {option.label}{" "}
+                        {option.value && `+${RPNInput.getCountryCallingCode(option.value)}`}
+                    </option>
+                ))}
             </select>
         </div>
     )
@@ -122,7 +127,6 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
 
 const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
     const Flag = flags[country]
-
     return (
         <span className="w-5 overflow-hidden rounded-sm">
             {Flag ? <Flag title={countryName} /> : <PhoneIcon size={16} aria-hidden="true" />}

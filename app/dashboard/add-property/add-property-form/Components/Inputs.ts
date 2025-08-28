@@ -38,5 +38,6 @@ export type Inputs = {
   landType?: string
 
   // Other
-  facilities?: string
+  facilities?: string,
+
 }
