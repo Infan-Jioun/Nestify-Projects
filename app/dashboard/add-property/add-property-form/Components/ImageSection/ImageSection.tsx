@@ -2,6 +2,7 @@ import React from "react"
 import { useImageUpload } from "@/hooks/useImageUpload"
 import { Button } from "@/components/ui/button"
 import { XIcon, UploadIcon, Trash2Icon, ImageIcon, FileIcon } from "lucide-react"
+import Image from "next/image"
 
 type Props = { apiKey: string }
 
@@ -25,7 +26,7 @@ export default function ImageSection({ apiKey }: Props) {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {files.map(file => (
                         <div key={file.name} className="relative border rounded-md overflow-hidden">
-                            <img src={file.previewUrl} alt={file.name} className="w-full h-32 object-cover rounded-md" />
+                            <Image src={file.previewUrl} alt={file.name} width={400} height={300} className="    object-cover rounded-md" />
                             <button onClick={() => removeFile(file.name)} className="absolute top-1 right-1 bg-white p-1 rounded-full shadow">
                                 <XIcon className="w-4 h-4 text-red-500" />
                             </button>
