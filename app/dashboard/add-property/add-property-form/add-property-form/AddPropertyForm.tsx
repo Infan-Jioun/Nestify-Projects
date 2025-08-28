@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/lib/store"
 import { setAddPropertyLoader } from "@/app/features/loader/loaderSlice"
 import axios from "axios"
+import ImageSection from "../Components/ImageSection/ImageSection"
 
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch()
@@ -31,11 +32,32 @@ export default function AddPropertyFormPage() {
   const loading = useSelector((state: RootState) => state?.loader?.loading)
 
   const onSubmit = async (data: Inputs) => {
+
     try {
       dispatch(setAddPropertyLoader(true))
+      const categoryFields = Object.entries(data)
+        .filter(([key, value]) =>
+          ![
+            "title", "currency", "propertySize", "price",
+            "address", "contactNumber", "email",
+            "division", "district", "upazila", "country",
+            "category"
+          ].includes(key) && value !== undefined && value !== null
+        )
+        .map(([key, value]) => ({ name: key, value }));
+
+      const transformedData = {
+        ...data,
+        category: {
+          name: typeof data.category === "string" ? data.category : (data.category as { name: string }).name,
+          fields: categoryFields,
+        },
+        upazila: data.upazila || "",
+      };
 
       // API call
-      const response = await axios.post("/api/properties", data)
+      console.log(data);
+      const response = await axios.post("/api/properties", transformedData)
 
       if (response.status === 201 || response.status === 200) {
         alert("Property submitted successfully!")
@@ -80,6 +102,7 @@ export default function AddPropertyFormPage() {
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <CategoryFrom register={register} errors={errors} watch={watch} setValue={setValue} />
           <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
+          <ImageSection />
           <div>
             <Label className="mb-2 block text-gray-700 text-xs" htmlFor="propertySize">
               Property Size (sqft)

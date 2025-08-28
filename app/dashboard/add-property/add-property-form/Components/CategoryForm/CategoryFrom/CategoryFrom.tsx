@@ -61,7 +61,7 @@ export default function CategoryForm({ register, watch, setValue, errors }: Cate
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.4 }}
-                        className="space-y-4"
+                        className="space-y-4 "
                     >
                         {fields.map(field => (
                             <div key={field.name}>
