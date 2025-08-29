@@ -6,7 +6,6 @@ export default function AddProperty() {
     return (
         <div>
             <AddPropertyBanner />
-
             <AddPropertyFormPage />
         </div>
     )

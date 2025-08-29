@@ -10,7 +10,6 @@ export const useImageUpload = (apiKey: string, maxFiles = 5, maxSizeMB = 20) => 
     const dispatch = useDispatch()
     const { files, errors, isUploading } = useSelector((state: RootState) => state.imageUpload)
 
-    // Local files with original File object
     const [localFiles, setLocalFiles] = useState<File[]>([])
 
     const addFiles = (newFiles: File[]) => {
