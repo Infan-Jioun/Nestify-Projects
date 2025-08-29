@@ -38,11 +38,13 @@ export default function ImageSection({ errors, setValue }: ImageSectionProps) {
         multiple: true,
         maxFiles,
     })
-
     useEffect(() => {
-        const fileList = files.map((f) => f.file)
-        setValue("images", fileList as any, { shouldValidate: true })
+        const fileList: File[] = files
+            .map(f => f.file)
+            .filter((f): f is File => f instanceof File) // শুধু File রাখবে
+        setValue("images", fileList, { shouldValidate: true })
     }, [files, setValue])
+
 
     return (
         <div className="space-y-2">
@@ -112,7 +114,7 @@ export default function ImageSection({ errors, setValue }: ImageSectionProps) {
                             <div className="flex items-center gap-3 overflow-hidden">
                                 <div className="bg-accent aspect-square shrink-0 rounded">
                                     <Image
-                                      src={file.preview ?? ""}
+                                        src={file.preview ?? ""}
                                         alt={file.file.name}
                                         className="size-10 rounded-[inherit] object-cover"
                                     />
