@@ -14,12 +14,11 @@ import { motion, AnimatePresence } from "framer-motion"
 
 type CategoryFormProps = {
     register: UseFormRegister<Inputs>
-    watch: UseFormWatch<Inputs>
     setValue: UseFormSetValue<Inputs>
     errors: FieldErrors<Inputs>
 }
 
-export default function CategoryForm({ register, watch, setValue, errors }: CategoryFormProps) {
+export default function CategoryForm({ register, setValue, errors }: CategoryFormProps) {
     const dispatch = useDispatch()
     const category = useSelector((state: RootState) => state.property.category)
 

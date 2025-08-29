@@ -19,6 +19,7 @@ import {
   useFileUpload,
 } from "@/hooks/use-file-upload"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 // Create some dummy initial files
 const initialFiles = [
@@ -104,7 +105,7 @@ const getFilePreview = (file: {
   const fileName = file.file instanceof File ? file.file.name : file.file.name
 
   const renderImage = (src: string) => (
-    <img
+    <Image
       src={src}
       alt={fileName}
       className="size-full rounded-t-[inherit] object-cover"

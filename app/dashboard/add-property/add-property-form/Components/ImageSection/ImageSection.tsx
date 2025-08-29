@@ -1,7 +1,7 @@
 import React from "react"
 import { useImageUpload } from "@/hooks/useImageUpload"
 import { Button } from "@/components/ui/button"
-import { XIcon, UploadIcon, Trash2Icon, ImageIcon, FileIcon } from "lucide-react"
+import { XIcon, UploadIcon, Trash2Icon, ImageIcon } from "lucide-react"
 import Image from "next/image"
 
 type Props = { apiKey: string }

@@ -16,7 +16,7 @@ type CurrencyProps = {
     setValue: UseFormSetValue<Inputs>
     errors: FieldErrors<Inputs>
 }
-export default function Currency({ value, setValue, errors }: CurrencyProps) {
+export default function Currency({  setValue, errors }: CurrencyProps) {
     return (
         <div>
             <Label className="mb-2 block text-gray-700 text-xs" htmlFor="currency">

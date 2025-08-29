@@ -114,7 +114,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
         value,
         onChange,
         error,
-        name
+        
     }: {
         options: SelectOption[]
         placeholder: string

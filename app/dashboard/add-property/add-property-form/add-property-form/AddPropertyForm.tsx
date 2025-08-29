@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/lib/store"
 import { setAddPropertyLoader } from "@/app/features/loader/loaderSlice"
-import { clearFiles } from "@/app/features/imageUploadSlice/imageUploadSlice"
 import axios from "axios"
 import { motion } from "framer-motion"
 
@@ -30,7 +29,7 @@ export default function AddPropertyFormPage() {
     register,
     handleSubmit,
     watch,
-    setValue, control,
+    setValue,
     formState: { errors },
   } = useForm<Inputs>({ defaultValues: { currency: "BDT" } })
 
@@ -38,7 +37,7 @@ export default function AddPropertyFormPage() {
   const uploadedImages = useSelector((state: RootState) => state.imageUpload.files)
   const {
     uploadFiles,  localFiles,
-    isUploading: imageUploading
+
   } = useImageUpload(process.env.NEXT_PUBLIC_IMGBB_API_KEY!)
   const onSubmit = async (data: Inputs) => {
     try {
@@ -109,7 +108,7 @@ export default function AddPropertyFormPage() {
           <ContactInfo register={register} errors={errors}  />
         </div>
 
-        <CategoryFrom register={register} errors={errors} watch={watch} setValue={setValue} />
+        <CategoryFrom register={register} errors={errors} setValue={setValue} />
         <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
