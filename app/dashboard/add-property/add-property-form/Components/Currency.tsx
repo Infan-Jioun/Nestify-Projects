@@ -27,7 +27,7 @@ export default function Currency({  setValue, errors }: CurrencyProps) {
                     <SelectValue placeholder="Select your currency" />
                 </SelectTrigger>
                 <SelectContent id="currency">
-                    <SelectItem value="BD">BD</SelectItem>
+                    <SelectItem value="BDT">BDT</SelectItem>
                     <SelectItem value="US">US</SelectItem>
 
                 </SelectContent>

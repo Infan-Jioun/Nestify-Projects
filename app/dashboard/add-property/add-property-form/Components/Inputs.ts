@@ -10,7 +10,7 @@ export type Inputs = {
   district: string
   upazila: string
   geoLocation?: { lat: number; lng: number }
-  images: string[]
+  images: FileList
   videos?: string[]
   ownerId: string
   contactNumber: string

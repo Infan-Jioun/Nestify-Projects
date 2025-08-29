@@ -4,9 +4,10 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/lib/store"
-import { setAddPropertyLoader } from "@/app/features/loader/loaderSlice"
+import { setAddPropertyLoader, setLoading } from "@/app/features/loader/loaderSlice"
 import axios from "axios"
 import { motion } from "framer-motion"
+import toast from "react-hot-toast"
 
 // Components
 import ImageSection from "../Components/ImageSection/ImageSection"
@@ -19,17 +20,19 @@ import Currency from "../Components/Currency"
 import PropertyAddress from "../Components/PropertyAddress/PropertyAddress"
 import ContactInfo from "../Components/ContactInfo/ContactInfo"
 import { Inputs } from "../Components/Inputs"
-import toast from "react-hot-toast"
-import { useImageUpload } from "@/hooks/useImageUpload"
+import { imageUpload } from "@/hooks/useImageUpload"
+import { Button } from "@/components/ui/button"
+
 
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch()
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    control,
+    control, reset,
     formState: { errors },
   } = useForm<Inputs>({ defaultValues: { currency: "BDT" } })
 
@@ -39,32 +42,60 @@ export default function AddPropertyFormPage() {
     try {
       dispatch(setAddPropertyLoader(true))
 
-  
+
+      let uploadedImages: string[] = []
+      if (data.images && data.images.length > 0) {
+        const files = Array.from(data.images)
+        const uploads = await Promise.all(
+          files.map(async (file) => {
+            const res = await imageUpload(file)
+
+            return res?.data?.url || res?.data?.display_url
+          })
+        )
+        uploadedImages = uploads.filter(Boolean) as string[]
+      }
       const categoryFields = Object.entries(data)
         .filter(([key, value]) =>
           ![
-            "title", "currency", "propertySize", "price",
-            "address", "contactNumber", "email",
-            "division", "district", "upazila",
-            "country", "category", 
+            "title",
+            "currency",
+            "propertySize",
+            "price",
+            "address",
+            "contactNumber",
+            "email",
+            "division",
+            "district",
+            "upazila",
+            "country",
+            "category",
+            "images",
           ].includes(key) && value !== undefined && value !== null
         )
         .map(([key, value]) => ({ name: key, value }))
 
+      // 3) Final payload
       const transformedData = {
         ...data,
+        images: uploadedImages,
         category: {
-          name: typeof data.category === "string" ? data.category : (data.category as { name: string }).name,
-          fields: categoryFields
+          name:
+            typeof data.category === "string"
+              ? data.category
+              : (data.category as { name: string }).name,
+          fields: categoryFields,
         },
         upazila: data.upazila || "",
-       
       }
 
+      // 4) Send to API
       const response = await axios.post("/api/properties", transformedData)
 
       if (response.status === 201 || response.status === 200) {
+        setLoading(false)
         toast.success("Property submitted successfully!")
+        reset();
       } else {
         toast.error("Failed to submit property.")
       }
@@ -82,7 +113,7 @@ export default function AddPropertyFormPage() {
         onSubmit={handleSubmit(onSubmit)}
         className="mt-7 space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100 hover:border-green-400"
       >
-        
+        <ImageSection register={register} errors={errors} setValue={setValue} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <PropertyTitle register={register} errors={errors} />
@@ -90,7 +121,12 @@ export default function AddPropertyFormPage() {
         </div>
 
         <CategoryFrom register={register} errors={errors} setValue={setValue} />
-        <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
+        <PropertyLocation
+          register={register}
+          errors={errors}
+          watch={watch}
+          setValue={setValue}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <PropertySize register={register} errors={errors} />
@@ -100,13 +136,12 @@ export default function AddPropertyFormPage() {
 
         <PropertyAddress register={register} errors={errors} />
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <Button
+          
           className="btn h-10 px-4 w-full rounded-full bg-white text-black border border-gray-300 hover:text-green-500 hover:border-green-400 transition"
         >
           {loading ? "Submitting..." : "Add Property"}
-        </motion.button>
+        </Button>
       </form>
     </div>
   )
