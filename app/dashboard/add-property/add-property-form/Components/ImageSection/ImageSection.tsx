@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Inputs } from "../Inputs"
 import { useFileUpload, formatBytes } from "@/hooks/use-file-upload"
+import Image from "next/image"
 
 type ImageSectionProps = {
     register: UseFormRegister<Inputs>
@@ -110,8 +111,8 @@ export default function ImageSection({ errors, setValue }: ImageSectionProps) {
                         >
                             <div className="flex items-center gap-3 overflow-hidden">
                                 <div className="bg-accent aspect-square shrink-0 rounded">
-                                    <img
-                                        src={file.preview}
+                                    <Image
+                                      src={file.preview ?? ""}
                                         alt={file.file.name}
                                         className="size-10 rounded-[inherit] object-cover"
                                     />
