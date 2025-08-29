@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/lib/store"
 import { setAddPropertyLoader, setLoading } from "@/app/features/loader/loaderSlice"
 import axios from "axios"
-import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 
 // Components
