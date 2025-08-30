@@ -4,7 +4,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/lib/store"
-import { setAddPropertyLoader, setButtonLoader, setLoading } from "@/app/features/loader/loaderSlice"
+import { setAddPropertyLoader, setButtonLoader } from "@/app/features/loader/loaderSlice"
 import axios from "axios"
 import toast from "react-hot-toast"
 
@@ -35,7 +35,6 @@ export default function AddPropertyFormPage() {
     formState: { errors },
   } = useForm<Inputs>()
 
-  const loading = useSelector((state: RootState) => state.loader.loading)
   const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader)
 
   const onSubmit = async (data: Inputs) => {
