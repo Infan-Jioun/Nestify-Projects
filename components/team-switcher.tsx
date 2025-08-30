@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronsUpDown } from "lucide-react"
+// import { ChevronsUpDown } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
+import Link from "next/link"
 
 export function TeamSwitcher({
   teams,
@@ -24,7 +25,7 @@ export function TeamSwitcher({
   }[]
 }) {
 
-  const [activeTeam, ] = React.useState(teams[0])
+  const [activeTeam,] = React.useState(teams[0])
 
   if (!activeTeam) {
     return null
@@ -39,13 +40,11 @@ export function TeamSwitcher({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="">
-                <Image width={100} height={100} src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" />
-              </div>
+              <Link href="/"><Image width={100} height={100} src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" /></Link>
               <div className="grid flex-1 text-left text-sm leading-tight">
 
               </div>
-              <ChevronsUpDown className="ml-auto" />
+              {/* <ChevronsUpDown className="ml-auto" /> */}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           {/* <DropdownMenuContent
