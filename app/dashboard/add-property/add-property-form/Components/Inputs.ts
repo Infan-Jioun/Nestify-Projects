@@ -1,5 +1,3 @@
-import { FileMetadata } from "@/hooks/use-file-upload"
-
 export type Inputs = {
   title: string
   category: string
@@ -12,7 +10,7 @@ export type Inputs = {
   district: string
   upazila: string
   geoLocation?: { lat: number; lng: number }
-  images: (File | FileMetadata)[]
+  images: File[],
   videos?: string[]
   ownerId: string
   contactNumber: string

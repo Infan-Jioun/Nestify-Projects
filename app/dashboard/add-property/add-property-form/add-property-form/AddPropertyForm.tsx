@@ -33,7 +33,7 @@ export default function AddPropertyFormPage() {
     setValue,
     control, reset,
     formState: { errors },
-  } = useForm<Inputs>({ defaultValues: { currency: "BDT" } })
+  } = useForm<Inputs>()
 
   const loading = useSelector((state: RootState) => state.loader.loading)
 
@@ -136,7 +136,7 @@ export default function AddPropertyFormPage() {
         <PropertyAddress register={register} errors={errors} />
 
         <Button
-          
+
           className="btn h-10 px-4 w-full rounded-full bg-white text-black border border-gray-300 hover:text-green-500 hover:border-green-400 transition"
         >
           {loading ? "Submitting..." : "Add Property"}

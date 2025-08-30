@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Inputs } from "../Inputs"
 import { useFileUpload, formatBytes } from "@/hooks/use-file-upload"
 import Image from "next/image"
+import { Input } from "@/components/ui/input"
 
 type ImageSectionProps = {
     register: UseFormRegister<Inputs>
@@ -38,13 +39,15 @@ export default function ImageSection({ errors, setValue }: ImageSectionProps) {
         multiple: true,
         maxFiles,
     })
+
+    
     useEffect(() => {
         const fileList: File[] = files
             .map(f => f.file)
-            .filter((f): f is File => f instanceof File) // শুধু File রাখবে
+            .filter((f): f is File => f instanceof File)
+
         setValue("images", fileList, { shouldValidate: true })
     }, [files, setValue])
-
 
     return (
         <div className="space-y-2">
@@ -62,7 +65,7 @@ export default function ImageSection({ errors, setValue }: ImageSectionProps) {
                 data-files={files.length > 0 || undefined}
                 className="border-input data-[dragging=true]:bg-accent/50 relative flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed p-4 transition-colors"
             >
-                <input
+                <Input
                     {...getInputProps()}
                     id="images"
                     className="sr-only"
@@ -117,6 +120,8 @@ export default function ImageSection({ errors, setValue }: ImageSectionProps) {
                                         src={file.preview ?? ""}
                                         alt={file.file.name}
                                         className="size-10 rounded-[inherit] object-cover"
+                                        width={40}
+                                        height={40}
                                     />
                                 </div>
                                 <div className="flex min-w-0 flex-col gap-0.5">

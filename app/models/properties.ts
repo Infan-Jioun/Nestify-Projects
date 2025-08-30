@@ -26,7 +26,6 @@ const propertySchema = new Schema(
 
         currency: {
             type: String,
-            enum: ["USD", "EUR", "INR", "BDT"],
             required: true
         },
 
