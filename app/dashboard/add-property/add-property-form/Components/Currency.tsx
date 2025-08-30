@@ -16,7 +16,7 @@ type CurrencyProps = {
     setValue: UseFormSetValue<Inputs>
     errors: FieldErrors<Inputs>
 }
-export default function Currency({  setValue, errors }: CurrencyProps) {
+export default function Currency({ setValue, errors }: CurrencyProps) {
     return (
         <div>
             <Label className="mb-2 block text-gray-700 text-xs" htmlFor="currency">
@@ -28,8 +28,8 @@ export default function Currency({  setValue, errors }: CurrencyProps) {
                 </SelectTrigger>
                 <SelectContent id="currency">
                     <SelectItem value="BDT">BDT</SelectItem>
-                    <SelectItem value="US">US</SelectItem>
-
+                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="EUR">EUR</SelectItem>
                 </SelectContent>
                 {errors.currency && (
                     <span className="text-red-500 text-sm">Currency is required</span>
