@@ -5,6 +5,7 @@ interface LoaderState {
     district: boolean;
     upazila: boolean;
     addPropertyLoader?: boolean;
+    buttonLoader?: boolean;
 }
 
 const initialState: LoaderState = {
@@ -13,6 +14,7 @@ const initialState: LoaderState = {
     district: false,
     upazila: false,
     addPropertyLoader: false,
+    buttonLoader: false,
 }
 
 const loaderSlice = createSlice({
@@ -33,9 +35,12 @@ const loaderSlice = createSlice({
         },
         setAddPropertyLoader(state, action: PayloadAction<boolean>) {
             state.addPropertyLoader = action.payload;
+        },
+        setButtonLoader(state, action: PayloadAction<boolean>) {
+            state.buttonLoader = action.payload;
         }
 
     }
 })
-export const { setLoading , setDistrictLoading, setDivisionLoading,setUpazilaLoading , setAddPropertyLoader } = loaderSlice.actions;
+export const { setLoading, setDistrictLoading, setDivisionLoading, setUpazilaLoading, setAddPropertyLoader, setButtonLoader } = loaderSlice.actions;
 export default loaderSlice.reducer;
