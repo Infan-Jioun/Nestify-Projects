@@ -107,7 +107,7 @@ export default function AddPropertyFormPage() {
   }
 
   return (
-    <div className="drop-shadow-xl px-3 mt-5 border-t-2">
+    <div className="drop-shadow-xl  mt-5 border-t-2">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-7 space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100 hover:border-green-400"
@@ -137,9 +137,9 @@ export default function AddPropertyFormPage() {
 
         <Button
 
-          className="btn h-10 px-4 w-full rounded-full bg-white text-black border border-gray-300 hover:text-green-500 hover:border-green-400 transition"
+          className=" h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300  hover:border-green-500 font-semibold transition"
         >
-          {loading ? "Submitting..." : "Add Property"}
+          {loading ? "Submitting..." : "Add Your Property"}
         </Button>
       </form>
     </div>
