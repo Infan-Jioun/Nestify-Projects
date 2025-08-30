@@ -114,7 +114,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
         value,
         onChange,
         error,
-        
+
     }: {
         options: SelectOption[]
         placeholder: string
@@ -200,7 +200,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                             />
 
                         </div>
-                        {errors && <p className="mt-1 text-sm text-red-600">Division is required</p>}
+
 
                         {/* District */}
                         {watchDivision && (
@@ -218,7 +218,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                                     error={errors.district}
                                     name="district"
                                 />
-                                {errors && <p className="mt-1 text-sm text-red-600">District is required</p>}
+
                             </motion.div>
                         )}
 
@@ -235,7 +235,7 @@ export default function PropertyLocation({ register, errors, watch, setValue }: 
                                     error={errors.upazila}
                                     name="upazila"
                                 />
-                                {errors && <p className="mt-1 text-sm text-red-600">Upazila is required</p>}
+
 
                             </motion.div>
                         )}
