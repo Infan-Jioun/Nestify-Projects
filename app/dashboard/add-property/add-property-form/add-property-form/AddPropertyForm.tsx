@@ -4,7 +4,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/lib/store"
-import { setAddPropertyLoader, setLoading } from "@/app/features/loader/loaderSlice"
+import { setAddPropertyLoader, setButtonLoader, setLoading } from "@/app/features/loader/loaderSlice"
 import axios from "axios"
 import toast from "react-hot-toast"
 
@@ -36,11 +36,12 @@ export default function AddPropertyFormPage() {
   } = useForm<Inputs>()
 
   const loading = useSelector((state: RootState) => state.loader.loading)
+  const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader)
 
   const onSubmit = async (data: Inputs) => {
     try {
       dispatch(setAddPropertyLoader(true))
-
+      dispatch(setButtonLoader(true))
 
       let uploadedImages: string[] = []
       if (data.images && data.images.length > 0) {
@@ -92,7 +93,7 @@ export default function AddPropertyFormPage() {
       const response = await axios.post("/api/properties", transformedData)
 
       if (response.status === 201 || response.status === 200) {
-        setLoading(false)
+
         toast.success("Property submitted successfully!")
         reset();
       } else {
@@ -103,6 +104,7 @@ export default function AddPropertyFormPage() {
       toast.error("Failed to submit property.")
     } finally {
       dispatch(setAddPropertyLoader(false))
+      dispatch(setButtonLoader(false))
     }
   }
 
@@ -139,7 +141,7 @@ export default function AddPropertyFormPage() {
 
           className=" h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300  hover:border-green-500 font-semibold transition"
         >
-          {loading ? "Submitting..." : "Add Your Property"}
+          {buttonLoader ? "Submitting..." : "Add Your Property"}
         </Button>
       </form>
     </div>
