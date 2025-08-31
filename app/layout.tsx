@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import NavbarPage from "./NavbarPage/page";
 import DisplayLoader from "./DisplayLoader/page";
 import Providers from "./Providers/providers";
+import TanstackProvider from "./Providers/tanstack-provider";
 
 
 const poppins = Poppins({
@@ -36,11 +37,12 @@ export default async function RootLayout({
 
           <NavbarPage />
           <Providers>
-            <DisplayLoader>
+            <TanstackProvider>
+              <DisplayLoader>
 
-              {children}
-            </DisplayLoader>
-
+                {children}
+              </DisplayLoader>
+            </TanstackProvider>
           </Providers>
           <Footer />
 

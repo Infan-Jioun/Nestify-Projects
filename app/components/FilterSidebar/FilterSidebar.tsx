@@ -23,8 +23,12 @@ import { LocationFilter } from "../LocationFilter/LocationFilter";
 import SquareComponents from "../SquareComponents/SquareComponents";
 import YearBuildFilter from "../YearBuildFilter/YearBuildFilter";
 import { Button } from "@/components/ui/button";
+type FilterSidebarProps = {
+    activeTab: string;
+    setActiveTab: React.Dispatch<React.SetStateAction<string>>;
+};
 
-export function FilterSidebar() {
+export function FilterSidebar({ activeTab, setActiveTab }: FilterSidebarProps) {
     return (
         <div className="flex justify-end items-end text-right">
             <Sheet>
@@ -47,7 +51,7 @@ export function FilterSidebar() {
                             </SheetTitle>
 
                             <ScrollArea className="h-[90vh] mt-4 pr-2">
-                                <div  className="px-3 pb-6 text-sm text-gray-700 space-y-6">
+                                <div className="px-3 pb-6 text-sm text-gray-700 space-y-6">
                                     {/* Search */}
                                     <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                         <h2 className="text-xs font-semibold text-gray-900 mb-2">

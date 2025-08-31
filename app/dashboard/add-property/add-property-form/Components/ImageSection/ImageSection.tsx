@@ -51,9 +51,7 @@ export default function ImageSection({ errors, setValue }: ImageSectionProps) {
 
     return (
         <div className="space-y-2">
-            <Label htmlFor="images" className="text-sm font-medium">
-                Property Images
-            </Label>
+           
 
             {/* Drop area */}
             <div

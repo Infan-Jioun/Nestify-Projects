@@ -3,113 +3,50 @@
 import Image from "next/image";
 import { useState } from "react";
 import { FiHeart, FiPlus, FiShare } from "react-icons/fi";
-
 import { Button } from "@/components/ui/button";
+import usePropertiesData, { PropertyType } from "@/hooks/usePropertiesData";
 import { FilterSidebar } from "../FilterSidebar/FilterSidebar";
-const properties = [
-  {
-    id: 1,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$823,000",
-    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
-  },
-  {
-    id: 2,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
-  },
-  {
-    id: 3,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/wmtFPZh/image-5.webp",
-  },
-  {
-    id: 4,
-    type: "Office",
-    title: "Equestrian Family Home",
-    location: "Texas City, CA, USA",
-    price: "$14,000",
-    image: "https://i.ibb.co/vCF8pdrR/Image-2.webp",
-  },
-  {
-    id: 5,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
-  },
-  {
-    id: 6,
-    type: "Apartments",
-    title: "Equestrian Family Home",
-    location: "Texas City, CA, USA",
-    price: "$14,000",
-    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
-  },
-  {
-    id: 7,
-    type: "Apartments",
-    title: "Equestrian Family Home",
-    location: "Texas City, CA, USA",
-    price: "$14,000",
-    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
-  },
-  {
-    id: 8,
-    type: "Villa",
-    title: "Luxury villa in Rego Park",
-    location: "New Jersey City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/Pv5hj6rP/Image-3.webp",
-  },
-  {
-    id: 9,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$12,000",
-    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
-  },
-
-];
 
 export default function PropertyCard() {
-  const [activeTab,] = useState("House");
+  const [activeTab, setActiveTab] = useState<string>("House / Villa");
 
-  const filteredProperties = properties.filter(
-    (p) => p.type === activeTab
+  const { data: properties, isLoading, isError, error } = usePropertiesData();
+
+  if (isLoading) return <p className="text-center mt-10">Loading properties...</p>;
+  if (isError) {
+    const err = error as Error;
+    return <p className="text-center mt-10">Error: {err.message}</p>;
+  }
+
+  const props: PropertyType[] = Array.isArray(properties) ? properties : [];
+
+  const filteredProperties = props.filter(
+    (p) => p.category?.name === activeTab
   );
 
   return (
     <div>
+      <FilterSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        {filteredProperties.length === 0 && (
+          <p className="col-span-full text-center text-gray-500">
+            No properties found for {activeTab}.
+          </p>
+        )}
 
-        <FilterSidebar />
-
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
         {filteredProperties.map((property) => (
           <div
-            key={property.id}
+            key={property._id ?? Math.random()}
             className="relative overflow-hidden group rounded-xl shadow border"
           >
             {/* Image */}
             <Image
-              src={property.image}
-              alt={property.title}
+              src={property.images?.[0] ?? "/placeholder.jpg"}
+              alt={property.title ?? "Property"}
               width={500}
               height={500}
-              className="  transition-transform duration-300 group-hover:scale-110"
+              className="transition-transform duration-300 group-hover:scale-110"
             />
 
             {/* Top Right Icons */}
@@ -126,14 +63,27 @@ export default function PropertyCard() {
             </div>
 
             {/* Bottom Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm px-4 py-3 z-10 flex justify-between items-center text-white">
-              <div>
-                <h3 className="font-semibold">{property.title}</h3>
-                <p className="text-sm">{property.location}</p>
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm px-4 py-3 z-10 flex flex-col gap-2 text-white">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-semibold">{property.title ?? ""}</h3>
+                  <p className="text-sm">
+                    {property.address ?? ""}, {property.district ?? ""}
+                  </p>
+                  <p className="text-sm">Category: {property.category?.name ?? ""}</p>
+                </div>
+                <div className="bg-white text-black font-semibold px-3 py-1 rounded-2xl hover:bg-black hover:text-white transition">
+                  {property.price ?? ""} {property.currency ?? ""}
+                </div>
               </div>
-              <div className="bg-white text-black font-semibold px-3 py-1 rounded-2xl hover:bg-black hover:text-white transition">
-                {property.price}
-              </div>
+
+              <ul className="text-sm mt-2 space-y-1">
+                {property.category?.fields?.map((f, idx) => (
+                  <li key={f.name ?? idx}>
+                    {f.name ?? ""}: {f.value ?? ""}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         ))}
