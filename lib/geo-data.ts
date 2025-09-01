@@ -94,7 +94,7 @@ export const bangladeshGeoData: Division[] = [
         "districts": [
             {
                 "district": "Dhaka",
-                "upazilas": [ "Dhaka Sadar" ,"Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar"]
+                "upazilas": ["Dhaka Sadar", "Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar"]
             },
             {
                 "district": "Faridpur",
