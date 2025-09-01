@@ -57,7 +57,7 @@ export const bangladeshGeoData: Division[] = [
             },
             {
                 "district": "Chattogram",
-                "upazilas": [ "Cahttogram", "Anwara", "Banshkhali", "Boalkhali", "Chandanaish", "Fatikchhari", "Hathazari", "Lohagara", "Mirsharai", "Patiya", "Rangunia", "Raozan", "Sandwip", "Satkania", "Sitakunda"]
+                "upazilas": ["Cahttogram Sadar", "Anwara", "Banshkhali", "Boalkhali", "Chandanaish", "Fatikchhari", "Hathazari", "Lohagara", "Mirsharai", "Patiya", "Rangunia", "Raozan", "Sandwip", "Satkania", "Sitakunda"]
             },
             {
                 "district": "Cox's Bazar",
@@ -94,7 +94,7 @@ export const bangladeshGeoData: Division[] = [
         "districts": [
             {
                 "district": "Dhaka",
-                "upazilas": ["Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar"]
+                "upazilas": [ "Dhaka Sadar" ,"Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar"]
             },
             {
                 "district": "Faridpur",
