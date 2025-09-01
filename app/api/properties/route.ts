@@ -23,8 +23,10 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
 
     try {
-        const data = await req.json(); // POST body
+        const data = await req.json();
+        console.log("Received data for new property:", data);
         const newProperty = await Property.create(data);
+        console.log("Created new property:", newProperty);
         return NextResponse.json(newProperty, { status: 201 });
     } catch (err) {
         console.error("Failed to create property:", err);
