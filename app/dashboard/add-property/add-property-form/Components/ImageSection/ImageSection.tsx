@@ -16,7 +16,7 @@ type ImageSectionProps = {
     setValue: UseFormSetValue<Inputs>
 }
 
-export default function ImageSection({ register, errors, setValue }: ImageSectionProps) {
+export default function ImageSection({ errors, setValue }: ImageSectionProps) {
     const maxSizeMB = 5
     const maxSize = maxSizeMB * 1024 * 1024
     const maxFiles = 6
@@ -68,11 +68,11 @@ export default function ImageSection({ register, errors, setValue }: ImageSectio
                     id="images"
                     className="sr-only"
                     aria-label="Upload images"
-                    {...register("images", { required: "Image is required" })}
+
 
                 />
 
-                {/* {errors.images && <p className="text-red-500 text-sm">{errors.images.message}</p>} */}
+                {errors.images && <p className="text-red-500 text-sm">{errors.images.message}</p>}
                 <div className="flex flex-col items-center text-center">
                     <div className="bg-background mb-2 flex size-11 items-center justify-center rounded-full border">
                         <ImageIcon className="size-4 opacity-60" />
