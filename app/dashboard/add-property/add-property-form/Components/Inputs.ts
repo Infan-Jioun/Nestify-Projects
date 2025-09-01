@@ -2,7 +2,7 @@ export type Inputs = {
   title: string
   category: string
   price: number
-  currency: "BDT" | "USD"
+  currency: "BDT" | "USD" | "EUR"
   propertySize: number
   address: string
   country: string

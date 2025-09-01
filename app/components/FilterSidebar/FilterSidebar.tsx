@@ -23,12 +23,9 @@ import { LocationFilter } from "../LocationFilter/LocationFilter";
 import SquareComponents from "../SquareComponents/SquareComponents";
 import YearBuildFilter from "../YearBuildFilter/YearBuildFilter";
 import { Button } from "@/components/ui/button";
-type FilterSidebarProps = {
-    activeTab: string;
-    setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-};
 
-export function FilterSidebar({ activeTab, setActiveTab }: FilterSidebarProps) {
+
+export function FilterSidebar() {
     return (
         <div className="flex justify-end items-end text-right">
             <Sheet>
