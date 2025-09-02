@@ -1,9 +1,9 @@
 "use client";
-
 import Image from "next/image";
 import usePropertiesData from "@/hooks/usePropertiesData";
 import { FilterSidebar } from "../FilterSidebar/FilterSidebar";
 import { PropertyType } from "@/app/Types/properties";
+import Carousal from "../Carousal/Carousal";
 
 export default function PropertyCard() {
   const { data: properties, isLoading, isError, error } = usePropertiesData();
@@ -36,16 +36,9 @@ export default function PropertyCard() {
             key={property._id}
             className="border rounded-2xl shadow-md overflow-hidden bg-white hover:shadow-lg transition"
           >
-            {/* Image with unoptimized flag */}
+            {/* Image Carousel */}
             {property.images && property.images.length > 0 ? (
-              <Image
-                src={property.images[0]}
-                alt={property.title || "Property Image"}
-                width={600}
-                height={400}
-                unoptimized
-                className="w-full h-56 object-cover rounded-t-xl"
-              />
+              <Carousal images={property.images} title={property.title} />
             ) : (
               <div className="w-full h-56 bg-gray-200 flex items-center justify-center rounded-t-xl">
                 <span className="text-gray-500">No Image</span>
