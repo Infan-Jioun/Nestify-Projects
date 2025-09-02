@@ -1,15 +1,15 @@
 "use client";
-import Image from "next/image";
 import usePropertiesData from "@/hooks/usePropertiesData";
 import { FilterSidebar } from "../FilterSidebar/FilterSidebar";
 import { PropertyType } from "@/app/Types/properties";
 import Carousal from "../Carousal/Carousal";
+import { TbBuildingBurjAlArab } from "react-icons/tb";
 
 export default function PropertyCard() {
   const { data: properties, isLoading, isError, error } = usePropertiesData();
 
   if (isLoading) {
-    return <p className="text-center py-6">Loading properties...</p>;
+    return <p className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse"><TbBuildingBurjAlArab /></p>;
   }
 
   if (isError) {
@@ -23,14 +23,14 @@ export default function PropertyCard() {
   const props: PropertyType[] = Array.isArray(properties) ? properties : [];
 
   return (
-    <div className="flex gap-6">
+    <div className=" gap-6">
       {/* Sidebar */}
-      <div className="w-1/4">
+      <div className="">
         <FilterSidebar />
       </div>
 
       {/* Property Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-3/4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-3">
         {props.map((property) => (
           <div
             key={property._id}
@@ -51,7 +51,7 @@ export default function PropertyCard() {
               <p className="text-gray-600 text-sm mb-1">
                 {property.address}, {property.district}
               </p>
-              <p className="text-gray-800 font-bold mb-2">
+              <p className="text-green-500 font-semibold mb-2">
                 {property.price.toLocaleString()} {property.currency}
               </p>
 

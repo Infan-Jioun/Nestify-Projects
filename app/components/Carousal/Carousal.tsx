@@ -24,7 +24,7 @@ export default function Carousal({ images, title }: CarousalProps) {
 
         const interval = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % images.length);
-        }, 3000); // প্রতি ৩ সেকেন্ড পর slide হবে
+        }, 3000);
 
         return () => clearInterval(interval);
     }, [images]);
