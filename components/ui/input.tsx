@@ -105,7 +105,6 @@ export { Input }
 //   //   "status": "Available",
 //   //   "createdAt": "2025-09-02T12:00:00Z",
 //   //   "updatedAt": "2025-09-02T12:00:00Z"
-//   // },
 //   // {
 //   //   "title": "Luxury Duplex Villa",
 //   //   "category": {
@@ -366,5 +365,6 @@ export { Input }
 //   //   "createdAt": "2025-09-02T12:00:00Z",
 //   //   "updatedAt": "2025-09-02T12:00:00Z"
 //   // }
-// ]
+// ]/ },
+//   /
 

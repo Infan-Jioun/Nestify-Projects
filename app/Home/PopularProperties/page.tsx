@@ -1,91 +1,39 @@
 "use client";
 
-import Image from "next/image";
+import Carousal from "@/app/components/Carousal/Carousal";
+import { PropertyType } from "@/app/Types/properties";
+import usePropertiesData from "@/hooks/usePropertiesData";
 import { useState } from "react";
 import { FiHeart, FiPlus, FiShare } from "react-icons/fi";
-
-const tabs = ["House", "Villa", "Office", "Apartments"];
-const properties = [
-  {
-    id: 1,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$823,000",
-    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
-  },
-  {
-    id: 2,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
-  },
-  {
-    id: 3,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/wmtFPZh/image-5.webp",
-  },
-  {
-    id: 4,
-    type: "Office",
-    title: "Equestrian Family Home",
-    location: "Texas City, CA, USA",
-    price: "$14,000",
-    image: "https://i.ibb.co/vCF8pdrR/Image-2.webp",
-  },
-  {
-    id: 5,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
-  },
-  {
-    id: 6,
-    type: "Apartments",
-    title: "Equestrian Family Home",
-    location: "Texas City, CA, USA",
-    price: "$14,000",
-    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
-  },
-  {
-    id: 7,
-    type: "Apartments",
-    title: "Equestrian Family Home",
-    location: "Texas City, CA, USA",
-    price: "$14,000",
-    image: "https://i.ibb.co/r281PQmD/Image-1.webp",
-  },
-  {
-    id: 8,
-    type: "Villa",
-    title: "Luxury villa in Rego Park",
-    location: "New Jersey City, CA, USA",
-    price: "$82,000",
-    image: "https://i.ibb.co/Pv5hj6rP/Image-3.webp",
-  },
-  {
-    id: 9,
-    type: "House",
-    title: "Luxury villa in Rego Park",
-    location: "Los Angeles City, CA, USA",
-    price: "$12,000",
-    image: "https://i.ibb.co/MkTJrWvd/image-4.webp",
-  },
- 
-];
+import { TbBuildingBurjAlArab } from "react-icons/tb";
 
 export default function PopularProperties() {
-  const [activeTab, setActiveTab] = useState("House");
+  const { data: properties, isLoading, isError, error } = usePropertiesData();
 
-  const filteredProperties = properties.filter(
-    (p) => p.type === activeTab
+  const tabs = ["House", "Duplex", "Office Space", "Apartment"];
+  const [activeTab, setActiveTab] = useState<string>(tabs[0]);
+
+  if (isLoading) {
+    return (
+      <p className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse">
+        <TbBuildingBurjAlArab />
+      </p>
+    );
+  }
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500 py-6">
+        Failed to load properties: {error?.message}
+      </p>
+    );
+  }
+
+  const props: PropertyType[] = Array.isArray(properties) ? properties : [];
+
+
+  const filteredProperties = props.filter(
+    (p) => p.category?.name === activeTab
   );
 
   return (
@@ -93,19 +41,22 @@ export default function PopularProperties() {
       {/* Header & Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-xl text-center sm:text-left font-bold mb-1">Discover Popular Properties</h2>
-          <p className="text-gray-500 text-center sm:text-left">Aliquam lacinia diam quis lacus euismod</p>
+          <h2 className="text-xl text-center sm:text-left font-bold mb-1">
+            Discover Popular Properties
+          </h2>
+          <p className="text-gray-500 text-center sm:text-left">
+            Aliquam lacinia diam quis lacus euismod
+          </p>
         </div>
         <div className="flex space-x-3 px-1">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-2 py-2 rounded-md border ${
-                activeTab === tab
-                  ? "bg-black text-white"
-                  : "bg-white text-black hover:bg-gray-100"
-              }`}
+              className={`px-2 py-2 rounded-md border ${activeTab === tab
+                ? "bg-black text-white"
+                : "bg-white text-black hover:bg-gray-100"
+                }`}
             >
               {tab}
             </button>
@@ -117,17 +68,17 @@ export default function PopularProperties() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {filteredProperties.map((property) => (
           <div
-            key={property.id}
+            key={property._id} // MongoDB _id ব্যবহার
             className="relative overflow-hidden group rounded-xl shadow border"
           >
             {/* Image */}
-            <Image
-              src={property.image}
-              alt={property.title}
-              width={800}
-              height={800}
-              className="  transition-transform duration-300 group-hover:scale-110"
-            />
+            {property.images && property.images.length > 0 ? (
+              <Carousal images={property.images} title={property.title} />
+            ) : (
+              <div className="w-full h-56 bg-gray-200 flex items-center justify-center rounded-t-xl">
+                <span className="text-gray-500">No Image</span>
+              </div>
+            )}
 
             {/* Top Right Icons */}
             <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
@@ -146,10 +97,10 @@ export default function PopularProperties() {
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm px-4 py-3 z-10 flex justify-between items-center text-white">
               <div>
                 <h3 className="font-semibold">{property.title}</h3>
-                <p className="text-sm">{property.location}</p>
+                <p className="text-sm">{property.address}</p>
               </div>
               <div className="bg-white text-black font-semibold px-3 py-1 rounded-2xl hover:bg-black hover:text-white transition">
-                {property.price}
+                {property.price} BDT
               </div>
             </div>
           </div>

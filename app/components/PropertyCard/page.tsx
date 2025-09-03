@@ -57,11 +57,11 @@ export default function PropertyCard() {
 
               {/* Extra details */}
               <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                {property.bedrooms && <span>🛏 {property.bedrooms} Bed</span>}
-                {property.bathrooms && <span>🛁 {property.bathrooms} Bath</span>}
-                {property.kitchen && <span>🍳 {property.kitchen} Kitchen</span>}
+                {property.bedrooms && <span> {property.bedrooms} Bed</span>}
+                {property.bathrooms && <span> {property.bathrooms} Bath</span>}
+                {property.kitchen && <span> {property.kitchen} Kitchen</span>}
                 {property.propertySize && (
-                  <span>📐 {property.propertySize} sq ft</span>
+                  <span> {property.propertySize} sq ft</span>
                 )}
               </div>
 
