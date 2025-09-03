@@ -3,7 +3,7 @@ import connectToDatabase from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET: fetch all properties
-export async function GET(req: NextRequest) {
+export async function GET() {
     await connectToDatabase();
 
     try {

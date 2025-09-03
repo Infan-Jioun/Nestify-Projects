@@ -3,30 +3,12 @@
 import React from "react";
 import { PropertyType } from "@/app/Types/properties";
 import Carousal from "../Carousal/Carousal";
-import { useSelector } from "react-redux";
-import { Skeleton } from "@/components/ui/skeleton";
-import { RootState } from "@/lib/store";
 
 type PropertyCardProps = {
-  property?: PropertyType;
+  property: PropertyType;
 };
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  // Redux slice থেকে skeleton loading state
-  const { skeletonLoading } = useSelector((state: RootState) => state.skeleton);
-
-  if (skeletonLoading || !property) {
-    return (
-      <div className="border rounded-2xl p-4 shadow-md bg-white">
-        <Skeleton />
-        <Skeleton className="mt-3" />
-        <Skeleton className="mt-1" />
-        <Skeleton className="mt-1" />
-        <Skeleton className="mt-3" />
-      </div>
-    );
-  }
-
   return (
     <div className="border rounded-2xl shadow-md overflow-hidden bg-white hover:shadow-lg transition">
       {/* Image Carousel */}

@@ -1,26 +1,32 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+
 import PropertyCard from "@/app/components/PropertyCard/page";
 import usePropertiesData from "@/hooks/usePropertiesData";
 import { PropertyType } from "@/app/Types/properties";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import { setSkeletonLoading } from "@/app/features/skeleton/skeletonSlice";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Circles } from "react-loader-spinner";
 
 export default function PopularProperties() {
-  const dispatch = useDispatch();
-  const { skeletonLoading } = useSelector((state: RootState) => state.skeleton);
-
   const { data: properties, isLoading, isError, error } = usePropertiesData();
   const tabs = ["House", "Duplex", "Office Space", "Apartment"];
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
 
-  // Sync loading with Redux skeleton slice
-  useEffect(() => {
-    dispatch(setSkeletonLoading(isLoading));
-  }, [isLoading, dispatch]);
+  if (isLoading) {
+    return (
+      <p className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse">
+       <Circles
+      height="80"
+      width="80"
+      color="#4fa94d"
+      ariaLabel="circles-loading"
+      wrapperStyle={{}}
+      wrapperClass=""
+      visible={true}
+    />
+      </p>
+    );
+  }
 
   if (isError) {
     return (
@@ -52,11 +58,10 @@ export default function PopularProperties() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-2 py-2 rounded-md border ${
-                activeTab === tab
-                  ? "bg-black text-white"
-                  : "bg-white text-black hover:bg-gray-100"
-              }`}
+              className={`px-2 py-2 rounded-md border ${activeTab === tab
+                ? "bg-black text-white"
+                : "bg-white text-black hover:bg-gray-100"
+                }`}
             >
               {tab}
             </button>
@@ -66,18 +71,9 @@ export default function PopularProperties() {
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {skeletonLoading
-          ? Array(6)
-              .fill(0)
-              .map((_, i) => (
-                <div key={i} className="border rounded-2xl p-4 shadow-md bg-white">
-                  <Skeleton height={200} />
-                  <Skeleton count={3} className="mt-3" />
-                </div>
-              ))
-          : filteredProperties.map((property) => (
-              <PropertyCard key={property._id} property={property} />
-            ))}
+        {filteredProperties.map((property) => (
+          <PropertyCard key={property._id} property={property} />
+        ))}
       </div>
     </div>
   );
