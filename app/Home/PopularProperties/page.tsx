@@ -1,15 +1,13 @@
 "use client";
 
-import Carousal from "@/app/components/Carousal/Carousal";
-import { PropertyType } from "@/app/Types/properties";
-import usePropertiesData from "@/hooks/usePropertiesData";
-import { useState } from "react";
-import { FiHeart, FiPlus, FiShare } from "react-icons/fi";
+import React, { useState } from "react";
 import { TbBuildingBurjAlArab } from "react-icons/tb";
+import PropertyCard from "@/app/components/PropertyCard/page";
+import usePropertiesData from "@/hooks/usePropertiesData";
+import { PropertyType } from "@/app/Types/properties";
 
 export default function PopularProperties() {
   const { data: properties, isLoading, isError, error } = usePropertiesData();
-
   const tabs = ["House", "Duplex", "Office Space", "Apartment"];
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
 
@@ -30,8 +28,6 @@ export default function PopularProperties() {
   }
 
   const props: PropertyType[] = Array.isArray(properties) ? properties : [];
-
-
   const filteredProperties = props.filter(
     (p) => p.category?.name === activeTab
   );
@@ -67,43 +63,7 @@ export default function PopularProperties() {
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {filteredProperties.map((property) => (
-          <div
-            key={property._id} // MongoDB _id ব্যবহার
-            className="relative overflow-hidden group rounded-xl shadow border"
-          >
-            {/* Image */}
-            {property.images && property.images.length > 0 ? (
-              <Carousal images={property.images} title={property.title} />
-            ) : (
-              <div className="w-full h-56 bg-gray-200 flex items-center justify-center rounded-t-xl">
-                <span className="text-gray-500">No Image</span>
-              </div>
-            )}
-
-            {/* Top Right Icons */}
-            <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-              <button className="bg-white p-2 rounded-full shadow hover:bg-red-100">
-                <FiHeart className="text-xl text-green-500" />
-              </button>
-              <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
-                <FiPlus className="text-xl text-green-500" />
-              </button>
-              <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100">
-                <FiShare className="text-xl text-green-500" />
-              </button>
-            </div>
-
-            {/* Bottom Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm px-4 py-3 z-10 flex justify-between items-center text-white">
-              <div>
-                <h3 className="font-semibold">{property.title}</h3>
-                <p className="text-sm">{property.address}</p>
-              </div>
-              <div className="bg-white text-black font-semibold px-3 py-1 rounded-2xl hover:bg-black hover:text-white transition">
-                {property.price} BDT
-              </div>
-            </div>
-          </div>
+          <PropertyCard key={property._id} property={property} />
         ))}
       </div>
     </div>
