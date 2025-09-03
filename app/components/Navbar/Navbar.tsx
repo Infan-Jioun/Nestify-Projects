@@ -147,11 +147,25 @@ export function Navbar() {
                 <NavigationMenuItem key={link.href}>
                   <Link
                     href={link.href}
-                    className={`text-[15px] font-semibold relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded ${pathname === link.href ? "" : "text-black"
-                      }`}
+                    className={`text-[15px] font-semibold relative inline-block duration-300
+    before:content-[''] 
+    before:absolute 
+    before:bottom-[-4px] 
+    before:left-0 
+    before:w-full 
+    before:h-[2px] 
+    before:bg-green-500 
+    before:origin-left 
+    before:transform 
+    before:scale-x-0 
+    before:transition-transform 
+    before:duration-300 
+    hover:before:scale-x-100
+    ${pathname === link.href ? "text-green-500 before:scale-x-100" : "text-black"}`}
                   >
                     {link.name}
                   </Link>
+
                 </NavigationMenuItem>
               ))}
             </NavigationMenuList>
