@@ -7,7 +7,6 @@ import { FilterSidebar } from "../components/FilterSidebar/FilterSidebar";
 import PropertyCard from "../components/PropertyCard/PropertyCard";
 import usePropertiesData from "@/hooks/usePropertiesData";
 import { PropertyType } from "@/app/Types/properties";
-import { Circles } from "react-loader-spinner";
 export default function PropertiesPage() {
   const { data: properties, isLoading, isError, error } = usePropertiesData();
 
