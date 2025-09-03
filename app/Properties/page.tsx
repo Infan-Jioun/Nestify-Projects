@@ -7,13 +7,15 @@ import PropertyCard from "../components/PropertyCard/PropertyCard";
 import usePropertiesData from "@/hooks/usePropertiesData";
 import { PropertyType } from "@/app/Types/properties";
 import PropertiesTitle from "./PropertiesTitle/PropertiesTitle";
+
 export default function PropertiesPage() {
-  const { data: properties, isLoading, isError, error } = usePropertiesData();
+  const { data: properties, isLoading ,isError, error } = usePropertiesData();
 
 
 
   const props: PropertyType[] = Array.isArray(properties) ? properties : [];
 
+  
   return (
     <div className="mt-20 px-4 md:px-20 lg:px-44">
       <NextHead title="Properties - Nestify" />
@@ -26,7 +28,7 @@ export default function PropertiesPage() {
 
         <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {props.map((property) => (
-            <PropertyCard key={property._id} property={property} />
+            <PropertyCard key={property._id} property={property} isLoading={isLoading}  error={error} isError={isError} />
           ))}
         </div>
       </div>

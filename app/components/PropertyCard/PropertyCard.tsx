@@ -3,12 +3,39 @@
 import React from "react";
 import { PropertyType } from "@/app/Types/properties";
 import Carousal from "../Carousal/Carousal";
+import { Circles } from "react-loader-spinner";
 
 type PropertyCardProps = {
   property: PropertyType;
+  isLoading?: boolean;
+  isError?: boolean;
+  error?: PropertyType | any;
 };
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default function PropertyCard({ property, isLoading, isError, error}: PropertyCardProps) {
+  if (isLoading) {
+    return (
+      <p className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse">
+        <Circles
+          height="80"
+          width="80"
+          color="#4fa94d"
+          ariaLabel="circles-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+        />
+      </p>
+    );
+  }
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500 py-6">
+        Failed to load properties: {error?.message}
+      </p>
+    );
+  }
   return (
     <div className="border rounded-2xl shadow-md overflow-hidden bg-white hover:shadow-lg transition">
       {/* Image Carousel */}
