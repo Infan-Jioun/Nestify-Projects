@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import PropertyCard from "@/app/components/PropertyCard/page";
+import PropertyCard from "@/app/components/PropertyCard/PropertyCard";
 import usePropertiesData from "@/hooks/usePropertiesData";
 import { PropertyType } from "@/app/Types/properties";
 import { Circles } from "react-loader-spinner";
