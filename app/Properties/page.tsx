@@ -2,11 +2,11 @@
 
 import React from "react";
 import NextHead from "../components/NextHead/NextHead";
-import PropertiesTitle from "./PropertiesTitle/page";
 import { FilterSidebar } from "../components/FilterSidebar/FilterSidebar";
 import PropertyCard from "../components/PropertyCard/PropertyCard";
 import usePropertiesData from "@/hooks/usePropertiesData";
 import { PropertyType } from "@/app/Types/properties";
+import PropertiesTitle from "./PropertiesTitle/PropertiesTitle";
 export default function PropertiesPage() {
   const { data: properties, isLoading, isError, error } = usePropertiesData();
 
