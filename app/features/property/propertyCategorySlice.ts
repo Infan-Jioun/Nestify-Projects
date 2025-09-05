@@ -8,8 +8,8 @@ const initialState: PropertyState = {
     category: ""
 }
 
-export const propertySlice = createSlice({
-    name: "property",
+export const propertyCategorySilce = createSlice({
+    name: "propertycategory",
     initialState,
     reducers: {
         setCategory: (state, action: PayloadAction<string>) => {
@@ -18,5 +18,5 @@ export const propertySlice = createSlice({
     },
 })
 
-export const { setCategory } = propertySlice.actions
-export default propertySlice.reducer
+export const { setCategory } = propertyCategorySilce.actions
+export default propertyCategorySilce.reducer

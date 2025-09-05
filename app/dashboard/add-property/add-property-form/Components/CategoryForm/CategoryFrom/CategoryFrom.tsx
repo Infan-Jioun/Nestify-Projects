@@ -3,7 +3,6 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/lib/store"
-import { setCategory } from "@/app/features/property/propertySlice"
 import { UseFormRegister, UseFormSetValue, FieldErrors } from "react-hook-form"
 import { Inputs } from "../../Inputs"
 import { Field, propertyCategoryData } from "@/lib/proprtyCategory"
@@ -11,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { motion, AnimatePresence } from "framer-motion"
+import { setCategory } from "@/app/features/property/propertyCategorySlice"
 
 type CategoryFormProps = {
     register: UseFormRegister<Inputs>
@@ -20,7 +20,7 @@ type CategoryFormProps = {
 
 export default function CategoryForm({ register, setValue, errors }: CategoryFormProps) {
     const dispatch = useDispatch()
-    const category = useSelector((state: RootState) => state.property.category)
+    const category = useSelector((state: RootState) => state.propertyCategory.category)
 
     const handleCategoryChange = (value: string) => {
         setValue("category", value)
