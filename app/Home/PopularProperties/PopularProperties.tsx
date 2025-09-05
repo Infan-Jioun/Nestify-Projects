@@ -14,17 +14,17 @@ export default function PopularProperties() {
 
   if (isLoading) {
     return (
-      <p className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse">
-       <Circles
-      height="80"
-      width="80"
-      color="#4fa94d"
-      ariaLabel="circles-loading"
-      wrapperStyle={{}}
-      wrapperClass=""
-      visible={true}
-    />
-      </p>
+      <div className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse">
+        <Circles
+          height="80"
+          width="80"
+          color="#4fa94d"
+          ariaLabel="circles-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+        />
+      </div>
     );
   }
 

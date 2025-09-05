@@ -1,19 +1,39 @@
-import { Input } from '@/components/ui/input'
-import React from 'react'
+import { Input } from '@/components/ui/input';
+import React from 'react';
 
-export default function YearBuildFilter() {
-    return (
-        <div className='mt-5'>
-            <div>
-                <p className='font-semibold text-black'>Square Feet</p>
-            </div>
-            <div className='flex items-center gap-3 mt-3'>
-                <Input type='number' placeholder='2019' className='w-1/2' />
-                -
-                <Input type='number' placeholder='2025' className='w-1/2' />
+interface YearBuildFilterProps {
+  minYear: string;
+  maxYear: string;
+  onMinYearChange: (value: string) => void;
+  onMaxYearChange: (value: string) => void;
+}
 
-
-            </div>
-        </div>
-    )
+export default function YearBuildFilter({
+  minYear,
+  maxYear,
+  onMinYearChange,
+  onMaxYearChange
+}: YearBuildFilterProps) {
+  return (
+    <div className="mt-5">
+      <p className="font-semibold text-black">Year Built</p>
+      <div className="flex items-center gap-3 mt-3">
+        <Input
+          type="number"
+          placeholder="Min Year"
+          className="w-1/2"
+          value={minYear}
+          onChange={(e) => onMinYearChange(e.target.value)}
+        />
+        -
+        <Input
+          type="number"
+          placeholder="Max Year"
+          className="w-1/2"
+          value={maxYear}
+          onChange={(e) => onMaxYearChange(e.target.value)}
+        />
+      </div>
+    </div>
+  );
 }
