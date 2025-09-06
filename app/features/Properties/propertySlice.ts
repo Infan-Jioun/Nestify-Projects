@@ -13,7 +13,7 @@ const initialState: PropertyState = {
     loading: false,
     error: null,
 };
-
+      // GET
 export const fetchProperties = createAsyncThunk<
     PropertyType[],
     void,
@@ -29,7 +29,7 @@ export const fetchProperties = createAsyncThunk<
         return rejectWithValue("Failed to fetch properties");
     }
 });
-
+   // PUSH
 export const addProperty = createAsyncThunk<
     PropertyType,
     PropertyType,
@@ -45,6 +45,7 @@ export const addProperty = createAsyncThunk<
         return rejectWithValue("Failed to add property");
     }
 });
+   // DELETE
 
 const propertySlice = createSlice({
     name: "properties",
@@ -60,6 +61,7 @@ const propertySlice = createSlice({
     },
     extraReducers: builder => {
         builder
+            // GET
             .addCase(fetchProperties.pending, state => {
                 state.loading = true;
                 state.error = null;
@@ -72,6 +74,7 @@ const propertySlice = createSlice({
                 state.loading = false;
                 state.error = action.payload ?? "Failed to fetch properties";
             })
+            // PUSH
             .addCase(addProperty.pending, state => {
                 state.loading = true;
                 state.error = null;
@@ -84,6 +87,8 @@ const propertySlice = createSlice({
                 state.loading = false;
                 state.error = action.payload ?? "Failed to add property";
             });
+        // DELETE
+
     },
 });
 
