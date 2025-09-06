@@ -7,10 +7,10 @@ export async function DELETE(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    
+
     const url = new URL(req.url);
     const parts = url.pathname.split("/");
-    const id = parts[parts.length - 1]; 
+    const id = parts[parts.length - 1];
 
     if (!id || !Types.ObjectId.isValid(id)) {
       return NextResponse.json({ error: "Invalid user id" }, { status: 400 });
