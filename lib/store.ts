@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from '../app/features/user/userAuthSlice';
 import loaderReducer from '../app/features/loader/loaderSlice';
 import locationReducer from '../app/features/location/locationSlice';
+import propertiesReducer from "../app/features/Properties/propertySlice"
 import propertyCategoryReducer from "../app/features/property/propertyCategorySlice"
 import skeletionReducer from '../app/features/skeleton/skeletonSlice';
 
@@ -11,8 +12,10 @@ export const store = configureStore({
         user: userReducer,
         location: locationReducer, // Assuming locationSlice is similar to loaderSlice
         loader: loaderReducer,
-        propertyCategory: propertyCategoryReducer, 
+        properties: propertiesReducer,
+        propertyCategory: propertyCategoryReducer,
         skeleton: skeletionReducer
+
     }
 })
 export type RootState = ReturnType<typeof store.getState>;
