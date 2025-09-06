@@ -50,7 +50,7 @@ export default function PropertiesPage() {
                 property={property}
                 isLoading={loading}
                 isError={!!error}
-                error={error ?? ""}
+
               />
             ))
           }
