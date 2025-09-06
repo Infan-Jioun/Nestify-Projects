@@ -21,6 +21,7 @@ import ContactInfo from "../Components/ContactInfo/ContactInfo"
 import { Inputs } from "../Components/Inputs"
 import { imageUpload } from "@/hooks/useImageUpload"
 import { Button } from "@/components/ui/button"
+import { addProperty } from "@/app/features/Properties/propertySlice"
 
 
 export default function AddPropertyFormPage() {
@@ -89,14 +90,14 @@ export default function AddPropertyFormPage() {
       }
 
       // 4) Send to API
-      const response = await axios.post("/api/properties", transformedData)
+      const resultAction = await dispatch(addProperty(transformedData) as any);
 
-      if (response.status === 201 || response.status === 200) {
+      if (addProperty.fulfilled.match(resultAction)) {
 
         toast.success("Property submitted successfully!")
         reset();
       } else {
-        toast.error("Failed to submit property.")
+        toast.error(resultAction.payload || "Failed to submit property")
       }
     } catch (err) {
       console.error("Error adding property:", err)
