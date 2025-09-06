@@ -12,7 +12,7 @@ type PropertyCardProps = {
   error?: unknown;
 };
 
-export default function PropertyCard({ property, isLoading, isError, error }: PropertyCardProps) {
+export default function PropertyCard({ property, isLoading, isError }: PropertyCardProps) {
   if (isLoading) {
     return (
       <p className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse">

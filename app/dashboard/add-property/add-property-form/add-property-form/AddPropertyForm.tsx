@@ -1,84 +1,99 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useForm } from "react-hook-form"
-import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "@/lib/store"
-import { setAddPropertyLoader, setButtonLoader } from "@/app/features/loader/loaderSlice"
-import axios from "axios"
-import toast from "react-hot-toast"
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/store";
+import { setAddPropertyLoader, setButtonLoader } from "@/app/features/loader/loaderSlice";
+import toast from "react-hot-toast";
+import { v4 as uuidv4 } from "uuid";
 
 // Components
-import ImageSection from "../Components/ImageSection/ImageSection"
-import PropertyTitle from "../Components/PropertyTitle/PropertyTitle"
-import CategoryFrom from "../Components/CategoryForm/CategoryFrom/CategoryFrom"
-import PropertyLocation from "../Components/PropertyLocation"
-import PropertySize from "../Components/PropertySize/PropertySize"
-import PropertyPrice from "../Components/PropertyPrice/PropertyPrice"
-import Currency from "../Components/Currency"
-import PropertyAddress from "../Components/PropertyAddress/PropertyAddress"
-import ContactInfo from "../Components/ContactInfo/ContactInfo"
-import { Inputs } from "../Components/Inputs"
-import { imageUpload } from "@/hooks/useImageUpload"
-import { Button } from "@/components/ui/button"
-import { addProperty } from "@/app/features/Properties/propertySlice"
-
+import ImageSection from "../Components/ImageSection/ImageSection";
+import PropertyTitle from "../Components/PropertyTitle/PropertyTitle";
+import CategoryFrom from "../Components/CategoryForm/CategoryFrom/CategoryFrom";
+import PropertyLocation from "../Components/PropertyLocation";
+import PropertySize from "../Components/PropertySize/PropertySize";
+import PropertyPrice from "../Components/PropertyPrice/PropertyPrice";
+import Currency from "../Components/Currency";
+import PropertyAddress from "../Components/PropertyAddress/PropertyAddress";
+import ContactInfo from "../Components/ContactInfo/ContactInfo";
+import { Inputs } from "../Components/Inputs";
+import { imageUpload } from "@/hooks/useImageUpload";
+import { Button } from "@/components/ui/button";
+import { addProperty } from "@/app/features/Properties/propertySlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { PropertyType } from "@/app/Types/properties";
 
 export default function AddPropertyFormPage() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>();
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    control, reset,
+    control,
+    reset,
     formState: { errors },
-  } = useForm<Inputs>()
+  } = useForm<Inputs>();
 
-  const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader)
+  const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
 
   const onSubmit = async (data: Inputs) => {
     try {
-      dispatch(setAddPropertyLoader(true))
-      dispatch(setButtonLoader(true))
+      dispatch(setAddPropertyLoader(true));
+      dispatch(setButtonLoader(true));
 
-      let uploadedImages: string[] = []
+      // 1) Upload images
+      let uploadedImages: string[] = [];
       if (data.images && data.images.length > 0) {
-        const files = Array.from(data.images)
+        const files = Array.from(data.images);
         const uploads = await Promise.all(
           files.map(async (file) => {
-            const res = await imageUpload(file)
-
-            return res?.data?.url || res?.data?.display_url
+            const res = await imageUpload(file);
+            return res?.data?.url || res?.data?.display_url;
           })
-        )
-        uploadedImages = uploads.filter(Boolean) as string[]
+        );
+        uploadedImages = uploads.filter(Boolean) as string[];
       }
-      const categoryFields = Object.entries(data)
-        .filter(([key, value]) =>
-          ![
-            "title",
-            "currency",
-            "propertySize",
-            "price",
-            "address",
-            "contactNumber",
-            "email",
-            "division",
-            "district",
-            "upazila",
-            "country",
-            "category",
-            "images",
-          ].includes(key) && value !== undefined && value !== null
-        )
-        .map(([key, value]) => ({ name: key, value }))
 
-      // 3) Final payload
-      const transformedData = {
+      // 2) Transform category fields with id
+      const categoryFields = Object.entries(data)
+        .filter(
+          ([key, value]) =>
+            ![
+              "title",
+              "currency",
+              "propertySize",
+              "price",
+              "address",
+              "contactNumber",
+              "email",
+              "division",
+              "district",
+              "upazila",
+              "country",
+              "category",
+              "images",
+              "videos",
+              "createdAt",
+              "updatedAt",
+            ].includes(key) &&
+            value !== undefined &&
+            value !== null
+        )
+        .map(([key, value]) => ({
+          id: uuidv4(),
+          name: key,
+          value: value as string | number | boolean,
+        }));
+
+      // 3) Final payload matching PropertyType
+      const transformedData: PropertyType = {
         ...data,
         images: uploadedImages,
+        videos: data.videos || [],
         category: {
           name:
             typeof data.category === "string"
@@ -87,29 +102,29 @@ export default function AddPropertyFormPage() {
           fields: categoryFields,
         },
         upazila: data.upazila || "",
-      }
+        status: data.status || "Available",
+        createdAt: data.createdAt ? data.createdAt.toISOString() : new Date().toISOString(),
+        updatedAt: data.updatedAt ? data.updatedAt.toISOString() : new Date().toISOString(),
+      };
 
-      // 4) Send to API
-      const resultAction = await dispatch(addProperty(transformedData) as any);
+      // 4) Dispatch addProperty
+      const resultAction = await dispatch(addProperty(transformedData));
+      unwrapResult(resultAction);
 
-      if (addProperty.fulfilled.match(resultAction)) {
-
-        toast.success("Property submitted successfully!")
-        reset();
-      } else {
-        toast.error(resultAction.payload || "Failed to submit property")
-      }
-    } catch (err) {
-      console.error("Error adding property:", err)
-      toast.error("Failed to submit property.")
+      toast.success("Property submitted successfully!");
+      reset();
+    } catch (err: unknown) {
+      console.error("Error adding property:", err);
+      if (err instanceof Error) toast.error(err.message);
+      else toast.error("Failed to submit property.");
     } finally {
-      dispatch(setAddPropertyLoader(false))
-      dispatch(setButtonLoader(false))
+      dispatch(setAddPropertyLoader(false));
+      dispatch(setButtonLoader(false));
     }
-  }
+  };
 
   return (
-    <div className="drop-shadow-xl  mt-5 border-t-2">
+    <div className="drop-shadow-xl mt-5 border-t-2">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-7 space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100 hover:border-green-400"
@@ -122,12 +137,7 @@ export default function AddPropertyFormPage() {
         </div>
 
         <CategoryFrom register={register} errors={errors} setValue={setValue} />
-        <PropertyLocation
-          register={register}
-          errors={errors}
-          watch={watch}
-          setValue={setValue}
-        />
+        <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <PropertySize register={register} errors={errors} />
@@ -137,13 +147,10 @@ export default function AddPropertyFormPage() {
 
         <PropertyAddress register={register} errors={errors} />
 
-        <Button
-
-          className=" h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300  hover:border-green-500 font-semibold transition"
-        >
+        <Button className="h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300 hover:border-green-500 font-semibold transition">
           {buttonLoader ? "Submitting..." : "Add Your Property"}
         </Button>
       </form>
     </div>
-  )
+  );
 }
