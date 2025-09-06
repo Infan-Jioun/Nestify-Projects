@@ -35,7 +35,6 @@ export default function PropertiesPage() {
             />
           ))}
 
-          {/* যদি কোনো property না থাকে */}
           {!isLoading && !isError && props.length === 0 && (
             <p className="col-span-full text-center text-gray-500 py-10">
               No properties found.
