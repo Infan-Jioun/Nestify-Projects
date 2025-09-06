@@ -1,31 +1,30 @@
 "use client"
 import { Input } from '@/components/ui/input'
-import { bangladeshGeoData } from '@/lib/geo-data'
 import React, { useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
-
-export interface District {
-    district: string
-    upazilas: string[]
-}
-
-export interface Division {
-    division: string
-    districts: District[]
-}
-
-
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "@/lib/store"
+import { bangladeshGeoData } from '@/lib/geo-data'
+import { setQuery, setResults } from '@/app/features/SearchLocation/SearchLocationSlice'
+import { setDivisionLoading } from '@/app/features/loader/loaderSlice'
+import { Circles } from "react-loader-spinner"
 
 export default function SearchHomeLocation() {
-    const [query, setQuery] = useState("")
-    const [results, setResults] = useState<string[]>([])
+    const dispatch = useDispatch()
+    const { query, results } = useSelector((state: RootState) => state.searchLocation)
+    const { division } = useSelector((state: RootState) => state.loader)
+    const [showDropdown, setShowDropdown] = useState(false)
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
-        setQuery(value)
+        dispatch(setQuery(value))
+        dispatch(setDivisionLoading(true))
+        setShowDropdown(true)
 
         if (value.trim() === "") {
-            setResults([])
+            dispatch(setResults([]))
+            dispatch(setDivisionLoading(false))
+            setShowDropdown(false)
             return
         }
 
@@ -33,16 +32,13 @@ export default function SearchHomeLocation() {
         const matches: string[] = []
 
         bangladeshGeoData.forEach((division) => {
-            // Division match
             if (division.division.toLowerCase().includes(searchValue)) {
                 matches.push(division.division)
             }
-            // Districts match
             division.districts.forEach((district) => {
                 if (district.district.toLowerCase().includes(searchValue)) {
                     matches.push(`${district.district}, ${division.division}`)
                 }
-                // Upazilas match
                 district.upazilas.forEach((upazila) => {
                     if (upazila.toLowerCase().includes(searchValue)) {
                         matches.push(`${upazila}, ${district.district}, ${division.division}`)
@@ -51,7 +47,16 @@ export default function SearchHomeLocation() {
             })
         })
 
-        setResults(matches.slice(0, 15))
+        setTimeout(() => {
+            dispatch(setResults(matches.slice(0, 20)))
+            dispatch(setDivisionLoading(false))
+        }, 700)
+    }
+
+    const handleSelect = (item: string) => {
+        dispatch(setQuery(item))
+        dispatch(setResults([]))
+        setShowDropdown(false)
     }
 
     return (
@@ -64,28 +69,47 @@ export default function SearchHomeLocation() {
                     <Input
                         value={query}
                         onChange={handleSearch}
-                        className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
+                        className="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
                         type="search"
                         placeholder="Search by name or location..."
                     />
+                    {/* Left Icon */}
                     <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
+
+                    {/* Loader (right side) */}
+                    {division && (
+                        <div className="absolute right-3 top-2">
+                            <Circles
+                                height="20"
+                                width="20"
+                                color="#22c55e"
+                                ariaLabel="loading"
+                            />
+                        </div>
+                    )}
                 </div>
 
-                {results.length > 0 && (
-                    <ul className="mt-2 max-h-60 overflow-y-auto border border-gray-200 rounded-lg shadow-sm bg-white">
-                        {results.map((item, index) => (
-                            <li
-                                key={index}
-                                className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer"
-                                onClick={() => {
-                                    setQuery(item)
-                                    setResults([])
-                                }}
-                            >
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
+                {/* Dropdown */}
+                {showDropdown && !division && query.trim() !== "" && (
+                    <div className="relative">
+                        <ul className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
+                            {results.length > 0 ? (
+                                results.map((item, index) => (
+                                    <li
+                                        key={index}
+                                        className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer"
+                                        onClick={() => handleSelect(item)}
+                                    >
+                                        {item}
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="px-3 py-2 text-sm text-gray-500 text-center">
+                                    No location found
+                                </li>
+                            )}
+                        </ul>
+                    </div>
                 )}
             </div>
         </div>

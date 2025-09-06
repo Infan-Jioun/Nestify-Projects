@@ -10,7 +10,7 @@ const initialState: SearchState = {
     results: [],
 };
 
-const searchLocationSlice = createSlice({
+const SearchLocationSlice = createSlice({
     name: "searchLocation",
     initialState,
     reducers: {
@@ -27,5 +27,5 @@ const searchLocationSlice = createSlice({
     },
 });
 
-export const { setQuery, setResults, clearSearch } = searchLocationSlice.actions;
-export default searchLocationSlice.reducer;
+export const { setQuery, setResults, clearSearch } = SearchLocationSlice.actions;
+export default SearchLocationSlice.reducer;
