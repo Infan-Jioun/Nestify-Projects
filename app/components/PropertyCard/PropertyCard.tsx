@@ -23,7 +23,7 @@ export default function PropertyCard({ property, isLoading, isError }: PropertyC
   const handleDelete = () => {
     if (property._id) {
       dispatch(deleteProperty(property._id));
-      setShowDeleteModal(false); // modal বন্ধ করে দাও
+      setShowDeleteModal(false);
     }
   };
 

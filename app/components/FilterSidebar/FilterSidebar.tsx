@@ -23,6 +23,7 @@ import { LocationFilter } from "../LocationFilter/LocationFilter";
 import SquareComponents from "../SquareComponents/SquareComponents";
 import YearBuildFilter from "../YearBuildFilter/YearBuildFilter";
 import { Button } from "@/components/ui/button";
+import SearchHomeLocation from "../SearchHomeLocation/SearchHomeLocation";
 
 
 export function FilterSidebar() {
@@ -50,19 +51,7 @@ export function FilterSidebar() {
                             <ScrollArea className="h-[90vh] mt-4 pr-2">
                                 <div className="px-3 pb-6 text-sm text-gray-700 space-y-6">
                                     {/* Search */}
-                                    <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                                        <h2 className="text-xs font-semibold text-gray-900 mb-2">
-                                            Find your Home
-                                        </h2>
-                                        <div className="relative">
-                                            <Input
-                                                className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
-                                                type="search"
-                                                placeholder="Search by name or location..."
-                                            />
-                                            <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
-                                        </div>
-                                    </div>
+                                    <SearchHomeLocation />
                                     {/* Location Filter */}
                                     <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                         <LocationFilter />

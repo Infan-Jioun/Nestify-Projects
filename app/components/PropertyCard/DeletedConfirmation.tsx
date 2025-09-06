@@ -2,8 +2,8 @@ import { Button } from '@/components/ui/button';
 import React from 'react';
 
 type DeleteConfirmationProps = {
-    name: string; 
-    onConfirm: () => void; 
+    name: string;
+    onConfirm: () => void;
     onCancel: () => void;
 };
 
