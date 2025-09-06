@@ -9,7 +9,7 @@ type PropertyCardProps = {
   property: PropertyType;
   isLoading?: boolean;
   isError?: boolean;
-  error?: Error;
+  error?: unknown;
 };
 
 export default function PropertyCard({ property, isLoading, isError, error }: PropertyCardProps) {
@@ -32,7 +32,7 @@ export default function PropertyCard({ property, isLoading, isError, error }: Pr
   if (isError) {
     return (
       <p className="text-center text-red-500 py-6">
-        Failed to load properties: {error?.message}
+        Failed to load properties
       </p>
     );
   }
