@@ -1,37 +1,44 @@
 "use client";
 
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import PropertyCard from "@/app/components/PropertyCard/PropertyCard";
-import usePropertiesData from "@/hooks/usePropertiesData";
 import { PropertyType } from "@/app/Types/properties";
 import { Circles } from "react-loader-spinner";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { fetchProperties } from "@/app/features/Properties/propertySlice";
 
 export default function PopularProperties() {
-  const { data: properties, isLoading, isError, error } = usePropertiesData();
   const tabs = ["House", "Duplex", "Office Space", "Apartment"];
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
 
-  if (isLoading) {
+  const dispatch = useDispatch<AppDispatch>();
+  const { properties, loading, error } = useSelector(
+    (state: RootState) => state.properties
+  );
+
+  useEffect(() => {
+    dispatch(fetchProperties());
+  }, [dispatch]);
+
+  if (loading) {
     return (
-      <div className="text-center py-6 text-4xl text-green-500 min-h-screen flex justify-center items-center animate-pulse">
+      <div className="text-center py-6 min-h-screen flex justify-center items-center">
         <Circles
           height="80"
           width="80"
           color="#4fa94d"
           ariaLabel="circles-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
           visible={true}
         />
       </div>
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <p className="text-center text-red-500 py-6">
-        Failed to load properties: {error?.message}
+        Failed to load properties: {error}
       </p>
     );
   }
@@ -58,10 +65,11 @@ export default function PopularProperties() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-2 py-2 rounded-md border ${activeTab === tab
-                ? "bg-black text-white"
-                : "bg-white text-black hover:bg-gray-100"
-                }`}
+              className={`px-2 py-2 rounded-md border ${
+                activeTab === tab
+                  ? "bg-black text-white"
+                  : "bg-white text-black hover:bg-gray-100"
+              }`}
             >
               {tab}
             </button>
@@ -71,9 +79,20 @@ export default function PopularProperties() {
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {filteredProperties.map((property) => (
-          <PropertyCard key={property._id} property={property} />
-        ))}
+        {filteredProperties.length > 0 ? (
+          filteredProperties.map((property) => (
+            <PropertyCard
+              key={property._id}
+              property={property}
+              isLoading={loading}
+              isError={!!error}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500 text-center col-span-full">
+            No properties found for {activeTab}.
+          </p>
+        )}
       </div>
     </div>
   );
