@@ -51,24 +51,37 @@ export default function PropertyCard({ property, isLoading, isError }: PropertyC
 
       <div className="p-4">
         <h2 className="text-lg font-semibold mb-1">{property.title}</h2>
-        <p className="text-gray-600 text-sm mb-1">{property.address}, {property.district}</p>
-        <p className="text-green-500 font-semibold mb-2">{property.price.toLocaleString()} {property.currency}</p>
+        <p className="text-gray-600 text-sm mb-1">
+          {property.address}, {property.district}
+        </p>
+        <p className="text-green-500 font-semibold mb-2">
+          {property.price.toLocaleString()} {property.currency}
+        </p>
 
         <div className="flex flex-wrap gap-3 text-sm text-gray-600">
           {property.bedrooms && <span>{property.bedrooms} Bed</span>}
           {property.bathrooms && <span>{property.bathrooms} Bath</span>}
           {property.kitchen && <span>{property.kitchen} Kitchen</span>}
-          {property.propertySize && <span>{property.propertySize} sq ft</span>}
+          {property.propertySize && <span>{property.propertySize} sqft</span>}
+          {property.floorArea && <span>{property.floorArea} sqft</span>}
+          {property.parkingSpaces && <span>{property.parkingSpaces} Parking</span>}
+          {property.roomsSections && <span>{property.roomsSections} Rooms</span>}
         </div>
 
-        <p className={`mt-3 inline-block px-3 py-1 text-xs rounded-full ${property.status === "Available" ? "bg-green-100 text-green-600" :
-          property.status === "Sold" ? "bg-red-100 text-red-600" :
-            "bg-yellow-100 text-yellow-600"
-          }`}>
+        <p
+          className={`mt-3 inline-block px-3 py-1 text-xs rounded-full ${property.status === "Available"
+            ? "bg-green-100 text-green-600"
+            : property.status === "Sold"
+              ? "bg-red-100 text-red-600"
+              : "bg-yellow-100 text-yellow-600"
+            }`}
+        >
           {property.status}
         </p>
 
-        <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>Delete</Button>
+        <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
+          Delete
+        </Button>
       </div>
 
       {showDeleteModal && (
