@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/sheet";
 import { IoFilterOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -19,7 +18,6 @@ import { Slider } from "@/components/ui/slider";
 import BedroomBathroomFilter from "../BedroomBathroomFilter/BedroomBathroomFilter";
 import OtherFeatures from "../OhterFeatures/OhterFeatures";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LocationFilter } from "../LocationFilter/LocationFilter";
 import SquareComponents from "../SquareComponents/SquareComponents";
 import YearBuildFilter from "../YearBuildFilter/YearBuildFilter";
 import { Button } from "@/components/ui/button";
@@ -52,10 +50,7 @@ export function FilterSidebar() {
                                 <div className="px-3 pb-6 text-sm text-gray-700 space-y-6">
                                     {/* Search */}
                                     <SearchHomeLocation />
-                                    {/* Location Filter */}
-                                    <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                                        <LocationFilter />
-                                    </div>
+
                                     {/* Listing Status */}
                                     <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                                         <p className="text-xs font-semibold text-gray-900 mb-3">
