@@ -28,6 +28,8 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 const navlinks = [
   { name: "Home", href: "/" },
   { name: "Properties", href: "/Properties" },
+  { name: "Add Property", href: "/dashboard/add-property" },
+  { name: "Contact", href: "/Contact" },
   { name: "About", href: "/About" },
 ];
 
