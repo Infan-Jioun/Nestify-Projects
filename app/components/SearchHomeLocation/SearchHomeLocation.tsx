@@ -3,14 +3,14 @@ import { Input } from '@/components/ui/input'
 import React, { useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/lib/store"
+import { AppDispatch, RootState } from "@/lib/store"
 import { bangladeshGeoData } from '@/lib/geo-data'
 import { setQuery, setResults } from '@/app/features/SearchLocation/SearchLocationSlice'
 import { setDivisionLoading } from '@/app/features/loader/loaderSlice'
 import { Circles } from "react-loader-spinner"
 
 export default function SearchHomeLocation() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
     const { division } = useSelector((state: RootState) => state.loader)
     const [showDropdown, setShowDropdown] = useState(false)

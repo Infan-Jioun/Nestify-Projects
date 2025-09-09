@@ -9,6 +9,7 @@ export type Inputs = {
   division: string
   district: string
   upazila: string
+  unions: string
   geoLocation?: { lat: number; lng: number }
   images: File[],
   videos?: string[]

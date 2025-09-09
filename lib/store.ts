@@ -17,7 +17,8 @@ export const store = configureStore({
         skeleton: skeletionReducer,
         searchLocation: searchLocationReducer
 
-    }
+    },
+    
 })
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch
