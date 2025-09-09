@@ -69,7 +69,7 @@ export default function SearchHomeLocation() {
                     <Input
                         value={query}
                         onChange={handleSearch}
-                        className="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
+                        className="px-8 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
                         type="search"
                         placeholder="Search by name or location..."
                     />
