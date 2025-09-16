@@ -6,23 +6,23 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/lib/store"
 import { bangladeshGeoData } from '@/lib/geo-data'
 import { setQuery, setResults } from '@/app/features/SearchLocation/SearchLocationSlice'
-import { setDivisionLoading } from '@/app/features/loader/loaderSlice'
+import { setGeoCountryLocationLoading } from '@/app/features/loader/loaderSlice'
 import { Circles } from "react-loader-spinner"
 
 export default function SearchHomeLocation() {
     const dispatch = useDispatch<AppDispatch>()
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
-    const { division } = useSelector((state: RootState) => state.loader)
+    const { geoCountryLocationLoading } = useSelector((state: RootState) => state.loader)
     const [showDropdown, setShowDropdown] = useState(false)
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         dispatch(setQuery(value))
-        dispatch(setDivisionLoading(true))
+        dispatch(setGeoCountryLocationLoading(true))
         setShowDropdown(true)
 
         if (value.trim() === "") {
             dispatch(setResults([]))
-            dispatch(setDivisionLoading(false))
+            dispatch(setGeoCountryLocationLoading(false))
             setShowDropdown(false)
             return
         }
@@ -56,7 +56,7 @@ export default function SearchHomeLocation() {
 
         setTimeout(() => {
             dispatch(setResults(matches.slice(0, 20)))
-            dispatch(setDivisionLoading(false))
+            dispatch(setGeoCountryLocationLoading(false))
         }, 700)
     }
 
@@ -84,7 +84,7 @@ export default function SearchHomeLocation() {
                     <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
 
                     {/* Loader (right side) */}
-                    {division && (
+                    {geoCountryLocationLoading && (
                         <div className="absolute right-3 top-2">
                             <Circles
                                 height="20"
@@ -97,7 +97,7 @@ export default function SearchHomeLocation() {
                 </div>
 
                 {/* Dropdown */}
-                {showDropdown && !division && query.trim() !== "" && (
+                {showDropdown && !geoCountryLocationLoading && query.trim() !== "" && (
                     <div className="relative">
                         <ul className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
                             {results.length > 0 ? (

@@ -1,25 +1,16 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useState } from "react"
 import { FieldErrors, UseFormRegister, UseFormWatch, UseFormSetValue } from "react-hook-form"
-import { motion, AnimatePresence } from "framer-motion"
 import { bangladeshGeoData } from "@/lib/geo-data"
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "@/lib/store"
-import {
-    setDivisions,
-    setDivisionLoading,
-    setDistricts,
-    setDistrictLoading,
-    setUpazilas,
-    setUpazilaLoading,
-    resetLocation,
-    SelectOption
-} from "../../../../features/location/locationSlice"
-
-import { Label } from "@/components/ui/label"
+import { AppDispatch, RootState } from "@/lib/store"
 import { Inputs } from "./Inputs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { setQuery, setResults } from "@/app/features/SearchLocation/SearchLocationSlice"
+import { Input } from "@/components/ui/input"
+import { FaSearch } from "react-icons/fa"
+import { Circles } from "react-loader-spinner"
+import { setGeoCountryLocationLoading } from "@/app/features/loader/loaderSlice"
 
 interface LocationProps {
     register: UseFormRegister<Inputs>
@@ -28,220 +19,111 @@ interface LocationProps {
     setValue: UseFormSetValue<Inputs>
 }
 
-export default function PropertyLocation({ register, errors, watch, setValue }: LocationProps) {
-    const dispatch = useDispatch()
-    const { divisions, districts, upazilas, loading } = useSelector(
-        (state: RootState) => state.location
-    )
+export default function PropertyLocation({ register, errors, setValue }: LocationProps) {
+    const dispatch = useDispatch<AppDispatch>()
+    const { query, results } = useSelector((state: RootState) => state.searchLocation)
+    const { geoCountryLocationLoading } = useSelector((state: RootState) => state.loader)
+    const [showDropdown, setShowDropdown] = useState(false)
 
-    const watchCountry = watch("country")
-    const watchDivision = watch("division")
-    const watchDistrict = watch("district")
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        dispatch(setQuery(value))
+        dispatch(setGeoCountryLocationLoading(true))
+        setShowDropdown(true)
 
-    // Load divisions
-    useEffect(() => {
-        if (watchCountry === "Bangladesh") {
-            dispatch(setDivisionLoading(true))
-            const timer = setTimeout(() => {
-                const divisionOptions: SelectOption[] = bangladeshGeoData.map(d => ({
-                    value: d.division,
-                    label: d.division
-                }))
-                dispatch(setDivisions(divisionOptions))
-                dispatch(setDivisionLoading(false))
-            }, 400)
-            return () => clearTimeout(timer)
-        } else {
-            dispatch(resetLocation())
-            setValue("division", "")
-            setValue("district", "")
-            setValue("upazila", "")
+        if (value.trim() === "") {
+            dispatch(setResults([]))
+            dispatch(setGeoCountryLocationLoading(false))
+            setShowDropdown(false)
+            return
         }
-    }, [watchCountry, dispatch, setValue])
 
-    // Load districts
-    useEffect(() => {
-        if (watchCountry === "Bangladesh" && watchDivision) {
-            dispatch(setDistrictLoading(true))
-            const timer = setTimeout(() => {
-                const divisionObj = bangladeshGeoData.find(d => d.division === watchDivision)
-                if (divisionObj) {
-                    const districtOptions: SelectOption[] = divisionObj.districts.map(d => ({
-                        value: d.district,
-                        label: d.district
-                    }))
-                    dispatch(setDistricts(districtOptions))
+        const searchValue = value.toLowerCase()
+        const matches: string[] = []
+
+        bangladeshGeoData.forEach((division) => {
+            if (division.division.toLowerCase().includes(searchValue)) {
+                matches.push(division.division)
+            }
+            division.districts.forEach((district) => {
+                if (district.district.toLowerCase().includes(searchValue)) {
+                    matches.push(`${district.district}, ${division.division}`)
                 }
-                dispatch(setDistrictLoading(false))
-            }, 400)
-            return () => clearTimeout(timer)
-        } else {
-            dispatch(setDistricts([]))
-            dispatch(setUpazilas([]))
-            setValue("district", "")
-            setValue("upazila", "")
-        }
-    }, [watchDivision, watchCountry, dispatch, setValue])
+                district.upazilas.forEach((upazila) => {
+                    if (upazila.upazila.toLowerCase().includes(searchValue)) {
+                        matches.push(`${upazila.upazila}, ${district.district}, ${division.division}`)
+                    }
+                    upazila.unions.forEach((union) => {
+                        if (union.toLowerCase().includes(searchValue)) {
+                            matches.push(`${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        }
+                    })
+                })
+            })
+        })
 
-    // Load upazilas
-    useEffect(() => {
-        if (watchCountry === "Bangladesh" && watchDivision && watchDistrict) {
-            dispatch(setUpazilaLoading(true))
-            const timer = setTimeout(() => {
-                const divisionObj = bangladeshGeoData.find(d => d.division === watchDivision)
-                const districtObj = divisionObj?.districts.find(d => d.district === watchDistrict)
-                if (districtObj) {
-                    const upazilaOptions: SelectOption[] = districtObj.upazilas.map(u => ({
-                        value: u,
-                        label: u
-                    }))
-                    dispatch(setUpazilas(upazilaOptions))
-                }
-                dispatch(setUpazilaLoading(false))
-            }, 400)
-            return () => clearTimeout(timer)
-        } else {
-            dispatch(setUpazilas([]))
-            setValue("upazila", "")
-        }
-    }, [watchDistrict, watchDivision, watchCountry, dispatch, setValue])
+        setTimeout(() => {
+            dispatch(setResults(matches.slice(0, 20)))
+            dispatch(setGeoCountryLocationLoading(false))
+        }, 700)
+    }
 
-    // shadcn Select helper
-    const ShadcnSelect = ({
-        options,
-        placeholder,
-        isLoading,
-        value,
-        onChange,
-        error,
-
-    }: {
-        options: SelectOption[]
-        placeholder: string
-        isLoading: boolean
-        value: string
-        onChange: (value: string) => void
-        error?: { message?: string }
-        name: string
-    }) => (
-        <div>
-            <Select
-                value={value}
-                onValueChange={onChange}
-                disabled={isLoading}
-                {...register("country", { required: "country is required" })}
-            >
-                <SelectTrigger className={`w-full ${error ? "border-red-500" : ""}`}>
-                    <SelectValue placeholder={isLoading ? "Loading..." : placeholder} />
-                </SelectTrigger>
-                <SelectContent>
-                    {options.map(option => (
-                        <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-            {error && <p className="mt-1 text-sm text-red-600">{error.message}</p>}
-        </div>
-    )
+    const handleSelect = (item: string) => {
+        dispatch(setQuery(item))
+        setValue("geoCountryLocation", item)
+        dispatch(setResults([]))
+        setShowDropdown(false)
+    }
 
     return (
-        <div className="space-y-6">
-            {/* Country */}
-            <div>
-                <Label className="mb-2 block text-gray-700 text-xs">Country</Label>
-                <ShadcnSelect
-                    options={[
-                        { value: "Bangladesh", label: "Bangladesh" },
+        <div>
+            <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                <h2 className="text-xs font-semibold text-gray-900 mb-2">
+                    Find your Home
+                </h2>
+                <div className="relative">
+                    <Input
+                        {...register("geoCountryLocation", { required: "Location is required" })}
+                        value={query}
+                        onChange={handleSearch}
+                        className="px-8 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
+                        type="search"
+                        placeholder="Search by name or location..."
+                    />
+                    <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
 
-                    ]}
-                    placeholder="Select Country"
-                    isLoading={false}
-                    value={watchCountry || ""}
-                    onChange={val => {
-                        setValue("country", val, { shouldValidate: true })
-                        setValue("division", "")
-                        setValue("district", "")
-                        setValue("upazila", "")
-                    }}
-                    error={errors.country}
-                    name="country"
-                />
-
-            </div>
-
-            <AnimatePresence>
-                {watchCountry === "Bangladesh" && (
-                    <motion.div
-                        key="bangladesh-location"
-                        className="space-y-4"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        {/* Division */}
-                        <div>
-                            <Label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Division</Label>
-                            <ShadcnSelect
-
-                                options={divisions}
-                                placeholder="Select Division"
-                                isLoading={loading.division}
-                                value={watchDivision || ""}
-                                onChange={val => {
-                                    setValue("division", val, { shouldValidate: true })
-                                    setValue("district", "")
-                                    setValue("upazila", "")
-                                }}
-                                error={errors.division}
-                                name="division"
-                            />
-
+                    {geoCountryLocationLoading && (
+                        <div className="absolute right-3 top-2">
+                            <Circles height="20" width="20" color="#22c55e" ariaLabel="loading" />
                         </div>
+                    )}
+                </div>
 
-
-                        {/* District */}
-                        {watchDivision && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-                                <Label className="mb-2 block text-gray-700 text-xs">District</Label>
-                                <ShadcnSelect
-                                    options={districts}
-                                    placeholder="Select District"
-                                    isLoading={loading.district}
-                                    value={watchDistrict || ""}
-                                    onChange={val => {
-                                        setValue("district", val, { shouldValidate: true })
-                                        setValue("upazila", "")
-                                    }}
-                                    error={errors.district}
-                                    name="district"
-                                />
-
-                            </motion.div>
-                        )}
-
-                        {/* Upazila */}
-                        {watchDistrict && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-                                <Label className="mb-2 block text-gray-700 text-xs">Upazila</Label>
-                                <ShadcnSelect
-                                    options={upazilas}
-                                    placeholder="Select Upazila"
-                                    isLoading={loading.upazila}
-                                    value={watch("upazila") || ""}
-                                    onChange={val => setValue("upazila", val, { shouldValidate: true })}
-                                    error={errors.upazila}
-                                    name="upazila"
-                                />
-
-
-                            </motion.div>
-                        )}
-                    </motion.div>
+                {showDropdown && !geoCountryLocationLoading && query.trim() !== "" && (
+                    <div className="relative">
+                        <ul className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
+                            {results.length > 0 ? (
+                                results.map((item, index) => (
+                                    <li
+                                        key={index}
+                                        className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer"
+                                        onClick={() => handleSelect(item)}
+                                    >
+                                        {item}
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="px-3 py-2 text-sm text-gray-500 text-center">
+                                    No location found
+                                </li>
+                            )}
+                        </ul>
+                    </div>
                 )}
-            </AnimatePresence>
+                {errors.searchLocation && (
+                    <p className="text-xs text-red-500 mt-1">{errors.searchLocation.message}</p>
+                )}
+            </div>
         </div>
     )
 }

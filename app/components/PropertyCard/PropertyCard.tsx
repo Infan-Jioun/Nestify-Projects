@@ -52,7 +52,7 @@ export default function PropertyCard({ property, isLoading, isError }: PropertyC
       <div className="p-4">
         <h2 className="text-lg font-semibold mb-1">{property.title}</h2>
         <p className="text-gray-600 text-sm mb-1">
-          {property.address}, {property.district}
+          {property.address}, {property.geoCountryLocation}
         </p>
         <p className="text-green-500 font-semibold mb-2">
           {property.price.toLocaleString()} {property.currency}

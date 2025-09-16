@@ -7,24 +7,19 @@ export interface SelectOption {
 }
 
 interface LocationState {
-  divisions: SelectOption[]
-  districts: SelectOption[]
-  upazilas: SelectOption[]
+  geoCountryLocation: SelectOption[]
   loading: {
-    division: boolean
-    district: boolean
-    upazila: boolean
+    geoCountryLocation: boolean
+
   }
 }
 
 const initialState: LocationState = {
-  divisions: [],
-  districts: [],
-  upazilas: [],
+  geoCountryLocation: [],
+
   loading: {
-    division: false,
-    district: false,
-    upazila: false
+    geoCountryLocation: false,
+
   }
 }
 
@@ -32,40 +27,20 @@ const locationSlice = createSlice({
   name: "location",
   initialState,
   reducers: {
-    setDivisions: (state, action: PayloadAction<SelectOption[]>) => {
-      state.divisions = action.payload
+    setGeoCountryLocation: (state, action: PayloadAction<SelectOption[]>) => {
+      state.geoCountryLocation = action.payload;
     },
-    setDivisionLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading.division = action.payload
-    },
-    setDistricts: (state, action: PayloadAction<SelectOption[]>) => {
-      state.districts = action.payload
-    },
-    setDistrictLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading.district = action.payload
-    },
-    setUpazilas: (state, action: PayloadAction<SelectOption[]>) => {
-      state.upazilas = action.payload
-    },
-    setUpazilaLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading.upazila = action.payload
-    },
+
     resetLocation: (state) => {
-      state.divisions = []
-      state.districts = []
-      state.upazilas = []
-      state.loading = { division: false, district: false, upazila: false }
+      state.geoCountryLocation = []
+
+      state.loading = { geoCountryLocation: false }
     }
   }
 })
 
 export const {
-  setDivisions,
-  setDivisionLoading,
-  setDistricts,
-  setDistrictLoading,
-  setUpazilas,
-  setUpazilaLoading,
+  setGeoCountryLocation,
   resetLocation
 } = locationSlice.actions
 

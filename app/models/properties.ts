@@ -24,10 +24,7 @@ const propertySchema = new Schema(
         currency: { type: String, required: true },
         propertySize: { type: Number, required: true },
         address: { type: String, required: true },
-        country: { type: String, required: true },
-        division: { type: String, required: true },
-        district: { type: String, required: true },
-        upazila: { type: String, default: "" },
+        geoCountryLocation: { type: String, required: true },
         geoLocation: {
             lat: { type: Number },
             lng: { type: Number },
@@ -61,6 +58,4 @@ const propertySchema = new Schema(
 
 const Property = models.Property || model("Property", propertySchema);
 export default Property;
-
-// 👉 Type ইনফার করার জন্য schema export করলাম
 export type PropertySchemaType = typeof propertySchema;

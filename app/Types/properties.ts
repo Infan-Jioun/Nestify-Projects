@@ -11,16 +11,13 @@ export interface Category {
 
 export interface PropertyType {
     _id?: string;
-    title: string; 
+    title: string;
     category: Category;
     price: number;
     currency: string;
     propertySize: number;
     address: string;
-    country: string;
-    division: string;
-    district: string;
-    upazila?: string;
+    geoCountryLocation: string;
     geoLocation?: {
         lat?: number;
         lng?: number;

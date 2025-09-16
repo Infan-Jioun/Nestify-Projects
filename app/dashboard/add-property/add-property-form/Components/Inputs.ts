@@ -5,14 +5,11 @@ export type Inputs = {
   currency: "BDT" | "USD" | "EUR"
   propertySize: number
   address: string
-  country: string
-  division: string
-  district: string
-  upazila: string
-  unions: string
   geoLocation?: { lat: number; lng: number }
   images: File[],
   videos?: string[]
+  searchLocation : string
+  geoCountryLocation : string
   ownerId: string
   contactNumber: string
   email: string

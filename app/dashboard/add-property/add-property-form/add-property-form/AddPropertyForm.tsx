@@ -24,6 +24,8 @@ import { Button } from "@/components/ui/button";
 import { addProperty } from "@/app/features/Properties/propertySlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { PropertyType } from "@/app/Types/properties";
+import { dataTagErrorSymbol } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -70,10 +72,7 @@ export default function AddPropertyFormPage() {
               "address",
               "contactNumber",
               "email",
-              "division",
-              "district",
-              "upazila",
-              "country",
+              "geoCountryLocation",
               "category",
               "images",
               "videos",
@@ -101,7 +100,8 @@ export default function AddPropertyFormPage() {
               : (data.category as { name: string }).name,
           fields: categoryFields,
         },
-        upazila: data.upazila || "",
+
+        geoCountryLocation: data.geoCountryLocation || "",
         status: data.status || "Available",
         createdAt: data.createdAt ? data.createdAt.toISOString() : new Date().toISOString(),
         updatedAt: data.updatedAt ? data.updatedAt.toISOString() : new Date().toISOString(),
@@ -148,7 +148,7 @@ export default function AddPropertyFormPage() {
         <PropertyAddress register={register} errors={errors} />
 
         <Button className="h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300 hover:border-green-500 font-semibold transition">
-          {buttonLoader ? "Submitting..." : "Add Your Property"}
+          {buttonLoader ? <Loader/> : "Add Your Property"}
         </Button>
       </form>
     </div>
