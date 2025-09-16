@@ -419,7 +419,7 @@ export const bangladeshGeoData: Division[] =
 
                         {
                             "upazila": "Eidgaon",
-                            "unions": ["Eidgaon", "Eidgaon", "Islampur", "Jalalabad", "Pokkhali"]
+                            "unions": ["Eidgaon", "Islamabad", "Islampur", "Jalalabad", "Pokkhali"]
                         },
                         {
                             "upazila": "Kutubdia",

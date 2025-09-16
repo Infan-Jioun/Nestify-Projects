@@ -14,7 +14,6 @@ export default function SearchHomeLocation() {
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
     const { division } = useSelector((state: RootState) => state.loader)
     const [showDropdown, setShowDropdown] = useState(false)
-
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         dispatch(setQuery(value))
@@ -40,9 +39,17 @@ export default function SearchHomeLocation() {
                     matches.push(`${district.district}, ${division.division}`)
                 }
                 district.upazilas.forEach((upazila) => {
-                    if (upazila.toLowerCase().includes(searchValue)) {
-                        matches.push(`${upazila}, ${district.district}, ${division.division}`)
+
+                    if (upazila.upazila.toLowerCase().includes(searchValue)) {
+                        matches.push(`${upazila.upazila}, ${district.district}, ${division.division}`)
                     }
+
+
+                    upazila.unions.forEach((union) => {
+                        if (union.toLowerCase().includes(searchValue)) {
+                            matches.push(`${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        }
+                    })
                 })
             })
         })
