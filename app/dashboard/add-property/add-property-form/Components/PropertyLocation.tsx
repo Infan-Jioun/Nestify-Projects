@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { FaSearch } from "react-icons/fa"
 import { Circles } from "react-loader-spinner"
 import { setGeoCountryLocationLoading } from "@/app/features/loader/loaderSlice"
+import { Label } from "@/components/ui/label"
 
 interface LocationProps {
     register: UseFormRegister<Inputs>
@@ -78,15 +79,13 @@ export default function PropertyLocation({ register, errors, setValue }: Locatio
     return (
         <div>
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                <h2 className="text-xs font-semibold text-gray-900 mb-2">
-                    Find your Home
-                </h2>
+            <Label className="mb-2 block text-gray-700 text-xs"> Search Your Property Location</Label>
                 <div className="relative">
                     <Input
                         {...register("geoCountryLocation", { required: "Location is required" })}
                         value={query}
                         onChange={handleSearch}
-                        className="px-8 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
+                        className="px-8 py-2 w-full rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
                         type="search"
                         placeholder="Search by name or location..."
                     />

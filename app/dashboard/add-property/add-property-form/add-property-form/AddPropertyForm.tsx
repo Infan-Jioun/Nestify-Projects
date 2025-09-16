@@ -26,6 +26,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { PropertyType } from "@/app/Types/properties";
 import { dataTagErrorSymbol } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
+import MultiSeclectService from "../Components/MultiSeclectService/MultiSeclectService";
 
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -137,7 +138,12 @@ export default function AddPropertyFormPage() {
         </div>
 
         <CategoryFrom register={register} errors={errors} setValue={setValue} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <MultiSeclectService/>
         <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
+       
+        </div>
+       
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <PropertySize register={register} errors={errors} />
