@@ -21,7 +21,7 @@ export default function PopularProperties() {
     dispatch(fetchProperties());
   }, [dispatch]);
 
-  // Skeleton loader component
+ 
   const PropertyCardSkeleton = () => (
     <div className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
       <div className="h-48 bg-gray-200"></div>
@@ -54,7 +54,7 @@ export default function PopularProperties() {
   );
 
   return (
-    <div className="mt-20 px-4 md:px-20 lg:px-44">
+    <div className="mt-6 px-4 md:px-20 lg:px-44">
       {/* Header & Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
