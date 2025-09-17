@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react'
-import BannerPage from '../Banner/page'
-import PropertiesByCity from '../PropertiesByCity/page';
+import Banner from '../Components/Banner/Banner'
+import PropertiesByCity from '../Components/PropertiesByCity/PropertiesByCity';
 import PopularProperties from '../PopularProperties/PopularProperties';
 import BannerService from '../BannerServices/page';
 import ApartmentTypes from '../ApartmentTypes/page';
@@ -20,7 +20,7 @@ export default function HomePage() {
   return (
     <div>
       <NextHead title='Nestify' />
-      <BannerPage />
+      <Banner />
       <PropertiesByCity />
       <PopularProperties />
       <BannerService />

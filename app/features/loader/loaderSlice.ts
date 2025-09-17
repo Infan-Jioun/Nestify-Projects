@@ -5,6 +5,7 @@ interface LoaderState {
     addPropertyLoader?: boolean;
     propertyFaciltiesLoader?: boolean;
     buttonLoader?: boolean;
+    skletonLoader?: boolean;
 }
 
 const initialState: LoaderState = {
@@ -13,6 +14,7 @@ const initialState: LoaderState = {
     addPropertyLoader: false,
     propertyFaciltiesLoader: false,
     buttonLoader: false,
+    skletonLoader: false
 }
 
 const loaderSlice = createSlice({
@@ -34,9 +36,12 @@ const loaderSlice = createSlice({
         },
         setButtonLoader(state, action: PayloadAction<boolean>) {
             state.buttonLoader = action.payload;
+        },
+        setSkletonLoader(state, action: PayloadAction<boolean>) {
+            state.skletonLoader = action.payload;
         }
 
     }
 })
-export const { setLoading, setGeoCountryLocationLoading, setAddPropertyLoader, setPropertyFacilitiesLoader, setButtonLoader } = loaderSlice.actions;
+export const { setLoading, setGeoCountryLocationLoading, setAddPropertyLoader, setPropertyFacilitiesLoader, setButtonLoader, setSkletonLoader } = loaderSlice.actions;
 export default loaderSlice.reducer;

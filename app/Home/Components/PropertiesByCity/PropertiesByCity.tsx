@@ -1,55 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { GoArrowUpRight } from "react-icons/go";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { motion } from "framer-motion";
-
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 
 export default function PropertiesByCity() {
+  const dispatch = useDispatch<AppDispatch>();
+  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+
   const cards = [
-    {
-      title: "California",
-      image: "https://i.ibb.co/F4XYDNvz/California.webp",
-      propertiesLength: 12,
-    },
-    {
-      title: "Los Angeles",
-      image: "https://i.ibb.co/5hcvzpPm/Los-Angeles.webp",
-      propertiesLength: 15,
-    },
-    {
-      title: "Manhattan",
-      image: "https://i.ibb.co/MkzM5jnT/Manhattan.webp",
-      propertiesLength: 13,
-    },
-    {
-      title: "New Jersey",
-      image: "https://i.ibb.co/jk3CsKPX/New-Jersey.webp",
-      propertiesLength: 14,
-    },
-    {
-      title: "San Diego",
-      image: "https://i.ibb.co/rG6r2PQF/San-Diego.webp",
-      propertiesLength: 12,
-    },
-    {
-      title: "San Francisco",
-      image: "https://i.ibb.co/h1BhqZ3G/San-Francisco.webp",
-      propertiesLength: 10,
-    },
+    { title: "California", image: "https://i.ibb.co/F4XYDNvz/California.webp", propertiesLength: 12 },
+    { title: "Los Angeles", image: "https://i.ibb.co/5hcvzpPm/Los-Angeles.webp", propertiesLength: 15 },
+    { title: "Manhattan", image: "https://i.ibb.co/MkzM5jnT/Manhattan.webp", propertiesLength: 13 },
+    { title: "New Jersey", image: "https://i.ibb.co/jk3CsKPX/New-Jersey.webp", propertiesLength: 14 },
+    { title: "San Diego", image: "https://i.ibb.co/rG6r2PQF/San-Diego.webp", propertiesLength: 12 },
+    { title: "San Francisco", image: "https://i.ibb.co/h1BhqZ3G/San-Francisco.webp", propertiesLength: 10 },
   ];
 
-  const [ , setLoadedImages] = useState({});
+  useEffect(() => {
+    dispatch(setSkletonLoader(true));
+  }, [dispatch]);
 
-  const handleImageLoad = (index: number) => {
-    setLoadedImages((prev) => ({ ...prev, [index]: true }));
+  const handleImageLoad = () => {
+    dispatch(setSkletonLoader(false));
   };
 
   return (
@@ -84,7 +66,6 @@ export default function PropertiesByCity() {
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           spaceBetween={20}
-          // navigation={true}
           loop={true}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
           breakpoints={{
@@ -93,8 +74,7 @@ export default function PropertiesByCity() {
             640: { slidesPerView: 3 },
             768: { slidesPerView: 3 },
             1024: { slidesPerView: 3 },
-            1280 : {slidesPerView : 4},
-            
+            1280: { slidesPerView: 4 },
           }}
         >
           {cards.map((card, index) => (
@@ -102,19 +82,22 @@ export default function PropertiesByCity() {
               <motion.div
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.90 }}
-                className="w-[160px] sm:w-[220px] md:w-[230px] bg-white  rounded-2xl  px-2 md:px-3 lg:px-4   transition-all duration-300"
+                className="w-[160px] sm:w-[220px] md:w-[230px] bg-white rounded-2xl px-2 md:px-3 lg:px-4 transition-all duration-300"
               >
-                <Image
-                  src={card.image}
-                  alt={card.title || "Property"}
-                  onLoad={() => handleImageLoad(index)}
-                  width={400} height={400}
-                  className="rounded-full w-full  object-cover transition-opacity duration-700"
-                />
-                <h3 className="text-lg text-center font-semibold r mt-4 text-black">
-                  {card.title}
-                </h3>
-                <p className="text-sm text-center  text-gray-600 mt-1">
+                {skletonLoader ? (
+                  <Skeleton height={200} className="rounded-full w-full mb-4" />
+                ) : (
+                  <Image
+                    src={card.image}
+                    alt={card.title || "Property"}
+                    width={400}
+                    height={400}
+                    className="rounded-full w-full object-cover transition-opacity duration-700"
+                    onLoadingComplete={handleImageLoad}
+                  />
+                )}
+                <h3 className="text-lg text-center font-semibold mt-4 text-black">{card.title}</h3>
+                <p className="text-sm text-center text-gray-600 mt-1">
                   {card.propertiesLength} <span>Properties</span>
                 </p>
               </motion.div>
