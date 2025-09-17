@@ -16,7 +16,7 @@ const PropertiesByCity: React.FC = () => {
   const dispatch = useDispatch();
   const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const [cities, setCities] = useState<City[]>([]);
-  const [loading, setLoading] = useState(true);
+  
 
   const mockCities: City[] = [
     { id: 1, title: "California", image: "https://i.ibb.co/F4XYDNvz/California.webp", propertiesLength: 12 },
@@ -30,12 +30,11 @@ const PropertiesByCity: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       dispatch(setSkletonLoader(true));
-      setLoading(true);
-
+   
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       setCities(mockCities);
-      setLoading(false);
+  
       dispatch(setSkletonLoader(false));
     };
 
@@ -58,7 +57,7 @@ const PropertiesByCity: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
-        {(loading || skletonLoader) ? (
+        {( skletonLoader) ? (
           Array.from({ length: 6 }).map((_, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="animate-pulse">
