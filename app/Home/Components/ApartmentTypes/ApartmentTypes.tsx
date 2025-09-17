@@ -9,7 +9,7 @@ import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
-
+import { RootState } from "@/lib/store"
 const apartmentData = [
   {
     title: "Apartments",
@@ -63,7 +63,6 @@ export default function ApartmentTypes() {
     return () => clearTimeout(timer);
   }, [dispatch]);
 
-  // Skeleton loader component for slides
   const SkeletonSlide = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow">
       <div className="w-full h-48 bg-gray-200 animate-pulse"></div>
