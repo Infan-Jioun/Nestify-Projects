@@ -1,6 +1,5 @@
 "use client";
 
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,37 +18,127 @@ import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import NextHead from "../NextHead/NextHead";
+import { Eye, EyeOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { 
+  setButtonLoader, 
+  setSkletonLoader, 
+  setGoogleLoader, 
+  setGithubLoader 
+} from '@/app/features/loader/loaderSlice';
+import { RootState } from '@/lib/store';
 
 type Inputs = {
   email: string,
   password: string
-
 }
+
 export function Login() {
+  const dispatch = useDispatch();
+  const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
+  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const googleLoader = useSelector((state: RootState) => state.loader.googleLoader);
+  const githubLoader = useSelector((state: RootState) => state.loader.githubLoader);
+  const [loading, setLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { register, handleSubmit } = useForm<Inputs>()
+
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+      dispatch(setSkletonLoader(false));
+    }, 1500);
+    
+    return () => clearTimeout(timer);
+  }, [dispatch]);
+
+  const isLoading = loading || skletonLoader;
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    // console.log("Form", data);
+    dispatch(setButtonLoader(true));
+    
     const res = await signIn("credentials", {
       redirect: false,
       email: data.email,
       password: data.password
     })
+    
     if (res?.ok) {
       router.push("/")
       toast.success("Successfully Login")
+    } else {
+      toast.error("Login failed. Please check your credentials.")
     }
-
-
+    
+    dispatch(setButtonLoader(false));
   }
-  const handelGoogleLogin = () => {
-
-    signIn("google", { callbackUrl: "/" });
+  
+  const handelGoogleLogin = async () => {
+    dispatch(setGoogleLoader(true));
+    try {
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      toast.error("Google login failed");
+    } finally {
+      dispatch(setGoogleLoader(false));
+    }
   }
-  const handelGithubLogin = () => {
-
-    signIn("github", { callbackUrl: "/" });
+  
+  const handelGithubLogin = async () => {
+    dispatch(setGithubLoader(true));
+    try {
+      await signIn("github", { callbackUrl: "/" });
+    } catch (error) {
+      console.error("GitHub sign-in error:", error);
+      toast.error("GitHub login failed");
+    } finally {
+      dispatch(setGithubLoader(false));
+    }
   }
+  
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  }
+
+  if (isLoading) {
+    return (
+      <div>
+        <NextHead title='Login | Nestify'/>
+        <div className="min-h-screen bg-green-100 flex items-center justify-center  dark:bg-gray-900 px-4">
+          <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
+            <CardHeader className="text-center space-y-2">
+              <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-1">
+                <div className="h-4 bg-gray-200 rounded w-16"></div>
+                <div className="h-10 bg-gray-200 rounded"></div>
+              </div>
+              <div className="grid gap-1">
+                <div className="h-4 bg-gray-200 rounded w-20"></div>
+                <div className="h-10 bg-gray-200 rounded"></div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col gap-3 mt-3">
+              <div className="h-10 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
+            </CardFooter>
+            <div className="px-6 pb-6 space-y-2">
+              <div className="h-10 bg-gray-200 rounded w-full"></div>
+              <div className="h-10 bg-gray-200 rounded w-full"></div>
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <NextHead title='Login | Nestify'/>
@@ -90,29 +179,84 @@ export function Login() {
                     Reset password?
                   </Link>
                 </div>
-                <Input {...register("password", { required: true })} id="password" type="password" placeholder='Type your password' className="" required />
+                <div className="relative">
+                  <Input 
+                    {...register("password", { required: true })} 
+                    id="password" 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder='Type your password' 
+                    className="pr-10" 
+                    required 
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-green-500" />
+                    )}
+                  </button>
+                </div>
               </div>
             </CardContent>
 
             <CardFooter className="flex flex-col gap-3 mt-3">
-              <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
-                Login
+              <Button 
+                type="submit" 
+                className="w-full bg-green-500 hover:bg-green-600"
+                disabled={buttonLoader}
+              >
+                {buttonLoader ? (
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Logging in...
+                  </div>
+                ) : (
+                  "Login"
+                )}
               </Button>
 
               <p className="text-sm text-center text-muted-foreground">
-                Don’t have an account?{" "}
+                Don't have an account?{" "}
                 <Link href={"/RegisterPage"} className="  relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded  ">
-                  Sign In
+                  Sign Up
                 </Link>
               </p>
             </CardFooter>
           </form>
-          <div className="px-6 ">
-            <Button onClick={handelGoogleLogin} variant="outline" className="w-full mb-2 ">
-              Continue with Google
+          <div className="px-6 pb-6">
+            <Button 
+              onClick={handelGoogleLogin} 
+              variant="outline" 
+              className="w-full mb-2"
+              disabled={googleLoader}
+            >
+              {googleLoader ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Continuing with Google...
+                </div>
+              ) : (
+                "Continue with Google"
+              )}
             </Button>
-            <Button onClick={handelGithubLogin} variant="outline" className="w-full">
-              Continue with Github
+            <Button 
+              onClick={handelGithubLogin} 
+              variant="outline" 
+              className="w-full"
+              disabled={githubLoader}
+            >
+              {githubLoader ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Continuing with GitHub...
+                </div>
+              ) : (
+                "Continue with Github"
+              )}
             </Button>
           </div>
         </Card>

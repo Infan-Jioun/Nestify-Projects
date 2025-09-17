@@ -5,6 +5,8 @@ interface LoaderState {
     addPropertyLoader?: boolean;
     propertyFaciltiesLoader?: boolean;
     buttonLoader?: boolean;
+    googleLoader?: boolean;
+    githubLoader?: boolean;
     skletonLoader?: boolean;
 }
 
@@ -14,6 +16,8 @@ const initialState: LoaderState = {
     addPropertyLoader: false,
     propertyFaciltiesLoader: false,
     buttonLoader: false,
+    googleLoader: false,
+    githubLoader: false,
     skletonLoader: false
 }
 
@@ -37,11 +41,17 @@ const loaderSlice = createSlice({
         setButtonLoader(state, action: PayloadAction<boolean>) {
             state.buttonLoader = action.payload;
         },
+        setGoogleLoader(state, action: PayloadAction<boolean>) {
+            state.googleLoader = action.payload;
+        },
+        setGithubLoader(state, action: PayloadAction<boolean>) {
+            state.googleLoader = action.payload;
+        },
         setSkletonLoader(state, action: PayloadAction<boolean>) {
             state.skletonLoader = action.payload;
         }
 
     }
 })
-export const { setLoading, setGeoCountryLocationLoading, setAddPropertyLoader, setPropertyFacilitiesLoader, setButtonLoader, setSkletonLoader } = loaderSlice.actions;
+export const { setLoading, setGeoCountryLocationLoading, setAddPropertyLoader, setPropertyFacilitiesLoader, setButtonLoader, setGoogleLoader, setGithubLoader,setSkletonLoader } = loaderSlice.actions;
 export default loaderSlice.reducer;
