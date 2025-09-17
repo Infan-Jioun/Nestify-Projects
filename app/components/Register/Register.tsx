@@ -47,7 +47,7 @@ export default function Register() {
     const [error, setError] = useState<string | null>(null);
 
    useEffect(() => {
-        // Simulate initial loading
+        
         const timer = setTimeout(() => {
             setLoading(false);
             dispatch(setSkletonLoader(false));
