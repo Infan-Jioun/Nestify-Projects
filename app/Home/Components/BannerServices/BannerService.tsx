@@ -9,7 +9,7 @@ import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 
 export default function BannerService() {
   const dispatch = useDispatch();
-  const skletonLoader = useSelector((state: any) => state.loader.skletonLoader);
+  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const [loading, setLoading] = React.useState(true);
 
 

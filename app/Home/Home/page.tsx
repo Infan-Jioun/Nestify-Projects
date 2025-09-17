@@ -5,7 +5,7 @@ import Banner from '../Components/Banner/Banner'
 import PropertiesByCity from '../Components/PropertiesByCity/PropertiesByCity';
 import PopularProperties from '../Components/PopularProperties/PopularProperties';
 import BannerService from '../Components/BannerServices/BannerService'
-import ApartmentTypes from '../ApartmentTypes/page';
+import ApartmentTypes from '../Components/ApartmentTypes/ApartmentTypes';
 import FeaturedAgents from '../FeaturedAgents/page';
 import Ratings from '../Raitngs/page';
 import TrustedCompany from '../TrustedCompany/page';
