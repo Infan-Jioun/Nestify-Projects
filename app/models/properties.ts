@@ -25,6 +25,7 @@ const propertySchema = new Schema(
         propertySize: { type: Number, required: true },
         address: { type: String, required: true },
         geoCountryLocation: { type: String, required: true },
+        propertyFacilities: { type: [String], default: [], required: true },
         geoLocation: {
             lat: { type: Number },
             lng: { type: Number },

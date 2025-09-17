@@ -14,6 +14,7 @@ export default function SearchHomeLocation() {
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
     const { geoCountryLocationLoading } = useSelector((state: RootState) => state.loader)
     const [showDropdown, setShowDropdown] = useState(false)
+
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         dispatch(setQuery(value))
@@ -31,23 +32,44 @@ export default function SearchHomeLocation() {
         const matches: string[] = []
 
         bangladeshGeoData.forEach((division) => {
+
             if (division.division.toLowerCase().includes(searchValue)) {
-                matches.push(division.division)
+                matches.push(`Division: ${division.division}`)
+                division.districts.forEach((district) => {
+                    matches.push(` ${district.district}, ${division.division}`)
+                    district.upazilas.forEach((upazila) => {
+                        matches.push(` ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        upazila.unions.forEach((union) => {
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        })
+                    })
+                })
             }
+
+
             division.districts.forEach((district) => {
                 if (district.district.toLowerCase().includes(searchValue)) {
-                    matches.push(`${district.district}, ${division.division}`)
+                    matches.push(` ${district.district}, ${division.division}`)
+                    district.upazilas.forEach((upazila) => {
+                        matches.push(` ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        upazila.unions.forEach((union) => {
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        })
+                    })
                 }
+
+
                 district.upazilas.forEach((upazila) => {
-
                     if (upazila.upazila.toLowerCase().includes(searchValue)) {
-                        matches.push(`${upazila.upazila}, ${district.district}, ${division.division}`)
+                        matches.push(` ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        upazila.unions.forEach((union) => {
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        })
                     }
-
 
                     upazila.unions.forEach((union) => {
                         if (union.toLowerCase().includes(searchValue)) {
-                            matches.push(`${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
                         }
                     })
                 })
@@ -55,7 +77,7 @@ export default function SearchHomeLocation() {
         })
 
         setTimeout(() => {
-            dispatch(setResults(matches.slice(0, 20)))
+            dispatch(setResults(matches.slice(0, 80)))
             dispatch(setGeoCountryLocationLoading(false))
         }, 700)
     }
@@ -64,6 +86,19 @@ export default function SearchHomeLocation() {
         dispatch(setQuery(item))
         dispatch(setResults([]))
         setShowDropdown(false)
+    }
+
+
+    const highlightMatch = (text: string, query: string) => {
+        if (!query) return text
+        const regex = new RegExp(`(${query})`, "gi")
+        return text.split(regex).map((part, i) =>
+            regex.test(part) ? (
+                <span key={i} className=" font-semibold text-green-500">{part}</span>
+            ) : (
+                part
+            )
+        )
     }
 
     return (
@@ -76,14 +111,14 @@ export default function SearchHomeLocation() {
                     <Input
                         value={query}
                         onChange={handleSearch}
-                        className="px-8 py-2 w-full border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400"
+                        className={`px-8 py-2 w-full border rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400 ${query.trim() !== "" ? "bg-green-50" : "bg-white"
+                            }`}
                         type="search"
                         placeholder="Search by name or location..."
                     />
-                    {/* Left Icon */}
+
                     <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
 
-                    {/* Loader (right side) */}
                     {geoCountryLocationLoading && (
                         <div className="absolute right-3 top-2">
                             <Circles
@@ -99,7 +134,7 @@ export default function SearchHomeLocation() {
                 {/* Dropdown */}
                 {showDropdown && !geoCountryLocationLoading && query.trim() !== "" && (
                     <div className="relative">
-                        <ul className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
+                        <ul className="absolute z-10 mt-2 w-full max-h-80 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
                             {results.length > 0 ? (
                                 results.map((item, index) => (
                                     <li
@@ -107,7 +142,7 @@ export default function SearchHomeLocation() {
                                         className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer"
                                         onClick={() => handleSelect(item)}
                                     >
-                                        {item}
+                                        {highlightMatch(item, query)}
                                     </li>
                                 ))
                             ) : (

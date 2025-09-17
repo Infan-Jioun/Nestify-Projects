@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
     try {
         const data = await req.json();
+        
         const newProperty = await Property.create(data);
         return NextResponse.json(newProperty, { status: 201 });
     } catch (err) {

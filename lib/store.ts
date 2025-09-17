@@ -6,6 +6,7 @@ import propertiesReducer from "../app/features/Properties/propertySlice"
 import propertyCategoryReducer from "../app/features/property/propertyCategorySlice"
 import skeletionReducer from '../app/features/skeleton/skeletonSlice';
 import searchLocationReducer from '../app/features/SearchLocation/SearchLocationSlice'
+import propertyFacilitiesReducer from '../app/features/propertyFacilties/propertyFaciltiesSlice'
 export const store = configureStore({
     reducer: {
         // Add your reducers here
@@ -14,11 +15,13 @@ export const store = configureStore({
         loader: loaderReducer,
         properties: propertiesReducer,
         propertyCategory: propertyCategoryReducer,
+        propertyFacilities: propertyFacilitiesReducer,
         skeleton: skeletionReducer,
         searchLocation: searchLocationReducer
 
+
     },
-    
+
 })
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch

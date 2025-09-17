@@ -41,7 +41,9 @@ export interface PropertyType {
     plotNumber?: string;
     landType?: string;
     facilities?: string;
+    propertyFacilities?: string[];
     createdAt?: string;
     updatedAt?: string;
+    
 }
 

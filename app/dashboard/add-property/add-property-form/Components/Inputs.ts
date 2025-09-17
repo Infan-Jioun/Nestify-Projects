@@ -17,6 +17,7 @@ export type Inputs = {
   createdAt: Date
   updatedAt: Date
   name?: string
+  propertyFacilities?: string[]
   // Residential
   bedrooms?: number
   bathrooms?: number
