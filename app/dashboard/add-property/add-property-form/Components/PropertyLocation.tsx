@@ -43,20 +43,44 @@ export default function PropertyLocation({ register, errors, setValue }: Locatio
         const matches: string[] = []
 
         bangladeshGeoData.forEach((division) => {
+
             if (division.division.toLowerCase().includes(searchValue)) {
-                matches.push(division.division)
+                matches.push(` ${division.division}`)
+                division.districts.forEach((district) => {
+                    matches.push(` ${district.district}, ${division.division}`)
+                    district.upazilas.forEach((upazila) => {
+                        matches.push(` ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        upazila.unions.forEach((union) => {
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        })
+                    })
+                })
             }
+
+
             division.districts.forEach((district) => {
                 if (district.district.toLowerCase().includes(searchValue)) {
-                    matches.push(`${district.district}, ${division.division}`)
+                    matches.push(` ${district.district}, ${division.division}`)
+                    district.upazilas.forEach((upazila) => {
+                        matches.push(` ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        upazila.unions.forEach((union) => {
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        })
+                    })
                 }
+
+
                 district.upazilas.forEach((upazila) => {
                     if (upazila.upazila.toLowerCase().includes(searchValue)) {
-                        matches.push(`${upazila.upazila}, ${district.district}, ${division.division}`)
+                        matches.push(` ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        upazila.unions.forEach((union) => {
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                        })
                     }
+
                     upazila.unions.forEach((union) => {
                         if (union.toLowerCase().includes(searchValue)) {
-                            matches.push(`${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
+                            matches.push(` ${union}, ${upazila.upazila}, ${district.district}, ${division.division}`)
                         }
                     })
                 })
@@ -64,22 +88,32 @@ export default function PropertyLocation({ register, errors, setValue }: Locatio
         })
 
         setTimeout(() => {
-            dispatch(setResults(matches.slice(0, 20)))
+            dispatch(setResults(matches.slice(0, 80)))
             dispatch(setGeoCountryLocationLoading(false))
         }, 700)
     }
-
     const handleSelect = (item: string) => {
         dispatch(setQuery(item))
         setValue("geoCountryLocation", item)
         dispatch(setResults([]))
         setShowDropdown(false)
     }
+    const highlightMatch = (text: string, query: string) => {
+        if (!query) return text
+        const regex = new RegExp(`(${query})`, "gi")
+        return text.split(regex).map((part, i) =>
+            regex.test(part) ? (
+                <span key={i} className=" font-semibold text-green-500">{part}</span>
+            ) : (
+                part
+            )
+        )
+    }
 
     return (
         <div>
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-            <Label className="mb-2 block text-gray-700 text-xs"> Search Your Property Location</Label>
+                <Label className="mb-2 block text-gray-700 text-xs"> Search Your Property Location</Label>
                 <div className="relative">
                     <Input
                         {...register("geoCountryLocation", { required: "Location is required" })}
@@ -100,7 +134,7 @@ export default function PropertyLocation({ register, errors, setValue }: Locatio
 
                 {showDropdown && !geoCountryLocationLoading && query.trim() !== "" && (
                     <div className="relative">
-                        <ul className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
+                        <ul className="absolute z-10 mt-2 w-full max-h-80 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
                             {results.length > 0 ? (
                                 results.map((item, index) => (
                                     <li
@@ -108,7 +142,7 @@ export default function PropertyLocation({ register, errors, setValue }: Locatio
                                         className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer"
                                         onClick={() => handleSelect(item)}
                                     >
-                                        {item}
+                                        {highlightMatch(item, query)}
                                     </li>
                                 ))
                             ) : (

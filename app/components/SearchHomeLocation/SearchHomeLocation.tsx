@@ -34,7 +34,7 @@ export default function SearchHomeLocation() {
         bangladeshGeoData.forEach((division) => {
 
             if (division.division.toLowerCase().includes(searchValue)) {
-                matches.push(`Division: ${division.division}`)
+                matches.push(` ${division.division}`)
                 division.districts.forEach((district) => {
                     matches.push(` ${district.district}, ${division.division}`)
                     district.upazilas.forEach((upazila) => {

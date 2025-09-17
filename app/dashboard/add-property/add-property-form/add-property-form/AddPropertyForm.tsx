@@ -27,6 +27,7 @@ import { PropertyType } from "@/app/Types/properties";
 import { dataTagErrorSymbol } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import MultiSeclectService from "../Components/MultiSeclectService/MultiSeclectService";
+import { useRouter } from "next/navigation";
 
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -42,7 +43,7 @@ export default function AddPropertyFormPage() {
   } = useForm<Inputs>();
 
   const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
-
+  const router = useRouter()
   const onSubmit = async (data: Inputs) => {
     try {
       dispatch(setAddPropertyLoader(true));
@@ -113,7 +114,9 @@ export default function AddPropertyFormPage() {
       unwrapResult(resultAction);
 
       toast.success("Property submitted successfully!");
+      router.push("/Properties")
       reset();
+
     } catch (err: unknown) {
       console.error("Error adding property:", err);
       if (err instanceof Error) toast.error(err.message);
@@ -139,11 +142,11 @@ export default function AddPropertyFormPage() {
 
         <CategoryFrom register={register} errors={errors} setValue={setValue} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <MultiSeclectService/>
-        <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
-       
+          <MultiSeclectService />
+          <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
+
         </div>
-       
+
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <PropertySize register={register} errors={errors} />
@@ -154,7 +157,7 @@ export default function AddPropertyFormPage() {
         <PropertyAddress register={register} errors={errors} />
 
         <Button className="h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300 hover:border-green-500 font-semibold transition">
-          {buttonLoader ? <Loader/> : "Add Your Property"}
+          {buttonLoader ? <Loader /> : "Add Your Property"}
         </Button>
       </form>
     </div>
