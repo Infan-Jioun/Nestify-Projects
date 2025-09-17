@@ -131,7 +131,7 @@ export default function FeaturedAgents() {
           ) : (
             <>
               <h2 className="text-2xl lg:text-3xl font-bold">
-                Let's find the right selling option for you
+                Let s find the right selling option for you
               </h2>
               <p className="text-gray-600">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

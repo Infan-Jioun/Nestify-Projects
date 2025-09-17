@@ -40,7 +40,7 @@ export default function BannerService() {
               <div className="h-10 bg-gray-300 rounded-lg animate-pulse w-3/4"></div>
             ) : (
               <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-800">
-                Let's find the right selling option for you
+                Let s find the right selling option for you
               </h2>
             )}
 

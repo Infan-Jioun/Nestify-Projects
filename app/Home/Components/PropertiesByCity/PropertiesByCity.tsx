@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
+import Image from "next/image";
 
 type City = {
   id: number;
@@ -129,10 +130,11 @@ const PropertiesByCity: React.FC = () => {
             <SwiperSlide key={city.id}>
               <div className="flex flex-col items-center group">
                 <div className="relative w-32 h-32 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
-                  <img
+                  <Image
                     src={city.image}
                     alt={city.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    width={50} height={50}
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
                 <div className="text-center">

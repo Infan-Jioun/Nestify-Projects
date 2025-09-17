@@ -45,7 +45,7 @@ export default function TrustedCompany() {
           <div className="h-7 bg-gray-200 rounded animate-pulse w-64 mx-auto mb-6"></div>
         ) : (
           <p className='text-center font-bold text-xl mb-6'>
-            Trusted by the world's best
+            Trusted by the world s best
           </p>
         )}
       </div>
