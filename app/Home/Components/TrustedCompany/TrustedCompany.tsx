@@ -38,14 +38,14 @@ export default function TrustedCompany() {
   );
 
   return (
-    <div className='mt-20 mb-20 px-4 lg:px-44 '>
+    <div className='mt-20 px-4 lg:px-44 '>
       {/* Title */}
       <div>
         {loading || skletonLoader ? (
           <div className="h-7 bg-gray-200 rounded animate-pulse w-64 mx-auto mb-6"></div>
         ) : (
           <p className='text-center font-bold text-xl mb-6'>
-            Trusted by the world s best
+         {"Trusted by the world's best"}
           </p>
         )}
       </div>

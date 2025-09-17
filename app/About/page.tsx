@@ -248,8 +248,9 @@ export default function AboutPage() {
             Get in Touch
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-          Have questions or want to list your property? We&apos;d love to hear from you.
-          </p>
+  {"Have questions or want to list your property? We'd love to hear from you."}
+</p>
+
           <form className="grid md:grid-cols-2 gap-6 text-left">
             <input
               type="text"
