@@ -7,12 +7,12 @@ import PopularProperties from '../Components/PopularProperties/PopularProperties
 import BannerService from '../Components/BannerServices/BannerService'
 import ApartmentTypes from '../Components/ApartmentTypes/ApartmentTypes';
 import FeaturedAgents from '../Components/FeaturedAgents/FeaturedAgents';
-import Ratings from '../Raitngs/page';
-import TrustedCompany from '../TrustedCompany/page';
-import OurBlog from '../OurBlog/page';
-import RegisterInfo from '../RegisterInfo/page';
+import Ratings from '../Components/Raitngs/Raitngs';
+import TrustedCompany from '../Components/TrustedCompany/TrustedCompany';
+import OurBlog from '../Components/OurBlog/OurBlog';
+import RegisterInfo from '../Components/RegisterInfo/RegisterInfo'
 import NextHead from '@/app/components/NextHead/NextHead';
-
+ 
 
 
 export default function HomePage() {

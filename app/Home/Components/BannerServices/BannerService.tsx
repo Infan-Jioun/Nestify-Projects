@@ -6,7 +6,7 @@ import CountUp from "./CountUp";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
-
+import { RootState } from "@/lib/store"
 export default function BannerService() {
   const dispatch = useDispatch();
   const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
