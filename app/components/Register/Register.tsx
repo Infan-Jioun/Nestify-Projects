@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
@@ -44,11 +44,9 @@ export default function Register() {
     const [loading, setLoading] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>()
+    const [error, setError] = useState<string | null>(null);
 
-    React.useEffect(() => {
+   useEffect(() => {
         // Simulate initial loading
         const timer = setTimeout(() => {
             setLoading(false);
