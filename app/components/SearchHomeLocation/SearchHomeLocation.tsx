@@ -77,7 +77,7 @@ export default function SearchHomeLocation() {
         })
 
         setTimeout(() => {
-            dispatch(setResults(matches.slice(0, 80)))
+            dispatch(setResults(matches.slice(0, 100)))
             dispatch(setGeoCountryLocationLoading(false))
         }, 700)
     }
@@ -134,12 +134,12 @@ export default function SearchHomeLocation() {
                 {/* Dropdown */}
                 {showDropdown && !geoCountryLocationLoading && query.trim() !== "" && (
                     <div className="relative">
-                        <ul className="absolute z-10 mt-2 w-full max-h-80 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
+                        <ul className="absolute z-10 mt-2 w-full max-h-96 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
                             {results.length > 0 ? (
                                 results.map((item, index) => (
                                     <li
                                         key={index}
-                                        className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer"
+                                        className="px-1 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer"
                                         onClick={() => handleSelect(item)}
                                     >
                                         {highlightMatch(item, query)}
