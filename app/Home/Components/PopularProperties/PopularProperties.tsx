@@ -21,19 +21,24 @@ export default function PopularProperties() {
     dispatch(fetchProperties());
   }, [dispatch]);
 
-  if (loading) {
-    return (
-      <div className="text-center py-6 min-h-screen flex justify-center items-center">
-        <Circles
-          height="80"
-          width="80"
-          color="#4fa94d"
-          ariaLabel="circles-loading"
-          visible={true}
-        />
+  // Skeleton loader component
+  const PropertyCardSkeleton = () => (
+    <div className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
+      <div className="h-48 bg-gray-200"></div>
+      <div className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <div className="h-6 bg-gray-200 rounded w-2/3"></div>
+          <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+        </div>
+        <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
+        <div className="flex justify-between items-center">
+          <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-10 bg-gray-200 rounded w-1/3"></div>
+        </div>
       </div>
-    );
-  }
+    </div>
+  );
 
   if (error) {
     return (
@@ -79,7 +84,13 @@ export default function PopularProperties() {
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {filteredProperties.length > 0 ? (
+        {loading ? (
+        
+          Array.from({ length: 3 }).map((_, index) => (
+            <PropertyCardSkeleton key={index} />
+          ))
+        ) : filteredProperties.length > 0 ? (
+          // Show actual properties when loaded
           filteredProperties.map((property) => (
             <PropertyCard
               key={property._id}

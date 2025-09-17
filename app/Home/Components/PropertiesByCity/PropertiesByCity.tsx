@@ -1,110 +1,93 @@
 "use client";
 
-import Link from "next/link";
-import React, { useEffect } from "react";
-import { GoArrowUpRight } from "react-icons/go";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
+import { RootState } from "@/lib/store";
 
-export default function PropertiesByCity() {
-  const dispatch = useDispatch<AppDispatch>();
+type City = {
+  id: number;
+  title: string;
+  image: string;
+  propertiesLength: number;
+};
+
+const PropertiesByCity: React.FC = () => {
+  const dispatch = useDispatch();
   const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const [cities, setCities] = useState<City[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const cards = [
-    { title: "California", image: "https://i.ibb.co/F4XYDNvz/California.webp", propertiesLength: 12 },
-    { title: "Los Angeles", image: "https://i.ibb.co/5hcvzpPm/Los-Angeles.webp", propertiesLength: 15 },
-    { title: "Manhattan", image: "https://i.ibb.co/MkzM5jnT/Manhattan.webp", propertiesLength: 13 },
-    { title: "New Jersey", image: "https://i.ibb.co/jk3CsKPX/New-Jersey.webp", propertiesLength: 14 },
-    { title: "San Diego", image: "https://i.ibb.co/rG6r2PQF/San-Diego.webp", propertiesLength: 12 },
-    { title: "San Francisco", image: "https://i.ibb.co/h1BhqZ3G/San-Francisco.webp", propertiesLength: 10 },
+  const mockCities: City[] = [
+    { id: 1, title: "California", image: "https://i.ibb.co/F4XYDNvz/California.webp", propertiesLength: 12 },
+    { id: 2, title: "Los Angeles", image: "https://i.ibb.co/5hcvzpPm/Los-Angeles.webp", propertiesLength: 15 },
+    { id: 3, title: "Manhattan", image: "https://i.ibb.co/MkzM5jnT/Manhattan.webp", propertiesLength: 13 },
+    { id: 4, title: "New Jersey", image: "https://i.ibb.co/jk3CsKPX/New-Jersey.webp", propertiesLength: 14 },
+    { id: 5, title: "San Diego", image: "https://i.ibb.co/rG6r2PQF/San-Diego.webp", propertiesLength: 12 },
+    { id: 6, title: "San Francisco", image: "https://i.ibb.co/h1BhqZ3G/San-Francisco.webp", propertiesLength: 10 },
   ];
 
   useEffect(() => {
-    dispatch(setSkletonLoader(true));
+    const fetchData = async () => {
+      dispatch(setSkletonLoader(true));
+      setLoading(true);
+
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      setCities(mockCities);
+      setLoading(false);
+      dispatch(setSkletonLoader(false));
+    };
+
+    fetchData();
   }, [dispatch]);
 
-  const handleImageLoad = () => {
-    dispatch(setSkletonLoader(false));
-  };
-
   return (
-    <div className="mt-20 px-4 md:px-4 lg:px-44">
-      {/* Heading Section */}
-      <section className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-3">
-        <div className="text-center sm:text-left">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-black">
-            Properties by Cities
-          </h2>
-          <p className="text-sm md:text-base text-gray-600 font-medium mt-1">
-            Aliquam lacinia diam quis lacus euismod
-          </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+        <div className="text-center md:text-left mb-6 md:mb-0">
+          <h2 className="text-3xl font-bold text-gray-900">Properties by Cities</h2>
+          <p className="text-gray-600 mt-2">Aliquam lacinia diam quis lacus euismod</p>
         </div>
-        <div>
-          <Link href="/seeAllCities">
-            <p className="flex items-center gap-1 text-[14px] hover:text-green-600 font-semibold">
-              See All Cities <GoArrowUpRight size={16} />
-            </p>
-          </Link>
-        </div>
-      </section>
+        <button className="flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors">
+          See All Cities
+          <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </button>
+      </div>
 
-      {/* Swiper Cards Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        viewport={{ once: true }}
-        className="max-w-screen-xl mx-auto"
-      >
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={20}
-          loop={true}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          breakpoints={{
-            320: { slidesPerView: 2 },
-            480: { slidesPerView: 2 },
-            640: { slidesPerView: 3 },
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 3 },
-            1280: { slidesPerView: 4 },
-          }}
-        >
-          {cards.map((card, index) => (
-            <SwiperSlide key={index} className="flex justify-center items-center ">
-              <motion.div
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.90 }}
-                className="w-[160px] sm:w-[220px] md:w-[230px] bg-white rounded-2xl px-2 md:px-3 lg:px-4 transition-all duration-300"
-              >
-                {skletonLoader ? (
-                  <Skeleton height={200} className="rounded-full w-full mb-4" />
-                ) : (
-                  <Image
-                    src={card.image}
-                    alt={card.title || "Property"}
-                    width={400}
-                    height={400}
-                    className="rounded-full w-full object-cover transition-opacity duration-700"
-                    onLoadingComplete={handleImageLoad}
-                  />
-                )}
-                <h3 className="text-lg text-center font-semibold mt-4 text-black">{card.title}</h3>
-                <p className="text-sm text-center text-gray-600 mt-1">
-                  {card.propertiesLength} <span>Properties</span>
-                </p>
-              </motion.div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </motion.div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+        {(loading || skletonLoader) ? (
+          Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="animate-pulse">
+                <div className="w-32 h-32 bg-gray-200 rounded-full mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded mb-2 mx-auto w-24"></div>
+                <div className="h-4 bg-gray-200 rounded w-16 mx-auto"></div>
+              </div>
+            </div>
+          ))
+        ) : (
+          cities.map(city => (
+            <div key={city.id} className="flex flex-col items-center group">
+              <div className="relative w-32 h-32 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
+                <img
+                  src={city.image}
+                  alt={city.title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="font-semibold text-lg text-gray-900 mb-1">{city.title}</h3>
+                <p className="text-gray-600">{city.propertiesLength} Properties</p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default PropertiesByCity;
