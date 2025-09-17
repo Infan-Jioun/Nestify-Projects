@@ -7,20 +7,26 @@ interface User {
     role: string;
     image?: string | null;
 }
+
 interface UserState {
     users: User[];
+    userLoader: boolean;
 }
 
 const initialState: UserState = {
     users: [],
-}
-// delete user slice
+    userLoader: false,
+};
+
+
 export const deletedUser = createAsyncThunk(
     "user/deleteUser",
     async (id: string, { rejectWithValue }) => {
         try {
             await fetch(`/api/users/${id}`, { method: "DELETE" })
-            return id;
+            const res = await fetch("/api/users")
+            const data: User[] = await res.json()
+            return data
         } catch (err: unknown) {
             if (err instanceof Error) {
                 return rejectWithValue(err.message);
@@ -35,14 +41,17 @@ const userSlice = createSlice({
     reducers: {
         setUsers: (state, action: PayloadAction<User[]>) => {
             state.users = action.payload;
+        },
+        setUserLoader: (state, action: PayloadAction<boolean>) => {
+            state.userLoader = action.payload;
         }
     },
     extraReducers: (builder) => {
         builder.addCase(deletedUser.fulfilled, (state, action) => {
-            state.users = state.users?.filter((user) => user._id !== action.payload);
+            state.users = action.payload
         })
     }
-
 })
-export const { setUsers } = userSlice.actions
+
+export const { setUsers, setUserLoader } = userSlice.actions;
 export default userSlice.reducer;
