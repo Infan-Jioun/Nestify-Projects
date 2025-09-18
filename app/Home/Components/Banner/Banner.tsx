@@ -23,18 +23,17 @@ export default function Banner() {
 
   return (
     <div className="px-4 mx-auto drop-shadow-2xl lg:px-15 relative mt-5">
-    
+
       {skletonLoader && (
         <div className="rounded-xl lg:rounded-3xl bg-gray-200 animate-pulse h-[300px] md:h-[400px] lg:h-[500px] w-full"></div>
       )}
-      
+
 
       <Image
         width={2000}
         height={500}
-        className={`rounded-xl lg:rounded-3xl shadow w-full ${
-          skletonLoader ? "hidden" : "block"
-        }`}
+        className={`rounded-xl lg:rounded-3xl shadow w-full ${skletonLoader ? "hidden" : "block"
+          }`}
         style={{
           height: "auto",
           objectFit: "cover"

@@ -28,29 +28,29 @@ export default function PropertiesPage() {
 
       {/* Container */}
       <div className="flex flex-col md:flex-row gap-8 mt-8">
-        {/* Sidebar (desktop fixed, mobile button handled below) */}
+
         <aside className="hidden md:block md:w-1/4 lg:w-1/5">
           <div className="sticky top-24">
             <FilterSidebar />
           </div>
         </aside>
 
-        {/* Properties Section */}
+
         <main className="flex-1">
-          {/* Mobile Filter Button */}
+
           <div className="md:hidden mb-4">
             <FilterSidebar />
           </div>
 
-          {/* Top Bar: Showing results + Sort */}
+
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
-            {/* Results counter */}
+
             <p className="text-sm text-gray-600">
               Showing <span className="font-semibold">{properties.length}</span>{" "}
               results
             </p>
 
-            {/* Sort dropdown */}
+
             <div className="flex items-center gap-2">
               <label htmlFor="sort" className="text-sm text-gray-600">
                 Sort by:
@@ -69,7 +69,7 @@ export default function PropertiesPage() {
             </div>
           </div>
 
-          {/* Property Cards Grid */}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading && (
               <p className="col-span-full text-center py-10">Loading...</p>
