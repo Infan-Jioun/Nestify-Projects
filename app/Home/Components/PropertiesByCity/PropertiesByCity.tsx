@@ -133,7 +133,7 @@ const PropertiesByCity: React.FC = () => {
                   <Image
                     src={city.image}
                     alt={city.title}
-                    width={50} height={50}
+                    width={800} height={800}
                     className="object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
@@ -151,10 +151,11 @@ const PropertiesByCity: React.FC = () => {
     return cities.map(city => (
       <div key={city.id} className="flex flex-col items-center group">
         <div className="relative w-32 h-32 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
-          <img
+          <Image
             src={city.image}
             alt={city.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            width={800} height={800}
+            className=" object-cover transition-transform duration-300 group-hover:scale-110"
           />
         </div>
         <div className="text-center">
