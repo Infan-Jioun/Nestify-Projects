@@ -13,66 +13,77 @@ import { motion } from "framer-motion";
 import { FaSearch } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import BedroomBathroomFilter from "../BedroomBathroomFilter/BedroomBathroomFilter";
 import OtherFeatures from "../OhterFeatures/OhterFeatures";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import SquareComponents from "../SquareComponents/SquareComponents";
-import YearBuildFilter from "../YearBuildFilter/YearBuildFilter";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SearchHomeLocation from "../SearchHomeLocation/SearchHomeLocation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
-import { setPriceRange, setPropertyType, setStatus } from "@/app/features/filter/filterSlice";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+    setPriceRange,
+    setPropertyType,
+    setSquareFeat,
+    setStatus,
+    setYearBuild,
+    resetFilters,
+} from "@/app/features/filter/filterSlice";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function SidebarContent() {
     const dispatch = useDispatch<AppDispatch>();
-    const filter = useSelector((state: RootState) => state.filter)
-    const propertyTypes = ["House", "Apartment", "Office Space", "Villa"]
+    const filter = useSelector((state: RootState) => state.filter);
+    const { skletonLoader } = useSelector((state: RootState) => state.loader);
+
+    const propertyTypes = ["House", "Apartment", "Office Space", "Villa"];
     const togglePropertyType = (type: string) => {
         if (filter.propertyType.includes(type)) {
-            dispatch(setPropertyType(filter.propertyType.filter(toggle => toggle !== type)))
+            dispatch(setPropertyType(filter.propertyType.filter((t) => t !== type)));
         } else {
-            dispatch(setPropertyType([...filter.propertyType, type]))
+            dispatch(setPropertyType([...filter.propertyType, type]));
         }
+    };
+
+    if (skletonLoader) {
+        return (
+            <div className="space-y-4">
+                {[...Array(8)].map((_, idx) => (
+                    <Skeleton key={idx} height={40} />
+                ))}
+            </div>
+        );
     }
+
     return (
         <div className="px-3 pb-6 text-sm text-gray-700 space-y-6">
             {/* Search */}
             <SearchHomeLocation />
 
-            {/* 🔹 Status */}
+            {/* Status */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Listing Status</p>
-                <ToggleGroup
-                    type="single"
-                    value={filter.status}
-                    onValueChange={(val) => dispatch(setStatus(val))}
-                    className="flex gap-2 flex-wrap"
-                >
-                    {["All", "Buy", "Rent"].map(status => (
-                        <ToggleGroupItem
+                <div className="flex gap-2 flex-wrap">
+                    {["All", "Buy", "Rent"].map((status) => (
+                        <Button
                             key={status}
-                            value={status}
-                            aria-label={status}
-                            className={`px-3 py-2 rounded-full border text-sm font-medium transition-all ${filter.status === status
-                                ? "bg-green-500 text-white border-green-500 shadow-md"
-                                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-                                }`}
+                            variant={filter.status === status ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => dispatch(setStatus(status))}
                         >
                             {status}
-                        </ToggleGroupItem>
+                        </Button>
                     ))}
-                </ToggleGroup>
+                </div>
             </div>
 
             {/* Property Type */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Property Type</p>
                 <div className="space-y-2">
-                    {propertyTypes.map(type => (
+                    {propertyTypes.map((type) => (
                         <div key={type} className="flex gap-2 items-center">
                             <Checkbox
                                 checked={filter.propertyType.includes(type)}
@@ -89,7 +100,13 @@ function SidebarContent() {
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900">Price Range</p>
                 <div className="mt-3">
-                    <Slider value={filter.priceRange} defaultValue={[33]} min={0} max={100000000} step={50000} onValueChange={(val) => dispatch(setPriceRange(val as [number, number]))} />
+                    <Slider
+                        value={filter.priceRange}
+                        min={0}
+                        max={100000000}
+                        step={50000}
+                        onValueChange={(val) => dispatch(setPriceRange(val as [number, number]))}
+                    />
                     <div className="flex justify-between text-xs text-gray-600 mt-2">
                         <span>{filter.priceRange[0].toLocaleString()}</span>
                         <span>{filter.priceRange[1].toLocaleString()}</span>
@@ -97,19 +114,63 @@ function SidebarContent() {
                 </div>
             </div>
 
-            {/* Bedroom & Bathroom Filter */}
+            {/* Bedroom & Bathroom */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <BedroomBathroomFilter />
             </div>
 
-            {/* SquareComponents */}
+            {/* Square Feet */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                <SquareComponents />
+                <p className="text-xs font-semibold text-gray-900 mb-2">Square Feet</p>
+                <div className="flex gap-2">
+                    <Input
+                        type="number"
+                        placeholder="min"
+                        value={filter.squareFeat[0]}
+                        onChange={(e) =>
+                            dispatch(setSquareFeat([parseInt(e.target.value), filter.squareFeat[1]]))
+                        }
+                        className="w-1/2"
+                    />
+                    <Input
+                        type="number"
+                        placeholder="max"
+                        value={filter.squareFeat[1]}
+                        onChange={(e) =>
+                            dispatch(setSquareFeat([filter.squareFeat[0], parseInt(e.target.value)]))
+                        }
+                        className="w-1/2"
+                    />
+                </div>
             </div>
 
-            {/* YearBuild */}
+            {/* Year Built */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                <YearBuildFilter />
+                <p className="text-xs font-semibold text-gray-900 mb-2">Year Built</p>
+                <div className="flex gap-2">
+                    <Input
+                        type="number"
+                        placeholder="min"
+                        value={filter.yearBuild[0]}
+                        onChange={(e) =>
+                            dispatch(
+                                setYearBuild([parseInt(e.target.value) || 2000, filter.yearBuild[1]])
+                            )
+                        }
+                        className="w-1/2"
+                    />
+                    <Input
+                        type="number"
+                        placeholder="max"
+                        value={filter.yearBuild[1]}
+                        onChange={(e) =>
+                            dispatch(
+                                setYearBuild([filter.yearBuild[0], parseInt(e.target.value) || new Date().getFullYear()])
+                            )
+                        }
+                        className="w-1/2"
+                    />
+                </div>
             </div>
 
             {/* Other Features */}
@@ -117,21 +178,7 @@ function SidebarContent() {
                 <OtherFeatures />
             </div>
 
-            {/* Footer Actions */}
-            <SheetFooter className="flex flex-col gap-4 mt-6 p-3 ">
-                <Button className="bg-green-500 hover:bg-green-600 shadow-md hover:shadow-lg text-white flex items-center gap-2 px-6 py-2 rounded-full transition-all w-64 mx-auto">
-                    <FaSearch /> Search
-                </Button>
-
-                <div className="flex justify-between text-sm font-medium">
-                    <button type="reset" className="text-green-600 hover:text-green-800 underline">
-                        Reset all filters
-                    </button>
-                    <button type="submit" className="text-green-600 hover:text-green-800 underline">
-                        Save filters
-                    </button>
-                </div>
-            </SheetFooter>
+          
         </div>
     );
 }
@@ -139,12 +186,12 @@ function SidebarContent() {
 export function FilterSidebar() {
     return (
         <>
-            {/* Desktop Sidebar (always visible) */}
+            {/* Desktop Sidebar */}
             <div className="hidden md:block w-full">
                 <SidebarContent />
             </div>
 
-            {/* Mobile Sidebar (button + sheet) */}
+            {/* Mobile Sidebar */}
             <div className="md:hidden flex justify-end items-end text-right">
                 <Sheet>
                     <SheetTrigger asChild>

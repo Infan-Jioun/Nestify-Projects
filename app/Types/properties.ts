@@ -44,6 +44,9 @@ export interface PropertyType {
     propertyFacilities?: string[];
     createdAt?: string;
     updatedAt?: string;
+    total: number
+    page: number
+    limit: number
     
 }
 

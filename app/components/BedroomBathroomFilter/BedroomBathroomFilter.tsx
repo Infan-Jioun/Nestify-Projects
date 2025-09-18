@@ -1,64 +1,71 @@
-"use client"
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import React from 'react'
+"use client";
 
-type FilterProps = {
-  label: string,
-  value: string,
-  onChange: (val: string) => void
-}
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { setBedrooms, setBathrooms } from "@/app/features/filter/filterSlice";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-const FilterSection: React.FC<FilterProps> = ({ label, value, onChange }) => {
-  return (
-    <div className="mb-6">
-      {/* Label */}
-      <span className="block font-semibold text-gray-800 text-sm mb-2">
-        {label}
-      </span>
-
-      {/* Toggle Group */}
-      <ToggleGroup
-        className="flex flex-wrap gap-2"
-        type="single"
-        value={value}
-        onValueChange={(val) => onChange(val)}
-      >
-        {["any", "1+", "2+", "3+", "4+", "5+"].map((item) => (
-          <ToggleGroupItem
-            key={item}
-            value={item}
-            aria-label={item}
-            className={`px-3 py-2 rounded-full text-sm font-medium border transition-all
-              ${
-                value === item
-                  ? "bg-green-500 text-white border-green-500 shadow-md"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-              }`}
-          >
-            {item}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
-    </div>
-  )
-}
+const bedroomOptions = ["any", "1+", "2+", "3+", "4+", "5+"];
+const bathroomOptions = ["any", "1+", "2+", "3+", "4+", "5+"];
 
 export default function BedroomBathroomFilter() {
-  const [bedrooms, setBedrooms] = React.useState("any")
-  const [bathrooms, setBathrooms] = React.useState("any")
+  const dispatch = useDispatch<AppDispatch>();
+  const { bedrooms, bathrooms } = useSelector((state: RootState) => state.filter);
 
   return (
-    <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100 space-y-4">
-      <FilterSection
-        label="Bedrooms"
-        value={bedrooms}
-        onChange={(val) => setBedrooms(val || "any")}
-      />
-      <FilterSection
-        label="Bathrooms"
-        value={bathrooms}
-        onChange={(val) => setBathrooms(val || "any")}
-      />
+    <div className="space-y-4">
+      {/* Bedrooms */}
+      <div>
+        <span className="block font-semibold text-gray-800 text-sm mb-2">Bedrooms</span>
+        <ToggleGroup
+          type="single"
+          value={bedrooms}
+          onValueChange={(val) => dispatch(setBedrooms(val))}
+          className="flex flex-wrap gap-2"
+        >
+          {bedroomOptions.map((item) => (
+            <ToggleGroupItem
+              key={item}
+              value={item}
+              aria-label={item}
+              className={`px-3 py-2 rounded-full text-sm font-medium border transition-all
+                                ${bedrooms === item
+                  ? "bg-green-500 text-white border-green-500 shadow-md"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                }`}
+            >
+              {item}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </div>
+
+      {/* Bathrooms */}
+      <div>
+        <span className="block font-semibold text-gray-800 text-sm mb-2">Bathrooms</span>
+        <ToggleGroup
+          type="single"
+          value={bathrooms}
+          onValueChange={(val) => dispatch(setBathrooms(val))}
+          className="flex flex-wrap gap-2"
+        >
+          {bathroomOptions.map((item) => (
+            <ToggleGroupItem
+              key={item}
+              value={item}
+              aria-label={item}
+              className={`px-3 py-2 rounded-full text-sm font-medium border transition-all
+                                ${bathrooms === item
+                  ? "bg-green-500 text-white border-green-500 shadow-md"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                }`}
+            >
+              {item}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </div>
     </div>
-  )
+  );
 }

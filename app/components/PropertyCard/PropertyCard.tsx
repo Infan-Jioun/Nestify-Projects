@@ -41,6 +41,7 @@ export default function PropertyCard({ property, isLoading, isError }: PropertyC
 
   return (
     <div className="border rounded-2xl shadow-md overflow-hidden bg-white hover:shadow-lg transition relative">
+      {/* Image Carousal */}
       {property.images?.length > 0 ? (
         <Carousal images={property.images} title={property.title} />
       ) : (
@@ -50,14 +51,18 @@ export default function PropertyCard({ property, isLoading, isError }: PropertyC
       )}
 
       <div className="p-4">
+        {/* Title & Address */}
         <h2 className="text-lg font-semibold mb-1">{property.title}</h2>
         <p className="text-gray-600 text-sm mb-1">
           {property.address}, {property.geoCountryLocation}
         </p>
+
+        {/* Price */}
         <p className="text-green-500 font-semibold mb-2">
           {property.price.toLocaleString()} {property.currency}
         </p>
 
+        {/* Features */}
         <div className="flex flex-wrap gap-3 text-sm text-gray-600">
           {property.bedrooms && <span>{property.bedrooms} Bed</span>}
           {property.bathrooms && <span>{property.bathrooms} Bath</span>}
@@ -68,22 +73,25 @@ export default function PropertyCard({ property, isLoading, isError }: PropertyC
           {property.roomsSections && <span>{property.roomsSections} Rooms</span>}
         </div>
 
+        {/* Status */}
         <p
           className={`mt-3 inline-block px-3 py-1 text-xs rounded-full ${property.status === "Available"
-            ? "bg-green-100 text-green-600"
-            : property.status === "Sold"
-              ? "bg-red-100 text-red-600"
-              : "bg-yellow-100 text-yellow-600"
+              ? "bg-green-100 text-green-600"
+              : property.status === "Sold"
+                ? "bg-red-100 text-red-600"
+                : "bg-yellow-100 text-yellow-600"
             }`}
         >
           {property.status}
         </p>
 
-        <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
+        {/* Delete Button */}
+        <Button variant="destructive" onClick={() => setShowDeleteModal(true)} className="mt-3">
           Delete
         </Button>
       </div>
 
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <DeleteConfirmation
           name={property.title}

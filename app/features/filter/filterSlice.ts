@@ -1,3 +1,4 @@
+import { PropertyType } from "@/app/Types/properties";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FilterState {
@@ -10,9 +11,10 @@ interface FilterState {
     squareFeat: [number, number];
     yearBuild: [number, number];
     otherFeatures: string[];
-
-
+    sortOption: string;
+    sortedProperties: PropertyType[];
 }
+
 const initialState: FilterState = {
     location: "",
     status: "All",
@@ -23,7 +25,10 @@ const initialState: FilterState = {
     squareFeat: [0, 0],
     yearBuild: [2000, new Date().getFullYear()],
     otherFeatures: [],
-}
+    sortOption: "default",
+    sortedProperties: [],
+};
+
 const filterSlice = createSlice({
     name: "filter",
     initialState,
@@ -55,14 +60,44 @@ const filterSlice = createSlice({
         setOtherFeatures: (state, action: PayloadAction<string[]>) => {
             state.otherFeatures = action.payload;
         },
-        resetFilters(state) {
-            state.location = ""
-            state.bedrooms = "any"
-            state.bathrooms = "any"
-            state.priceRange = [0, 10000]
-        }
+        setSortOption: (state, action: PayloadAction<string>) => {
+            state.sortOption = action.payload;
+        },
+        sortProperties: (state, action: PayloadAction<PropertyType[]>) => {
+            const properties = action.payload;
+            const { sortOption } = state;
 
-    }
-})
-export const { setLocation, setStatus, setPropertyType, setPriceRange, setBedrooms, setBathrooms, setSquareFeat, setYearBuild, setOtherFeatures } = filterSlice.actions
-export default filterSlice.reducer
+            let sorted = [...properties];
+            if (sortOption === "priceLowHigh") {
+                sorted.sort((a, b) => a.price - b.price);
+            } else if (sortOption === "priceHighLow") {
+                sorted.sort((a, b) => b.price - a.price);
+            } else if (sortOption === "latest") {
+                sorted.sort((a, b) => {
+                    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                    return dateB - dateA;
+                });
+            }
+
+            state.sortedProperties = sorted;
+        },
+        resetFilters: (state) => {
+            state.location = "";
+            state.status = "All";
+            state.propertyType = [];
+            state.priceRange = [0, 10000000];
+            state.bedrooms = "any";
+            state.bathrooms = "any";
+            state.squareFeat = [0, 0];
+            state.yearBuild = [2000, new Date().getFullYear()];
+            state.otherFeatures = [];
+            state.sortOption = "default";
+            state.sortedProperties = [];
+        },
+    },
+});
+
+export const { setLocation, setStatus, setPropertyType, setPriceRange, setBedrooms, setBathrooms, setSquareFeat, setYearBuild, setOtherFeatures, setSortOption, sortProperties, resetFilters, } = filterSlice.actions;
+
+export default filterSlice.reducer;
