@@ -14,13 +14,22 @@ export default function PropertiesPage() {
   const { properties, loading, error } = useSelector(
     (state: RootState) => state.properties
   );
-
+  const filterState = useSelector((state: RootState) => state.filter)
   const [sortOption, setSortOption] = useState("default");
 
   useEffect(() => {
     dispatch(fetchProperties());
   }, [dispatch]);
+  // Filter Properties
+  const filterProperties = properties.filter((property) => {
+    const { location, status, propertyType, priceRange, bedrooms, bathrooms, squareFeat, yearBuild, otherFeatures } = filterState;
+    if (location && !property.geoCountryLocation.toLowerCase().includes(location.toLowerCase())) return false;
+    if (status !== "All" && property.status !== status) return false;
+    if (propertyType.length > 0 && !propertyType.includes(property.category.name)) return false;
+    
 
+    return true;
+  })
   return (
     <div className="mt-20 px-4 md:px-10 lg:px-20 xl:px-28">
       <NextHead title="Properties - Nestify" />
@@ -46,7 +55,7 @@ export default function PropertiesPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
 
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold">{properties.length}</span>{" "}
+              Showing <span className="font-semibold">{filterProperties.length}</span>{" "}
               results
             </p>
 
@@ -81,7 +90,7 @@ export default function PropertiesPage() {
               </p>
             )}
 
-            {!loading && !error && properties.length === 0 && (
+            {!loading && !error && filterProperties.length === 0 && (
               <p className="col-span-full text-center text-gray-500 py-10">
                 No properties found.
               </p>
@@ -89,7 +98,7 @@ export default function PropertiesPage() {
 
             {!loading &&
               !error &&
-              properties.map((property) => (
+              filterProperties.map((property) => (
                 <PropertyCard
                   key={property._id}
                   property={property}

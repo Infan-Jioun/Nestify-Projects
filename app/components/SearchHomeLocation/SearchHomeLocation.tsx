@@ -8,7 +8,7 @@ import { bangladeshGeoData } from '@/lib/geo-data'
 import { setQuery, setResults } from '@/app/features/SearchLocation/SearchLocationSlice'
 import { setGeoCountryLocationLoading } from '@/app/features/loader/loaderSlice'
 import { Circles } from "react-loader-spinner"
-
+import { setLocation } from "@/app/features/filter/filterSlice"
 export default function SearchHomeLocation() {
     const dispatch = useDispatch<AppDispatch>()
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
@@ -83,6 +83,7 @@ export default function SearchHomeLocation() {
     }
 
     const handleSelect = (item: string) => {
+        dispatch(setLocation(item))
         dispatch(setQuery(item))
         dispatch(setResults([]))
         setShowDropdown(false)

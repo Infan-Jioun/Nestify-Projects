@@ -22,33 +22,63 @@ import SquareComponents from "../SquareComponents/SquareComponents";
 import YearBuildFilter from "../YearBuildFilter/YearBuildFilter";
 import { Button } from "@/components/ui/button";
 import SearchHomeLocation from "../SearchHomeLocation/SearchHomeLocation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { setPropertyType, setStatus } from "@/app/features/filter/filterSlice";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 function SidebarContent() {
+    const dispatch = useDispatch<AppDispatch>();
+    const filter = useSelector((state: RootState) => state.filter)
+    const propertyTypes = ["All", "Hosue", "Apartment", "Office Space", "Villa"]
+    const togglePropertyType = (type: string) => {
+        if (filter.propertyType.includes(type)) {
+            dispatch(setPropertyType(filter.propertyType.filter(toggle => toggle !== type)))
+        } else {
+            dispatch(setPropertyType([...filter.propertyType, type]))
+        }
+    }
     return (
         <div className="px-3 pb-6 text-sm text-gray-700 space-y-6">
             {/* Search */}
             <SearchHomeLocation />
 
-            {/* Listing Status */}
+            {/* 🔹 Status */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Listing Status</p>
-                <RadioGroup defaultValue="All" className="space-y-2">
-                    {["All", "Buy", "Rent"].map((status) => (
-                        <div key={status} className="flex items-center space-x-2">
-                            <RadioGroupItem value={status} id={status} />
-                            <Label htmlFor={status}>{status}</Label>
-                        </div>
+                <ToggleGroup
+                    type="single"
+                    value={filter.status}
+                    onValueChange={(val) => dispatch(setStatus(val))}
+                    className="flex gap-2 flex-wrap"
+                >
+                    {["All", "Buy", "Rent"].map(status => (
+                        <ToggleGroupItem
+                            key={status}
+                            value={status}
+                            aria-label={status}
+                            className={`px-3 py-2 rounded-full border text-sm font-medium transition-all ${filter.status === status
+                                ? "bg-green-500 text-white border-green-500 shadow-md"
+                                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                                }`}
+                        >
+                            {status}
+                        </ToggleGroupItem>
                     ))}
-                </RadioGroup>
+                </ToggleGroup>
             </div>
 
             {/* Property Type */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Property Type</p>
                 <div className="space-y-2">
-                    {["All", "Houses", "Apartments", "Office", "Villa"].map((type) => (
-                        <div key={type} className="flex gap-3 items-center">
-                            <Checkbox id={type} />
+                    {propertyTypes.map(type => (
+                        <div key={type} className="flex gap-2 items-center">
+                            <Checkbox
+                                checked={filter.propertyType.includes(type)}
+                                onCheckedChange={() => togglePropertyType(type)}
+                                id={type}
+                            />
                             <Label htmlFor={type}>{type}</Label>
                         </div>
                     ))}

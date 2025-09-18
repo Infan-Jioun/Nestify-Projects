@@ -54,9 +54,15 @@ const filterSlice = createSlice({
         },
         setOtherFeatures: (state, action: PayloadAction<string[]>) => {
             state.otherFeatures = action.payload;
+        },
+        resetFilters(state) {
+            state.location = ""
+            state.bedrooms = "any"
+            state.bathrooms = "any"
+            state.priceRange = [0, 10000]
         }
 
     }
 })
-const { setLocation, setStatus, setPropertyType, setPriceRange, setBedrooms, setBathrooms, setSquareFeat, setYearBuild, setOtherFeatures } = filterSlice.actions
+export const { setLocation, setStatus, setPropertyType, setPriceRange, setBedrooms, setBathrooms, setSquareFeat, setYearBuild, setOtherFeatures } = filterSlice.actions
 export default filterSlice.reducer
