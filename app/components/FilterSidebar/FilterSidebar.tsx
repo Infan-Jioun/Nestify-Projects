@@ -24,13 +24,13 @@ import { Button } from "@/components/ui/button";
 import SearchHomeLocation from "../SearchHomeLocation/SearchHomeLocation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
-import { setPropertyType, setStatus } from "@/app/features/filter/filterSlice";
+import { setPriceRange, setPropertyType, setStatus } from "@/app/features/filter/filterSlice";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 function SidebarContent() {
     const dispatch = useDispatch<AppDispatch>();
     const filter = useSelector((state: RootState) => state.filter)
-    const propertyTypes = ["All", "House", "Apartment", "Office Space", "Villa"]
+    const propertyTypes = ["House", "Apartment", "Office Space", "Villa"]
     const togglePropertyType = (type: string) => {
         if (filter.propertyType.includes(type)) {
             dispatch(setPropertyType(filter.propertyType.filter(toggle => toggle !== type)))
@@ -89,10 +89,10 @@ function SidebarContent() {
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900">Price Range</p>
                 <div className="mt-3">
-                    <Slider defaultValue={[33]} max={100} step={1} />
+                    <Slider value={filter.priceRange} defaultValue={[33]} min={0} max={100000000} step={50000} onValueChange={(val) => dispatch(setPriceRange(val as [number, number]))} />
                     <div className="flex justify-between text-xs text-gray-600 mt-2">
-                        <span>$0</span>
-                        <span>$10,000+</span>
+                        <span>{filter.priceRange[0].toLocaleString()}</span>
+                        <span>{filter.priceRange[1].toLocaleString()}</span>
                     </div>
                 </div>
             </div>

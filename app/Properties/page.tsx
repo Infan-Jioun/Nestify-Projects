@@ -26,8 +26,8 @@ export default function PropertiesPage() {
     if (location && !property.geoCountryLocation.toLowerCase().includes(location.toLowerCase())) return false;
     if (status !== "All" && property.status !== status) return false;
     if (propertyType.length > 0 && !propertyType.includes(property.category.name)) return false;
-    
-
+    if (property.price < priceRange[0] || property.price > priceRange[1]) return false;
+  
     return true;
   })
   return (
