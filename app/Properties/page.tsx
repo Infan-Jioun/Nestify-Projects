@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NextHead from "../components/NextHead/NextHead";
-
 import PropertyCard from "../components/PropertyCard/PropertyCard";
 import PropertiesTitle from "./PropertiesTitle/PropertiesTitle";
-
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
 import { fetchProperties } from "../features/Properties/propertySlice";
@@ -13,52 +11,94 @@ import { FilterSidebar } from "../components/FilterSidebar/FilterSidebar";
 
 export default function PropertiesPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const { properties, loading, error } = useSelector((state: RootState) => state.properties);
+  const { properties, loading, error } = useSelector(
+    (state: RootState) => state.properties
+  );
+
+  const [sortOption, setSortOption] = useState("default");
 
   useEffect(() => {
     dispatch(fetchProperties());
   }, [dispatch]);
 
   return (
-    <div className="mt-20 px-4 md:px-20 lg:px-44">
+    <div className="mt-20 px-4 md:px-10 lg:px-20 xl:px-28">
       <NextHead title="Properties - Nestify" />
       <PropertiesTitle />
 
-      <div className="flex flex-col md:flex-row gap-6 mt-6">
-        {/* Sidebar */}
-        <div className="md:w-1/4">
-          <FilterSidebar />
-        </div>
+      {/* Container */}
+      <div className="flex flex-col md:flex-row gap-8 mt-8">
+        {/* Sidebar (desktop fixed, mobile button handled below) */}
+        <aside className="hidden md:block md:w-1/4 lg:w-1/5">
+          <div className="sticky top-24">
+            <FilterSidebar />
+          </div>
+        </aside>
 
-        {/* Properties list */}
-        <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading && 
-          <p className="col-span-full text-center py-10">Loading...</p>
-          
-          }
+        {/* Properties Section */}
+        <main className="flex-1">
+          {/* Mobile Filter Button */}
+          <div className="md:hidden mb-4">
+            <FilterSidebar />
+          </div>
 
-          {!loading && error && (
-            <p className="col-span-full text-center text-red-500 py-10">{error}</p>
-          )}
-
-          {!loading && !error && properties.length === 0 && (
-            <p className="col-span-full text-center text-gray-500 py-10">
-              No properties found.
+          {/* Top Bar: Showing results + Sort */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
+            {/* Results counter */}
+            <p className="text-sm text-gray-600">
+              Showing <span className="font-semibold">{properties.length}</span>{" "}
+              results
             </p>
-          )}
 
-          {!loading && !error &&
-            properties.map((property) => (
-              <PropertyCard
-                key={property._id}
-                property={property}
-                isLoading={loading}
-                isError={!!error}
-               
-              />
-            ))
-          }
-        </div>
+            {/* Sort dropdown */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="sort" className="text-sm text-gray-600">
+                Sort by:
+              </label>
+              <select
+                id="sort"
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="default">Default</option>
+                <option value="priceLowHigh">Price: Low to High</option>
+                <option value="priceHighLow">Price: High to Low</option>
+                <option value="latest">Latest</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Property Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading && (
+              <p className="col-span-full text-center py-10">Loading...</p>
+            )}
+
+            {!loading && error && (
+              <p className="col-span-full text-center text-red-500 py-10">
+                {error}
+              </p>
+            )}
+
+            {!loading && !error && properties.length === 0 && (
+              <p className="col-span-full text-center text-gray-500 py-10">
+                No properties found.
+              </p>
+            )}
+
+            {!loading &&
+              !error &&
+              properties.map((property) => (
+                <PropertyCard
+                  key={property._id}
+                  property={property}
+                  isLoading={loading}
+                  isError={!!error}
+                />
+              ))}
+          </div>
+        </main>
       </div>
     </div>
   );

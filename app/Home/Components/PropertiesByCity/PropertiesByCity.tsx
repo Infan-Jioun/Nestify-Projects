@@ -37,7 +37,7 @@ const PropertiesByCity: React.FC = () => {
     const fetchData = async () => {
       dispatch(setSkletonLoader(true));
       setLoading(true);
-   
+
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       setCities(mockCities);
@@ -63,7 +63,7 @@ const PropertiesByCity: React.FC = () => {
 
   const renderSkeletonLoaders = () => {
     if (isMobile) {
-  
+
       return Array.from({ length: 2 }).map((_, index) => (
         <SwiperSlide key={index}>
           <div className="flex flex-col items-center">
@@ -76,7 +76,7 @@ const PropertiesByCity: React.FC = () => {
         </SwiperSlide>
       ));
     } else {
-   
+
       return Array.from({ length: 6 }).map((_, index) => (
         <div key={index} className="flex flex-col items-center">
           <div className="animate-pulse">
@@ -89,7 +89,7 @@ const PropertiesByCity: React.FC = () => {
     }
   };
 
-  
+
   const renderContent = () => {
     if (isLoading) {
       if (isMobile) {
@@ -168,7 +168,7 @@ const PropertiesByCity: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
- 
+
       <div className="flex flex-col md:flex-row justify-between items-center mb-10">
         <div className="text-center md:text-left mb-6 md:mb-0">
           {isLoading ? (
@@ -183,7 +183,7 @@ const PropertiesByCity: React.FC = () => {
             </>
           )}
         </div>
-        
+
         {!isLoading && (
           <button className="flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors">
             See All Cities
