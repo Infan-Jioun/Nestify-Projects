@@ -30,7 +30,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 function SidebarContent() {
     const dispatch = useDispatch<AppDispatch>();
     const filter = useSelector((state: RootState) => state.filter)
-    const propertyTypes = ["All", "Hosue", "Apartment", "Office Space", "Villa"]
+    const propertyTypes = ["All", "House", "Apartment", "Office Space", "Villa"]
     const togglePropertyType = (type: string) => {
         if (filter.propertyType.includes(type)) {
             dispatch(setPropertyType(filter.propertyType.filter(toggle => toggle !== type)))
