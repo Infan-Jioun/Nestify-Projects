@@ -6,19 +6,12 @@ interface PropertyState {
   properties: PropertyType[];
   loading: boolean;
   error: string | null;
-  total: number;
-  page: number;
-  limit: number;
-  
 }
 
 const initialState: PropertyState = {
   properties: [],
   loading: false,
   error: null,
-  total: 0,
-  page: 1,
-  limit: 6
 };
 
 // Fetch all properties
@@ -75,11 +68,7 @@ const propertySlice = createSlice({
     removePropertyLocally: (state, action: PayloadAction<string>) => {
       state.properties = state.properties.filter(p => p._id !== action.payload);
     },
-    setPage(state, action: PayloadAction<number>) {
-      state.page = action.payload;
-    },
   },
-
   extraReducers: builder => {
     builder
       // fetchProperties
@@ -99,5 +88,5 @@ const propertySlice = createSlice({
   },
 });
 
-export const { updatePropertyLocally, removePropertyLocally, setPage } = propertySlice.actions;
+export const { updatePropertyLocally, removePropertyLocally } = propertySlice.actions;
 export default propertySlice.reducer;
