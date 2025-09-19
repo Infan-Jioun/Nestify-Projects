@@ -10,6 +10,13 @@ import { FilterSidebar } from "../components/FilterSidebar/FilterSidebar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   setSortOption,
   sortProperties,
 } from "../features/filter/filterSlice";
@@ -28,7 +35,7 @@ export default function PropertiesPage() {
     currency,
     priceRange,
     bedrooms,
-    
+
     bathrooms,
     squareFeat,
     yearBuild,
@@ -59,8 +66,8 @@ export default function PropertiesPage() {
     )
       return false;
 
-    if (listingStatus !== "All"  && property.listingStatus !== listingStatus) return false;
-    if (currency !== "BDT"  && property.currency !==  currency) return false;
+    if (listingStatus !== "All" && property.listingStatus !== listingStatus) return false;
+    if (currency !== "BDT" && property.currency !== currency) return false;
 
     if (
       propertyType.length > 0 &&
@@ -122,7 +129,6 @@ export default function PropertiesPage() {
             <FilterSidebar />
           </div>
 
-          {/* Sort + Results Count */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
             <p className="text-sm text-gray-600">
               Showing{" "}
@@ -134,17 +140,21 @@ export default function PropertiesPage() {
               <label htmlFor="sort" className="text-sm text-gray-600">
                 Sort by:
               </label>
-              <select
-                id="sort"
+
+              <Select
                 value={sortOption}
-                onChange={(e) => dispatch(setSortOption(e.target.value))}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                onValueChange={(val) => dispatch(setSortOption(val))}
               >
-                <option value="default">Default</option>
-                <option value="priceLowHigh">Price: Low to High</option>
-                <option value="priceHighLow">Price: High to Low</option>
-                <option value="latest">Latest</option>
-              </select>
+                <SelectTrigger className="w-[200px] border-gray-300 focus:ring-green-500">
+                  <SelectValue placeholder="Select sort option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="priceLowHigh">Price: Low to High</SelectItem>
+                  <SelectItem value="priceHighLow">Price: High to Low</SelectItem>
+                  <SelectItem value="latest">Latest</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
