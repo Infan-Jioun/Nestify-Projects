@@ -39,7 +39,7 @@ function SidebarContent() {
     const filter = useSelector((state: RootState) => state.filter);
     const { skletonLoader } = useSelector((state: RootState) => state.loader);
 
-    const propertyTypes = ["House", "Apartment", "Office Space", "Villa"];
+    const propertyTypes = ["House", "Apartment", "Office Space", "Duplex" , "Agricultural Land", "Industrial Land", "Garage", "Co-working Space" , "Hotel" , "Commercial Land", "Warehouse" , "Residential"];
     const togglePropertyType = (type: string) => {
         if (filter.propertyType.includes(type)) {
             dispatch(setPropertyType(filter.propertyType.filter((t) => t !== type)));

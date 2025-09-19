@@ -34,7 +34,7 @@ export const propertyCategoryData: Record<string, Field[]> = {
         { name: "parkingSpaces", label: "Parking Spaces", type: "number" },
         { name: "roomsSections", label: "Number of Rooms / Sections", type: "number" },
     ],
-    "Shop ": [
+    "Shop": [
         { name: "floorArea", label: "Floor Area", type: "number" },
         { name: "parkingSpaces", label: "Parking Spaces", type: "number" },
         { name: "roomsSections", label: "Number of Rooms / Sections", type: "number" },
@@ -77,7 +77,7 @@ export const propertyCategoryData: Record<string, Field[]> = {
         { name: "parkingSpaces", label: "Parking", type: "number" },
         { name: "facilities", label: "Facilities" },
     ],
-    "Garage ": [
+    "Garage": [
         { name: "floor", label: "Total Floors", type: "number" },
         { name: "roomsSections", label: "Rooms / Units", type: "number" },
         { name: "parkingSpaces", label: "Parking", type: "number" },

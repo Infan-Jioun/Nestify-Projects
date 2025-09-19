@@ -24,11 +24,11 @@ import { Button } from "@/components/ui/button";
 import { addProperty } from "@/app/features/Properties/propertySlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { PropertyType } from "@/app/Types/properties";
-import { dataTagErrorSymbol } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import MultiSeclectService from "../Components/MultiSeclectService/MultiSeclectService";
 import { useRouter } from "next/navigation";
 import ListingStatus from "../Components/ListingStatus/ListingStatus";
+
 
 
 
@@ -141,6 +141,7 @@ export default function AddPropertyFormPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <PropertyTitle register={register} errors={errors} />
+        
           <ContactInfo register={register} control={control} errors={errors} />
         </div>
 
