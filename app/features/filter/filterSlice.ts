@@ -66,8 +66,8 @@ const filterSlice = createSlice({
         sortProperties: (state, action: PayloadAction<PropertyType[]>) => {
             const properties = action.payload;
             const { sortOption } = state;
-
-            let sorted = [...properties];
+        
+            const sorted = [...properties]; 
             if (sortOption === "priceLowHigh") {
                 sorted.sort((a, b) => a.price - b.price);
             } else if (sortOption === "priceHighLow") {
@@ -79,7 +79,7 @@ const filterSlice = createSlice({
                     return dateB - dateA;
                 });
             }
-
+        
             state.sortedProperties = sorted;
         },
         resetFilters: (state) => {
