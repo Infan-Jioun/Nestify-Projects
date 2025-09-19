@@ -26,9 +26,10 @@ import {
     setPriceRange,
     setPropertyType,
     setSquareFeat,
-    setStatus,
+
     setYearBuild,
     resetFilters,
+    setListingStatus,
 } from "@/app/features/filter/filterSlice";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -66,14 +67,14 @@ function SidebarContent() {
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Listing Status</p>
                 <div className="flex gap-2 flex-wrap">
-                    {["All", "Buy", "Rent"].map((status) => (
+                    {["All","Sale" ,"Rent"].map((listingStatus) => (
                         <Button
-                            key={status}
-                            variant={filter.status === status ? "default" : "outline"}
+                            key={listingStatus}
+                            variant={filter.listingStatus === listingStatus ? "default" : "outline"}
                             size="sm"
-                            onClick={() => dispatch(setStatus(status))}
+                            onClick={() => dispatch(setListingStatus(listingStatus as "All" | "Sale" | "Rent"))}
                         >
-                            {status}
+                            {listingStatus}
                         </Button>
                     ))}
                 </div>

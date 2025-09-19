@@ -28,6 +28,9 @@ import { dataTagErrorSymbol } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import MultiSeclectService from "../Components/MultiSeclectService/MultiSeclectService";
 import { useRouter } from "next/navigation";
+import ListingStatus from "../Components/ListingStatus/ListingStatus";
+
+
 
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -76,6 +79,7 @@ export default function AddPropertyFormPage() {
               "email",
               "geoCountryLocation",
               "category",
+              "listingStatus",
               "images",
               "videos",
               "createdAt",
@@ -148,8 +152,9 @@ export default function AddPropertyFormPage() {
         </div>
 
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <PropertySize register={register} errors={errors} />
+          <ListingStatus errors={errors} setValue={setValue} />
           <PropertyPrice register={register} errors={errors} />
           <Currency value={watch("currency")} setValue={setValue} errors={errors} />
         </div>

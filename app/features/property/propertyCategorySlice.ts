@@ -18,5 +18,5 @@ export const propertyCategorySilce = createSlice({
     },
 })
 
-export const { setCategory } = propertyCategorySilce.actions
-export default propertyCategorySilce.reducer
+export const { setCategory } = propertyCategorySilce.actions;
+export default propertyCategorySilce.reducer;

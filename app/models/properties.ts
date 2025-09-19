@@ -20,6 +20,7 @@ const propertySchema = new Schema(
     {
         title: { type: String, required: true },
         category: categorySchema,
+        listingStatus: {type: String , required: true},
         price: { type: Number, required: true },
         currency: { type: String, required: true },
         propertySize: { type: Number, required: true },

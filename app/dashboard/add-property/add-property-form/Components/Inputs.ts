@@ -1,6 +1,7 @@
 export type Inputs = {
   title: string
   category: string
+  listingStatus: "Sale" | "Rent"
   price: number
   currency: "BDT" | "USD" | "EUR"
   propertySize: number

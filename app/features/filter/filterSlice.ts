@@ -1,9 +1,9 @@
 import { PropertyType } from "@/app/Types/properties";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+type ListingStatus = "All" | "Sale"| "Rent" | "" ;
 interface FilterState {
     location: string;
-    status: string;
+    listingStatus: ListingStatus;
     propertyType: string[];
     priceRange: [number, number];
     bedrooms: string;
@@ -17,7 +17,7 @@ interface FilterState {
 
 const initialState: FilterState = {
     location: "",
-    status: "All",
+    listingStatus: "All",
     propertyType: [],
     priceRange: [0, 100_000_000],
     bedrooms: "any",
@@ -36,8 +36,8 @@ const filterSlice = createSlice({
         setLocation: (state, action: PayloadAction<string>) => {
             state.location = action.payload;
         },
-        setStatus: (state, action: PayloadAction<string>) => {
-            state.status = action.payload;
+        setListingStatus: (state, action: PayloadAction<ListingStatus>) => {
+            state.listingStatus = action.payload;
         },
         setPropertyType: (state, action: PayloadAction<string[]>) => {
             state.propertyType = action.payload;
@@ -79,7 +79,7 @@ const filterSlice = createSlice({
         },
         resetFilters: (state) => {
             state.location = "";
-            state.status = "All";
+            state.listingStatus = "All";
             state.propertyType = [];
             state.priceRange = [0, 100_000_000];
             state.bedrooms = "any";
@@ -95,7 +95,7 @@ const filterSlice = createSlice({
 
 export const {
     setLocation,
-    setStatus,
+    setListingStatus,
     setPropertyType,
     setPriceRange,
     setBedrooms,

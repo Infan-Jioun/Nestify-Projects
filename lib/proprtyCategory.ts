@@ -16,7 +16,7 @@ export const propertyCategoryData: Record<string, Field[]> = {
     "House": [
         { name: "bedrooms", label: "Bedrooms", type: "number" },
         { name: "bathrooms", label: "Bathrooms", type: "number" },
-        { name: "drawingRoom", label: "Drawing / Living Room", type: "number" },
+        { name: "drawingRoom", label: "Drawing / Living Rexport oom", type: "number" },
         { name: "kitchen", label: "Kitchen", type: "number" },
         { name: "floor", label: "Floor", type: "number" },
         { name: "furnishing", label: "Furnishing" },

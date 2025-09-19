@@ -23,7 +23,7 @@ export default function PropertiesPage() {
   );
   const {
     location,
-    status,
+    listingStatus,
     propertyType,
     priceRange,
     bedrooms,
@@ -57,7 +57,7 @@ export default function PropertiesPage() {
     )
       return false;
 
-    if (status !== "All" && property.status !== status) return false;
+    if (listingStatus !== "All"  && property.listingStatus !== listingStatus) return false;
 
     if (
       propertyType.length > 0 &&

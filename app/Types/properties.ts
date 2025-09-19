@@ -13,6 +13,7 @@ export interface PropertyType {
     _id?: string;
     title: string;
     category: Category;
+    listingStatus: string
     price: number;
     currency: string;
     propertySize: number;

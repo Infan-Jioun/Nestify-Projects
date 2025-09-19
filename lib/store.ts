@@ -12,12 +12,13 @@ export const store = configureStore({
     reducer: {
         // Add your reducers here
         user: userReducer,
-        location: locationReducer, // Assuming locationSlice is similar to loaderSlice
         loader: loaderReducer,
+        skeleton: skeletionReducer,
+        // Property Reducer
         properties: propertiesReducer,
         propertyCategory: propertyCategoryReducer,
         propertyFacilities: propertyFacilitiesReducer,
-        skeleton: skeletionReducer,
+        location: locationReducer,
         searchLocation: searchLocationReducer,
         filter: filterSliceReducer
 
