@@ -178,7 +178,27 @@ function SidebarContent() {
                 <OtherFeatures />
             </div>
 
-          
+            {/* Footer Actions */}
+            <SheetFooter className="flex flex-col gap-4 mt-6 p-3">
+                <Button
+                    className="bg-green-500 hover:bg-green-600 shadow-md hover:shadow-lg text-white flex items-center gap-2 px-6 py-2 rounded-full transition-all w-64 mx-auto"
+                >
+                    <FaSearch /> Search
+                </Button>
+
+                <div className="flex justify-between text-sm font-medium">
+                    <button
+                        type="button"
+                        onClick={() => dispatch(resetFilters())}
+                        className="text-green-600 hover:text-green-800 underline"
+                    >
+                        Reset all filters
+                    </button>
+                    <button type="submit" className="text-green-600 hover:text-green-800 underline">
+                        Save filters
+                    </button>
+                </div>
+            </SheetFooter>
         </div>
     );
 }

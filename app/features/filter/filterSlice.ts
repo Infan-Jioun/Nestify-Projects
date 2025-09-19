@@ -19,7 +19,7 @@ const initialState: FilterState = {
     location: "",
     status: "All",
     propertyType: [],
-    priceRange: [0, 100000000],
+    priceRange: [0, 100_000_000],
     bedrooms: "any",
     bathrooms: "any",
     squareFeat: [0, 0],
@@ -64,29 +64,24 @@ const filterSlice = createSlice({
             state.sortOption = action.payload;
         },
         sortProperties: (state, action: PayloadAction<PropertyType[]>) => {
-            const properties = action.payload;
             const { sortOption } = state;
-        
-            const sorted = [...properties]; 
-            if (sortOption === "priceLowHigh") {
-                sorted.sort((a, b) => a.price - b.price);
-            } else if (sortOption === "priceHighLow") {
-                sorted.sort((a, b) => b.price - a.price);
-            } else if (sortOption === "latest") {
-                sorted.sort((a, b) => {
-                    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-                    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-                    return dateB - dateA;
-                });
-            }
-        
+            const sorted = [...action.payload];
+
+            if (sortOption === "priceLowHigh") sorted.sort((a, b) => a.price - b.price);
+            else if (sortOption === "priceHighLow") sorted.sort((a, b) => b.price - a.price);
+            else if (sortOption === "latest") sorted.sort((a, b) => {
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateB - dateA;
+            });
+
             state.sortedProperties = sorted;
         },
         resetFilters: (state) => {
             state.location = "";
             state.status = "All";
             state.propertyType = [];
-            state.priceRange = [0, 10000000];
+            state.priceRange = [0, 100_000_000];
             state.bedrooms = "any";
             state.bathrooms = "any";
             state.squareFeat = [0, 0];
@@ -98,6 +93,19 @@ const filterSlice = createSlice({
     },
 });
 
-export const { setLocation, setStatus, setPropertyType, setPriceRange, setBedrooms, setBathrooms, setSquareFeat, setYearBuild, setOtherFeatures, setSortOption, sortProperties, resetFilters, } = filterSlice.actions;
+export const {
+    setLocation,
+    setStatus,
+    setPropertyType,
+    setPriceRange,
+    setBedrooms,
+    setBathrooms,
+    setSquareFeat,
+    setYearBuild,
+    setOtherFeatures,
+    setSortOption,
+    sortProperties,
+    resetFilters,
+} = filterSlice.actions;
 
 export default filterSlice.reducer;

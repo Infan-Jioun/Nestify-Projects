@@ -1,19 +1,22 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface PropertySate {
-    facilities: string
+interface PropertyState {
+    facilities: string[];
 }
-export const initialState: PropertySate = {
-    facilities: ""
-}
+
+export const initialState: PropertyState = {
+    facilities: [],
+};
+
 const propertyFacilitiesSlice = createSlice({
-    name: "propertyFaclities",
+    name: "propertyFacilities",
     initialState,
     reducers: {
-        setFacilities: (state, action: PayloadAction<string>) => {
-            state.facilities = action.payload
-        }
-    }
-})
-export const { setFacilities } = propertyFacilitiesSlice.actions
-export default propertyFacilitiesSlice.reducer
+        setFacilities: (state, action: PayloadAction<string[]>) => {
+            state.facilities = action.payload;
+        },
+    },
+});
+
+export const { setFacilities } = propertyFacilitiesSlice.actions;
+export default propertyFacilitiesSlice.reducer;

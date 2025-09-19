@@ -142,7 +142,7 @@ export default function AddPropertyFormPage() {
 
         <CategoryFrom register={register} errors={errors} setValue={setValue} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <MultiSeclectService />
+          <MultiSeclectService setValue={setValue} errors={errors} />
           <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
 
         </div>

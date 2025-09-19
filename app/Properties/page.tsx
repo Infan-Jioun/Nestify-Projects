@@ -40,7 +40,7 @@ export default function PropertiesPage() {
     dispatch(fetchProperties());
   }, [dispatch]);
 
- 
+
   useEffect(() => {
     if (properties.length > 0) {
       dispatch(sortProperties(properties));
@@ -114,7 +114,7 @@ export default function PropertiesPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1">
+        <main className="flex-2">
           <div className="md:hidden mb-4">
             <FilterSidebar />
           </div>
