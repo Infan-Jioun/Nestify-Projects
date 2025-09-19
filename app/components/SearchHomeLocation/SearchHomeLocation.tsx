@@ -1,7 +1,7 @@
 "use client"
 import { Input } from '@/components/ui/input'
 import React, { useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
+import { FaSearch, FaTimes } from 'react-icons/fa'
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/lib/store"
 import { bangladeshGeoData } from '@/lib/geo-data'
@@ -9,6 +9,7 @@ import { setQuery, setResults } from '@/app/features/SearchLocation/SearchLocati
 import { setGeoCountryLocationLoading } from '@/app/features/loader/loaderSlice'
 import { Circles } from "react-loader-spinner"
 import { setLocation } from "@/app/features/filter/filterSlice"
+
 export default function SearchHomeLocation() {
     const dispatch = useDispatch<AppDispatch>()
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
@@ -46,7 +47,6 @@ export default function SearchHomeLocation() {
                 })
             }
 
-
             division.districts.forEach((district) => {
                 if (district.district.toLowerCase().includes(searchValue)) {
                     matches.push(` ${district.district}, ${division.division}`)
@@ -57,7 +57,6 @@ export default function SearchHomeLocation() {
                         })
                     })
                 }
-
 
                 district.upazilas.forEach((upazila) => {
                     if (upazila.upazila.toLowerCase().includes(searchValue)) {
@@ -89,6 +88,11 @@ export default function SearchHomeLocation() {
         setShowDropdown(false)
     }
 
+    const handleClear = () => {
+        dispatch(setQuery(''))
+        dispatch(setResults([]))
+        setShowDropdown(false)
+    }
 
     const highlightMatch = (text: string, query: string) => {
         if (!query) return text
@@ -120,8 +124,15 @@ export default function SearchHomeLocation() {
 
                     <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
 
+                    {query && (
+                        <FaTimes
+                            onClick={handleClear}
+                            className="absolute right-3 top-2 text-gray-500 cursor-pointer hover:text-red-500"
+                        />
+                    )}
+
                     {geoCountryLocationLoading && (
-                        <div className="absolute right-3 top-2">
+                        <div className="absolute right-10 top-2">
                             <Circles
                                 height="20"
                                 width="20"

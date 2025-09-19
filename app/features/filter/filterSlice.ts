@@ -19,7 +19,7 @@ const initialState: FilterState = {
     location: "",
     status: "All",
     propertyType: [],
-    priceRange: [0, 10000000],
+    priceRange: [0, 100000000],
     bedrooms: "any",
     bathrooms: "any",
     squareFeat: [0, 0],

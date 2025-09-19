@@ -3,6 +3,7 @@ import React from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { Input } from '@/components/ui/input';
 export default function Footer() {
   const pathname = usePathname();
   if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/ResetPassword" || pathname.startsWith("/dashboard")) {
@@ -62,7 +63,7 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold mb-3">Keep Yourself Up to Date</h3>
           <div className="flex items-center border border-gray-300 rounded overflow-hidden">
-            <input
+            <Input
               type="email"
               placeholder="Your Email"
               className="w-full px-4 py-2 text-sm outline-none"

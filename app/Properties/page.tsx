@@ -35,19 +35,19 @@ export default function PropertiesPage() {
     sortedProperties,
   } = useSelector((state: RootState) => state.filter);
 
-  // Fetch properties initially
+
   useEffect(() => {
     dispatch(fetchProperties());
   }, [dispatch]);
 
-  // Sort properties whenever sortOption or properties change
+ 
   useEffect(() => {
     if (properties.length > 0) {
       dispatch(sortProperties(properties));
     }
   }, [dispatch, properties, sortOption]);
 
-  // Filtering logic
+  // Filtering
   const filterProperties = sortedProperties.filter((property) => {
     if (
       location &&
