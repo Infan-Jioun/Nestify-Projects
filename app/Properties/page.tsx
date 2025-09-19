@@ -25,8 +25,10 @@ export default function PropertiesPage() {
     location,
     listingStatus,
     propertyType,
+    currency,
     priceRange,
     bedrooms,
+    
     bathrooms,
     squareFeat,
     yearBuild,
@@ -58,6 +60,7 @@ export default function PropertiesPage() {
       return false;
 
     if (listingStatus !== "All"  && property.listingStatus !== listingStatus) return false;
+    if (currency !== "BDT"  && property.currency !==  currency) return false;
 
     if (
       propertyType.length > 0 &&

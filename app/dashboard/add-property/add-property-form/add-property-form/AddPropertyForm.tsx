@@ -116,9 +116,9 @@ export default function AddPropertyFormPage() {
       // 4) Dispatch addProperty
       const resultAction = await dispatch(addProperty(transformedData));
       unwrapResult(resultAction);
-
+      router.push("/Properties");
       toast.success("Property submitted successfully!");
-      router.push("/Properties")
+
       reset();
 
     } catch (err: unknown) {

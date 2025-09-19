@@ -1,9 +1,11 @@
 import { PropertyType } from "@/app/Types/properties";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-type ListingStatus = "All" | "Sale"| "Rent" | "" ;
+type ListingStatus = "All" | "Sale" | "Rent" | "";
+type Currency = "BDT" | "USD" | "EUR" | "";
 interface FilterState {
     location: string;
     listingStatus: ListingStatus;
+    currency :  Currency;
     propertyType: string[];
     priceRange: [number, number];
     bedrooms: string;
@@ -18,6 +20,7 @@ interface FilterState {
 const initialState: FilterState = {
     location: "",
     listingStatus: "All",
+    currency : "BDT",
     propertyType: [],
     priceRange: [0, 100_000_000],
     bedrooms: "any",
@@ -38,6 +41,9 @@ const filterSlice = createSlice({
         },
         setListingStatus: (state, action: PayloadAction<ListingStatus>) => {
             state.listingStatus = action.payload;
+        },
+        setCurrency: (state, action: PayloadAction<Currency>) => {
+            state.currency = action.payload;
         },
         setPropertyType: (state, action: PayloadAction<string[]>) => {
             state.propertyType = action.payload;
@@ -80,6 +86,7 @@ const filterSlice = createSlice({
         resetFilters: (state) => {
             state.location = "";
             state.listingStatus = "All";
+            state.currency = "BDT";
             state.propertyType = [];
             state.priceRange = [0, 100_000_000];
             state.bedrooms = "any";
@@ -96,6 +103,7 @@ const filterSlice = createSlice({
 export const {
     setLocation,
     setListingStatus,
+    setCurrency,
     setPropertyType,
     setPriceRange,
     setBedrooms,

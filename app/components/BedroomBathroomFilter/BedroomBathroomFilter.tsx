@@ -6,8 +6,8 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { setBedrooms, setBathrooms } from "@/app/features/filter/filterSlice";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-const bedroomOptions = ["any", "1+", "2+", "3+", "4+", "5+"];
-const bathroomOptions = ["any", "1+", "2+", "3+", "4+", "5+"];
+const bedroomOptions = ["any", "1+", "2+", "3+", "4+", ];
+const bathroomOptions = ["any", "1+", "2+", "3+", "4+",];
 
 export default function BedroomBathroomFilter() {
   const dispatch = useDispatch<AppDispatch>();

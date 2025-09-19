@@ -26,10 +26,10 @@ import {
     setPriceRange,
     setPropertyType,
     setSquareFeat,
-
     setYearBuild,
     resetFilters,
     setListingStatus,
+    setCurrency,
 } from "@/app/features/filter/filterSlice";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -75,6 +75,22 @@ function SidebarContent() {
                             onClick={() => dispatch(setListingStatus(listingStatus as "All" | "Sale" | "Rent"))}
                         >
                             {listingStatus}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+            {/* Status */}
+            <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                <p className="text-xs font-semibold text-gray-900 mb-3">Currency Select</p>
+                <div className="flex gap-2 flex-wrap">
+                    {["BDT","USD" ,"EUR"].map((currency) => (
+                        <Button
+                            key={currency}
+                            variant={filter.currency === currency ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => dispatch(setCurrency(currency as "BDT" | "USD" | "EUR"))}
+                        >
+                            {currency}
                         </Button>
                     ))}
                 </div>
