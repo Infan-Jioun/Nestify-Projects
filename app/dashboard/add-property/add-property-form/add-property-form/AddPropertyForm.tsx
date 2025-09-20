@@ -141,7 +141,7 @@ export default function AddPropertyFormPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <PropertyTitle register={register} errors={errors} />
-        
+
           <ContactInfo register={register} control={control} errors={errors} />
         </div>
 
