@@ -70,7 +70,7 @@ export default function CityBanner() {
                                     fill
                                     priority
                                     className={`object-cover transition-opacity duration-500 ${skletonLoader ? "opacity-0" : "opacity-100"}`}
-                                    onLoadingComplete={() => dispatch(setSkletonLoader(false))}
+                                    onLoad={() => dispatch(setSkletonLoader(false))}
                                 />
 
                                 <div className="absolute bottom-5 left-5 bg-black/50 text-white px-4 py-2 rounded-lg">
