@@ -1,7 +1,11 @@
 import React from 'react'
+import CityBanner from './components/CityBanner'
 
 export default function AddCity() {
     return (
-        <div>AddCity</div>
+        <div>
+
+            <CityBanner />
+        </div>
     )
 }

@@ -12,7 +12,7 @@ export default function Banner() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
-    // Set skeleton loader when component mounts
+ 
     dispatch(setSkletonLoader(true));
   }, [dispatch]);
 
