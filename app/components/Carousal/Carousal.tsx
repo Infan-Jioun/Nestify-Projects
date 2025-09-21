@@ -13,9 +13,10 @@ import {
 type CarousalProps = {
     images: string[];
     title?: string;
+    aspectRatio?: "video" | "square";
 };
 
-export default function Carousal({ images, title }: CarousalProps) {
+export default function Carousal({ images, title,  aspectRatio = "video" }: CarousalProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // autoplay effect

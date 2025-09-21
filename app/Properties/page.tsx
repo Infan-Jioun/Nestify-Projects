@@ -1,9 +1,7 @@
-
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import NextHead from "../components/NextHead/NextHead";
 import PropertyCard from "../components/PropertyCard/PropertyCard";
-import PropertiesTitle from "./PropertiesTitle/PropertiesTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
 import { fetchProperties } from "../features/Properties/propertySlice";
@@ -24,10 +22,15 @@ import {
   setItemsPerPage,
 } from "../features/filter/filterSlice";
 import Pagination from "../components/PropertyCard/Pagination/Pagination";
-
+import { Button } from "@/components/ui/button";
+import { SlidersHorizontal, Grid3X3, List, MapPin, Home, FilterX, ChevronDown, ChevronUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function PropertiesPage() {
   const dispatch = useDispatch<AppDispatch>();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Redux states
   const { properties, loading, error } = useSelector(
@@ -61,6 +64,15 @@ export default function PropertiesPage() {
     }
   }, [dispatch, properties, sortOption]);
 
+  // Scroll effect for header
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Filtering
   const filterProperties = useMemo(() => {
     return sortedProperties.filter((property) => {
@@ -73,7 +85,7 @@ export default function PropertiesPage() {
         return false;
 
       if (listingStatus !== "All" && property.listingStatus !== listingStatus) return false;
-      if (currency !== "BDT" && property.currency !== currency) return false;
+      if (currency !== "All" && property.currency !== currency) return false;
 
       if (
         propertyType.length > 0 &&
@@ -124,7 +136,6 @@ export default function PropertiesPage() {
     otherFeatures,
   ]);
 
-
   const paginatedProperties = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filterProperties.slice(startIndex, startIndex + itemsPerPage);
@@ -134,7 +145,6 @@ export default function PropertiesPage() {
     dispatch(setCurrentPage(page));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
 
   const handleItemsPerPageChange = (value: number) => {
     dispatch(setItemsPerPage(value));
@@ -148,110 +158,293 @@ export default function PropertiesPage() {
     }
   }, [filterProperties.length, itemsPerPage, currentPage, dispatch]);
 
+  // Check if any filters are applied
+  const areFiltersApplied = useMemo(() => {
+    return (
+      location !== "" ||
+      listingStatus !== "All" ||
+      currency !== "All" ||
+      propertyType.length > 0 ||
+      priceRange[0] > 0 ||
+      priceRange[1] < 10000000 ||
+      bedrooms !== "any" ||
+      bathrooms !== "any" ||
+      squareFeat[0] > 0 ||
+      squareFeat[1] > 0 ||
+      otherFeatures.length > 0
+    );
+  }, [
+    location,
+    listingStatus,
+    currency,
+    propertyType,
+    priceRange,
+    bedrooms,
+    bathrooms,
+    squareFeat,
+    otherFeatures,
+  ]);
+
   return (
-    <div className=" px-4 md:px-10 lg:px-20 xl:px-28">
+    <div className="min-h-screen bg-gray-50">
       <NextHead title="Properties - Nestify" />
 
-      {/* Container */}
-      <div className="flex flex-col md:flex-row gap-8 mt-8">
-        {/* Sidebar */}
-        <aside className="hidden md:block md:w-1/4 lg:w-1/5">
-          <div className="sticky top-24">
-            <FilterSidebar />
-          </div>
-        </aside>
+      <div className={cn(
+        "bg-gradient-to-r from-green-900 to-green-500 text-white transition-all duration-300",
+        isScrolled ? "py-4" : "py-10"
+      )}>
+        <div className="px-4 md:px-8 lg:px-12 xl:px-12">
+          <h1 className={cn(
+            "font-bold transition-all duration-300",
+            isScrolled ? "text-2xl" : "text-4xl"
+          )}>Find Your Dream Property</h1>
+          <p className={cn(
+            "text-green-100 mt-2 max-w-2xl transition-all duration-300",
+            isScrolled ? "text-sm opacity-0 h-0" : "opacity-100"
+          )}>
+            Discover premium real estate options tailored to your preferences from our curated collection
+          </p>
 
-        {/* Main Content */}
-        <main className="flex-2">
-          <div className="md:hidden mb-4">
-            <FilterSidebar />
-          </div>
+          {/* Stats bar */}
+          <div className={cn(
+            "flex flex-wrap gap-6 mt-8 pt-4 border-t border-green-700 transition-all duration-300",
+            isScrolled ? "opacity-0 h-0 mt-0 pt-0 overflow-hidden" : "opacity-100"
+          )}>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-green-700 rounded-lg">
+                <Home size={18} />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold">{properties.length}+</p>
+                <p className="text-green-200 text-sm">Properties</p>
+              </div>
+            </div>
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
-            <p className="text-sm text-gray-600">
-              Showing{" "}
-              <span className="font-semibold">{filterProperties.length}</span>{" "}
-              results
-              {filterProperties.length > 0 && (
-                <>
-                  {" "}
-                  (Page {currentPage} of {Math.ceil(filterProperties.length / itemsPerPage)})
-                </>
-              )}
-            </p>
-
-            <div className="flex items-center gap-2 mb-6">
-              <label htmlFor="sort" className="text-sm text-gray-600">
-                Sort by:
-              </label>
-
-              <Select
-                value={sortOption}
-                onValueChange={(val) => dispatch(setSortOption(val))}
-              >
-                <SelectTrigger className="w-[200px] border-gray-300 focus:ring-green-500">
-                  <SelectValue placeholder="Select sort option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Default</SelectItem>
-                  <SelectItem value="priceLowHigh">Price: Low to High</SelectItem>
-                  <SelectItem value="priceHighLow">Price: High to Low</SelectItem>
-                  <SelectItem value="latest">Latest</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-green-700 rounded-lg">
+                <MapPin size={18} />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold">25+</p>
+                <p className="text-green-200 text-sm">Locations</p>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Properties Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading &&
-              [...Array(itemsPerPage)].map((_, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 border rounded-lg shadow-sm bg-white"
-                >
-                  <Skeleton height={180} className="mb-4 rounded-lg" />
-                  <Skeleton width={`60%`} height={20} />
-                  <Skeleton width={`40%`} height={15} />
-                  <Skeleton count={2} />
+      {/* Main Content */}
+      <div className="px-4 md:px-8 lg:px-12 xl:px-12 py-8 -mt-6">
+        {/* Mobile Filter Toggle */}
+        <div className="md:hidden flex items-center justify-between mb-6 bg-white p-4 rounded-xl shadow-sm border">
+          <Button
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            className="flex items-center gap-2 bg-white text-gray-800 border-gray-300 hover:bg-gray-50 shadow-sm w-full justify-between"
+          >
+            <div className="flex items-center">
+              <SlidersHorizontal size={16} className="mr-2" />
+              {isFilterOpen ? "Hide Filters" : "Show Filters"}
+              {areFiltersApplied && (
+                <span className="h-2 w-2 rounded-full bg-green-600 ml-2"></span>
+              )}
+            </div>
+            {isFilterOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </Button>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Sidebar */}
+          <aside className={cn(
+            "transition-all duration-300 overflow-hidden",
+            isFilterOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0 md:max-h-none md:opacity-100",
+            "md:w-1/4 lg:w-[400px]"
+          )}>
+            <div className="sticky top-24 bg-white rounded-xl shadow-lg border p-6 mb-6 md:mb-0">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-white bg-green-600 px-2 py-1 rounded-full">
+                    {filterProperties.length}
+                  </span>
+                  {areFiltersApplied && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        // Add functionality to clear all filters
+                        console.log("Clear all filters");
+                      }}
+                      className="h-8 text-gray-500 hover:text-gray-700"
+                    >
+                      <FilterX size={14} className="mr-1" />
+                      Clear
+                    </Button>
+                  )}
                 </div>
-              ))}
+              </div>
+              <FilterSidebar />
+            </div>
+          </aside>
 
-            {!loading && error && (
-              <p className="col-span-full text-center text-red-500 py-10">
-                {error}
-              </p>
-            )}
+          {/* Main Content */}
+          <main className="flex-1">
+            {/* Results Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4 bg-white p-4 rounded-xl shadow-sm border">
+              <div>
+                <p className="text-gray-600">
+                  <span className="font-semibold text-gray-900">{filterProperties.length}</span> properties found
+                  {filterProperties.length > 0 && (
+                    <span className="text-gray-500">
+                      {" "}(Page {currentPage} of {Math.ceil(filterProperties.length / itemsPerPage)})
+                    </span>
+                  )}
+                </p>
+              </div>
 
-            {!loading && !error && filterProperties.length === 0 && (
-              <p className="col-span-full text-center text-gray-500 py-10">
-                No properties found.
-              </p>
-            )}
+              <div className="flex items-center gap-4">
+                {/* View Toggle (Desktop) */}
+                <div className="hidden md:flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "ghost"}
+                    size="icon"
+                    onClick={() => setViewMode("grid")}
+                    className="h-8 w-8 rounded-md"
+                  >
+                    <Grid3X3 size={14} />
+                  </Button>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    size="icon"
+                    onClick={() => setViewMode("list")}
+                    className="h-8 w-8 rounded-md"
+                  >
+                    <List size={14} />
+                  </Button>
+                </div>
 
-            {!loading &&
-              !error &&
-              paginatedProperties.map((property) => (
-                <PropertyCard
-                  key={property._id}
-                  property={property}
-                  isLoading={loading}
-                  isError={!!error}
+                {/* Sort Dropdown */}
+                <div className="flex items-center gap-2">
+                  <label htmlFor="sort" className="text-sm text-gray-600 whitespace-nowrap">
+                    Sort by:
+                  </label>
+                  <Select
+                    value={sortOption}
+                    onValueChange={(val) => dispatch(setSortOption(val))}
+                  >
+                    <SelectTrigger className="w-[180px] border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-lg">
+                      <SelectValue placeholder="Select sort option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Recommended</SelectItem>
+                      <SelectItem value="priceLowHigh">Price: Low to High</SelectItem>
+                      <SelectItem value="priceHighLow">Price: High to Low</SelectItem>
+                      <SelectItem value="latest">Newest First</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Properties Grid/List */}
+            <div className={cn(
+              viewMode === "grid"
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+                : "space-y-6"
+            )}>
+              {loading &&
+                [...Array(itemsPerPage)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className={cn(
+                      "p-4 border rounded-xl shadow-sm bg-white overflow-hidden transition-all duration-300 hover:shadow-md",
+                      viewMode === "list" && "flex gap-4"
+                    )}
+                  >
+                    {viewMode === "list" && (
+                      <Skeleton width={240} height={200} className="rounded-lg flex-shrink-0" />
+                    )}
+                    <div className="flex-1">
+                      {viewMode === "grid" && (
+                        <Skeleton height={200} className="mb-4 rounded-lg" />
+                      )}
+                      <Skeleton width={`60%`} height={20} className="mb-2" />
+                      <Skeleton width={`40%`} height={15} className="mb-3" />
+                      <Skeleton count={2} height={12} className="mb-1" />
+                      {viewMode === "list" && (
+                        <div className="mt-4 flex gap-2">
+                          <Skeleton width={80} height={24} />
+                          <Skeleton width={80} height={24} />
+                          <Skeleton width={80} height={24} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+              {!loading && error && (
+                <div className="col-span-full text-center py-16 bg-white rounded-xl shadow-sm border">
+                  <div className="text-red-500 text-lg font-semibold mb-2">
+                    Oops! Something went wrong
+                  </div>
+                  <p className="text-gray-600 mb-4">{error}</p>
+                  <Button
+                    onClick={() => dispatch(fetchProperties())}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    Try Again
+                  </Button>
+                </div>
+              )}
+
+              {!loading && !error && filterProperties.length === 0 && (
+                <div className="col-span-full text-center py-16 bg-white rounded-xl shadow-sm border">
+                  <div className="text-gray-300 text-6xl mb-4">🏠</div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No properties found</h3>
+                  <p className="text-gray-600 max-w-md mx-auto mb-6">
+                    Try adjusting your search filters or browse our full catalog
+                  </p>
+                  {areFiltersApplied && (
+                    <Button
+                      onClick={() => {
+                        // Add functionality to clear all filters
+                        console.log("Clear all filters");
+                      }}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <FilterX size={16} className="mr-2" />
+                      Clear All Filters
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {!loading &&
+                !error &&
+                paginatedProperties.map((property) => (
+                  <PropertyCard
+                    key={property._id}
+                    property={property}
+                    isLoading={loading}
+                    isError={!!error}
+                    viewMode={viewMode}
+                  />
+                ))}
+            </div>
+
+            {/* Pagination */}
+            {!loading && filterProperties.length > 0 && (
+              <div className="mt-12">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(filterProperties.length / itemsPerPage)}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={handlePageChange}
+                  onItemsPerPageChange={handleItemsPerPageChange}
                 />
-              ))}
-          </div>
-
-          {/* Pagination */}
-          {!loading && filterProperties.length > 0 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(filterProperties.length / itemsPerPage)}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-            />
-          )}
-        </main>
+              </div>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   );

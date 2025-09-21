@@ -34,34 +34,65 @@ import {
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
+import { setSkeletonLoading } from "@/app/features/skeleton/skeletonSlice";
+
+// Define the loader state interface
 function SidebarContent() {
     const dispatch = useDispatch<AppDispatch>();
     const filter = useSelector((state: RootState) => state.filter);
-    const { skletonLoader } = useSelector((state: RootState) => state.loader);
+    const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+    const [localLoading, setLocalLoading] = useState(false);
 
-    const propertyTypes = ["House", "Apartment", "Office Space", "Duplex", "Agricultural Land", "Industrial Land", "Garage", "Co-working Space", "Hotel", "Commercial Land", "Warehouse", "Residential"];
+    const propertyTypes = [
+        "House", "Apartment", "Office Space", "Duplex",
+        "Agricultural Land", "Industrial Land", "Garage",
+        "Co-working Space", "Hotel", "Commercial Land",
+        "Warehouse", "Residential"
+    ];
+
     const togglePropertyType = (type: string) => {
         if (filter.propertyType.includes(type)) {
             dispatch(setPropertyType(filter.propertyType.filter((t) => t !== type)));
         } else {
             dispatch(setPropertyType([...filter.propertyType, type]));
         }
+        // Simulate loading
+        setLocalLoading(true);
+        setTimeout(() => setLocalLoading(false), 500);
     };
 
-    if (skletonLoader) {
+    // Simulate loading state
+    useEffect(() => {
+        if (skletonLoader) {
+            const timer = setTimeout(() => {
+                dispatch(setSkeletonLoading(false));
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [skletonLoader, dispatch]);
+
+    if (skletonLoader || localLoading) {
         return (
-            <div className="space-y-4">
+            <div className="space-y-6 p-4">
                 {[...Array(8)].map((_, idx) => (
-                    <Skeleton key={idx} height={40} />
+                    <div key={idx} className="space-y-3">
+                        <Skeleton height={20} width="40%" />
+                        <Skeleton height={40} />
+                    </div>
                 ))}
             </div>
         );
     }
 
     return (
-        <div className="px-3 pb-6 text-sm text-gray-700 space-y-6">
+        <div className="pb-6 text-sm text-gray-700 space-y-6">
             {/* Search */}
-            <SearchHomeLocation />
+            <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
+                <p className="text-xs font-semibold text-gray-900 mb-3">Location</p>
+                <SearchHomeLocation />
+            </div>
 
             {/* Status */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
@@ -72,6 +103,7 @@ function SidebarContent() {
                             key={listingStatus}
                             variant={filter.listingStatus === listingStatus ? "default" : "outline"}
                             size="sm"
+                            className="text-xs"
                             onClick={() => dispatch(setListingStatus(listingStatus as "All" | "Sale" | "Rent"))}
                         >
                             {listingStatus}
@@ -79,16 +111,18 @@ function SidebarContent() {
                     ))}
                 </div>
             </div>
-            {/* Status */}
+
+            {/* Currency */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                <p className="text-xs font-semibold text-gray-900 mb-3">Currency Select</p>
+                <p className="text-xs font-semibold text-gray-900 mb-3">Currency</p>
                 <div className="flex gap-2 flex-wrap">
-                    {["BDT", "USD", "EUR"].map((currency) => (
+                    {["All", "BDT", "USD", "SAR", "EUR"].map((currency) => (
                         <Button
                             key={currency}
                             variant={filter.currency === currency ? "default" : "outline"}
                             size="sm"
-                            onClick={() => dispatch(setCurrency(currency as "BDT" | "USD" | "EUR"))}
+                            className="text-xs"
+                            onClick={() => dispatch(setCurrency(currency as "All" | "BDT" | "USD" | "SAR" | "EUR"))}
                         >
                             {currency}
                         </Button>
@@ -99,23 +133,27 @@ function SidebarContent() {
             {/* Property Type */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Property Type</p>
-                <div className="space-y-2">
-                    {propertyTypes.map((type) => (
-                        <div key={type} className="flex gap-2 items-center">
-                            <Checkbox
-                                checked={filter.propertyType.includes(type)}
-                                onCheckedChange={() => togglePropertyType(type)}
-                                id={type}
-                            />
-                            <Label htmlFor={type}>{type}</Label>
-                        </div>
-                    ))}
-                </div>
+                <ScrollArea className="h-60 pr-4">
+                    <div className="space-y-3">
+                        {propertyTypes.map((type) => (
+                            <div key={type} className="flex gap-3 items-center">
+                                <Checkbox
+                                    checked={filter.propertyType.includes(type)}
+                                    onCheckedChange={() => togglePropertyType(type)}
+                                    id={type}
+                                    className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                />
+                                <Label htmlFor={type} className="text-sm font-normal cursor-pointer">{type}</Label>
+                            </div>
+                        ))}
+                    </div>
+                </ScrollArea>
             </div>
 
             {/* Price Range */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                <p className="text-xs font-semibold text-gray-900">Price Range</p>
+                <p className="text-xs font-semibold text-gray-900 mb-1">Price Range</p>
+                <p className="text-xs text-gray-500 mb-3">Drag to set min and max prices</p>
                 <div className="mt-3">
                     <Slider
                         value={filter.priceRange}
@@ -123,10 +161,11 @@ function SidebarContent() {
                         max={100000000}
                         step={50000}
                         onValueChange={(val) => dispatch(setPriceRange(val as [number, number]))}
+                        className="my-6"
                     />
                     <div className="flex justify-between text-xs text-gray-600 mt-2">
-                        <span>{filter.priceRange[0].toLocaleString()}</span>
-                        <span>{filter.priceRange[1].toLocaleString()}</span>
+                        <span>${filter.priceRange[0].toLocaleString()}</span>
+                        <span>${filter.priceRange[1].toLocaleString()}</span>
                     </div>
                 </div>
             </div>
@@ -138,55 +177,67 @@ function SidebarContent() {
 
             {/* Square Feet */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                <p className="text-xs font-semibold text-gray-900 mb-2">Square Feet</p>
-                <div className="flex gap-2">
-                    <Input
-                        type="number"
-                        placeholder="min"
-                        value={filter.squareFeat[0]}
-                        onChange={(e) =>
-                            dispatch(setSquareFeat([parseInt(e.target.value), filter.squareFeat[1]]))
-                        }
-                        className="w-1/2"
-                    />
-                    <Input
-                        type="number"
-                        placeholder="max"
-                        value={filter.squareFeat[1]}
-                        onChange={(e) =>
-                            dispatch(setSquareFeat([filter.squareFeat[0], parseInt(e.target.value)]))
-                        }
-                        className="w-1/2"
-                    />
+                <p className="text-xs font-semibold text-gray-900 mb-3">Square Feet</p>
+                <div className="flex gap-3">
+                    <div className="flex-1">
+                        <Label htmlFor="sqft-min" className="text-xs text-gray-500">Min</Label>
+                        <Input
+                            id="sqft-min"
+                            type="number"
+                            placeholder="0"
+                            value={filter.squareFeat[0] || ""}
+                            onChange={(e) =>
+                                dispatch(setSquareFeat([Number(e.target.value), filter.squareFeat[1]]))
+                            }
+                            className="mt-1"
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <Label htmlFor="sqft-max" className="text-xs text-gray-500">Max</Label>
+                        <Input
+                            id="sqft-max"
+                            type="number"
+                            placeholder="Any"
+                            value={filter.squareFeat[1] || ""}
+                            onChange={(e) =>
+                                dispatch(setSquareFeat([filter.squareFeat[0], Number(e.target.value)]))
+                            }
+                            className="mt-1"
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* Year Built */}
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-                <p className="text-xs font-semibold text-gray-900 mb-2">Year Built</p>
-                <div className="flex gap-2">
-                    <Input
-                        type="number"
-                        placeholder="min"
-                        value={filter.yearBuild[0]}
-                        onChange={(e) =>
-                            dispatch(
-                                setYearBuild([parseInt(e.target.value) || 2000, filter.yearBuild[1]])
-                            )
-                        }
-                        className="w-1/2"
-                    />
-                    <Input
-                        type="number"
-                        placeholder="max"
-                        value={filter.yearBuild[1]}
-                        onChange={(e) =>
-                            dispatch(
-                                setYearBuild([filter.yearBuild[0], parseInt(e.target.value) || new Date().getFullYear()])
-                            )
-                        }
-                        className="w-1/2"
-                    />
+                <p className="text-xs font-semibold text-gray-900 mb-3">Year Built</p>
+                <div className="flex gap-3">
+                    <div className="flex-1">
+                        <Label htmlFor="year-min" className="text-xs text-gray-500">Min</Label>
+                        <Input
+                            id="year-min"
+                            type="number"
+                            placeholder="1900"
+                            value={filter.yearBuild[0] || ""}
+                            onChange={(e) =>
+                                dispatch(setYearBuild([Number(e.target.value) || 1900, filter.yearBuild[1]]))
+                            }
+                            className="mt-1"
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <Label htmlFor="year-max" className="text-xs text-gray-500">Max</Label>
+                        <Input
+                            id="year-max"
+                            type="number"
+                            placeholder="2023"
+                            value={filter.yearBuild[1] || ""}
+                            onChange={(e) =>
+                                dispatch(setYearBuild([filter.yearBuild[0], Number(e.target.value) || new Date().getFullYear()]))
+                            }
+                            className="mt-1"
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -196,22 +247,22 @@ function SidebarContent() {
             </div>
 
             {/* Footer Actions */}
-            <SheetFooter className="flex flex-col gap-4 mt-6 p-3">
-
-
-                <div className="flex justify-between text-sm font-medium">
-                    <button
+            <div className="flex flex-col gap-4 mt-6 p-3 bg-gray-50 rounded-lg">
+                <div className="flex justify-between">
+                    <Button
                         type="button"
+                        variant="outline"
                         onClick={() => dispatch(resetFilters())}
-                        className="text-green-600 hover:text-green-800 underline"
+                        className="text-gray-700 border-gray-300"
                     >
-                        Reset all filters
-                    </button>
-                    <button type="submit" className="text-green-600 hover:text-green-800 underline">
-                        Save filters
-                    </button>
+                        <X size={16} className="mr-2" />
+                        Reset All
+                    </Button>
+                    <Button type="button" className="bg-blue-600 hover:bg-blue-700">
+                        Apply Filters
+                    </Button>
                 </div>
-            </SheetFooter>
+            </div>
         </div>
     );
 }
@@ -221,36 +272,39 @@ export function FilterSidebar() {
         <>
             {/* Desktop Sidebar */}
             <div className="hidden md:block w-full">
-                <SidebarContent />
+                <div className="sticky top-24">
+                    
+                    <ScrollArea className="h-[calc(100vh-1px)] pr-4">
+                        <SidebarContent />
+                    </ScrollArea>
+                </div>
             </div>
 
             {/* Mobile Sidebar */}
-            <div className="md:hidden flex justify-end items-end text-right">
+            <div className="md:hidden">
                 <Sheet>
                     <SheetTrigger asChild>
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="flex items-center gap-2 h-10 px-5 rounded-full bg-green-500 text-white font-medium border border-green-600 shadow-md hover:shadow-lg hover:bg-green-600 transition-all"
+                            className="flex items-center gap-2 h-10 px-4 rounded-lg bg-green-500 text-white font-medium border border-green-700 shadow-md hover:shadow-lg hover:bg-green-500 transition-all"
                         >
                             <IoFilterOutline className="text-lg" />
-                            Filter
+                            Filters
                         </motion.button>
                     </SheetTrigger>
 
-                    <form>
-                        <SheetContent side="left" className="w-[360px] sm:w-[420px]">
-                            <SheetHeader>
-                                <SheetTitle className="ml-2 text-lg font-semibold text-green-500">
-                                    Filter Your Favorite
-                                </SheetTitle>
+                    <SheetContent side="left" className="w-full sm:max-w-md p-0">
+                        <SheetHeader className="p-4 border-b">
+                            <SheetTitle className="text-lg font-semibold text-gray-900">
+                                Filter Properties
+                            </SheetTitle>
+                        </SheetHeader>
 
-                                <ScrollArea className="h-[90vh] mt-4 pr-2">
-                                    <SidebarContent />
-                                </ScrollArea>
-                            </SheetHeader>
-                        </SheetContent>
-                    </form>
+                        <ScrollArea className="h-full px-4">
+                            <SidebarContent />
+                        </ScrollArea>
+                    </SheetContent>
                 </Sheet>
             </div>
         </>

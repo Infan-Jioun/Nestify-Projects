@@ -1,3 +1,4 @@
+// components/PropertyCard/PropertyCard.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -9,20 +10,24 @@ import { AppDispatch } from "@/lib/store";
 import DeleteConfirmation from "./DeletedConfirmation";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaBookmark, FaInfoCircle } from "react-icons/fa";
+import { FaBookmark, FaInfoCircle, FaBed, FaBath, FaRulerCombined } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Carousal from "../Carousal/Carousal";
+import { cn } from "@/lib/utils";
 
 type PropertyCardProps = {
   property: PropertyType;
   isLoading?: boolean;
   isError?: boolean;
+  viewMode?: "grid" | "list";
+
 };
 
 export default function PropertyCard({
   property,
   isLoading,
   isError,
+  viewMode = "grid",
 }: PropertyCardProps) {
   const dispatch = useDispatch<AppDispatch>();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -39,14 +44,20 @@ export default function PropertyCard({
 
   if (isLoading) {
     return (
-      <div className="border rounded-2xl shadow-md overflow-hidden bg-white animate-pulse">
-        <Skeleton height={224} />
-        <div className="p-4">
-          <Skeleton height={20} width="60%" className="mb-2" />
-          <Skeleton height={15} width="40%" className="mb-2" />
-          <Skeleton height={20} width="30%" className="mb-3" />
-          <Skeleton count={3} height={15} className="mb-2" />
-          <Skeleton height={36} width="100%" />
+      <div className={cn(
+        "border rounded-2xl shadow-md overflow-hidden bg-white animate-pulse",
+        viewMode === "list" && "flex"
+      )}>
+        {viewMode === "list" && (
+          <Skeleton width={300} height={200} className="flex-shrink-0" />
+        )}
+        <div className="p-4 flex-1">
+          {viewMode === "grid" && (
+            <Skeleton height={180} className="mb-4 rounded-lg" />
+          )}
+          <Skeleton width={`60%`} height={20} className="mb-2" />
+          <Skeleton width={`40%`} height={15} className="mb-3" />
+          <Skeleton count={2} />
         </div>
       </div>
     );
@@ -122,20 +133,20 @@ export default function PropertyCard({
         <div className="flex gap-2">
           <p
             className={`inline-block px-3 py-1  text-xs rounded-full font-medium ${property.status === "Available"
-                ? "bg-red-100 text-red-600"
-                : property.listingStatus === "Sale"
-                  ? "bg-red-100 text-green-600"
-                  : "bg-yellow-100 text-yellow-600"
+              ? "bg-red-100 text-red-600"
+              : property.listingStatus === "Sale"
+                ? "bg-red-100 text-green-600"
+                : "bg-yellow-100 text-yellow-600"
               }`}
           >
             {property.listingStatus}
           </p>
           <p
             className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
-                ? "bg-green-100 text-green-600"
-                : property.status === "Sold"
-                  ? "bg-red-100 text-red-600"
-                  : "bg-yellow-100 text-yellow-600"
+              ? "bg-green-100 text-green-600"
+              : property.status === "Sold"
+                ? "bg-red-100 text-red-600"
+                : "bg-yellow-100 text-yellow-600"
               }`}
           >
             {property.status}

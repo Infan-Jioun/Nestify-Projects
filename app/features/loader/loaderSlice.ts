@@ -53,5 +53,5 @@ const loaderSlice = createSlice({
 
     }
 })
-export const { setLoading, setGeoCountryLocationLoading, setAddPropertyLoader, setPropertyFacilitiesLoader, setButtonLoader, setGoogleLoader, setGithubLoader,setSkletonLoader } = loaderSlice.actions;
+export const { setLoading, setGeoCountryLocationLoading, setAddPropertyLoader, setPropertyFacilitiesLoader, setButtonLoader, setGoogleLoader, setGithubLoader, setSkletonLoader } = loaderSlice.actions;
 export default loaderSlice.reducer;

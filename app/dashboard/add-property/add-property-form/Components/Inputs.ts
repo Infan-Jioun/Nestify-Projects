@@ -3,7 +3,7 @@ export type Inputs = {
   category: string
   listingStatus: "Sale" | "Rent"
   price: number
-  currency: "BDT" | "USD" | "EUR"
+  currency:  "BDT" | "USD" | "SAR" | "EUR"
   propertySize: number
   address: string
   geoLocation?: { lat: number; lng: number }

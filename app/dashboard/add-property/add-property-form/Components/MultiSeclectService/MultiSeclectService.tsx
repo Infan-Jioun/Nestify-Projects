@@ -28,7 +28,7 @@ export default function MultiSelectService({ setValue }: Props) {
             <Label className="mb-2 block text-gray-700 text-xs">Find your Service</Label>
             <div className="relative">
                 <MultipleSelector
-                    className="px-10 w-full rounded-full border border-gray-300 focus:ring-2 focus:ring-green-400 focus:border-green-400"
+                    className="px-3 w-full rounded-full border border-gray-300 focus:ring-2 focus:ring-green-400 focus:border-green-400"
                     defaultOptions={fields}
                     placeholder="Select Facilities"
                     onChange={(selected: Option[]) =>

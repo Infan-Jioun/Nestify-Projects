@@ -29,6 +29,7 @@ export default function Currency({ setValue, errors }: CurrencyProps) {
                 <SelectContent id="currency">
                     <SelectItem value="BDT">BDT</SelectItem>
                     <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="SAR">SAR</SelectItem>
                     <SelectItem value="EUR">EUR</SelectItem>
                 </SelectContent>
                 {errors.currency && (
