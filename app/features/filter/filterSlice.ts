@@ -34,7 +34,7 @@ const initialState: FilterState = {
     sortOption: "default",
     sortedProperties: [],
     currentPage: 1,
-    itemsPerPage: 3,
+    itemsPerPage: 9,
     totalPages: 1,
 };
 
