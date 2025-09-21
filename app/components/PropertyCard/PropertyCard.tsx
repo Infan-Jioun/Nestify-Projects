@@ -119,18 +119,29 @@ export default function PropertyCard({
         </div>
 
         {/* Status */}
-        <p
-          className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
-            property.status === "Available"
-              ? "bg-green-100 text-green-600"
-              : property.status === "Sold"
-              ? "bg-red-100 text-red-600"
-              : "bg-yellow-100 text-yellow-600"
-          }`}
-        >
-          {property.status}
-        </p>
+        <div className="flex gap-2">
+          <p
+            className={`inline-block px-3 py-1  text-xs rounded-full font-medium ${property.status === "Available"
+                ? "bg-red-100 text-red-600"
+                : property.listingStatus === "Sale"
+                  ? "bg-red-100 text-green-600"
+                  : "bg-yellow-100 text-yellow-600"
+              }`}
+          >
+            {property.listingStatus}
+          </p>
+          <p
+            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
+                ? "bg-green-100 text-green-600"
+                : property.status === "Sold"
+                  ? "bg-red-100 text-red-600"
+                  : "bg-yellow-100 text-yellow-600"
+              }`}
+          >
+            {property.status}
+          </p>
 
+        </div>
         {/* Action Buttons */}
         <div className="flex gap-3 mt-4">
           <Button

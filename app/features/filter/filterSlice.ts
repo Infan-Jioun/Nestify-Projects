@@ -5,7 +5,7 @@ type Currency = "BDT" | "USD" | "EUR" | "";
 interface FilterState {
     location: string;
     listingStatus: ListingStatus;
-    currency :  Currency;
+    currency: Currency;
     propertyType: string[];
     priceRange: [number, number];
     bedrooms: string;
@@ -15,12 +15,15 @@ interface FilterState {
     otherFeatures: string[];
     sortOption: string;
     sortedProperties: PropertyType[];
+    currentPage: number;
+    itemsPerPage: number;
+    totalPages: number;
 }
 
 const initialState: FilterState = {
     location: "",
     listingStatus: "All",
-    currency : "BDT",
+    currency: "BDT",
     propertyType: [],
     priceRange: [0, 100_000_000],
     bedrooms: "any",
@@ -30,6 +33,9 @@ const initialState: FilterState = {
     otherFeatures: [],
     sortOption: "default",
     sortedProperties: [],
+    currentPage: 1,
+    itemsPerPage: 9,
+    totalPages: 1,
 };
 
 const filterSlice = createSlice({
@@ -83,22 +89,32 @@ const filterSlice = createSlice({
 
             state.sortedProperties = sorted;
         },
-        resetFilters: (state) => {
-            state.location = "";
-            state.listingStatus = "All";
-            state.currency = "BDT";
-            state.propertyType = [];
-            state.priceRange = [0, 100_000_000];
-            state.bedrooms = "any";
-            state.bathrooms = "any";
-            state.squareFeat = [0, 0];
-            state.yearBuild = [2000, new Date().getFullYear()];
-            state.otherFeatures = [];
-            state.sortOption = "default";
-            state.sortedProperties = [];
+        setCurrentPage: (state, action: PayloadAction<number>) => {
+            state.currentPage = action.payload;
         },
+        setItemsPerPage: (state, action: PayloadAction<number>) => {
+            state.itemsPerPage = action.payload;
+            state.totalPages = Math.ceil(state.sortedProperties.length / state.itemsPerPage);
+            if (state.currentPage > state.totalPages) {
+                state.currentPage = state.totalPages || 1;
+            }
+        },
+            resetFilters: (state) => {
+                state.location = "";
+                state.listingStatus = "All";
+                state.currency = "BDT";
+                state.propertyType = [];
+                state.priceRange = [0, 100_000_000];
+                state.bedrooms = "any";
+                state.bathrooms = "any";
+                state.squareFeat = [0, 0];
+                state.yearBuild = [2000, new Date().getFullYear()];
+                state.otherFeatures = [];
+                state.sortOption = "default";
+                state.sortedProperties = [];
+            },
     },
-});
+    });
 
 export const {
     setLocation,
@@ -111,9 +127,12 @@ export const {
     setSquareFeat,
     setYearBuild,
     setOtherFeatures,
+    setCurrentPage,
+    setItemsPerPage,
     setSortOption,
     sortProperties,
     resetFilters,
+    
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

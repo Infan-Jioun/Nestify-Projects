@@ -1,5 +1,6 @@
+
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import NextHead from "../components/NextHead/NextHead";
 import PropertyCard from "../components/PropertyCard/PropertyCard";
 import PropertiesTitle from "./PropertiesTitle/PropertiesTitle";
@@ -19,7 +20,11 @@ import {
 import {
   setSortOption,
   sortProperties,
+  setCurrentPage,
+  setItemsPerPage,
 } from "../features/filter/filterSlice";
+import Pagination from "../components/PropertyCard/Pagination/Pagination";
+
 
 export default function PropertiesPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,20 +40,20 @@ export default function PropertiesPage() {
     currency,
     priceRange,
     bedrooms,
-
     bathrooms,
     squareFeat,
     yearBuild,
     otherFeatures,
     sortOption,
     sortedProperties,
+    currentPage,
+    itemsPerPage,
+    totalPages,
   } = useSelector((state: RootState) => state.filter);
-
 
   useEffect(() => {
     dispatch(fetchProperties());
   }, [dispatch]);
-
 
   useEffect(() => {
     if (properties.length > 0) {
@@ -57,62 +62,95 @@ export default function PropertiesPage() {
   }, [dispatch, properties, sortOption]);
 
   // Filtering
-  const filterProperties = sortedProperties.filter((property) => {
-    if (
-      location &&
-      !property.geoCountryLocation
-        .toLowerCase()
-        .includes(location.toLowerCase())
-    )
-      return false;
+  const filterProperties = useMemo(() => {
+    return sortedProperties.filter((property) => {
+      if (
+        location &&
+        !property.geoCountryLocation
+          .toLowerCase()
+          .includes(location.toLowerCase())
+      )
+        return false;
 
-    if (listingStatus !== "All" && property.listingStatus !== listingStatus) return false;
-    if (currency !== "BDT" && property.currency !== currency) return false;
+      if (listingStatus !== "All" && property.listingStatus !== listingStatus) return false;
+      if (currency !== "BDT" && property.currency !== currency) return false;
 
-    if (
-      propertyType.length > 0 &&
-      !propertyType.includes(property.category.name)
-    )
-      return false;
+      if (
+        propertyType.length > 0 &&
+        !propertyType.includes(property.category.name)
+      )
+        return false;
 
-    if (property.price < priceRange[0] || property.price > priceRange[1])
-      return false;
+      if (property.price < priceRange[0] || property.price > priceRange[1])
+        return false;
 
-    if (
-      bedrooms !== "any" &&
-      (property.bedrooms || 0) < parseInt(bedrooms)
-    )
-      return false;
+      if (
+        bedrooms !== "any" &&
+        (property.bedrooms || 0) < parseInt(bedrooms)
+      )
+        return false;
 
-    if (
-      bathrooms !== "any" &&
-      (property.bathrooms || 0) < parseInt(bathrooms)
-    )
-      return false;
+      if (
+        bathrooms !== "any" &&
+        (property.bathrooms || 0) < parseInt(bathrooms)
+      )
+        return false;
 
-    if (squareFeat[0] > 0 && (property.floorArea || 0) < squareFeat[0])
-      return false;
+      if (squareFeat[0] > 0 && (property.floorArea || 0) < squareFeat[0])
+        return false;
 
-    if (squareFeat[1] > 0 && (property.floorArea || 0) > squareFeat[1])
-      return false;
+      if (squareFeat[1] > 0 && (property.floorArea || 0) > squareFeat[1])
+        return false;
 
-    // if (yearBuild[0] && property.yearBuilt < yearBuild[0]) return false;
-    // if (yearBuild[1] && property.yearBuilt > yearBuild[1]) return false;
+      if (otherFeatures.length > 0) {
+        const hasFeatures = otherFeatures.every((feature) =>
+          property.propertyFacilities?.includes(feature)
+        );
+        if (!hasFeatures) return false;
+      }
 
-    if (otherFeatures.length > 0) {
-      const hasFeatures = otherFeatures.every((feature) =>
-        property.propertyFacilities?.includes(feature)
-      );
-      if (!hasFeatures) return false;
+      return true;
+    });
+  }, [
+    sortedProperties,
+    location,
+    listingStatus,
+    currency,
+    propertyType,
+    priceRange,
+    bedrooms,
+    bathrooms,
+    squareFeat,
+    otherFeatures,
+  ]);
+
+
+  const paginatedProperties = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filterProperties.slice(startIndex, startIndex + itemsPerPage);
+  }, [filterProperties, currentPage, itemsPerPage]);
+
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPage(page));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+
+  const handleItemsPerPageChange = (value: number) => {
+    dispatch(setItemsPerPage(value));
+    dispatch(setCurrentPage(1));
+  };
+
+  useEffect(() => {
+    const newTotalPages = Math.ceil(filterProperties.length / itemsPerPage);
+    if (currentPage > newTotalPages && newTotalPages > 0) {
+      dispatch(setCurrentPage(newTotalPages));
     }
-
-    return true;
-  });
+  }, [filterProperties.length, itemsPerPage, currentPage, dispatch]);
 
   return (
     <div className=" px-4 md:px-10 lg:px-20 xl:px-28">
       <NextHead title="Properties - Nestify" />
-      {/* <PropertiesTitle /> */}
 
       {/* Container */}
       <div className="flex flex-col md:flex-row gap-8 mt-8">
@@ -134,6 +172,12 @@ export default function PropertiesPage() {
               Showing{" "}
               <span className="font-semibold">{filterProperties.length}</span>{" "}
               results
+              {filterProperties.length > 0 && (
+                <>
+                  {" "}
+                  (Page {currentPage} of {Math.ceil(filterProperties.length / itemsPerPage)})
+                </>
+              )}
             </p>
 
             <div className="flex items-center gap-2 mb-6">
@@ -161,7 +205,7 @@ export default function PropertiesPage() {
           {/* Properties Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading &&
-              [...Array(6)].map((_, idx) => (
+              [...Array(itemsPerPage)].map((_, idx) => (
                 <div
                   key={idx}
                   className="p-4 border rounded-lg shadow-sm bg-white"
@@ -187,7 +231,7 @@ export default function PropertiesPage() {
 
             {!loading &&
               !error &&
-              filterProperties.map((property) => (
+              paginatedProperties.map((property) => (
                 <PropertyCard
                   key={property._id}
                   property={property}
@@ -196,6 +240,17 @@ export default function PropertiesPage() {
                 />
               ))}
           </div>
+
+          {/* Pagination */}
+          {!loading && filterProperties.length > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(filterProperties.length / itemsPerPage)}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
+          )}
         </main>
       </div>
     </div>

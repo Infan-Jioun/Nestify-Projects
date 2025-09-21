@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import SearchHomeLocation from "../SearchHomeLocation/SearchHomeLocation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
+
 import {
     setPriceRange,
     setPropertyType,
@@ -39,7 +40,7 @@ function SidebarContent() {
     const filter = useSelector((state: RootState) => state.filter);
     const { skletonLoader } = useSelector((state: RootState) => state.loader);
 
-    const propertyTypes = ["House", "Apartment", "Office Space", "Duplex" , "Agricultural Land", "Industrial Land", "Garage", "Co-working Space" , "Hotel" , "Commercial Land", "Warehouse" , "Residential"];
+    const propertyTypes = ["House", "Apartment", "Office Space", "Duplex", "Agricultural Land", "Industrial Land", "Garage", "Co-working Space", "Hotel", "Commercial Land", "Warehouse", "Residential"];
     const togglePropertyType = (type: string) => {
         if (filter.propertyType.includes(type)) {
             dispatch(setPropertyType(filter.propertyType.filter((t) => t !== type)));
@@ -67,7 +68,7 @@ function SidebarContent() {
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Listing Status</p>
                 <div className="flex gap-2 flex-wrap">
-                    {["All","Sale" ,"Rent"].map((listingStatus) => (
+                    {["All", "Sale", "Rent"].map((listingStatus) => (
                         <Button
                             key={listingStatus}
                             variant={filter.listingStatus === listingStatus ? "default" : "outline"}
@@ -83,7 +84,7 @@ function SidebarContent() {
             <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                 <p className="text-xs font-semibold text-gray-900 mb-3">Currency Select</p>
                 <div className="flex gap-2 flex-wrap">
-                    {["BDT","USD" ,"EUR"].map((currency) => (
+                    {["BDT", "USD", "EUR"].map((currency) => (
                         <Button
                             key={currency}
                             variant={filter.currency === currency ? "default" : "outline"}
@@ -197,7 +198,7 @@ function SidebarContent() {
 
             {/* Footer Actions */}
             <SheetFooter className="flex flex-col gap-4 mt-6 p-3">
-             
+
 
                 <div className="flex justify-between text-sm font-medium">
                     <button
