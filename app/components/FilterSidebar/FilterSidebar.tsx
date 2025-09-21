@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/sheet";
 import { IoFilterOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
-import { FaSearch } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
