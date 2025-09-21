@@ -132,7 +132,7 @@ export default function AddPropertyFormPage() {
   };
 
   return (
-    <div className="drop-shadow-xl mt-5 border-t-2">
+    <div className="drop-shadow-xl mt-5 border-t-2 px-3">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-7 space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100 hover:border-green-400"
