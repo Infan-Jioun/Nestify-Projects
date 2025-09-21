@@ -7,8 +7,6 @@ import { RootState, AppDispatch } from "@/lib/store";
 import { setAddPropertyLoader, setButtonLoader } from "@/app/features/loader/loaderSlice";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-
-// Components
 import ImageSection from "../Components/ImageSection/ImageSection";
 import PropertyTitle from "../Components/PropertyTitle/PropertyTitle";
 import CategoryFrom from "../Components/CategoryForm/CategoryFrom/CategoryFrom";
@@ -28,9 +26,108 @@ import { Loader } from "lucide-react";
 import MultiSeclectService from "../Components/MultiSeclectService/MultiSeclectService";
 import { useRouter } from "next/navigation";
 import ListingStatus from "../Components/ListingStatus/ListingStatus";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
+// Skeleton Loader Components
+const ImageSectionSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton height={30} width={200} />
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {[...Array(4)].map((_, idx) => (
+        <div key={idx} className="aspect-square">
+          <Skeleton height="100%" />
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
+const InputFieldSkeleton = () => (
+  <div className="space-y-2">
+    <Skeleton height={20} width={100} />
+    <Skeleton height={40} />
+  </div>
+);
 
+const PropertyTitleSkeleton = () => (
+  <div className="space-y-4">
+    <InputFieldSkeleton />
+  </div>
+);
+
+const ContactInfoSkeleton = () => (
+  <div className="space-y-4">
+    <InputFieldSkeleton />
+    <InputFieldSkeleton />
+  </div>
+);
+
+const CategoryFormSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton height={30} width={200} />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <InputFieldSkeleton />
+      <InputFieldSkeleton />
+    </div>
+  </div>
+);
+
+const MultiSelectServiceSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton height={30} width={200} />
+    <div className="grid grid-cols-2 gap-2">
+      {[...Array(6)].map((_, idx) => (
+        <div key={idx} className="flex items-center gap-2">
+          <Skeleton circle width={20} height={20} />
+          <Skeleton height={20} width={100} />
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const PropertyLocationSkeleton = () => (
+  <div className="space-y-4">
+    <InputFieldSkeleton />
+  </div>
+);
+
+const PropertySizeSkeleton = () => (
+  <div className="space-y-4">
+    <InputFieldSkeleton />
+  </div>
+);
+
+const ListingStatusSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton height={30} width={150} />
+    <Skeleton height={40} width="100%" />
+  </div>
+);
+
+const PropertyPriceSkeleton = () => (
+  <div className="space-y-4">
+    <InputFieldSkeleton />
+  </div>
+);
+
+const CurrencySkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton height={30} width={150} />
+    <Skeleton height={40} width="100%" />
+  </div>
+);
+
+const PropertyAddressSkeleton = () => (
+  <div className="space-y-4">
+    <InputFieldSkeleton />
+  </div>
+);
+
+const ButtonSkeleton = () => (
+  <Skeleton height={40} width="100%" />
+);
 
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,7 +143,9 @@ export default function AddPropertyFormPage() {
   } = useForm<Inputs>();
 
   const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
+  const skeletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const router = useRouter()
+
   const onSubmit = async (data: Inputs) => {
     try {
       dispatch(setAddPropertyLoader(true));
@@ -131,6 +230,40 @@ export default function AddPropertyFormPage() {
     }
   };
 
+
+  if (skeletonLoader) {
+    return (
+      <div className="drop-shadow-xl mt-5 border-t-2 px-3">
+        <div className="mt-7 space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100">
+          <ImageSectionSkeleton />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <PropertyTitleSkeleton />
+            <ContactInfoSkeleton />
+          </div>
+
+          <CategoryFormSkeleton />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <MultiSelectServiceSkeleton />
+            <PropertyLocationSkeleton />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <PropertySizeSkeleton />
+            <ListingStatusSkeleton />
+            <PropertyPriceSkeleton />
+            <CurrencySkeleton />
+          </div>
+
+          <PropertyAddressSkeleton />
+
+          <ButtonSkeleton />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="drop-shadow-xl mt-5 border-t-2 px-3">
       <form
@@ -139,21 +272,19 @@ export default function AddPropertyFormPage() {
       >
         <ImageSection register={register} errors={errors} setValue={setValue} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <PropertyTitle register={register} errors={errors} />
-
           <ContactInfo register={register} control={control} errors={errors} />
         </div>
 
         <CategoryFrom register={register} errors={errors} setValue={setValue} />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <MultiSeclectService setValue={setValue} errors={errors} />
           <PropertyLocation register={register} errors={errors} watch={watch} setValue={setValue} />
-
         </div>
 
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <PropertySize register={register} errors={errors} />
           <ListingStatus errors={errors} setValue={setValue} />
           <PropertyPrice register={register} errors={errors} />
@@ -163,7 +294,7 @@ export default function AddPropertyFormPage() {
         <PropertyAddress register={register} errors={errors} />
 
         <Button className="h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300 hover:border-green-500 font-semibold transition">
-          {buttonLoader ? <Loader /> : "Add Your Property"}
+          {buttonLoader ? <Loader className="animate-spin" /> : "Add Your Property"}
         </Button>
       </form>
     </div>
