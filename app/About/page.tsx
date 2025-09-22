@@ -7,7 +7,6 @@ export default function AboutPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading time
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
@@ -19,7 +18,7 @@ export default function AboutPage() {
     return (
       <div className="bg-gray-50 min-h-screen">
         <NextHead title="About - Nestify" />
-        
+
         {/* Hero Section Skeleton */}
         <div className="relative py-32 px-6 text-center bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden">
           <div className="max-w-4xl mx-auto">
@@ -248,8 +247,8 @@ export default function AboutPage() {
             Get in Touch
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-  {"Have questions or want to list your property? We'd love to hear from you."}
-</p>
+            {"Have questions or want to list your property? We'd love to hear from you."}
+          </p>
 
           <form className="grid md:grid-cols-2 gap-6 text-left">
             <input

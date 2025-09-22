@@ -190,16 +190,18 @@ export default function PropertiesPage() {
       <NextHead title="Properties - Nestify" />
 
       <div className={cn(
-        "bg-gradient-to-r from-green-900 to-green-500 text-white transition-all duration-300",
+        "relative py-32 px-6  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
         isScrolled ? "py-4" : "py-10"
       )}>
+        <div className="absolute  w-40 h-40 bg-green-300/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-52 h-52 bg-yellow-300/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="px-4 md:px-8 lg:px-12 xl:px-12">
           <h1 className={cn(
             "font-bold transition-all duration-300",
             isScrolled ? "text-2xl" : "text-4xl"
           )}>Find Your Dream Property</h1>
           <p className={cn(
-            "text-green-100 mt-2 max-w-2xl transition-all duration-300",
+            " mt-2 max-w-2xl transition-all duration-300",
             isScrolled ? "text-sm opacity-0 h-0" : "opacity-100"
           )}>
             Discover premium real estate options tailored to your preferences from our curated collection
@@ -211,22 +213,22 @@ export default function PropertiesPage() {
             isScrolled ? "opacity-0 h-0 mt-0 pt-0 overflow-hidden" : "opacity-100"
           )}>
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-green-700 rounded-lg">
+              <div className="p-2 rounded-lg">
                 <Home size={18} />
               </div>
               <div>
                 <p className="text-2xl font-semibold">{properties.length}+</p>
-                <p className="text-green-200 text-sm">Properties</p>
+                <p className=" text-sm">Properties</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-green-700 rounded-lg">
+              <div className="p-2 rounded-lg">
                 <MapPin size={18} />
               </div>
               <div>
                 <p className="text-2xl font-semibold">25+</p>
-                <p className="text-green-200 text-sm">Locations</p>
+                <p className=" text-sm">Locations</p>
               </div>
             </div>
           </div>

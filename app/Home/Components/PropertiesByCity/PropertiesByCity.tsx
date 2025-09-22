@@ -46,8 +46,6 @@ const PropertiesByCity: React.FC = () => {
     };
 
     fetchData();
-
-    // Check if device is mobile
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
