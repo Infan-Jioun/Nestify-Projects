@@ -38,7 +38,6 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { setSkeletonLoading } from "@/app/features/skeleton/skeletonSlice";
 
-// Define the loader state interface
 function SidebarContent() {
     const dispatch = useDispatch<AppDispatch>();
     const filter = useSelector((state: RootState) => state.filter);

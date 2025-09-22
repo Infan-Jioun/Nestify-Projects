@@ -19,35 +19,38 @@ import { Button } from "@/components/ui/button";
 import { LogInIcon, LogOutIcon } from "lucide-react";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { RxAvatar } from "react-icons/rx";
-import { DropdownAvatar } from "./DropdownAvatar";
+
 import SearchBar from "./SearchBar";
 import SidebarFooter from "./SidebarFooter";
 import Image from "next/image";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { DropdownAvatar } from "./DropdownAvatar";
 
-const navlinks = [
-  { name: "Home", href: "/" },
-  { name: "Properties", href: "/Properties" },
-  { name: "Add Property", href: "/dashboard/add-property" },
-  { name: "About", href: "/About" },
-  { name: "Contact", href: "/Contact" },
-];
 
-const links = [
-  { name: "Apartments", href: "/ApartmentsPage" },
-  { name: "Bungalow", href: "/BungalowPage" },
-  { name: "Houses", href: "/HousesPage" },
-  { name: "Loft", href: "/LoftPage" },
-  { name: "Office", href: "/officePage" },
-  { name: "Townhome", href: "/TownhomePage" },
-  { name: "Vila", href: "/VilaPage" },
-];
 
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [scrolled, setScrolled] = useState(false);
+  const navlinks = [
+    { name: "Home", href: "/" },
+    { name: "Properties", href: "/Properties" },
+    ...(session ? [{ name: "Dashboard", href: "/dashboard" }] : []),
+    { name: "About", href: "/About" },
+    { name: "Contact", href: "/Contact" },
+  ];
 
+
+
+  const links = [
+    { name: "Apartments", href: "/ApartmentsPage" },
+    { name: "Bungalow", href: "/BungalowPage" },
+    { name: "Houses", href: "/HousesPage" },
+    { name: "Loft", href: "/LoftPage" },
+    { name: "Office", href: "/officePage" },
+    { name: "Townhome", href: "/TownhomePage" },
+    { name: "Vila", href: "/VilaPage" },
+  ];
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
