@@ -58,12 +58,11 @@ function SidebarContent() {
         } else {
             dispatch(setPropertyType([...filter.propertyType, type]));
         }
-        // Simulate loading
+        
         setLocalLoading(true);
         setTimeout(() => setLocalLoading(false), 500);
     };
 
-    // Simulate loading state
     useEffect(() => {
         if (skletonLoader) {
             const timer = setTimeout(() => {
