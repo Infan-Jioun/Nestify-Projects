@@ -8,6 +8,7 @@ import skeletionReducer from '../app/features/skeleton/skeletonSlice';
 import searchLocationReducer from '../app/features/SearchLocation/SearchLocationSlice'
 import propertyFacilitiesReducer from '../app/features/propertyFacilties/propertyFaciltiesSlice'
 import filterSliceReducer from '../app/features/filter/filterSlice'
+import citySliceReducer from '../app/features/city/citySlice'
 export const store = configureStore({
     reducer: {
         // Add your reducers here
@@ -15,14 +16,15 @@ export const store = configureStore({
         // LoaderReducer
         loader: loaderReducer,
         skeleton: skeletionReducer,
+
         // Property Reducer
         properties: propertiesReducer,
         propertyCategory: propertyCategoryReducer,
         propertyFacilities: propertyFacilitiesReducer,
         location: locationReducer,
         searchLocation: searchLocationReducer,
-        filter: filterSliceReducer
-
+        filter: filterSliceReducer,
+        city: citySliceReducer
 
 
     },
