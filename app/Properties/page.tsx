@@ -190,17 +190,22 @@ export default function PropertiesPage() {
       <NextHead title="Properties - Nestify" />
 
       <div className={cn(
-        "relative py-10 px-6  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
-    
+        "relative py-32 px-6  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
+        isScrolled ? "py-4" : "py-10"
       )}>
         <div className="absolute  w-40 h-40 bg-green-300/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-52 h-52 bg-yellow-300/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="px-4 md:px-8 lg:px-12 xl:px-12">
           <h1 className={cn(
-            "font-bold transition-all duration-300 text-2xl"
+            "font-bold transition-all duration-300",
+            isScrolled ? "text-2xl" : "text-4xl"
           )}>Find Your Dream Property</h1>
-          
-
+          <p className={cn(
+            " mt-2 max-w-2xl transition-all duration-300",
+            isScrolled ? "text-sm opacity-0 h-0" : "opacity-100"
+          )}>
+            Discover premium real estate options tailored to your preferences from our curated collection
+          </p>
 
           {/* Stats bar */}
           <div className={cn(
@@ -411,7 +416,7 @@ export default function PropertiesPage() {
                       <FilterX size={16} className="mr-2" />
                       Clear All Filters
                     </Button>
-                  )}z
+                  )}
                 </div>
               )}
 
