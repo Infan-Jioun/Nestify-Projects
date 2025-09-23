@@ -151,7 +151,6 @@ export default function AddPropertyFormPage() {
       dispatch(setAddPropertyLoader(true));
       dispatch(setButtonLoader(true));
 
-      // 1) Upload images
       let uploadedImages: string[] = [];
       if (data.images && data.images.length > 0) {
         const files = Array.from(data.images);
@@ -163,8 +162,6 @@ export default function AddPropertyFormPage() {
         );
         uploadedImages = uploads.filter(Boolean) as string[];
       }
-
-      // 2) Transform category fields with id
       const categoryFields = Object.entries(data)
         .filter(
           ([key, value]) =>
@@ -192,9 +189,7 @@ export default function AddPropertyFormPage() {
           name: key,
           value: value as string | number | boolean,
         }));
-
-      // 3) Final payload matching PropertyType
-      const transformedData: PropertyType = {
+     const transformedData: PropertyType = {
         ...data,
         images: uploadedImages,
         videos: data.videos || [],
@@ -212,7 +207,6 @@ export default function AddPropertyFormPage() {
         updatedAt: data.updatedAt ? data.updatedAt.toISOString() : new Date().toISOString(),
       };
 
-      // 4) Dispatch addProperty
       const resultAction = await dispatch(addProperty(transformedData));
       unwrapResult(resultAction);
       router.push("/Properties");
@@ -233,7 +227,7 @@ export default function AddPropertyFormPage() {
 
   if (skeletonLoader) {
     return (
-      <div className="drop-shadow-xl mt-5 border-t-2 px-3">
+      <div className="drop-shadow-xl mt-5 border-t-2 px-5">
         <div className="mt-7 space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100">
           <ImageSectionSkeleton />
 

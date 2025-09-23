@@ -1,3 +1,4 @@
+
 import Property from "@/app/models/properties";
 import connectToDatabase from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";

@@ -3,8 +3,14 @@
 import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react"
 
 import { useFileUpload } from "@/hooks/use-file-upload"
-
-export default function ImageSection() {
+import { FieldErrors, UseFormClearErrors, UseFormRegister, UseFormSetValue } from "react-hook-form"
+import { CityInfo } from "@/lib/CityInfo"
+type CityImagePropps = {
+    register: UseFormRegister<CityInfo>;
+    setValue: UseFormSetValue<CityInfo>;
+    errors?: FieldErrors<CityInfo>;
+}
+export default function ImageSection({ register, setValue }: CityImagePropps) {
     const maxSizeMB = 5
     const maxSize = maxSizeMB * 1024 * 1024
 

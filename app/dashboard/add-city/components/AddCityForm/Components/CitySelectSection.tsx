@@ -16,8 +16,13 @@ import { setQuery, setResults } from '@/app/features/SearchLocation/SearchLocati
 import { setGeoCountryLocationLoading } from '@/app/features/loader/loaderSlice';
 import { bangladeshGeoData } from '@/lib/geo-data';
 import { setLocation } from '@/app/features/filter/filterSlice';
-
-export default function CitySelectSection() {
+import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form';
+import { CityInfo } from '@/lib/CityInfo';
+type CityInfopProps = {
+    control: Control<CityInfo>;
+    errors?: FieldErrors<CityInfo>;
+}
+export default function CitySelectSection({ control, errors }: CityInfopProps) {
     const dispatch = useDispatch<AppDispatch>();
     const { query, results } = useSelector((state: RootState) => state.searchLocation);
 
@@ -52,26 +57,38 @@ export default function CitySelectSection() {
 
     return (
         <div className='drop-shadow-xl mt-10 '>
-            <Select value={query} onValueChange={handleSelect}>
-                <SelectTrigger>
-                    <SelectValue placeholder="Select Division & District" />
-                </SelectTrigger>
-                <SelectContent>
-                    {bangladeshGeoData.map((division) => (
-                        <SelectGroup key={division.division}>
-                            <SelectLabel>{division.division}</SelectLabel>
-                            {division.districts?.map((district) => (
-                                <SelectItem
-                                    key={district.district}
-                                    value={`${district.district}, ${division.division}`}
-                                >
-                                    {district.district}
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    ))}
-                </SelectContent>
-            </Select>
+            <div className="mt-5">
+                <Controller
+                    name="cityName"
+                    control={control}
+                    rules={{ required: "City name is required" }}
+                    render={({ field }) => (
+                        <Select value={field.value || ""} onValueChange={field.onChange}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select Division & District" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {bangladeshGeoData.map((division) => (
+                                    <SelectGroup key={division.division}>
+                                        <SelectLabel>{division.division}</SelectLabel>
+                                        {division.districts?.map((district) => (
+                                            <SelectItem
+                                                key={district.district}
+                                                value={`${district.district}, ${division.division}`}
+                                            >
+                                                {district.district}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+                {errors?.cityName && (
+                    <p className="text-red-500 text-sm">{errors.cityName.message}</p>
+                )}
+            </div>
         </div>
     )
 }

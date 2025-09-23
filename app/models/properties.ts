@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-// Category Field Schema
+
 const categoryFieldSchema = new Schema(
     {
         name: { type: String, required: true },
@@ -9,13 +9,12 @@ const categoryFieldSchema = new Schema(
     { _id: true }
 );
 
-// Category Schema
+
 const categorySchema = new Schema({
     name: { type: String, required: true },
     fields: [categoryFieldSchema],
 });
 
-// Property Schema
 const propertySchema = new Schema(
     {
         title: { type: String, required: true },
