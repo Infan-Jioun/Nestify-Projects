@@ -1,7 +1,7 @@
 import { model, models, Schema } from "mongoose";
 
 const addCitySchema = new Schema({
-    CityImage: { type: String, required: true },
+    cityImage: { type: String, required: true },
     cityName: { type: String, required: true },
 
 })

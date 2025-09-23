@@ -1,4 +1,5 @@
 export type CityInfo = {
-    cityName: string;
-    cityImage: string;
+    cityName: string ;
+    cityImage: File | string;
+    // cityImageFile?: ;
 }

@@ -14,7 +14,7 @@ const initialState: PropertyState = {
   error: null,
 };
 
-// Fetch all properties
+
 export const fetchProperties = createAsyncThunk<PropertyType[], void, { rejectValue: string }>(
   "properties/fetchAll",
   async (_, { rejectWithValue }) => {
@@ -28,7 +28,7 @@ export const fetchProperties = createAsyncThunk<PropertyType[], void, { rejectVa
   }
 );
 
-// Add a property
+
 export const addProperty = createAsyncThunk<PropertyType, PropertyType, { rejectValue: string }>(
   "properties/add",
   async (newProperty, { rejectWithValue }) => {

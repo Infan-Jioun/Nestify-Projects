@@ -51,7 +51,7 @@ export default function CityBanner() {
     }, [])
 
     return (
-        <div className="w-full mx-auto py-6">
+        <div className=" w-full mx-auto py-6">
             <Carousel
                 className="rounded-2xl shadow-lg overflow-hidden"
                 opts={{ startIndex: current }}

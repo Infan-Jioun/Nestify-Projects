@@ -12,6 +12,7 @@ export const store = configureStore({
     reducer: {
         // Add your reducers here
         user: userReducer,
+        // LoaderReducer
         loader: loaderReducer,
         skeleton: skeletionReducer,
         // Property Reducer
@@ -21,6 +22,7 @@ export const store = configureStore({
         location: locationReducer,
         searchLocation: searchLocationReducer,
         filter: filterSliceReducer
+
 
 
     },
