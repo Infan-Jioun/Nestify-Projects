@@ -58,8 +58,8 @@ export default function AddCityForm() {
     };
 
     return (
-        <div className="px-7 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="border-t-4  ">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-7">
                 <ImageSection register={register} setValue={setValue} />
                 <CitySelectSection control={control} errors={errors} />
 

@@ -12,7 +12,7 @@ export default function AddCity() {
             </div>
 
             {/* Form Section */}
-            <div className="max-w-lg md:max-w-xl lg:max-w-2xl mx-auto mt-8 md:mt-12">
+            <div className=" mx-auto mt-8 md:mt-12">
                 <AddCityForm />
             </div>
         </div>

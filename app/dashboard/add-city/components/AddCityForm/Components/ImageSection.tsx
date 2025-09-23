@@ -40,7 +40,7 @@ export default function ImageSection({ register, setValue }: CityImageProps) {
     }, [files, setValue])
 
     return (
-        <div className="px-7 flex flex-col gap-2 mt-5">
+        <div className="px-7  flex flex-col gap-2 mt-5">
             <div
                 role="button"
                 onClick={openFileDialog}
@@ -51,7 +51,7 @@ export default function ImageSection({ register, setValue }: CityImageProps) {
                 data-dragging={isDragging || undefined}
                 className="border border-dashed p-4 rounded-xl text-center"
             >
-                <Input {...getInputProps()} className="sr-only" />
+                <input {...getInputProps()} className="sr-only" />
                 {previewUrl ? (
                     <div className="relative">
                         <img src={previewUrl} alt="preview" className="w-full h-52 object-cover rounded-xl" />
