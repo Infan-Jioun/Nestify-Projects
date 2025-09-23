@@ -91,7 +91,7 @@ export default function SearchHomeLocation() {
                     </ul>
                 )}
                 {showDropdown && !geoCountryLocationLoading && results.length === 0 && query.trim() !== "" && (
-                    <p className="absolute z-10 mt-2 w-full px-3 py-2 text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-lg"></p>
+                    <p className="absolute z-10 mt-2 w-full px-3 py-2 text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-lg">No location found</p>
                 )}
             </div>
         </div>

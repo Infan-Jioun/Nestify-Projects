@@ -256,7 +256,7 @@ function SidebarContent() {
                         <X size={16} className="mr-2" />
                         Reset All
                     </Button>
-                    <Button type="button" className="bg-blue-600 hover:bg-blue-700">
+                    <Button type="button" className="bg-green-600 hover:bg-green-700">
                         Apply Filters
                     </Button>
                 </div>

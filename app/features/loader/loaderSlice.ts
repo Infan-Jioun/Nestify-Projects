@@ -45,7 +45,7 @@ const loaderSlice = createSlice({
             state.googleLoader = action.payload;
         },
         setGithubLoader(state, action: PayloadAction<boolean>) {
-            state.googleLoader = action.payload;
+            state.githubLoader = action.payload;
         },
         setSkletonLoader(state, action: PayloadAction<boolean>) {
             state.skletonLoader = action.payload;
