@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
 import { Loader } from "lucide-react";
 import { setButtonLoader } from "@/app/features/loader/loaderSlice";
+import { useRouter } from "next/navigation";
 
 export default function AddCityForm() {
     const {
@@ -22,7 +23,7 @@ export default function AddCityForm() {
         reset,
         formState: { errors },
     } = useForm<CityInfo>();
-
+const router = useRouter();
     const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -46,6 +47,7 @@ export default function AddCityForm() {
             const res = await axios.post("/api/addCity", payload);
             toast.success("City added successfully!");
             reset();
+            router.push("/seeAllCities");
             if (res.status === 200) {
                 console.log("City Added:", res.data);
             }
