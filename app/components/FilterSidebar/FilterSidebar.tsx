@@ -139,7 +139,7 @@ function SidebarContent() {
                                     checked={filter.propertyType.includes(type)}
                                     onCheckedChange={() => togglePropertyType(type)}
                                     id={type}
-                                    className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                    className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
                                 />
                                 <Label htmlFor={type} className="text-sm font-normal cursor-pointer">{type}</Label>
                             </div>
