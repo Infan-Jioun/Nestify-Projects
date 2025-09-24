@@ -22,13 +22,13 @@ type CityCardProps = {
 const CityCard: React.FC<CityCardProps> = ({ city, count }) => {
   return (
     <div className="flex flex-col items-center group">
-      <div className="relative w-32 h-32 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
+      <div className="relative w-44 h-44 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
         <Image
           src={typeof city.cityImage === "string" ? city.cityImage : ""}
           alt={city.cityName}
-          width={800}
-          height={800}
-          className="object-cover transition-transform duration-300 group-hover:scale-110"
+          width={1200}
+          height={1200}
+          className="object-cover w-44 h-44 transition-transform duration-300 group-hover:scale-110"
         />
       </div>
       <div className="text-center">
