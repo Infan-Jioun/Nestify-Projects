@@ -1,22 +1,40 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/store";
 import { fetchCities } from "@/app/features/city/citySlice";
 import Image from "next/image";
 import { MapPin, Building2, ArrowRight } from "lucide-react";
+import { fetchProperties } from "@/app/features/Properties/propertySlice";
+import { CityInfo } from "@/lib/CityInfo";
 
 export default function SeeAllCities() {
     const dispatch = useDispatch<AppDispatch>();
     const { city: cities, loading, error } = useSelector((state: RootState) => state.city);
-    const { properties } = useSelector(
+    const { properties, loading: propertiesLoading } = useSelector(
         (state: RootState) => state.properties
     );
 
     useEffect(() => {
         dispatch(fetchCities());
+        dispatch(fetchProperties());
     }, [dispatch]);
+    const isLoading = propertiesLoading;
+    const propertiesCountMap = useMemo(() => {
+        const map: Record<string, number> = {};
+        if (!properties || !Array.isArray(properties)) return map;
+        properties.forEach((property) => {
+            const location = (property.geoCountryLocation || "").toString().toLowerCase().trim();
+            cities.forEach((city: CityInfo) => {
+                const cityNameLower = city.cityName.toLowerCase();
+                if (location.includes(cityNameLower)) {
+                    map[cityNameLower] = (map[cityNameLower] || 0) + 1;
+                }
+            });
+        })
+        return map;
+    }, [properties, cities]);
 
     if (loading) {
         return (
@@ -114,7 +132,11 @@ export default function SeeAllCities() {
                                 <div className="flex items-center text-gray-600 dark:text-gray-400 mb-3">
                                     <Building2 className="w-4 h-4 mr-2" />
                                     <span className="text-sm">
-                                        {properties.length ?? 0} {properties.length === 1 ? 'Property' : 'Properties'} Available
+                                        {propertiesCountMap[city.cityName.toLowerCase()] ?? 0}{" "}
+                                        {propertiesCountMap[city.cityName.toLowerCase()] === 1
+                                            ? "Property"
+                                            : "Properties"}{" "}
+                                        Available
                                     </span>
                                 </div>
                                 <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2">

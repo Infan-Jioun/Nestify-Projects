@@ -21,7 +21,7 @@ export default function PopularProperties() {
     dispatch(fetchProperties());
   }, [dispatch]);
 
- 
+
   const PropertyCardSkeleton = () => (
     <div className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
       <div className="h-48 bg-gray-200"></div>
@@ -54,7 +54,7 @@ export default function PopularProperties() {
   );
 
   return (
-    <div className="mt-6 px-4 md:px-20 lg:px-44">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header & Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -70,11 +70,10 @@ export default function PopularProperties() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-2 py-2 rounded-md border ${
-                activeTab === tab
+              className={`px-2 py-2 rounded-md border ${activeTab === tab
                   ? "bg-black text-white"
                   : "bg-white text-black hover:bg-gray-100"
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -85,7 +84,7 @@ export default function PopularProperties() {
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {loading ? (
-        
+
           Array.from({ length: 3 }).map((_, index) => (
             <PropertyCardSkeleton key={index} />
           ))

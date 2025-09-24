@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/store";
 import { fetchCities } from "@/app/features/city/citySlice";
+import { fetchProperties } from "@/app/features/Properties/propertySlice";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -11,18 +12,52 @@ import "swiper/css/autoplay";
 import Image from "next/image";
 import Link from "next/link";
 import { MdArrowOutward } from "react-icons/md";
+import { CityInfo } from "@/lib/CityInfo";
+
+type CityCardProps = {
+  city: CityInfo;
+  count: number;
+};
+
+const CityCard: React.FC<CityCardProps> = ({ city, count }) => {
+  return (
+    <div className="flex flex-col items-center group">
+      <div className="relative w-32 h-32 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
+        <Image
+          src={typeof city.cityImage === "string" ? city.cityImage : ""}
+          alt={city.cityName}
+          width={800}
+          height={800}
+          className="object-cover transition-transform duration-300 group-hover:scale-110"
+        />
+      </div>
+      <div className="text-center">
+        <h3 className="font-semibold text-lg text-gray-900 mb-1">
+          {city.cityName}
+        </h3>
+        <p className="text-sm text-gray-600">{count} Properties</p>
+      </div>
+    </div>
+  );
+};
 
 const PropertiesByCity: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { city: cities, loading: citiesLoading } = useSelector((state: RootState) => state.city);
-  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const { city: cities, loading: citiesLoading } = useSelector(
+    (state: RootState) => state.city
+  );
+  const { properties, loading: propertiesLoading } = useSelector(
+    (state: RootState) => state.properties
+  );
+  const skletonLoader = useSelector(
+    (state: RootState) => state.loader.skletonLoader
+  );
 
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-
     dispatch(fetchCities());
-
+    dispatch(fetchProperties());
 
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
@@ -30,7 +65,28 @@ const PropertiesByCity: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [dispatch]);
 
-  const isLoading = citiesLoading || skletonLoader;
+  const isLoading = citiesLoading || skletonLoader || propertiesLoading;
+
+  const propertyCountMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    if (!properties || !Array.isArray(properties)) return map;
+
+    properties.forEach((property) => {
+      const location = (property.geoCountryLocation || "")
+        .toString()
+        .toLowerCase()
+        .trim();
+
+      cities.forEach((city: CityInfo) => {
+        const cityNameLower = city.cityName.toLowerCase();
+        if (location.includes(cityNameLower)) {
+          map[cityNameLower] = (map[cityNameLower] || 0) + 1;
+        }
+      });
+    });
+
+    return map;
+  }, [properties, cities]);
 
   const renderSkeletonLoaders = () => {
     const count = isMobile ? 2 : 6;
@@ -43,24 +99,7 @@ const PropertiesByCity: React.FC = () => {
     ));
   };
 
-  const renderCities = () => {
-    return cities.slice(0, 6).map((city) => (
-      <div key={city.cityName} className="flex flex-col items-center group">
-        <div className="relative w-32 h-32 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
-          <Image
-            src={typeof city.cityImage === "string" ? city.cityImage : ""}
-            alt={city.cityName}
-            width={800}
-            height={800}
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
-          />
-        </div>
-        <div className="text-center">
-          <h3 className="font-semibold text-lg text-gray-900 mb-1">{city.cityName}</h3>
-        </div>
-      </div>
-    ));
-  };
+  const visibleCities = (cities || []).slice(0, 6);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -74,8 +113,12 @@ const PropertiesByCity: React.FC = () => {
             </>
           ) : (
             <>
-              <h2 className="text-3xl font-bold text-gray-900">Properties by Cities</h2>
-              <p className="text-gray-600 mt-2">Aliquam lacinia diam quis lacus euismod</p>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Properties by Cities
+              </h2>
+              <p className="text-gray-600 mt-2">
+                Aliquam lacinia diam quis lacus euismod
+              </p>
             </>
           )}
         </div>
@@ -84,15 +127,18 @@ const PropertiesByCity: React.FC = () => {
           <Link href={"/seeAllCities"}>
             <button className="flex items-center text-green-500 font-semibold hover:text-green-700 transition-colors">
               See All Cities <MdArrowOutward />
-
-
             </button>
           </Link>
         )}
       </div>
 
       {/* Content */}
-      <div className={`${isMobile ? "" : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8"}`}>
+      <div
+        className={`${isMobile
+            ? ""
+            : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8"
+          }`}
+      >
         {isLoading ? (
           isMobile ? (
             <Swiper
@@ -117,12 +163,23 @@ const PropertiesByCity: React.FC = () => {
             autoplay={{ delay: 3000, disableOnInteraction: false }}
             loop={true}
           >
-            {cities.map((city) => (
-              <SwiperSlide key={city.cityName}>{renderCities().find(c => c.key === city.cityName)}</SwiperSlide>
+            {visibleCities.map((city) => (
+              <SwiperSlide key={city.cityName}>
+                <CityCard
+                  city={city}
+                  count={propertyCountMap[city.cityName.toLowerCase()] || 0}
+                />
+              </SwiperSlide>
             ))}
           </Swiper>
         ) : (
-          renderCities()
+          visibleCities.map((city) => (
+            <CityCard
+              key={city.cityName}
+              city={city}
+              count={propertyCountMap[city.cityName.toLowerCase()] || 0}
+            />
+          ))
         )}
       </div>
     </div>

@@ -12,7 +12,7 @@ import TrustedCompany from '../Components/TrustedCompany/TrustedCompany';
 import OurBlog from '../Components/OurBlog/OurBlog';
 import RegisterInfo from '../Components/RegisterInfo/RegisterInfo'
 import NextHead from '@/app/components/NextHead/NextHead';
- 
+
 
 
 export default function HomePage() {
