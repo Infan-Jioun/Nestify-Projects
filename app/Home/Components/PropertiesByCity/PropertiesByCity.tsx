@@ -22,13 +22,14 @@ type CityCardProps = {
 const CityCard: React.FC<CityCardProps> = ({ city, count }) => {
   return (
     <div className="flex flex-col items-center group">
-      <div className="relative w-44 h-44 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
+      <div className="relative w-32 h-32 mb-4 overflow-hidden rounded-full shadow-md group-hover:shadow-lg transition-shadow">
         <Image
           src={typeof city.cityImage === "string" ? city.cityImage : ""}
           alt={city.cityName}
-          width={1200}
-          height={1200}
-          className="object-cover w-44 h-44 transition-transform duration-300 group-hover:scale-110"
+          width={800}
+          height={800}
+          
+          className="object-cover w-32 h-32 transition-transform duration-300 group-hover:scale-110"
         />
       </div>
       <div className="text-center">
@@ -113,7 +114,7 @@ const PropertiesByCity: React.FC = () => {
             </>
           ) : (
             <>
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-xl text-center sm:text-left font-bold mb-1">
                 Properties by Cities
               </h2>
               <p className="text-gray-600 mt-2">
@@ -135,8 +136,8 @@ const PropertiesByCity: React.FC = () => {
       {/* Content */}
       <div
         className={`${isMobile
-            ? ""
-            : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8"
+          ? ""
+          : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8"
           }`}
       >
         {isLoading ? (

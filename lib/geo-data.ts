@@ -2057,5 +2057,300 @@ export const bangladeshGeoData: Division[] =
           ]
         }
       ]
+    },
+    {
+      "division": "Khulna",
+      "districts": [
+        {
+          "district": "Bagerhat",
+          "upazilas": [
+            {
+              "upazila": "Bagerhat Sadar",
+              "unions": ["Bagerhat Paurashava", "Baraipara", "Basantapur", "Dudhghata", "Dhopakhali", "Gotapara", "Jatrapur", "Khanpur", "Rakhalgachhi", "Shatla"]
+            },
+            {
+              "upazila": "Chitalmari",
+              "unions": ["Chitalmari", "Barabaria", "Hizla", "Kalatala", "Kanthaltali", "Khashial", "Sayestabad"]
+            },
+            {
+              "upazila": "Fakirhat",
+              "unions": ["Fakirhat", "Bahirdia", "Betaga", "Fakirhat", "Laskar", "Mulghar", "Naldha", "Paua", "Suvhadia"]
+            },
+            {
+              "upazila": "Kachua",
+              "unions": ["Kachua", "Badhal", "Gopalpur", "Kachua", "Khalishakhali", "Maghia", "Rari", "Shatla", "Teligati"]
+            },
+            {
+              "upazila": "Mollahat",
+              "unions": ["Mollahat", "Atjuri", "Chandpura", "Charkulia", "Chila", "Gangni", "Gaola", "Hoglapasha", "Kulia"]
+            },
+            {
+              "upazila": "Mongla",
+              "unions": ["Mongla Paurashava", "Burirdanga", "Chandpai", "Mithakhali", "Suniltala"]
+            },
+            {
+              "upazila": "Morrelganj",
+              "unions": ["Morrelganj", "Baraikhali", "Charkhali", "Dhansagar", "Gajir Khamar", "Khuolia", "Morrelganj", "Nishanbaria", "Panchakaran", "Rayanpur"]
+            },
+            {
+              "upazila": "Rampal",
+              "unions": ["Rampal", "Baintala", "Banshtali", "Bhojpatia", "Gourambha", "Hurka", "Mallikerber", "Perikhali", "Rajnagar", "Ujalkur"]
+            },
+            {
+              "upazila": "Sarankhola",
+              "unions": ["Sarankhola", "Dakshin Khali", "Dhansagar", "Khontakata", "Rayenda", "Sarankhola", "Shora"]
+            }
+          ]
+        },
+        {
+          "district": "Chuadanga",
+          "upazilas": [
+            {
+              "upazila": "Chuadanga Sadar",
+              "unions": ["Chuadanga Paurashava", "Alukdia", "Bangala", "Kalidashpur", "Kutubpur", "Mominpur", "Padmabila", "Shankar Chandra", "Titudah"]
+            },
+            {
+              "upazila": "Alamdanga",
+              "unions": ["Alamdanga Paurashava", "Alamdanga", "Baradi", "Belgachi", "Chithalia", "Dauki", "Gangni", "Hardi", "Kalidashpur", "Khas Karimpur", "Kumari", "Mominpur", "Parswhapa"]
+            },
+            {
+              "upazila": "Damurhuda",
+              "unions": ["Damurhuda Paurashava", "Damurhuda", "Hawli", "Karpashdanga", "Kurulgachhi", "Natipota", "Perkrishnopur Madna", "Uthali"]
+            },
+            {
+              "upazila": "Jibannagar",
+              "unions": ["Jibannagar Paurashava", "Jibannagar", "Abdalpur", "Dignagar", "Habra", "Kalam", "Mobarakpur", "Mulghar", "Naldha", "Simanta"]
+            }
+          ]
+        },
+        {
+          "district": "Jashore",
+          "upazilas": [
+            {
+              "upazila": "Jashore Sadar",
+              "unions": ["Jashore Paurashava", "Arabpur", "Basundia", "Chanchra", "Dhalgram", "Hosnagar", "Ishwaripur", "Kachua", "Kashimpur", "Lebutala", "Narikelbaria", "Noapara", "Rupdia", "Shankarpur"]
+            },
+            {
+              "upazila": "Abhaynagar",
+              "unions": ["Abhaynagar Paurashava", "Bagachra", "Bhojgati", "Brahmagram", "Darbeshpur", "Khodkomor", "Prambag", "Siddhipasha", "Sreedharpur", "Subharara"]
+            },
+            {
+              "upazila": "Bagherpara",
+              "unions": ["Bagherpara Paurashava", "Bagherpara", "Bajitpur", "Dahakula", "Dhalgram", "Kachua", "Kashimpur", "Naldha", "Narikelbaria", "Roypur"]
+            },
+            {
+              "upazila": "Chaugachha",
+              "unions": ["Chaugachha Paurashava", "Chaugachha", "Gaurighona", "Hakimpur", "Jagadishpur", "Khashial", "Kultia", "Saghata", "Sarsa"]
+            },
+            {
+              "upazila": "Jhikargachha",
+              "unions": ["Jhikargachha Paurashava", "Bankra", "Gadkhali", "Hajirbagh", "Jhikargachha", "Nabharan", "Nibaskhola", "Panisara", "Shankarpur", "Shimulia"]
+            },
+            {
+              "upazila": "Keshabpur",
+              "unions": ["Keshabpur Paurashava", "Keshabpur", "Balidia", "Gaurighona", "Keshabpur", "Majidpur", "Mollahat", "Saganna", "Trimohini"]
+            },
+            {
+              "upazila": "Manirampur",
+              "unions": ["Manirampur Paurashava", "Manirampur", "Bhojgati", "Durbadanga", "Kashimpur", "Khedapara", "Kultia", "Rohita", "Swarupdaha", "Umedpur"]
+            },
+            {
+              "upazila": "Sharsha",
+              "unions": ["Sharsha Paurashava", "Bahadurpur", "Benapole", "Dihi", "Goga", "Lakshmanpur", "Nizampur", "Putkhali", "Sharsha", "Ulshi"]
+            }
+          ]
+        },
+        {
+          "district": "Jhenaidah",
+          "upazilas": [
+            {
+              "upazila": "Jhenaidah Sadar",
+              "unions": ["Jhenaidah Paurashava", "Badiakhali", "Furshondi", "Ganna", "Ghorshal", "Halidhani", "Kangshanati", "Kumrabaria", "Madhabpur", "Naldanga", "Padmakar", "Saganna", "Surat"]
+            },
+            {
+              "upazila": "Harinakunda",
+              "unions": ["Harinakunda Paurashava", "Bhandarpara", "Fulhari", "Harinakunda", "Kashimpur", "Kola", "Kumrabaria", "Naldanga", "Raghunathpur", "Saganna"]
+            },
+            {
+              "upazila": "Kaliganj",
+              "unions": ["Kaliganj Paurashava", "Bara Bazar", "Jamal", "Kashimpur", "Kola", "Madhabpur", "Naldanga", "Raghunathpur", "Saganna", "Simla"]
+            },
+            {
+              "upazila": "Kotchandpur",
+              "unions": ["Kotchandpur Paurashava", "Baluhar", "Digholia", "Elangi", "Kotchandpur", "Kumrabaria", "Madhabpur", "Naldanga", "Saganna"]
+            },
+            {
+              "upazila": "Maheshpur",
+              "unions": ["Maheshpur Paurashava", "Azampur", "Badanpukur", "Kashimpur", "Kumrabaria", "Maheshpur", "Naldanga", "Saganna", "Shyamkur"]
+            },
+            {
+              "upazila": "Shailkupa",
+              "unions": ["Shailkupa Paurashava", "Bagora", "Dignagar", "Fulhari", "Kashimpur", "Kumrabaria", "Naldanga", "Saganna", "Shailkupa", "Trilochanpur"]
+            }
+          ]
+        },
+        {
+          "district": "Khulna",
+          "upazilas": [
+            {
+              "upazila": "Khulna Sadar",
+              "unions": ["Khulna Paurashava", "Atra", "Batiaghata", "Dakope", "Dighalia", "Dumuria", "Ghotapara", "Khalishpur", "Koyra", "Paikgachha", "Rupsha", "Terokhada"]
+            },
+            {
+              "upazila": "Batiaghata",
+              "unions": ["Batiaghata", "Amirpur", "Baliadanga", "Batiaghata", "Gangarampur", "Jalma", "Surkhali"]
+            },
+            {
+              "upazila": "Dacope",
+              "unions": ["Dacope", "Bajua", "Dacope", "Kamarkhola", "Khalishpur", "Laudoba", "Pankhali", "Sutarkhali"]
+            },
+            {
+              "upazila": "Dumuria",
+              "unions": ["Dumuria", "Atra", "Dhamalia", "Dumuria", "Ghotapara", "Magurkhali", "Raruli", "Rudaghora", "Sahos"]
+            },
+            {
+              "upazila": "Dighalia",
+              "unions": ["Dighalia", "Aichgati", "Dighalia", "Gazirhat", "Senhati"]
+            },
+            {
+              "upazila": "Koyra",
+              "unions": ["Koyra", "Amadi", "Bagali", "Koyra", "Maharajpur", "Maheshwaripur", "North Bedkashi", "South Bedkashi"]
+            },
+            {
+              "upazila": "Paikgachha",
+              "unions": ["Paikgachha", "Chandkhali", "Garaikhali", "Haridhali", "Kapilmuni", "Katipara", "Laskar", "Paikgachha", "Raruli", "Soladana"]
+            },
+            {
+              "upazila": "Phultala",
+              "unions": ["Phultala", "Damodar", "Phultala", "Siramani"]
+            },
+            {
+              "upazila": "Rupsha",
+              "unions": ["Rupsha", "Aichgati", "Ghatvog", "Rupsha", "T.S.B", "Ujalkur"]
+            },
+            {
+              "upazila": "Terokhada",
+              "unions": ["Terokhada", "Aichgati", "Barasat", "Madhupur", "Magurkhali", "Raruli", "Terokhada"]
+            }
+          ]
+        },
+        {
+          "district": "Kushtia",
+          "upazilas": [
+            {
+              "upazila": "Kushtia Sadar",
+              "unions": ["Kushtia Paurashava", "Amla", "Barakhada", "Goswami Durgapur", "Harinarayanpur", "Hatas Haripur", "Jhaudia", "Kushtia", "Panti", "Ujangram"]
+            },
+            {
+              "upazila": "Bheramara",
+              "unions": ["Bheramara Paurashava", "Bheramara", "Bahadurpur", "Chandgram", "Dharampur", "Gobra", "Jantipa", "Majhpara", "Tagarbanda"]
+            },
+            {
+              "upazila": "Daulatpur",
+              "unions": ["Daulatpur Paurashava", "Daulatpur", "Adabaria", "Aralia", "Boalia", "Hogolbaria", "Khalishakundi", "Mothurapur", "Parila"]
+            },
+            {
+              "upazila": "Khoksa",
+              "unions": ["Khoksa Paurashava", "Khoksa", "Ambaria", "Gopgram", "Janipur", "Jessha", "Narayanpur", "Osmanpur", "Samaspur"]
+            },
+            {
+              "upazila": "Kumarkhali",
+              "unions": ["Kumarkhali Paurashava", "Kumarkhali", "Bagulat", "Chandpur", "Haramnagar", "Jhaudia", "Kaya", "Nimaichara", "Panti", "Sadaki", "Saganna"]
+            },
+            {
+              "upazila": "Mirpur",
+              "unions": ["Mirpur Paurashava", "Mirpur", "Ambaria", "Bahalbaria", "Baliadanga", "Bhangabari", "Bramharajpur", "Khattabari", "Kumarkhali", "Poradaha", "Safapur"]
+            }
+          ]
+        },
+        {
+          "district": "Magura",
+          "upazilas": [
+            {
+              "upazila": "Magura Sadar",
+              "unions": ["Magura Paurashava", "Atharokhada", "Bagia", "Birahimpur", "Chaulia", "Gopalgram", "Hazrapur", "Jagdal", "Kasundi", "Kuchiamora", "Magura", "Raghobdair", "Satrijitpur"]
+            },
+            {
+              "upazila": "Mohammadpur",
+              "unions": ["Mohammadpur Paurashava", "Babukhali", "Baliadanga", "Bhatra", "Digha", "Gayeshpur", "Hazrapur", "Jagannathpur", "Kashimpur", "Kazibadha", "Mohammadpur", "Nohata", "Rani"]
+            },
+            {
+              "upazila": "Shalikha",
+              "unions": ["Shalikha Paurashava", "Babra", "Balidia", "Dhaneshwargati", "Gangarampur", "Gayeshpur", "Kashimpur", "Kuchiamora", "Naldanga", "Shatakhali", "Shaturia", "Tentulbaria"]
+            },
+            {
+              "upazila": "Sreepur",
+              "unions": ["Sreepur Paurashava", "Amalsar", "Balidia", "Dariapur", "Gajna", "Kashimpur", "Kuchiamora", "Magura", "Naldanga", "Saturia", "Sreepur", "Tentulbaria"]
+            }
+          ]
+        },
+        {
+          "district": "Meherpur",
+          "upazilas": [
+            {
+              "upazila": "Meherpur Sadar",
+              "unions": ["Meherpur Paurashava", "Amdah", "Amjhupi", "Buripota", "Kutubpur", "Mojampur", "Pirojpur", "Sannasirchar"]
+            },
+            {
+              "upazila": "Gangni",
+              "unions": ["Gangni Paurashava", "Bamondi", "Dhankhola", "Gangni", "Kashimpur", "Kazipur", "Matmara", "Shaharbati", "Tentulbaria"]
+            },
+            {
+              "upazila": "Mujibnagar",
+              "unions": ["Mujibnagar Paurashava", "Bamondi", "Dhankhola", "Kashimpur", "Kazipur", "Matmara", "Mujibnagar", "Shaharbati", "Tentulbaria"]
+            }
+          ]
+        },
+        {
+          "district": "Narail",
+          "upazilas": [
+            {
+              "upazila": "Narail Sadar",
+              "unions": ["Narail Paurashava", "Auria", "Banshgram", "Bichhali", "Chandiborpur", "Habakhali", "Kalora", "Maijpara", "Mulia", "Sahabad", "Srikol", "Teguaria"]
+            },
+            {
+              "upazila": "Kalia",
+              "unions": ["Kalia Paurashava", "Babra", "Baliadanga", "Chandiborpur", "Kalia", "Kashimpur", "Maijpara", "Mulia", "Narail", "Panthapara", "Shatakhali"]
+            },
+            {
+              "upazila": "Lohagara",
+              "unions": ["Lohagara Paurashava", "Itna", "Joypur", "Kashimpur", "Lohagara", "Naldi", "Noagram", "Salnagar", "Shatakhali", "Tala"]
+            }
+          ]
+        },
+        {
+          "district": "Satkhira",
+          "upazilas": [
+            {
+              "upazila": "Satkhira Sadar",
+              "unions": ["Satkhira Paurashava", "Balli", "Bhomra", "Brahmaraj", "Fingri", "Jhaudanga", "Kushlia", "Nalta", "Ratanpur", "Tarali"]
+            },
+            {
+              "upazila": "Assasuni",
+              "unions": ["Assasuni Paurashava", "Anulia", "Assasuni", "Badkhali", "Durgapur", "Kadakati", "Khashial", "Khajra", "Kulla", "Pratapnagar", "Sobhnali", "Sreeula"]
+            },
+            {
+              "upazila": "Debhata",
+              "unions": ["Debhata Paurashava", "Debhata", "Kulia", "Noapara", "Parulia", "Sakhipur", "Zafarabad"]
+            },
+            {
+              "upazila": "Kalaroa",
+              "unions": ["Kalaroa Paurashava", "Chandanpur", "Jallabad", "Kalaroa", "Khordo", "Murarikati", "Nagarghata", "Sreeula", "Vabodaha"]
+            },
+            {
+              "upazila": "Kaliganj",
+              "unions": ["Kaliganj Paurashava", "Bhara Simla", "Champaphul", "Dakshin Sreepur", "Jhaudanga", "Kashimari", "Kushlia", "Magura", "Nalta", "Ratanpur", "Tarali"]
+            },
+            {
+              "upazila": "Shyamnagar",
+              "unions": ["Shyamnagar Paurashava", "Atulia", "Burigoalini", "Gabura", "Ishwaripur", "Kaikhali", "Kashimari", "Munshiganj", "Nurnagar", "Padmapukur", "Ramjannagar"]
+            },
+            {
+              "upazila": "Tala",
+              "unions": ["Tala Paurashava", "Jhaudanga", "Khalishkhali", "Khesra", "Kumira", "Magura", "Nagarghata", "Sarulia", "Tala", "Tentulbaria"]
+            }
+          ]
+        }
+      ]
     }
   ]
