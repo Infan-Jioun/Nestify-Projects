@@ -8,6 +8,7 @@ import Image from "next/image";
 import { MapPin, Building2, ArrowRight } from "lucide-react";
 import { fetchProperties } from "@/app/features/Properties/propertySlice";
 import { CityInfo } from "@/lib/CityInfo";
+import Link from "next/link";
 
 export default function SeeAllCities() {
     const dispatch = useDispatch<AppDispatch>();
@@ -145,10 +146,12 @@ export default function SeeAllCities() {
                             </div>
 
                             {/* Action Button */}
-                            <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center group/btn">
-                                <span>View Properties</span>
-                                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
-                            </button>
+                            <Link href={`/DetailsCity?city=${city.cityName}`}>
+                                <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center group/btn">
+                                    <span>View Properties</span>
+                                    <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                                </button>
+                            </Link>
                         </div>
 
                         {/* Hover Effect Border */}
