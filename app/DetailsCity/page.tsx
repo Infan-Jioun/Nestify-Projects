@@ -1,11 +1,16 @@
 "use client";
 import React from 'react'
 import DetailsCityProperty from '../components/DetailsCityProperty/DetailsCityProperty'
-
-export default function DetailsCityPage({params} : {params: {city: string}}) {
+interface DetailsCityPageProps {
+  params : {
+    city: string
+  }
+}
+export default function DetailsCityPage({params} : DetailsCityPageProps) {
+  const city = params.city
   return (
     <div>
-      <DetailsCityProperty city={params.city}  />
+      <DetailsCityProperty city={city}  />
     </div>
   )
 }
