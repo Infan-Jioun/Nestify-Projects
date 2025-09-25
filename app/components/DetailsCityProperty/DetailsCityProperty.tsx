@@ -8,14 +8,11 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { fetchProperties } from "@/app/features/Properties/propertySlice";
 import { useSearchParams } from "next/navigation";
 
-export default function DetailsCityProperty() {
+export default function DetailsCityProperty({ city }: { city: string }) {
     const dispatch = useDispatch<AppDispatch>();
     const { properties, loading, error } = useSelector(
         (state: RootState) => state.properties
     );
-
-    const searchParams = useSearchParams();
-    const city = searchParams.get("city");
 
     useEffect(() => {
         dispatch(fetchProperties());

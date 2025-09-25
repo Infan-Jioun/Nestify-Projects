@@ -2,10 +2,10 @@
 import React from 'react'
 import DetailsCityProperty from '../components/DetailsCityProperty/DetailsCityProperty'
 
-export default function DetailsPage() {
+export default function DetailsCityPage({params} : {params: {city: string}}) {
   return (
     <div>
-      <DetailsCityProperty />
+      <DetailsCityProperty city={params.city}  />
     </div>
   )
 }
