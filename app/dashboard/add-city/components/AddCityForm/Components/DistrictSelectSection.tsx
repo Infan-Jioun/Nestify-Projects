@@ -12,19 +12,19 @@ import {
 } from "@/components/ui/select";
 import { Controller } from "react-hook-form";
 import { bangladeshGeoData } from "@/lib/geo-data";
-import { CityInfo } from "@/lib/CityInfo";
 import { Control, FieldErrors } from "react-hook-form";
+import { DistrictInfo } from "@/lib/districtInfo";
 
-type CityInfopProps = {
-    control: Control<CityInfo>;
-    errors?: FieldErrors<CityInfo>;
+type DistrictInfoProps = {
+    control: Control<DistrictInfo>;
+    errors?: FieldErrors<DistrictInfo>;
 };
 
-export default function CitySelectSection({ control, errors }: CityInfopProps) {
+export default function DistrictSelectSection({ control, errors }: DistrictInfoProps) {
     return (
         <div className="mt-5">
             <Controller
-                name="cityName"
+                name="districtName"
                 control={control}
                 rules={{ required: "City name is required" }}
                 render={({ field }) => (
@@ -50,8 +50,8 @@ export default function CitySelectSection({ control, errors }: CityInfopProps) {
                     </Select>
                 )}
             />
-            {errors?.cityName && (
-                <p className="text-red-500 text-sm">{errors.cityName.message}</p>
+            {errors?.districtName && (
+                <p className="text-red-500 text-sm">{errors.districtName.message}</p>
             )}
         </div>
     );

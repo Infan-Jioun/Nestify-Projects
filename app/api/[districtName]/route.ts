@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
     await connectToDatabase();
     try {
-        const cityName = req.nextUrl.searchParams.get("city");
+        const districtName = req.nextUrl.searchParams.get("district");
         let query = {};
-        if (cityName) {
-            query = { geoCountryLocation: { $regex: new RegExp(`^${cityName}$`, 'i') } };
+        if (districtName) {
+            query = { geoCountryLocation: { $regex: new RegExp(`^${districtName}$`, 'i') } };
         }
         const properties = await Property.find(query);
         return NextResponse.json(properties, { status: 200 });

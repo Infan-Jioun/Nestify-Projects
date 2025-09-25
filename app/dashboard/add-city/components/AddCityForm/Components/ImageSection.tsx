@@ -3,17 +3,17 @@
 import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { CityInfo } from "@/lib/CityInfo";
+import { DistrictInfo } from "@/lib/districtInfo";
 import { Input } from "@/components/ui/input";
 import { useEffect } from "react";
 
 
-type CityImageProps = {
-    register: UseFormRegister<CityInfo>;
-    setValue: UseFormSetValue<CityInfo>;
+type DistrictImageProps = {
+    register: UseFormRegister<DistrictInfo>;
+    setValue: UseFormSetValue<DistrictInfo>;
 };
 
-export default function ImageSection({ register, setValue }: CityImageProps) {
+export default function ImageSection({ register, setValue }: DistrictImageProps) {
     const maxSizeMB = 5;
     const maxSize = maxSizeMB * 1024 * 1024;
 
@@ -36,7 +36,7 @@ export default function ImageSection({ register, setValue }: CityImageProps) {
             .map(f => f.file)
             .filter((f): f is File => f instanceof File)
 
-        setValue("cityImage", fileList[0] || null, { shouldValidate: true });
+        setValue("districtImage", fileList[0] || null, { shouldValidate: true });
     }, [files, setValue])
 
     return (

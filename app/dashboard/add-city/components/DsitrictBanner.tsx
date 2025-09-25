@@ -10,7 +10,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel"
 import Skeleton from "react-loading-skeleton"
-import "react-loading-skeleton/dist/skeleton.css"
+// import "react-loading-skeleton/dist/skeleton.css"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/lib/store"
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice"
@@ -38,7 +38,7 @@ const banners = [
     },
 ]
 
-export default function CityBanner() {
+export default function DistrictBanner() {
     const [current, setCurrent] = React.useState(0)
     const dispatch = useDispatch<AppDispatch>();
     const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);

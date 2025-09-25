@@ -1,6 +1,7 @@
 import React from 'react'
-import CityBanner from './components/CityBanner'
-import AddCityForm from './components/AddCityForm/AddCityForm'
+import AddDistrictForm from './components/AddCityForm/AddDistrictForm'
+import DistrictBanner from './components/DsitrictBanner'
+
 
 export default function AddCity() {
     return (
@@ -8,12 +9,12 @@ export default function AddCity() {
 
             {/* Banner Section */}
             <div className="max-w-7xl mx-auto">
-                <CityBanner />
+                <DistrictBanner />
             </div>
 
             {/* Form Section */}
             <div className=" mx-auto mt-8 md:mt-12">
-                <AddCityForm />
+                <AddDistrictForm />
             </div>
         </div>
     )

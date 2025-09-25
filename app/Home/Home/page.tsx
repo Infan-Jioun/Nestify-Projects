@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Banner from '../Components/Banner/Banner'
-import PropertiesByCity from '../Components/PropertiesByCity/PropertiesByCity';
 import PopularProperties from '../Components/PopularProperties/PopularProperties';
 import BannerService from '../Components/BannerServices/BannerService'
 import ApartmentTypes from '../Components/ApartmentTypes/ApartmentTypes';
@@ -12,6 +11,7 @@ import TrustedCompany from '../Components/TrustedCompany/TrustedCompany';
 import OurBlog from '../Components/OurBlog/OurBlog';
 import RegisterInfo from '../Components/RegisterInfo/RegisterInfo'
 import NextHead from '@/app/components/NextHead/NextHead';
+import PropertiesByDistrict from '../Components/PropertiesByDistrict/PropertiesByDistrict';
 
 
 
@@ -21,7 +21,7 @@ export default function HomePage() {
     <div>
       <NextHead title='Nestify' />
       <Banner />
-      <PropertiesByCity />
+      <PropertiesByDistrict />
       <PopularProperties />
       <BannerService />
       <ApartmentTypes />

@@ -1,9 +1,9 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import CitySelectSection from "./Components/CitySelectSection";
+import DistrictSelectSection from "./Components/DistrictSelectSection";
 import ImageSection from "./Components/ImageSection";
-import { CityInfo } from "@/lib/CityInfo";
+import { DistrictInfo } from "@/lib/districtInfo";
 import { Button } from "@/components/ui/button";
 import { imageUpload } from "@/hooks/useImageUpload";
 import axios from "axios";
@@ -14,7 +14,7 @@ import { Loader } from "lucide-react";
 import { setButtonLoader } from "@/app/features/loader/loaderSlice";
 import { useRouter } from "next/navigation";
 
-export default function AddCityForm() {
+export default function AddDistrictForm() {
     const {
         register,
         handleSubmit,
@@ -22,38 +22,38 @@ export default function AddCityForm() {
         control,
         reset,
         formState: { errors },
-    } = useForm<CityInfo>();
+    } = useForm<DistrictInfo>();
 const router = useRouter();
     const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
     const dispatch = useDispatch<AppDispatch>();
 
-    const onSubmit = async (data: CityInfo) => {
+    const onSubmit = async (data: DistrictInfo) => {
         dispatch(setButtonLoader(true));
         try {
             let imageUrl = "";
 
-            if (data.cityImage instanceof File) {
-                const uploadRes = await imageUpload(data.cityImage);
+            if (data.districtImage instanceof File) {
+                const uploadRes = await imageUpload(data.districtImage);
                 imageUrl = uploadRes.data.url;
-            } else if (typeof data.cityImage === "string") {
-                imageUrl = data.cityImage;
+            } else if (typeof data.districtImage === "string") {
+                imageUrl = data.districtImage;
             }
 
             const payload = {
-                cityName: data.cityName.trim(),
-                cityImage: imageUrl,
+                districtName: data.districtName.trim(),
+                districtImage: imageUrl,
             };
 
-            const res = await axios.post("/api/addCity", payload);
-            toast.success("City added successfully!");
+            const res = await axios.post("/api/addDistrict", payload);
+            toast.success("District added successfully!");
             reset();
-            router.push("/seeAllCities");
+            router.push("/SeeAllDistrict");
             if (res.status === 200) {
-                console.log("City Added:", res.data);
+                console.log("District Added:", res.data);
             }
         } catch (error) {
-            console.error("City Add Error:", error);
-            toast.error("Failed to add city. Try again.");
+            console.error("District Add Error:", error);
+            toast.error("Failed to add District. Try again.");
         } finally {
             dispatch(setButtonLoader(false));
         }
@@ -63,7 +63,7 @@ const router = useRouter();
         <div className="border-t-4  ">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-7">
                 <ImageSection register={register} setValue={setValue} />
-                <CitySelectSection control={control} errors={errors} />
+                <DistrictSelectSection control={control} errors={errors} />
 
                 <Button
                     type="submit"
@@ -80,7 +80,7 @@ const router = useRouter();
                     {buttonLoader ? (
                         <Loader className="animate-spin w-5 h-5" />
                     ) : (
-                        "Add City"
+                        "Add District"
                     )}
                 </Button>
             </form>
