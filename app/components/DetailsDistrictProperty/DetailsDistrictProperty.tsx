@@ -6,17 +6,16 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { fetchProperties } from "@/app/features/Properties/propertySlice";
 import PropertyCard from "@/app/components/PropertyCard/PropertyCard";
 import { PropertyType } from "@/app/Types/properties";
-import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 
 export default function DetailsDistrictProperty({ district }: { district: string }) {
   const dispatch = useDispatch<AppDispatch>();
   const { properties, loading, error } = useSelector(
     (state: RootState) => state.properties
   );
-  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const { skletonLoader } = useSelector((state: RootState) => state.loader);
+
   useEffect(() => {
     dispatch(fetchProperties());
-    dispatch(setSkletonLoader(true));
   }, [dispatch]);
 
   const props: PropertyType[] = Array.isArray(properties) ? properties : [];
