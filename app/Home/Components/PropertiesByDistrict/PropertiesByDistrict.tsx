@@ -21,7 +21,8 @@ type DistrictCardProps = {
 
 const DistrictCard: React.FC<DistrictCardProps> = ({ district, count }) => {
   const districtName = district.districtName || "";
-  const districtImage = typeof district.districtImage === "string" ? district.districtImage : "";
+  const districtImage =
+    typeof district.districtImage === "string" ? district.districtImage : "";
 
   return (
     <div className="flex flex-col items-center group">
@@ -35,7 +36,9 @@ const DistrictCard: React.FC<DistrictCardProps> = ({ district, count }) => {
         />
       </div>
       <div className="text-center">
-        <h3 className="font-semibold text-lg text-gray-900 mb-1">{districtName}</h3>
+        <h3 className="font-semibold text-lg text-gray-900 mb-1">
+          {districtName || "Unavailable district"}
+        </h3>
         <p className="text-sm text-gray-600">{count} Properties</p>
       </div>
     </div>
@@ -50,7 +53,9 @@ const PropertiesByDistrict: React.FC = () => {
   const { properties, loading: propertiesLoading } = useSelector(
     (state: RootState) => state.properties
   );
-  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const skletonLoader = useSelector(
+    (state: RootState) => state.loader.skletonLoader
+  );
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -78,7 +83,7 @@ const PropertiesByDistrict: React.FC = () => {
 
       (districtList || []).forEach((district) => {
         const districtName = district.districtName;
-        if (!districtName) return; // skip undefined/null
+        if (!districtName) return;
         const districtNameLower = districtName.toLowerCase();
         if (location.includes(districtNameLower)) {
           map[districtNameLower] = (map[districtNameLower] || 0) + 1;
@@ -117,12 +122,14 @@ const PropertiesByDistrict: React.FC = () => {
               <h2 className="text-xl text-center sm:text-left font-bold mb-1">
                 Properties by district
               </h2>
-              <p className="text-gray-600 mt-2">Aliquam lacinia diam quis lacus euismod</p>
+              <p className="text-gray-600 mt-2">
+                Aliquam lacinia diam quis lacus euismod
+              </p>
             </>
           )}
         </div>
 
-        {!isLoading && (
+        {!isLoading && districtList?.length > 0 && (
           <Link href={"/SeeAllDistrict"}>
             <button className="flex items-center text-green-500 font-semibold hover:text-green-700 transition-colors">
               See All district <MdArrowOutward />
@@ -133,7 +140,9 @@ const PropertiesByDistrict: React.FC = () => {
 
       {/* Content */}
       <div
-        className={`${isMobile ? "" : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8"
+        className={`${isMobile
+          ? ""
+          : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8"
           }`}
       >
         {isLoading ? (
@@ -152,6 +161,10 @@ const PropertiesByDistrict: React.FC = () => {
           ) : (
             renderSkeletonLoaders()
           )
+        ) : districtList?.length === 0 ? (
+          <p className="text-center text-gray-500 col-span-full">
+            Unavailable district
+          </p>
         ) : isMobile ? (
           <Swiper
             modules={[Autoplay]}
@@ -166,7 +179,9 @@ const PropertiesByDistrict: React.FC = () => {
                 <SwiperSlide key={districtName}>
                   <DistrictCard
                     district={district}
-                    count={propertyCountMap[districtName.toLowerCase()] || 0}
+                    count={
+                      propertyCountMap[districtName.toLowerCase()] || 0
+                    }
                   />
                 </SwiperSlide>
               );
@@ -182,7 +197,9 @@ const PropertiesByDistrict: React.FC = () => {
               >
                 <DistrictCard
                   district={district}
-                  count={propertyCountMap[districtName.toLowerCase()] || 0}
+                  count={
+                    propertyCountMap[districtName.toLowerCase()] || 0
+                  }
                 />
               </Link>
             );
