@@ -89,7 +89,7 @@ export default function PopularProperties() {
             <PropertyCardSkeleton key={index} />
           ))
         ) : filteredProperties.length > 0 ? (
-          // Show actual properties when loaded
+          
           filteredProperties.map((property) => (
             <PropertyCard
               key={property._id}
