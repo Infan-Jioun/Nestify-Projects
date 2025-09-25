@@ -28,7 +28,7 @@ const CityCard: React.FC<CityCardProps> = ({ city, count }) => {
           alt={city.cityName}
           width={800}
           height={800}
-          
+
           className="object-cover w-32 h-32 transition-transform duration-300 group-hover:scale-110"
         />
       </div>
@@ -175,11 +175,13 @@ const PropertiesByCity: React.FC = () => {
           </Swiper>
         ) : (
           visibleCities.map((city) => (
-            <CityCard
-              key={city.cityName}
-              city={city}
-              count={propertyCountMap[city.cityName.toLowerCase()] || 0}
-            />
+            <Link href={`/DetailsCity?city=${city.cityName}`} key={city.cityName}>
+              <CityCard
+                key={city.cityName}
+                city={city}
+                count={propertyCountMap[city.cityName.toLowerCase()] || 0}
+              />
+            </Link>
           ))
         )}
       </div>
