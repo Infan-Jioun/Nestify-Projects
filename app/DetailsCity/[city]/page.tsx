@@ -1,6 +1,6 @@
 "use client";
 import React from 'react'
-import DetailsCityProperty from '../components/DetailsCityProperty/DetailsCityProperty'
+import DetailsCityProperty from '../../components/DetailsCityProperty/DetailsCityProperty'
 interface DetailsCityPageProps {
   params : {
     city: string
