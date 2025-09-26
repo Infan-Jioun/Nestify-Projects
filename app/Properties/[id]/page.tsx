@@ -17,7 +17,7 @@ import { fetchPropertyById } from "@/app/features/Properties/propertySlice";
 import { PropertyType } from "@/app/Types/properties";
 import ShareButton from "./components/ShareButton";
 import { Field, propertyCategoryData } from "@/lib/proprtyCategory";
-
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://nestify-projects.vercel.app"
 // Skeleton Loader Component
 const SkeletonLoader = () => {
     return (
@@ -190,7 +190,7 @@ const getFeatureIcons = (property: PropertyType) => {
 const getPropertyDetails = (property: PropertyType) => {
     const categoryFields = getCategorySpecificFields(property);
 
-  
+
     const categoryDetails = categoryFields.map(field => ({
         label: field.label,
         value: property[field.name as keyof PropertyType]?.toString() || "N/A"
@@ -498,7 +498,7 @@ export default function PropertyDetailsPage() {
                             whileTap={{ scale: 0.95 }}
                         >
                             <ShareButton
-                                url={`${process.env.NEXT_PUBLIC_BASE_URL}/Properties/${property._id}`}
+                                url={`${baseUrl}/Properties/${property._id}`}
                                 title={`${property.title} - ${property.category?.name || "Property"}`}
                             />
                         </motion.button>
