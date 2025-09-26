@@ -3,8 +3,6 @@ import React, { useRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,32 +12,37 @@ const apartmentData = [
   {
     title: "Apartments",
     subtitle: "20 Properties",
-    image: "https://i.ibb.co/pj35Qbjb/image-1.webp",
+    image: "https://i.ibb.co/F4B27j7m/Apartment-3.jpg",
   },
   {
-    title: "Office",
+    title: "Office Space",
     subtitle: "34 Properties",
-    image: "https://i.ibb.co/ks6vMKY3/Image-2.webp",
-  },
-  {
-    title: "Villa",
-    subtitle: "42 Properties",
-    image: "https://i.ibb.co/mF08HD2T/Image-3.webp",
+    image: "https://i.ibb.co/XZY199mw/Image-1.jpg",
   },
   {
     title: "House",
     subtitle: "18 Properties",
-    image: "https://i.ibb.co/YBGd2FkP/Image-4.webp",
+    image: "https://i.ibb.co/n8Y1h3sZ/Bedrooms-4-Prompt-A-semi-furnished-modern-bedroom-with-a-double-bed-wardrobe-and-bedside-table-Cozy.jpg",
   },
   {
-    title: "Apartments",
+    title: "Duplex",
     subtitle: "52 Properties",
-    image: "https://i.ibb.co/xS82zC52/Image-5.webp",
+    image: "https://i.ibb.co/VcMtQyjD/Image-1.jpg",
   },
   {
-    title: "Apartments",
+    title: "Land",
     subtitle: "14 Properties",
-    image: "https://i.ibb.co/xS82zC52/Image-5.webp",
+    image: "https://i.ibb.co/W4p8pdvY/land-1.jpg",
+  },
+  {
+    title: "Shop",
+    subtitle: "14 Properties",
+    image: "https://i.ibb.co/fmdmZCq/Image-2.jpg",
+  },
+  {
+    title: "Warahouse",
+    subtitle: "14 Properties",
+    image: "https://i.ibb.co/fmdmZCq/Image-2.jpg",
   },
 ];
 
@@ -86,10 +89,10 @@ export default function ApartmentTypes() {
           ) : (
             <>
               <h2 className="text-xl text-center sm:text-left font-bold mb-1">
-                Explore Apartment Types
+                Explore Property Types
               </h2>
               <p className="text-gray-500 text-center sm:text-left">
-                Aliquam lacinia diam quis lacus euismod
+              {"Find apartments, houses, and commercial spaces that match your lifestyle."}
               </p>
             </>
           )}
@@ -162,8 +165,8 @@ export default function ApartmentTypes() {
                 <Image
                   src={item.image}
                   alt={item.title}
-                  width={400}
-                  height={300}
+                  width={500}
+                  height={500}
                   className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className="p-4">
