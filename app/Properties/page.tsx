@@ -1,12 +1,16 @@
-"use client"
-import React from 'react'
-import PropertiesHeadPage from './Components/PropertiesHeadPage'
-import { connection } from 'next/server'
+import React from "react";
+import connectToDatabase from "@/lib/mongodb";
+import PropertiesHeadClient from "./PropertiesHeadClient/PropertiesHeadClient";
+import { PropertySchemaType } from "@/app/models/properties";
 
+export default async function ServerProperties() {
+
+  const properties = await connectToDatabase();
   
-export default async function  PropertiesPageRoute() {
- await connection()
-  return (
-    <div><PropertiesHeadPage/></div>
-  )
+ 
+  const serverProperties: PropertySchemaType[] = Array.isArray(properties) 
+    ? properties 
+    : [];
+
+  return <PropertiesHeadClient serverProperties={serverProperties} />;
 }
