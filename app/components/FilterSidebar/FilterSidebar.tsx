@@ -32,7 +32,6 @@ import {
     setCurrency,
 } from "@/app/features/filter/filterSlice";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";

@@ -25,9 +25,11 @@ import Pagination from "../components/PropertyCard/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Grid3X3, List, MapPin, Home, FilterX, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { fetchDistrict } from "../features/district/districtSlice";
 
 export default function PropertiesPage() {
   const dispatch = useDispatch<AppDispatch>();
+  const { district: districts } = useSelector((state: RootState) => state.district);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -56,6 +58,7 @@ export default function PropertiesPage() {
 
   useEffect(() => {
     dispatch(fetchProperties());
+    dispatch(fetchDistrict());
   }, [dispatch]);
 
   useEffect(() => {
@@ -227,7 +230,7 @@ export default function PropertiesPage() {
                 <MapPin size={18} />
               </div>
               <div>
-                <p className="text-2xl font-semibold">25+</p>
+                <p className="text-2xl font-semibold">{districts.length}+</p>
                 <p className=" text-sm">Locations</p>
               </div>
             </div>
