@@ -1,34 +1,19 @@
-
 import Property from '@/app/models/properties';
 import connectToDatabase from '@/lib/mongodb';
 import { NextRequest, NextResponse } from 'next/server';
-
-type Params = { 
-  params: { 
-    id: string 
-  } 
-};
-
-export async function GET(req: NextRequest, { params }: Params) {
-  await connectToDatabase();
-  
-  try {
-    const property = await Property.findById(params.id);
-    
-    if (!property) {
-      return NextResponse.json(
-        { message: "Property not found" }, 
-        { status: 404 }
-      );
+export async function GET(req: NextRequest) {
+    await connectToDatabase();
+    try {
+        const id = req.nextUrl.searchParams.get("id");
+        let query = {};
+        if (id) {
+            query = { geoCountryLocation: { $regex: new RegExp(`^${id}$`, 'i') } };
+        }
+        const properties = await Property.find(query);
+        return NextResponse.json(properties, { status: 200 });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ message: "Failed to fetch properties" }, { status: 500 });
     }
-    
-    return NextResponse.json(property, { status: 200 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { message: "Failed to fetch property" }, 
-      { status: 500 }
-    );
-  }
-}
 
+} 
