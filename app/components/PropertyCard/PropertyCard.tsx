@@ -1,4 +1,4 @@
-// components/PropertyCard/PropertyCard.tsx
+
 "use client";
 
 import React, { useState } from "react";
@@ -9,7 +9,6 @@ import { deleteProperty } from "@/app/features/Properties/propertySlice";
 import { AppDispatch } from "@/lib/store";
 import DeleteConfirmation from "./DeletedConfirmation";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { FaBookmark, FaInfoCircle, FaBed, FaBath, FaRulerCombined } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Carousal from "../Carousal/Carousal";

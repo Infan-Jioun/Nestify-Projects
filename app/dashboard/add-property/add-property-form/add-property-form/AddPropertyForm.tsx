@@ -27,7 +27,6 @@ import MultiSeclectService from "../Components/MultiSeclectService/MultiSeclectS
 import { useRouter } from "next/navigation";
 import ListingStatus from "../Components/ListingStatus/ListingStatus";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 // Skeleton Loader Components
 const ImageSectionSkeleton = () => (
