@@ -202,7 +202,7 @@ const getPropertyDetails = (property: PropertyType) => {
         { label: "Status", value: property.status },
         { label: "Listing Status", value: property.listingStatus },
         { label: "Address", value: property.address },
-        { label: "Location", value: property.geoCountryLocation }
+   
     ];
 
     return [...categoryDetails, ...commonDetails];
