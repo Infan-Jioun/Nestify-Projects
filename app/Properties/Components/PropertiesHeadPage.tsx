@@ -32,7 +32,7 @@ import { FilterSidebar } from "@/app/components/FilterSidebar/FilterSidebar";
 import PropertyCard from "@/app/components/PropertyCard/PropertyCard";
 
 
-export default function PropertiesPage() {
+export default function PropertiesHeadPage() {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
   const { district: districts } = useSelector((state: RootState) => state.district);

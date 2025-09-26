@@ -1,10 +1,10 @@
 "use client"
 import React from 'react'
-import PropertiesPage from './Components/PropertiesPage'
+import PropertiesHeadPage from './Components/PropertiesHeadPage'
 
 
 export default function PropertiesPageRoute() {
   return (
-    <div><PropertiesPage/></div>
+    <div><PropertiesHeadPage/></div>
   )
 }
