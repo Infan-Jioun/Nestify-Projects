@@ -28,6 +28,7 @@ import Link from "next/link";
 import { AppDispatch, RootState } from "@/lib/store";
 import { fetchPropertyById } from "@/app/features/Properties/propertySlice";
 import { PropertyType } from "@/app/Types/properties";
+import ShareButton from "./components/ShareButton";
 
 
 
@@ -490,10 +491,7 @@ export default function PropertyDetailsPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            <Button variant="outline" size="sm" className="flex items-center">
-                                <Share2 size={18} className="mr-1" />
-                                Share
-                            </Button>
+                            <ShareButton url={`${process.env.NEXT_PUBLIC_BASE_URL}/properties/${property._id}`} />
                         </motion.button>
                     </div>
                 </div>
