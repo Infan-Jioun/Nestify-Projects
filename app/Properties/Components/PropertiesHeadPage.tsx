@@ -40,10 +40,9 @@ export default function PropertiesHeadPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Get category from URL parameters
+
   const categoryParam = searchParams.get('category');
 
-  // Redux states
   const { properties, loading, error } = useSelector(
     (state: RootState) => state.properties
   );
