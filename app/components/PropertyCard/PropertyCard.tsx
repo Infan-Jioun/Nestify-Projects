@@ -9,7 +9,7 @@ import { deleteProperty } from "@/app/features/Properties/propertySlice";
 import { AppDispatch } from "@/lib/store";
 import DeleteConfirmation from "./DeletedConfirmation";
 import Skeleton from "react-loading-skeleton";
-import { FaBookmark, FaInfoCircle, FaBed, FaBath, FaRulerCombined } from "react-icons/fa";
+import { FaBookmark, FaInfoCircle} from "react-icons/fa";
 import { motion } from "framer-motion";
 import Carousal from "../Carousal/Carousal";
 import { cn } from "@/lib/utils";
