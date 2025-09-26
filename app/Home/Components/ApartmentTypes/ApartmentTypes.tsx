@@ -170,14 +170,14 @@ export default function ApartmentTypes() {
 
       {/* Swiper Section */}
       {loading || skletonLoader ? (
-        // Skeleton loader for the swiper
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-10">
           {Array.from({ length: 5 }).map((_, index) => (
             <SkeletonSlide key={index} />
           ))}
         </div>
       ) : apartmentData.length === 0 ? (
-        // Show message when no properties found
+        
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">
             No property categories available
