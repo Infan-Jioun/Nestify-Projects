@@ -1,7 +1,7 @@
 import { PropertyType } from "@/app/Types/properties";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type ListingStatus = "All" | "Sale" | "Rent" | "";
-type Currency = "All" |"BDT" | "USD" | "SAR" | "EUR" | "";
+type Currency = "All" | "BDT" | "USD" | "SAR" | "EUR" | "";
 interface FilterState {
     location: string;
     listingStatus: ListingStatus;
@@ -99,22 +99,21 @@ const filterSlice = createSlice({
                 state.currentPage = state.totalPages || 1;
             }
         },
-            resetFilters: (state) => {
-                state.location = "";
-                state.listingStatus = "All";
-                state.currency = "All";
-                state.propertyType = [];
-                state.priceRange = [0, 100_000_000];
-                state.bedrooms = "any";
-                state.bathrooms = "any";
-                state.squareFeat = [0, 0];
-                state.yearBuild = [2000, new Date().getFullYear()];
-                state.otherFeatures = [];
-                state.sortOption = "default";
-                state.sortedProperties = [];
-            },
+        clearFilters: (state) => {
+            state.location = "";
+            state.listingStatus = "All";
+            state.propertyType = [];
+            state.currency = "All";
+            state.priceRange = [0, 10000000];
+            state.bedrooms = "any";
+            state.bathrooms = "any";
+            state.squareFeat = [0, 0];
+            state.yearBuild = [0, 0];
+            state.otherFeatures = [];
+            state.currentPage = 1;
+        },
     },
-    });
+});
 
 export const {
     setLocation,
@@ -131,8 +130,8 @@ export const {
     setItemsPerPage,
     setSortOption,
     sortProperties,
-    resetFilters,
-    
+    clearFilters,
+
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

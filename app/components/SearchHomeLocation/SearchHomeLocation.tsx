@@ -72,7 +72,7 @@ export default function SearchHomeLocation() {
 
     return (
         <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
-            <h2 className="text-xs font-semibold text-gray-900 mb-2">Find your Home</h2>
+ 
             <div className="relative">
                 <Input
                     value={query}

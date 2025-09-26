@@ -1,4 +1,4 @@
-{
+  {
   "compilerOptions": {
     "target": "ES2017",
     "lib": [
@@ -19,6 +19,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    
     "incremental": true,
     "plugins": [
       {

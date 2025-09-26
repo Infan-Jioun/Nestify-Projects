@@ -7,7 +7,6 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { fetchProperties } from "../features/Properties/propertySlice";
 import { FilterSidebar } from "../components/FilterSidebar/FilterSidebar";
 import Skeleton from "react-loading-skeleton";
-
 import {
   Select,
   SelectContent,
@@ -20,6 +19,8 @@ import {
   sortProperties,
   setCurrentPage,
   setItemsPerPage,
+  setPropertyType,
+  clearFilters
 } from "../features/filter/filterSlice";
 import Pagination from "../components/PropertyCard/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
@@ -27,13 +28,19 @@ import { SlidersHorizontal, Grid3X3, List, MapPin, Home, FilterX, ChevronDown, C
 import { cn } from "@/lib/utils";
 import { fetchDistrict } from "../features/district/districtSlice";
 import CountUp from "../Home/Components/BannerServices/CountUp";
+import { useSearchParams } from "next/navigation";
+import ApartmentTypes from "../Home/Components/ApartmentTypes/ApartmentTypes";
 
 export default function PropertiesPage() {
   const dispatch = useDispatch<AppDispatch>();
+  const searchParams = useSearchParams();
   const { district: districts } = useSelector((state: RootState) => state.district);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Get category from URL parameters
+  const categoryParam = searchParams.get('category');
 
   // Redux states
   const { properties, loading, error } = useSelector(
@@ -56,6 +63,13 @@ export default function PropertiesPage() {
     itemsPerPage,
     totalPages,
   } = useSelector((state: RootState) => state.filter);
+
+  // Set category filter from URL parameter
+  useEffect(() => {
+    if (categoryParam) {
+      dispatch(setPropertyType([categoryParam]));
+    }
+  }, [categoryParam, dispatch]);
 
   useEffect(() => {
     dispatch(fetchProperties());
@@ -189,26 +203,37 @@ export default function PropertiesPage() {
     otherFeatures,
   ]);
 
+  // Clear all filters function
+  const handleClearAllFilters = () => {
+    dispatch(clearFilters());
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <NextHead title="Properties - Nestify" />
 
+      {/* Hero Section */}
       <div className={cn(
-        "relative py-32 px-6  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
+        "relative py-32 px-6 bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
         isScrolled ? "py-4" : "py-10"
       )}>
-        <div className="absolute  w-40 h-40 bg-green-300/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute w-40 h-40 bg-green-300/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-52 h-52 bg-yellow-300/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="px-4 md:px-8 lg:px-12 xl:px-12">
           <h1 className={cn(
             "font-bold transition-all duration-300",
             isScrolled ? "text-2xl" : "text-4xl"
-          )}>Find Your Dream Property</h1>
+          )}>
+            {categoryParam ? `${categoryParam} Properties` : 'Find Your Dream Property'}
+          </h1>
           <p className={cn(
-            " mt-2 max-w-2xl transition-all duration-300",
+            "mt-2 max-w-2xl transition-all duration-300",
             isScrolled ? "text-sm opacity-0 h-0" : "opacity-100"
           )}>
-            Discover premium real estate options tailored to your preferences from our curated collection
+            {categoryParam 
+              ? `Discover our curated collection of ${categoryParam.toLowerCase()} properties`
+              : 'Discover premium real estate options tailored to your preferences from our curated collection'
+            }
           </p>
 
           {/* Stats bar */}
@@ -221,18 +246,18 @@ export default function PropertiesPage() {
                 <Home size={18} />
               </div>
               <div>
-              <div className="flex items-center gap-1">
-             <CountUp
-                  from={0}
-                  to={properties.length}
-                  separator=","
-                  direction="up"
-                  duration={3}
-                  className="count-up-text text-xl lg:text-2xl font-bold"
-                />
-                <p className="text-2xl font-semibold">+</p>
-             </div>
-                <p className=" text-sm">Properties</p>
+                <div className="flex items-center gap-1">
+                  <CountUp
+                    from={0}
+                    to={properties.length}
+                    separator=","
+                    direction="up"
+                    duration={3}
+                    className="count-up-text text-xl lg:text-2xl font-bold"
+                  />
+                  <p className="text-2xl font-semibold">+</p>
+                </div>
+                <p className="text-sm">Properties</p>
               </div>
             </div>
 
@@ -241,18 +266,18 @@ export default function PropertiesPage() {
                 <MapPin size={18} />
               </div>
               <div>
-             <div className="flex items-center gap-2">
-             <CountUp
-                  from={0}
-                  to={districts.length}
-                  separator=","
-                  direction="up"
-                  duration={3}
-                  className="count-up-text text-xl lg:text-2xl font-bold"
-                />
-                <p className="text-2xl font-semibold">+</p>
-             </div>
-                <p className=" text-sm">Locations</p>
+                <div className="flex items-center gap-2">
+                  <CountUp
+                    from={0}
+                    to={districts.length}
+                    separator=","
+                    direction="up"
+                    duration={3}
+                    className="count-up-text text-xl lg:text-2xl font-bold"
+                  />
+                  <p className="text-2xl font-semibold">+</p>
+                </div>
+                <p className="text-sm">Locations</p>
               </div>
             </div>
           </div>
@@ -296,10 +321,7 @@ export default function PropertiesPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        // Add functionality to clear all filters
-                        console.log("Clear all filters");
-                      }}
+                      onClick={handleClearAllFilters}
                       className="h-8 text-gray-500 hover:text-gray-700"
                     >
                       <FilterX size={14} className="mr-1" />
@@ -319,6 +341,9 @@ export default function PropertiesPage() {
               <div>
                 <p className="text-gray-600">
                   <span className="font-semibold text-gray-900">{filterProperties.length}</span> properties found
+                  {categoryParam && (
+                    <span className="text-green-600 font-medium"> in {categoryParam}</span>
+                  )}
                   {filterProperties.length > 0 && (
                     <span className="text-gray-500">
                       {" "}(Page {currentPage} of {Math.ceil(filterProperties.length / itemsPerPage)})
@@ -427,14 +452,14 @@ export default function PropertiesPage() {
                   <div className="text-gray-300 text-6xl mb-4">🏠</div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">No properties found</h3>
                   <p className="text-gray-600 max-w-md mx-auto mb-6">
-                    Try adjusting your search filters or browse our full catalog
+                    {categoryParam 
+                      ? `No ${categoryParam.toLowerCase()} properties match your current filters`
+                      : 'Try adjusting your search filters or browse our full catalog'
+                    }
                   </p>
                   {areFiltersApplied && (
                     <Button
-                      onClick={() => {
-                        // Add functionality to clear all filters
-                        console.log("Clear all filters");
-                      }}
+                      onClick={handleClearAllFilters}
                       className="bg-green-600 hover:bg-green-700"
                     >
                       <FilterX size={16} className="mr-2" />
@@ -469,6 +494,8 @@ export default function PropertiesPage() {
                 />
               </div>
             )}
+
+           
           </main>
         </div>
       </div>

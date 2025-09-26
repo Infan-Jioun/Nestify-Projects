@@ -1,70 +1,119 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper"; // ✅ Correct Type import
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
-import { RootState } from "@/lib/store"
-const apartmentData = [
+import { RootState } from "@/lib/store";
+import { useRouter } from "next/navigation";
+
+// Base apartment categories with images
+const apartmentCategories = [
   {
     title: "Apartments",
-    subtitle: "20 Properties",
+    categoryName: "Apartment",
     image: "https://i.ibb.co/F4B27j7m/Apartment-3.jpg",
   },
   {
     title: "Office Space",
-    subtitle: "34 Properties",
+    categoryName: "Office Space",
     image: "https://i.ibb.co/XZY199mw/Image-1.jpg",
   },
   {
     title: "House",
-    subtitle: "18 Properties",
+    categoryName: "House",
     image: "https://i.ibb.co/n8Y1h3sZ/Bedrooms-4-Prompt-A-semi-furnished-modern-bedroom-with-a-double-bed-wardrobe-and-bedside-table-Cozy.jpg",
   },
   {
     title: "Duplex",
-    subtitle: "52 Properties",
+    categoryName: "Duplex",
     image: "https://i.ibb.co/VcMtQyjD/Image-1.jpg",
   },
   {
     title: "Land",
-    subtitle: "14 Properties",
+    categoryName: "Land",
     image: "https://i.ibb.co/W4p8pdvY/land-1.jpg",
   },
   {
     title: "Shop",
-    subtitle: "14 Properties",
+    categoryName: "Shop",
     image: "https://i.ibb.co/fmdmZCq/Image-2.jpg",
   },
   {
-    title: "Warahouse",
-    subtitle: "14 Properties",
+    title: "Warehouse",
+    categoryName: "Warehouse",
     image: "https://i.ibb.co/fmdmZCq/Image-2.jpg",
   },
 ];
 
 export default function ApartmentTypes() {
   const dispatch = useDispatch();
-  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const router = useRouter();
+  const skletonLoader = useSelector(
+    (state: RootState) => state.loader.skletonLoader
+  );
   const [loading, setLoading] = useState(true);
-  const prevRef = useRef<HTMLButtonElement | null>(null);
-  const nextRef = useRef<HTMLButtonElement | null>(null);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
 
+  // Refs for navigation
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+
+  const { properties } = useSelector((state: RootState) => state.properties);
+
+  // Function to count properties by category
+  const getPropertiesCountByCategory = (categoryName: string) => {
+    return properties.filter(
+      (property) => property.category?.name === categoryName
+    ).length;
+  };
+
+  // Function to handle category click
+  const handleCategoryClick = (categoryName: string) => {
+    router.push(`/Properties?category=${encodeURIComponent(categoryName)}`);
+  };
+
+  // Create apartment data with dynamic counts
+  const apartmentData = apartmentCategories
+    .map((category) => ({
+      ...category,
+      subtitle: `${getPropertiesCountByCategory(
+        category.categoryName
+      )} Properties`,
+      count: getPropertiesCountByCategory(category.categoryName),
+    }))
+    .filter((item) => item.count > 0);
 
   useEffect(() => {
     dispatch(setSkletonLoader(true));
     setLoading(true);
-    
+
     const timer = setTimeout(() => {
       setLoading(false);
       dispatch(setSkletonLoader(false));
     }, 2000);
-    
+
     return () => clearTimeout(timer);
-  }, [dispatch]);
+  }, [dispatch, properties]);
+
+  const handleSwiperInit = (swiper: SwiperType) => {
+    setSwiperInstance(swiper);
+
+    setTimeout(() => {
+      if (swiper.params.navigation && typeof swiper.params.navigation !== "boolean") {
+        if (prevRef.current && nextRef.current) {
+          swiper.params.navigation.prevEl = prevRef.current;
+          swiper.params.navigation.nextEl = nextRef.current;
+          swiper.navigation.init();
+          swiper.navigation.update();
+        }
+      }
+    }, 100);
+  };
 
   const SkeletonSlide = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow">
@@ -92,14 +141,15 @@ export default function ApartmentTypes() {
                 Explore Property Types
               </h2>
               <p className="text-gray-500 text-center sm:text-left">
-              {"Find apartments, houses, and commercial spaces that match your lifestyle."}
+                Find apartments, houses, and commercial spaces that match your
+                lifestyle.
               </p>
             </>
           )}
         </div>
 
         {/* Arrows + Pagination */}
-        {!loading && !skletonLoader && (
+        {!loading && !skletonLoader && apartmentData.length > 0 && (
           <div className="flex justify-center items-center gap-4">
             <button
               ref={prevRef}
@@ -126,6 +176,13 @@ export default function ApartmentTypes() {
             <SkeletonSlide key={index} />
           ))}
         </div>
+      ) : apartmentData.length === 0 ? (
+        // Show message when no properties found
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">
+            No property categories available
+          </p>
+        </div>
       ) : (
         // Actual swiper with data
         <Swiper
@@ -138,17 +195,8 @@ export default function ApartmentTypes() {
             clickable: true,
             el: ".custom-pagination",
           }}
-          onInit={(swiper) => {
-            // TypeScript-safe check for navigation params
-            if (swiper.params.navigation) {
-              // @ts-expect-error Navigation object is being assigned manually
-              swiper.params.navigation.prevEl = prevRef.current;
-              // @ts-expect-error Navigation object is being assigned manually
-              swiper.params.navigation.nextEl = nextRef.current;
-            }
-            swiper.navigation.init();
-            swiper.navigation.update();
-          }}
+          onInit={handleSwiperInit}
+          onSwiper={handleSwiperInit}
           spaceBetween={20}
           breakpoints={{
             320: { slidesPerView: 1 },
@@ -161,7 +209,10 @@ export default function ApartmentTypes() {
         >
           {apartmentData.map((item, index) => (
             <SwiperSlide key={index}>
-              <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300 group">
+              <div
+                className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300 group cursor-pointer"
+                onClick={() => handleCategoryClick(item.categoryName)}
+              >
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -183,6 +234,13 @@ export default function ApartmentTypes() {
 
       {/* Custom Pagination Styles */}
       <style jsx global>{`
+        .custom-pagination {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+        }
+
         .custom-pagination .swiper-pagination-bullet {
           width: 10px;
           height: 10px;
@@ -191,8 +249,19 @@ export default function ApartmentTypes() {
           opacity: 1;
           transition: all 0.3s ease;
         }
+
         .custom-pagination .swiper-pagination-bullet-active {
           background: #000;
+          transform: scale(1.2);
+        }
+
+        .swiper-button-disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .swiper-button-disabled:hover {
+          color: #6b7280 !important;
         }
       `}</style>
     </div>

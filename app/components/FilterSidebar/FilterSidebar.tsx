@@ -27,7 +27,7 @@ import {
     setPropertyType,
     setSquareFeat,
     setYearBuild,
-    resetFilters,
+    clearFilters,
     setListingStatus,
     setCurrency,
 } from "@/app/features/filter/filterSlice";
@@ -138,7 +138,7 @@ function SidebarContent() {
                                     checked={filter.propertyType.includes(type)}
                                     onCheckedChange={() => togglePropertyType(type)}
                                     id={type}
-                                    className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                    className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
                                 />
                                 <Label htmlFor={type} className="text-sm font-normal cursor-pointer">{type}</Label>
                             </div>
@@ -249,13 +249,13 @@ function SidebarContent() {
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={() => dispatch(resetFilters())}
+                        onClick={() => dispatch(clearFilters())}
                         className="text-gray-700 border-gray-300"
                     >
                         <X size={16} className="mr-2" />
                         Reset All
                     </Button>
-                    <Button type="button" className="bg-blue-600 hover:bg-blue-700">
+                    <Button type="button" className="bg-green-600 hover:bg-green-700">
                         Apply Filters
                     </Button>
                 </div>
