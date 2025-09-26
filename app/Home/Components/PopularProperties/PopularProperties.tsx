@@ -62,7 +62,7 @@ export default function PopularProperties() {
             Discover Popular Properties
           </h2>
           <p className="text-gray-500 text-center sm:text-left">
-            Aliquam lacinia diam quis lacus euismod
+          {"Explore top-rated properties and standout features curated for you."}
           </p>
         </div>
         <div className="flex space-x-3 px-1">
