@@ -1,7 +1,6 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper"; // ✅ Correct Type import
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import Image from "next/image";
@@ -11,7 +10,7 @@ import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 import { RootState } from "@/lib/store";
 import { useRouter } from "next/navigation";
 
-// Base apartment categories with images
+
 const apartmentCategories = [
   {
     title: "Apartments",
@@ -53,40 +52,32 @@ const apartmentCategories = [
 export default function ApartmentTypes() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const skletonLoader = useSelector(
-    (state: RootState) => state.loader.skletonLoader
-  );
+  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const [loading, setLoading] = useState(true);
-  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
-
-  // Refs for navigation
-  const prevRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
+  const prevRef = useRef<HTMLButtonElement | null>(null);
+  const nextRef = useRef<HTMLButtonElement | null>(null);
 
   const { properties } = useSelector((state: RootState) => state.properties);
 
   // Function to count properties by category
   const getPropertiesCountByCategory = (categoryName: string) => {
-    return properties.filter(
-      (property) => property.category?.name === categoryName
+    return properties.filter(property =>
+      property.category?.name === categoryName
     ).length;
   };
 
   // Function to handle category click
   const handleCategoryClick = (categoryName: string) => {
+    // Navigate to properties page with category filter
     router.push(`/Properties?category=${encodeURIComponent(categoryName)}`);
   };
 
   // Create apartment data with dynamic counts
-  const apartmentData = apartmentCategories
-    .map((category) => ({
-      ...category,
-      subtitle: `${getPropertiesCountByCategory(
-        category.categoryName
-      )} Properties`,
-      count: getPropertiesCountByCategory(category.categoryName),
-    }))
-    .filter((item) => item.count > 0);
+  const apartmentData = apartmentCategories.map(category => ({
+    ...category,
+    subtitle: `${getPropertiesCountByCategory(category.categoryName)} Properties`,
+    count: getPropertiesCountByCategory(category.categoryName)
+  })).filter(item => item.count > 0); // Only show categories that have properties
 
   useEffect(() => {
     dispatch(setSkletonLoader(true));
@@ -99,21 +90,6 @@ export default function ApartmentTypes() {
 
     return () => clearTimeout(timer);
   }, [dispatch, properties]);
-
-  const handleSwiperInit = (swiper: SwiperType) => {
-    setSwiperInstance(swiper);
-
-    setTimeout(() => {
-      if (swiper.params.navigation && typeof swiper.params.navigation !== "boolean") {
-        if (prevRef.current && nextRef.current) {
-          swiper.params.navigation.prevEl = prevRef.current;
-          swiper.params.navigation.nextEl = nextRef.current;
-          swiper.navigation.init();
-          swiper.navigation.update();
-        }
-      }
-    }, 100);
-  };
 
   const SkeletonSlide = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow">
@@ -141,8 +117,7 @@ export default function ApartmentTypes() {
                 Explore Property Types
               </h2>
               <p className="text-gray-500 text-center sm:text-left">
-                Find apartments, houses, and commercial spaces that match your
-                lifestyle.
+                {"Find apartments, houses, and commercial spaces that match your lifestyle."}
               </p>
             </>
           )}
@@ -170,18 +145,16 @@ export default function ApartmentTypes() {
 
       {/* Swiper Section */}
       {loading || skletonLoader ? (
-
+        // Skeleton loader for the swiper
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-10">
           {Array.from({ length: 5 }).map((_, index) => (
             <SkeletonSlide key={index} />
           ))}
         </div>
       ) : apartmentData.length === 0 ? (
-        
+        // Show message when no properties found
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
-            No property categories available
-          </p>
+          <p className="text-gray-500 text-lg">No property categories available</p>
         </div>
       ) : (
         // Actual swiper with data
@@ -195,8 +168,17 @@ export default function ApartmentTypes() {
             clickable: true,
             el: ".custom-pagination",
           }}
-          onInit={handleSwiperInit}
-          onSwiper={handleSwiperInit}
+          onInit={(swiper) => {
+            // TypeScript-safe check for navigation params
+            if (swiper.params.navigation) {
+              // @ts-expect-error Navigation object is being assigned manually
+              swiper.params.navigation.prevEl = prevRef.current;
+              // @ts-expect-error Navigation object is being assigned manually
+              swiper.params.navigation.nextEl = nextRef.current;
+            }
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }}
           spaceBetween={20}
           breakpoints={{
             320: { slidesPerView: 1 },
@@ -234,13 +216,6 @@ export default function ApartmentTypes() {
 
       {/* Custom Pagination Styles */}
       <style jsx global>{`
-        .custom-pagination {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 8px;
-        }
-
         .custom-pagination .swiper-pagination-bullet {
           width: 10px;
           height: 10px;
@@ -249,19 +224,8 @@ export default function ApartmentTypes() {
           opacity: 1;
           transition: all 0.3s ease;
         }
-
         .custom-pagination .swiper-pagination-bullet-active {
           background: #000;
-          transform: scale(1.2);
-        }
-
-        .swiper-button-disabled {
-          opacity: 0.3;
-          cursor: not-allowed;
-        }
-
-        .swiper-button-disabled:hover {
-          color: #6b7280 !important;
         }
       `}</style>
     </div>

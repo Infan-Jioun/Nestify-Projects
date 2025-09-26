@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Grid3X3, List, MapPin, Home, FilterX, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+
 import { useSearchParams } from "next/navigation";
 import CountUp from "@/app/Home/Components/BannerServices/CountUp";
 import { fetchProperties } from "@/app/features/Properties/propertySlice";
@@ -32,11 +33,13 @@ import PropertyCard from "@/app/components/PropertyCard/PropertyCard";
 import { fetchDistrict } from "../../features/district/districtSlice";
 import { PropertySchemaType } from "@/app/models/properties";
 
+
 interface Props {
-    serverProperties: PropertySchemaType[]
+    serverProperties: PropertySchemaType
 }
 
-export default function PropertiesHeadClient({ serverProperties }: Props) {
+export default async function PropertiesHeadClient({ serverProperties }: Props) {
+
     const dispatch = useDispatch<AppDispatch>();
     const searchParams = useSearchParams();
     const { district: districts } = useSelector((state: RootState) => state.district);
@@ -44,7 +47,8 @@ export default function PropertiesHeadClient({ serverProperties }: Props) {
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const categoryParam = searchParams?.get('category') || null;
+
+    const categoryParam = searchParams.get('category');
 
     const { properties, loading, error } = useSelector(
         (state: RootState) => state.properties
@@ -64,6 +68,7 @@ export default function PropertiesHeadClient({ serverProperties }: Props) {
         sortedProperties,
         currentPage,
         itemsPerPage,
+        totalPages,
     } = useSelector((state: RootState) => state.filter);
 
     // Set category filter from URL parameter
@@ -96,50 +101,44 @@ export default function PropertiesHeadClient({ serverProperties }: Props) {
     // Filtering
     const filterProperties = useMemo(() => {
         return sortedProperties.filter((property) => {
-            // Location filter
-            if (location && !property.geoCountryLocation?.toLowerCase().includes(location.toLowerCase())) {
+            if (
+                location &&
+                !property.geoCountryLocation
+                    .toLowerCase()
+                    .includes(location.toLowerCase())
+            )
                 return false;
-            }
 
-            // Listing status filter
-            if (listingStatus !== "All" && property.listingStatus !== listingStatus) {
-                return false;
-            }
+            if (listingStatus !== "All" && property.listingStatus !== listingStatus) return false;
+            if (currency !== "All" && property.currency !== currency) return false;
 
-            // Currency filter
-            if (currency !== "All" && property.currency !== currency) {
+            if (
+                propertyType.length > 0 &&
+                !propertyType.includes(property.category.name)
+            )
                 return false;
-            }
 
-            // Property type filter
-            if (propertyType.length > 0 && !propertyType.includes(property.category?.name)) {
+            if (property.price < priceRange[0] || property.price > priceRange[1])
                 return false;
-            }
 
-            // Price range filter
-            if (property.price < priceRange[0] || property.price > priceRange[1]) {
+            if (
+                bedrooms !== "any" &&
+                (property.bedrooms || 0) < parseInt(bedrooms)
+            )
                 return false;
-            }
 
-            // Bedrooms filter
-            if (bedrooms !== "any" && (property.bedrooms || 0) < parseInt(bedrooms)) {
+            if (
+                bathrooms !== "any" &&
+                (property.bathrooms || 0) < parseInt(bathrooms)
+            )
                 return false;
-            }
 
-            // Bathrooms filter
-            if (bathrooms !== "any" && (property.bathrooms || 0) < parseInt(bathrooms)) {
+            if (squareFeat[0] > 0 && (property.floorArea || 0) < squareFeat[0])
                 return false;
-            }
 
-            // Square footage filter
-            if (squareFeat[0] > 0 && (property.floorArea || 0) < squareFeat[0]) {
+            if (squareFeat[1] > 0 && (property.floorArea || 0) > squareFeat[1])
                 return false;
-            }
-            if (squareFeat[1] > 0 && (property.floorArea || 0) > squareFeat[1]) {
-                return false;
-            }
 
-            // Other features filter
             if (otherFeatures.length > 0) {
                 const hasFeatures = otherFeatures.every((feature) =>
                     property.propertyFacilities?.includes(feature)
@@ -215,9 +214,6 @@ export default function PropertiesHeadClient({ serverProperties }: Props) {
     const handleClearAllFilters = () => {
         dispatch(clearFilters());
     };
-
-    // Calculate total pages for pagination
-    const totalPages = Math.ceil(filterProperties.length / itemsPerPage);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -357,7 +353,7 @@ export default function PropertiesHeadClient({ serverProperties }: Props) {
                                     )}
                                     {filterProperties.length > 0 && (
                                         <span className="text-gray-500">
-                                            {" "}(Page {currentPage} of {totalPages})
+                                            {" "}(Page {currentPage} of {Math.ceil(filterProperties.length / itemsPerPage)})
                                         </span>
                                     )}
                                 </p>
@@ -498,13 +494,15 @@ export default function PropertiesHeadClient({ serverProperties }: Props) {
                             <div className="mt-12">
                                 <Pagination
                                     currentPage={currentPage}
-                                    totalPages={totalPages}
+                                    totalPages={Math.ceil(filterProperties.length / itemsPerPage)}
                                     itemsPerPage={itemsPerPage}
                                     onPageChange={handlePageChange}
                                     onItemsPerPageChange={handleItemsPerPageChange}
                                 />
                             </div>
                         )}
+
+
                     </main>
                 </div>
             </div>
