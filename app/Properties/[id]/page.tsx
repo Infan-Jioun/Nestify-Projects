@@ -494,7 +494,7 @@ export default function PropertyDetailsPage() {
                             whileTap={{ scale: 0.95 }}
                         >
                             <ShareButton
-                                url={`${process.env.NEXT_PUBLIC_BASE_URL}/properties/${property._id}`}
+                                url={`${process.env.NEXT_PUBLIC_BASE_URL}/Properties/${property._id}`}
                                 title={`${property.title} - ${property.category?.name || "Property"}`}
                             />
                         </motion.button>
