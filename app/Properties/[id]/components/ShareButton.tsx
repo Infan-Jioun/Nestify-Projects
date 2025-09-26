@@ -14,9 +14,9 @@ const ShareModalButton: React.FC<ShareModalButtonProps> = ({ url, title = "Check
     const [open, setOpen] = useState(false);
     const [copied, setCopied] = useState(false);
 
-    // Type-safe share function
+    
     const handleShare = async () => {
-        if (typeof navigator.share === "function") { // ✅ TypeScript safe
+        if (typeof navigator.share === "function") { 
             try {
                 await navigator.share({ title, url });
                 setOpen(false);

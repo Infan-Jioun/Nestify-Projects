@@ -457,11 +457,13 @@ export default function PropertyDetailsPage() {
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{property.title}</h1>
                     <div className="flex items-center text-gray-600">
-                        <MapPin size={18} className="mr-1" />
+                        <div className="md:block hidden">
+                            <MapPin size={18} className="mr-1" />
+                        </div>
                         <span>{property.address},{property.geoCountryLocation}</span>
                     </div>
                 </div>
-                <div className="flex flex-col items-end">
+                <div className="flex flex-col items-start lg:items-end">
                     <motion.p
                         initial={{ scale: 0.9 }}
                         animate={{ scale: 1 }}
