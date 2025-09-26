@@ -11,5 +11,8 @@ export async function GET(req: NextRequest, { params }: Params) {
                 status: 404
             });
         } return NextResponse.json(property, { status: 200 });
-    } catch (error) { console.error(error); return NextResponse.json({ message: "Failed to fetch property" }, { status: 500 }); }
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ message: "Failed to fetch property" }, { status: 500 });
+    }
 }

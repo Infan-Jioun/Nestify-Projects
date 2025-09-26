@@ -1,6 +1,5 @@
 import { Schema, model, models } from "mongoose";
 
-
 const categoryFieldSchema = new Schema(
     {
         name: { type: String, required: true },
@@ -8,7 +7,6 @@ const categoryFieldSchema = new Schema(
     },
     { _id: true }
 );
-
 
 const categorySchema = new Schema({
     name: { type: String, required: true },
@@ -19,7 +17,7 @@ const propertySchema = new Schema(
     {
         title: { type: String, required: true },
         category: categorySchema,
-        listingStatus: {type: String , required: true},
+        listingStatus: { type: String, required: true },
         price: { type: Number, required: true },
         currency: { type: String, required: true },
         propertySize: { type: Number, required: true },
@@ -54,8 +52,17 @@ const propertySchema = new Schema(
         landType: { type: String },
         facilities: { type: String },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    }
 );
+
+
+propertySchema.virtual('id').get(function () {
+    return this._id.toString();
+});
 
 const Property = models.Property || model("Property", propertySchema);
 export default Property;
