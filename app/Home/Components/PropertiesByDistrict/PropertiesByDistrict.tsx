@@ -123,10 +123,10 @@ const PropertiesByDistrict: React.FC = () => {
           ) : (
             <>
               <h2 className="text-xl text-center sm:text-left font-bold mb-1">
-                Properties by district
+              Choose Your District
               </h2>
               <p className="text-gray-600 mt-2">
-                Aliquam lacinia diam quis lacus euismod
+              Browse available properties in your preferred area.
               </p>
             </>
           )}
@@ -135,7 +135,7 @@ const PropertiesByDistrict: React.FC = () => {
         {!isLoading && visibledistrict.length > 0 && (
           <Link href={"/SeeAllDistrict"}>
             <button className="flex items-center text-green-500 font-semibold hover:text-green-700 transition-colors">
-              See All district <MdArrowOutward />
+              See All District <MdArrowOutward />
             </button>
           </Link>
         )}

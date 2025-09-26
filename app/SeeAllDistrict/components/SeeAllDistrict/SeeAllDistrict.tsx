@@ -96,7 +96,7 @@ export default function SeeAllDistrict() {
             {/* Header Section */}
             <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent dark:from-gray-100 dark:to-gray-300 mb-4">
-                    Explore Our districts
+                    Explore Our Districts
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
                     Discover premium properties in the most sought-after locations around the world

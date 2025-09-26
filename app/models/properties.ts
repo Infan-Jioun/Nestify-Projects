@@ -9,7 +9,7 @@ const categoryFieldSchema = new Schema(
 );
 
 const categorySchema = new Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true }, 
     fields: [categoryFieldSchema],
 });
 
