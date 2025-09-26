@@ -17,12 +17,12 @@ import {
   setItemsPerPage,
   setPropertyType,
   clearFilters
-} from "../../../features/filter/filterSlice";
-import Pagination from "../../../components/PropertyCard/Pagination/Pagination";
+} from "../../features/filter/filterSlice";
+import Pagination from "../../components/PropertyCard/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Grid3X3, List, MapPin, Home, FilterX, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { fetchDistrict } from "../../../features/district/districtSlice";
+import { fetchDistrict } from "../../features/district/districtSlice";
 
 import { useSearchParams } from "next/navigation";
 import CountUp from "@/app/Home/Components/BannerServices/CountUp";

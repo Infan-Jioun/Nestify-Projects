@@ -1,5 +1,6 @@
 import React from 'react'
-import PropertiesPage from './[id]/components/PropertiesPage'
+import PropertiesPage from './Components/PropertiesPage'
+
 
 export default function PropertiesPageRoute() {
   return (
