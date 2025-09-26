@@ -10,7 +10,7 @@ interface ShareModalButtonProps {
     title?: string;
 }
 
-const ShareModalButton: React.FC<ShareModalButtonProps> = ({ url, title = "Check this property" }) => {
+const ShareButton: React.FC<ShareModalButtonProps> = ({ url, title = "Check this property" }) => {
     const [open, setOpen] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -103,4 +103,4 @@ const ShareModalButton: React.FC<ShareModalButtonProps> = ({ url, title = "Check
     );
 };
 
-export default ShareModalButton;
+export default ShareButton;
