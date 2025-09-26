@@ -576,8 +576,13 @@ export default function PropertyDetailsPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <Button className="w-full mt-6 bg-green-500 hover:bg-green-700 text-white py-2.5">
-                            Book {property.category?.name || 'Property'}
+                        <Button className="w-[250px] mx-auto rounded-full mt-10 bg-green-500 hover:bg-green-700 text-white py-2.5">
+                        Booking    <span className={`px-3 py-1 rounded-full text-sm font-medium ${categoryType === 'land' ? 'bg-yellow-100 text-yellow-800' :
+                                categoryType === 'commercial' ? 'bg-blue-100 text-blue-800' :
+                                    'bg-green-100 text-green-800'
+                                }`}>
+                                {property.category?.name || 'Property'}
+                            </span>
                         </Button>
                     </motion.button>
                 </motion.div>
