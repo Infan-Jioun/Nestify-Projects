@@ -45,6 +45,7 @@ export interface PropertyType {
     propertyFacilities: string[];
     createdAt?: string;
     updatedAt?: string;
-    
+    isFavorite?: boolean;
+
 }
 
