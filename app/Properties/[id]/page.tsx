@@ -1,4 +1,3 @@
-// app/properties/[id]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -195,9 +194,10 @@ export default function PropertyDetailsPage() {
                     </div>
                 </div>
                 <div className="flex flex-col items-end">
-                    <p className="text-2xl md:text-3xl font-bold text-green-600 mb-2">
-                        {property.currency} {property.price.toLocaleString()}
-                    </p>
+                <p className="text-2xl md:text-3xl font-bold text-green-600 mb-2">
+  {property.currency} {property.price?.toLocaleString() ?? '0'}
+</p>
+
                     <div className="flex space-x-2">
                         <Button
                             variant="outline"

@@ -42,7 +42,7 @@ export interface PropertyType {
     plotNumber?: string;
     landType?: string;
     facilities?: string;
-    propertyFacilities: string[];
+    propertyFacilities?: string[];
     createdAt?: string;
     updatedAt?: string;
     isFavorite?: boolean;
