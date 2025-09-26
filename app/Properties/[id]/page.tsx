@@ -8,20 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 import {
-    ChevronLeft,
-    ChevronRight,
-    MapPin,
-    Bed,
-    Bath,
-    Ruler,
-    Heart,
-    Share2,
-    Phone,
-    Mail,
-    ArrowLeft,
-    TreePine,
-    Car,
-    Layers,
+    ChevronLeft, ChevronRight, MapPin, Bed, Bath, Ruler, Heart, Phone, Mail, ArrowLeft, TreePine, Car, Layers,
     Home
 } from "lucide-react";
 import Link from "next/link";
@@ -29,8 +16,7 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { fetchPropertyById } from "@/app/features/Properties/propertySlice";
 import { PropertyType } from "@/app/Types/properties";
 import ShareButton from "./components/ShareButton";
-
-
+import { Field, propertyCategoryData } from "@/lib/proprtyCategory";
 
 // Skeleton Loader Component
 const SkeletonLoader = () => {
@@ -120,7 +106,7 @@ const SkeletonLoader = () => {
     );
 };
 
-// Helper function to determine property category type
+
 const getPropertyCategoryType = (property: PropertyType): string => {
     if (!property.category) return 'residential';
 
@@ -128,78 +114,98 @@ const getPropertyCategoryType = (property: PropertyType): string => {
 
     if (categoryName.includes('land') || categoryName.includes('plot')) {
         return 'land';
-    } else if (categoryName.includes('commercial')) {
+    } else if (categoryName.includes('commercial') ||
+        categoryName.includes('office') ||
+        categoryName.includes('shop') ||
+        categoryName.includes('warehouse') ||
+        categoryName.includes('restaurant')) {
         return 'commercial';
     } else {
         return 'residential';
     }
 };
 
-// Custom feature icons based on category
-const getFeatureIcons = (property: PropertyType) => {
-    const categoryType = getPropertyCategoryType(property);
+// Get category-specific fields using propertyCategoryData
+const getCategorySpecificFields = (property: PropertyType): Field[] => {
+    if (!property.category) return [];
 
-    if (categoryType === 'land') {
-        return [
-            { icon: <Ruler size={24} />, label: "Land Area", value: `${property.landArea || property.propertySize} sqft` },
-            { icon: <Layers size={24} />, label: "Plot Number", value: property.plotNumber },
-            { icon: <TreePine size={24} />, label: "Land Type", value: property.landType },
-            { icon: <MapPin size={24} />, label: "Zone", value: property.geoCountryLocation }
-        ];
-    } else if (categoryType === 'commercial') {
-        return [
-            { icon: <Ruler size={24} />, label: "Area", value: `${property.propertySize} sqft` },
-            { icon: <Home size={24} />, label: "Floor", value: property.floor },
-            { icon: <Car size={24} />, label: "Parking", value: property.parkingSpaces },
-            { icon: <Layers size={24} />, label: "Sections", value: property.roomsSections }
-        ];
-    } else {
-
-        return [
-            { icon: <Bed size={24} />, label: "Bedrooms", value: property.bedrooms },
-            { icon: <Bath size={24} />, label: "Bathrooms", value: property.bathrooms },
-            { icon: <Ruler size={24} />, label: "Area", value: `${property.propertySize} sqft` },
-            { icon: <Home size={24} />, label: "Floor", value: property.floor }
-        ];
-    }
+    const categoryName = property.category.name;
+    return propertyCategoryData[categoryName] || [];
 };
 
-// Custom property details based on category
-const getPropertyDetails = (property: PropertyType) => {
+// Custom feature icons based on category using propertyCategoryData
+const getFeatureIcons = (property: PropertyType) => {
     const categoryType = getPropertyCategoryType(property);
+    const categoryFields = getCategorySpecificFields(property);
 
-    const baseDetails = [
+    // Take first 4 fields for feature icons
+    const featuredFields = categoryFields.slice(0, 4);
+
+    // Map fields to icons
+    return featuredFields.map(field => {
+        let icon;
+        switch (field.name) {
+            case 'bedrooms':
+                icon = <Bed size={24} />;
+                break;
+            case 'bathrooms':
+                icon = <Bath size={24} />;
+                break;
+            case 'landArea':
+            case 'floorArea':
+            case 'propertySize':
+                icon = <Ruler size={24} />;
+                break;
+            case 'plotNumber':
+                icon = <Layers size={24} />;
+                break;
+            case 'landType':
+                icon = <TreePine size={24} />;
+                break;
+            case 'parkingSpaces':
+                icon = <Car size={24} />;
+                break;
+            case 'floor':
+                icon = <Home size={24} />;
+                break;
+            case 'roomsSections':
+                icon = <Layers size={24} />;
+                break;
+            default:
+                icon = <Home size={24} />;
+        }
+
+        // Get value from property object
+        const value = property[field.name as keyof PropertyType];
+
+        return {
+            icon,
+            label: field.label,
+            value: value?.toString() || "N/A"
+        };
+    });
+};
+
+
+const getPropertyDetails = (property: PropertyType) => {
+    const categoryFields = getCategorySpecificFields(property);
+
+  
+    const categoryDetails = categoryFields.map(field => ({
+        label: field.label,
+        value: property[field.name as keyof PropertyType]?.toString() || "N/A"
+    }));
+
+    // Add common details
+    const commonDetails = [
         { label: "Property Size", value: `${property.propertySize} sqft` },
         { label: "Status", value: property.status },
-        { label: "Listing Status", value: property.listingStatus }
+        { label: "Listing Status", value: property.listingStatus },
+        { label: "Address", value: property.address },
+        { label: "Location", value: property.geoCountryLocation }
     ];
 
-    if (categoryType === 'land') {
-        return [
-            { label: "Land Area", value: `${property.landArea || property.propertySize} sqft` },
-            { label: "Plot Number", value: property.plotNumber },
-            { label: "Land Type", value: property.landType },
-            ...baseDetails
-        ];
-    } else if (categoryType === 'commercial') {
-        return [
-            { label: "Floor Area", value: `${property.floorArea || property.propertySize} sqft` },
-            { label: "Parking Spaces", value: property.parkingSpaces },
-            { label: "Sections", value: property.roomsSections },
-            { label: "Furnishing", value: property.furnishing },
-            ...baseDetails
-        ];
-    } else {
-        // Residential
-        return [
-            { label: "Bedrooms", value: property.bedrooms },
-            { label: "Bathrooms", value: property.bathrooms },
-            { label: "Drawing Room", value: property.drawingRoom },
-            { label: "Kitchen", value: property.kitchen },
-            { label: "Furnishing", value: property.furnishing },
-            ...baseDetails
-        ];
-    }
+    return [...categoryDetails, ...commonDetails];
 };
 
 export default function PropertyDetailsPage() {
@@ -216,7 +222,7 @@ export default function PropertyDetailsPage() {
         }
     }, [dispatch, id]);
 
-    // Image slider functions
+
     const nextImage = () => {
         if (property?.images && property.images.length > 0) {
             setCurrentImageIndex((prevIndex) =>
@@ -457,10 +463,8 @@ export default function PropertyDetailsPage() {
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{property.title}</h1>
                     <div className="flex items-center text-gray-600">
-                        <div className="md:block hidden">
-                            <MapPin size={18} className="mr-1" />
-                        </div>
-                        <span>{property.address},{property.geoCountryLocation}</span>
+                        <MapPin size={18} className="mr-1" />
+                        <span>{property.address}, {property.geoCountryLocation}</span>
                     </div>
                 </div>
                 <div className="flex flex-col items-start lg:items-end">
@@ -502,7 +506,7 @@ export default function PropertyDetailsPage() {
                 </div>
             </motion.div>
 
-            {/* Key Features - Dynamic based on category */}
+            {/* Key Features - Dynamic based on category using propertyCategoryData */}
             <motion.div
                 variants={itemVariants}
                 className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 p-4 bg-green-50 rounded-xl"
@@ -527,8 +531,7 @@ export default function PropertyDetailsPage() {
                     className="bg-white p-6 rounded-xl shadow-sm border"
                 >
                     <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
-                        {categoryType === 'land' ? 'Land Details' :
-                            categoryType === 'commercial' ? 'Commercial Details' : 'Property Details'}
+                        {property.category?.name || 'Property'} Details
                     </h2>
                     <div className="space-y-4">
                         {propertyDetails.map((detail, index) => (
@@ -568,23 +571,16 @@ export default function PropertyDetailsPage() {
                                 <p className="font-medium">{property.email || "N/A"}</p>
                             </div>
                         </motion.div>
-
                     </div>
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <Button className="w-[250px] mx-auto rounded-full mt-10 bg-green-500 hover:bg-green-700 text-white py-2.5">
-                            Book    <span className={`px-3 py-1 rounded-full text-sm font-medium ${categoryType === 'land' ? 'bg-yellow-100 text-yellow-800' :
-                                categoryType === 'commercial' ? 'bg-blue-100 text-blue-800' :
-                                    'bg-green-100 text-green-800'
-                                }`}>
-                                {property.category?.name || 'Property'}
-                            </span>
+                        <Button className="w-full mt-6 bg-green-500 hover:bg-green-700 text-white py-2.5">
+                            Book {property.category?.name || 'Property'}
                         </Button>
                     </motion.button>
                 </motion.div>
-
             </motion.div>
 
             {/* Features */}
@@ -595,7 +591,7 @@ export default function PropertyDetailsPage() {
                     className="bg-white p-6 rounded-xl shadow-sm border mb-8"
                 >
                     <h2 className="text-xl font-semibold mb-4">Features & Amenities</h2>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 ">
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                         {property.propertyFacilities.map((feature, idx) => (
                             <motion.li
                                 key={idx}
@@ -615,14 +611,11 @@ export default function PropertyDetailsPage() {
                     </ul>
                 </motion.div>
             ) : null}
-
-
         </motion.div>
-
     );
 }
 
-// Helper Components with animations
+// Feature Icon Component
 function FeatureIcon({ icon, label, value }: { icon: React.ReactNode, label: string, value?: string | null | number }) {
     return (
         <motion.div
