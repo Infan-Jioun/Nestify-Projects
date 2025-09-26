@@ -305,7 +305,7 @@ export default function PropertyDetailsPage() {
 }
 
 // Helper Components
-function FeatureIcon({ icon, label, value }: { icon: React.ReactNode, label: string, value: any }) {
+function FeatureIcon({ icon, label, value }: { icon: React.ReactNode, label: string, value? : string | null | number }) {
     return (
         <div className="flex flex-col items-center p-3 bg-white rounded-lg shadow-sm">
             <div className="text-green-600 mb-2">{icon}</div>
@@ -315,7 +315,7 @@ function FeatureIcon({ icon, label, value }: { icon: React.ReactNode, label: str
     );
 }
 
-function DetailRow({ label, value }: { label: string, value: any }) {
+function DetailRow({ label, value }: { label: string, value: string | number | null | undefined }) {
     return (
         <div className="flex justify-between py-2 border-b border-gray-100 last:border-b-0">
             <span className="text-gray-600">{label}</span>
