@@ -1,4 +1,3 @@
-// app/features/properties/propertySlice.ts
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import { PropertyType } from "@/app/Types/properties";

@@ -58,12 +58,16 @@ const PropertiesByDistrict: React.FC = () => {
   );
 
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
   useEffect(() => {
     dispatch(fetchDistrict());
     dispatch(fetchProperties());
 
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -94,8 +98,7 @@ const PropertiesByDistrict: React.FC = () => {
     return map;
   }, [properties, districtList]);
 
-  const renderSkeletonLoaders = () => {
-    const count = isMobile ? 2 : 6;
+  const renderSkeletonLoaders = (count: number) => {
     return Array.from({ length: count }).map((_, index) => (
       <div key={index} className="flex flex-col items-center animate-pulse">
         <div className="w-32 h-32 bg-gray-200 rounded-full mb-4"></div>
@@ -105,7 +108,7 @@ const PropertiesByDistrict: React.FC = () => {
     ));
   };
 
-  const visibledistrict = (districtList || []).slice(0, 6);
+  const visibledistrict = (districtList || []).slice(0, 8);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -129,7 +132,7 @@ const PropertiesByDistrict: React.FC = () => {
           )}
         </div>
 
-        {!isLoading && districtList?.length > 0 && (
+        {!isLoading && visibledistrict.length > 0 && (
           <Link href={"/SeeAllDistrict"}>
             <button className="flex items-center text-green-500 font-semibold hover:text-green-700 transition-colors">
               See All district <MdArrowOutward />
@@ -139,13 +142,9 @@ const PropertiesByDistrict: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div
-        className={`${isMobile
-          ? ""
-          : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8"
-          }`}
-      >
+      <div className="w-full">
         {isLoading ? (
+
           isMobile ? (
             <Swiper
               modules={[Autoplay]}
@@ -154,18 +153,34 @@ const PropertiesByDistrict: React.FC = () => {
               autoplay={{ delay: 3000, disableOnInteraction: false }}
               loop={true}
             >
-              {renderSkeletonLoaders().map((skeleton, i) => (
+              {renderSkeletonLoaders(8).map((skeleton, i) => (
+                <SwiperSlide key={i}>{skeleton}</SwiperSlide>
+              ))}
+            </Swiper>
+          ) : isTablet ? (
+            <Swiper
+              modules={[Autoplay]}
+              spaceBetween={20}
+              slidesPerView={4}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              loop={true}
+            >
+              {renderSkeletonLoaders(8).map((skeleton, i) => (
                 <SwiperSlide key={i}>{skeleton}</SwiperSlide>
               ))}
             </Swiper>
           ) : (
-            renderSkeletonLoaders()
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-6">
+              {renderSkeletonLoaders(8)}
+            </div>
           )
-        ) : districtList?.length === 0 ? (
-          <p className="text-center text-gray-500 col-span-full">
+        ) : visibledistrict.length === 0 ? (
+          
+          <p className="text-center text-gray-500 col-span-full py-8">
             Unavailable district
           </p>
         ) : isMobile ? (
+          
           <Swiper
             modules={[Autoplay]}
             spaceBetween={20}
@@ -177,33 +192,61 @@ const PropertiesByDistrict: React.FC = () => {
               const districtName = district.districtName || "";
               return (
                 <SwiperSlide key={districtName}>
-                  <DistrictCard
-                    district={district}
-                    count={
-                      propertyCountMap[districtName.toLowerCase()] || 0
-                    }
-                  />
+                  <Link
+                    href={`/DetailsDistrict/${encodeURIComponent(districtName)}`}
+                  >
+                    <DistrictCard
+                      district={district}
+                      count={propertyCountMap[districtName.toLowerCase()] || 0}
+                    />
+                  </Link>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        ) : isTablet ? (
+          
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={20}
+            slidesPerView={4}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            loop={true}
+          >
+            {visibledistrict.map((district) => {
+              const districtName = district.districtName || "";
+              return (
+                <SwiperSlide key={districtName}>
+                  <Link
+                    href={`/DetailsDistrict/${encodeURIComponent(districtName)}`}
+                  >
+                    <DistrictCard
+                      district={district}
+                      count={propertyCountMap[districtName.toLowerCase()] || 0}
+                    />
+                  </Link>
                 </SwiperSlide>
               );
             })}
           </Swiper>
         ) : (
-          visibledistrict.map((district) => {
-            const districtName = district.districtName || "";
-            return (
-              <Link
-                href={`/DetailsDistrict/${district.districtName}`}
-                key={districtName}
-              >
-                <DistrictCard
-                  district={district}
-                  count={
-                    propertyCountMap[districtName.toLowerCase()] || 0
-                  }
-                />
-              </Link>
-            );
-          })
+          
+          <div className="grid grid-cols-8 gap-6">
+            {visibledistrict.map((district) => {
+              const districtName = district.districtName || "";
+              return (
+                <Link
+                  href={`/DetailsDistrict/${encodeURIComponent(districtName)}`}
+                  key={districtName}
+                >
+                  <DistrictCard
+                    district={district}
+                    count={propertyCountMap[districtName.toLowerCase()] || 0}
+                  />
+                </Link>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>

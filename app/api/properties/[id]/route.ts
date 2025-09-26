@@ -1,4 +1,3 @@
-// app/api/properties/[id]/route.ts
 import Property from '@/app/models/properties';
 import connectToDatabase from '@/lib/mongodb';
 import { NextRequest, NextResponse } from 'next/server';
@@ -7,7 +6,7 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
   await connectToDatabase();
 
   try {
-    // await করতে হবে params
+    
     const { id } = await context.params;
 
     if (!id) {
