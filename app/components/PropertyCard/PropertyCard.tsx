@@ -9,10 +9,11 @@ import { deleteProperty } from "@/app/features/Properties/propertySlice";
 import { AppDispatch } from "@/lib/store";
 import DeleteConfirmation from "./DeletedConfirmation";
 import Skeleton from "react-loading-skeleton";
-import { FaBookmark, FaInfoCircle} from "react-icons/fa";
+import { FaBookmark, FaInfoCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Carousal from "../Carousal/Carousal";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type PropertyCardProps = {
   property: PropertyType;
@@ -150,16 +151,18 @@ export default function PropertyCard({
           >
             {property.status}
           </p>
-
+                                  
         </div>
         {/* Action Buttons */}
         <div className="flex gap-3 mt-4">
-          <Button
-            variant="outline"
-            className="flex-1 flex items-center justify-center gap-2"
-          >
-            <FaInfoCircle /> Details
-          </Button>
+          <Link href={`/Properties/${property._id}`}>
+            <Button
+              variant="outline"
+              className="flex-1 flex items-center justify-center gap-2"
+            >
+              <FaInfoCircle /> Details
+            </Button>
+          </Link>
           <Button
             variant={bookmarked ? "secondary" : "ghost"}
             className="flex items-center justify-center"

@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { fetchProperties } from "../features/Properties/propertySlice";
 import { FilterSidebar } from "../components/FilterSidebar/FilterSidebar";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+
 import {
   Select,
   SelectContent,
