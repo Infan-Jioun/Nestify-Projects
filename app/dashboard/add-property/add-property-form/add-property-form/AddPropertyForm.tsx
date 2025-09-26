@@ -188,10 +188,11 @@ export default function AddPropertyFormPage() {
           name: key,
           value: value as string | number | boolean,
         }));
-     const transformedData: PropertyType = {
+     const transformedData: PropertyType = {  
         ...data,
         images: uploadedImages,
         videos: data.videos || [],
+          propertyFacilities: data.propertyFacilities || [],
         category: {
           name:
             typeof data.category === "string"

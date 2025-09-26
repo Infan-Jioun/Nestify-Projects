@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
         if (id) {
             query = { geoCountryLocation: { $regex: new RegExp(`^${id}$`, 'i') } };
         }
-        const properties = await Property.find(query);
+        const properties = await Property.findById(query);
         return NextResponse.json(properties, { status: 200 });
     } catch (error) {
         console.error(error);
