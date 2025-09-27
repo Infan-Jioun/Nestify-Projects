@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 import type { RootState } from "@/lib/store";
+import Link from "next/link";
 
 const agents = [
   {
@@ -151,9 +152,11 @@ export default function FeaturedAgents() {
                   List your own property
                 </li>
               </ul>
-              <button className="mt-4 px-6 py-2 bg-black text-white rounded-md inline-flex items-center gap-2">
-                See More 
-              </button>
+              <Link href={"/About"}>
+                <button className="mt-4 px-6 py-2 bg-black text-white rounded-md inline-flex items-center gap-2">
+                  See More
+                </button>
+              </Link>
             </>
           )}
         </div>
