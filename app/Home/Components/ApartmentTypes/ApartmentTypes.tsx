@@ -7,10 +7,9 @@ import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
-import { RootState } from "@/lib/store";
-import { useRouter } from "next/navigation";
+import { RootState } from "@/lib/store"
 
-
+// Base apartment categories with images
 const apartmentCategories = [
   {
     title: "Apartments",
@@ -51,7 +50,6 @@ const apartmentCategories = [
 
 export default function ApartmentTypes() {
   const dispatch = useDispatch();
-  const router = useRouter();
   const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const [loading, setLoading] = useState(true);
   const prevRef = useRef<HTMLButtonElement | null>(null);
@@ -66,18 +64,11 @@ export default function ApartmentTypes() {
     ).length;
   };
 
-  // Function to handle category click
-  const handleCategoryClick = (categoryName: string) => {
-    // Navigate to properties page with category filter
-    router.push(`/Properties?category=${encodeURIComponent(categoryName)}`);
-  };
-
   // Create apartment data with dynamic counts
   const apartmentData = apartmentCategories.map(category => ({
     ...category,
-    subtitle: `${getPropertiesCountByCategory(category.categoryName)} Properties`,
-    count: getPropertiesCountByCategory(category.categoryName)
-  })).filter(item => item.count > 0); // Only show categories that have properties
+    subtitle: `${getPropertiesCountByCategory(category.categoryName)} Properties`
+  }));
 
   useEffect(() => {
     dispatch(setSkletonLoader(true));
@@ -89,7 +80,7 @@ export default function ApartmentTypes() {
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [dispatch, properties]);
+  }, [dispatch, properties]); 
 
   const SkeletonSlide = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow">
@@ -124,7 +115,7 @@ export default function ApartmentTypes() {
         </div>
 
         {/* Arrows + Pagination */}
-        {!loading && !skletonLoader && apartmentData.length > 0 && (
+        {!loading && !skletonLoader && (
           <div className="flex justify-center items-center gap-4">
             <button
               ref={prevRef}
@@ -150,11 +141,6 @@ export default function ApartmentTypes() {
           {Array.from({ length: 5 }).map((_, index) => (
             <SkeletonSlide key={index} />
           ))}
-        </div>
-      ) : apartmentData.length === 0 ? (
-        // Show message when no properties found
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No property categories available</p>
         </div>
       ) : (
         // Actual swiper with data
@@ -191,10 +177,7 @@ export default function ApartmentTypes() {
         >
           {apartmentData.map((item, index) => (
             <SwiperSlide key={index}>
-              <div
-                className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300 group cursor-pointer"
-                onClick={() => handleCategoryClick(item.categoryName)}
-              >
+              <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300 group">
                 <Image
                   src={item.image}
                   alt={item.title}
