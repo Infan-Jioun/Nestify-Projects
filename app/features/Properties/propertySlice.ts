@@ -16,7 +16,7 @@ const initialState: PropertyState = {
   error: null,
 };
 
-// ✅ Fetch all properties
+//  Fetch all properties
 export const fetchProperties = createAsyncThunk<
   PropertyType[],
   void,
@@ -31,7 +31,7 @@ export const fetchProperties = createAsyncThunk<
   }
 });
 
-// ✅ Fetch properties by category
+//  Fetch properties by category
 export const fetchPropertiesByCategory = createAsyncThunk<
   PropertyType[],
   string,
@@ -47,7 +47,7 @@ export const fetchPropertiesByCategory = createAsyncThunk<
   }
 });
 
-// ✅ Fetch single property by ID
+//  Fetch single property by ID
 export const fetchPropertyById = createAsyncThunk<
   PropertyType,
   string,
@@ -62,7 +62,7 @@ export const fetchPropertyById = createAsyncThunk<
   }
 });
 
-// ✅ Add a property
+//  Add a property
 export const addProperty = createAsyncThunk<
   PropertyType,
   Omit<PropertyType, '_id'>,
@@ -77,7 +77,7 @@ export const addProperty = createAsyncThunk<
   }
 });
 
-// ✅ Delete a property
+//  Delete a property
 export const deleteProperty = createAsyncThunk<
   string,
   string,

@@ -8,8 +8,6 @@ export async function GET(req: NextRequest, context: { params: Promise<{ name: s
 
         const params = await context.params;
         const categoryName = decodeURIComponent(params.name);
-
-        // Case-insensitive search করার জন্য
         const properties = await Property.find({
             "category.name": {
                 $regex: new RegExp(`^${categoryName}$`, 'i')
