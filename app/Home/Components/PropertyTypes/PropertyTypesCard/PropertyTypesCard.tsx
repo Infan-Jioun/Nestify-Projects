@@ -7,7 +7,8 @@ import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
-import { RootState } from "@/lib/store"
+import { RootState } from "@/lib/store";
+import Link from "next/link";
 
 // Base apartment categories with images
 const apartmentCategories = [
@@ -50,25 +51,32 @@ const apartmentCategories = [
 
 export default function ApartmentTypes() {
   const dispatch = useDispatch();
-  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const skletonLoader = useSelector(
+    (state: RootState) => state.loader.skletonLoader
+  );
   const [loading, setLoading] = useState(true);
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
+  const [swiperInitialized, setSwiperInitialized] = useState(false);
 
   const { properties } = useSelector((state: RootState) => state.properties);
 
-  // Function to count properties by category
   const getPropertiesCountByCategory = (categoryName: string) => {
-    return properties.filter(property =>
-      property.category?.name === categoryName
+    return properties.filter(
+      (property) => property.category?.name === categoryName
     ).length;
   };
 
-  // Create apartment data with dynamic counts
-  const apartmentData = apartmentCategories.map(category => ({
+  const apartmentData = apartmentCategories.map((category) => ({
     ...category,
-    subtitle: `${getPropertiesCountByCategory(category.categoryName)} Properties`
+    subtitle: `${getPropertiesCountByCategory(
+      category.categoryName
+    )} Properties`,
+    count: getPropertiesCountByCategory(category.categoryName)
   }));
+
+  // Filter out categories with 0 properties
+  const filteredApartmentData = apartmentData.filter(item => item.count > 0);
 
   useEffect(() => {
     dispatch(setSkletonLoader(true));
@@ -77,10 +85,11 @@ export default function ApartmentTypes() {
     const timer = setTimeout(() => {
       setLoading(false);
       dispatch(setSkletonLoader(false));
+      setSwiperInitialized(true);
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [dispatch, properties]); 
+  }, [dispatch, properties]);
 
   const SkeletonSlide = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow">
@@ -108,25 +117,27 @@ export default function ApartmentTypes() {
                 Explore Property Types
               </h2>
               <p className="text-gray-500 text-center sm:text-left">
-                {"Find apartments, houses, and commercial spaces that match your lifestyle."}
+                Find apartments, houses, and commercial spaces that match your lifestyle.
               </p>
             </>
           )}
         </div>
 
         {/* Arrows + Pagination */}
-        {!loading && !skletonLoader && (
+        {!loading && !skletonLoader && filteredApartmentData.length > 0 && (
           <div className="flex justify-center items-center gap-4">
             <button
               ref={prevRef}
-              className="text-black hover:text-green-500 text-xl transition"
+              className="text-black hover:text-green-500 text-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={filteredApartmentData.length <= 1}
             >
               <GoArrowLeft />
             </button>
             <div className="custom-pagination flex gap-2" />
             <button
               ref={nextRef}
-              className="text-black hover:text-green-500 text-xl transition"
+              className="text-black hover:text-green-500 text-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={filteredApartmentData.length <= 1}
             >
               <GoArrowRight />
             </button>
@@ -142,28 +153,25 @@ export default function ApartmentTypes() {
             <SkeletonSlide key={index} />
           ))}
         </div>
+      ) : filteredApartmentData.length === 0 ? (
+        // No properties message
+        <div className="text-center py-10">
+          <p className="text-gray-500">No properties available in any category.</p>
+        </div>
       ) : (
         // Actual swiper with data
         <Swiper
           modules={[Navigation, Pagination]}
-          navigation={{
+          navigation={swiperInitialized ? {
             prevEl: prevRef.current,
             nextEl: nextRef.current,
-          }}
-          pagination={{
+          } : false}
+          pagination={swiperInitialized ? {
             clickable: true,
             el: ".custom-pagination",
-          }}
+          } : false}
           onInit={(swiper) => {
-            // TypeScript-safe check for navigation params
-            if (swiper.params.navigation) {
-              // @ts-expect-error Navigation object is being assigned manually
-              swiper.params.navigation.prevEl = prevRef.current;
-              // @ts-expect-error Navigation object is being assigned manually
-              swiper.params.navigation.nextEl = nextRef.current;
-            }
-            swiper.navigation.init();
-            swiper.navigation.update();
+            setSwiperInitialized(true);
           }}
           spaceBetween={20}
           breakpoints={{
@@ -175,23 +183,33 @@ export default function ApartmentTypes() {
           }}
           className="pb-10"
         >
-          {apartmentData.map((item, index) => (
+          {filteredApartmentData.map((item, index) => (
             <SwiperSlide key={index}>
-              <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300 group">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={500}
-                  height={500}
-                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-gray-500">{item.subtitle}</p>
+              <Link
+                href={`/category/${encodeURIComponent(item.categoryName)}`}
+                className="block"
+              >
+                <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300 group cursor-pointer h-full">
+                  <div className="relative overflow-hidden">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      width={500}
+                      height={300}
+                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                      {item.count}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-500">{item.subtitle}</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           ))}
         </Swiper>

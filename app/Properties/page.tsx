@@ -36,8 +36,7 @@ export default function PropertiesPage() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Redux states
-  const { properties, loading, error } = useSelector(
-    (state: RootState) => state.properties
+  const { properties, loading, error } = useSelector((state: RootState) => state.properties
   );
   const {
     location,
@@ -221,17 +220,17 @@ export default function PropertiesPage() {
                 <Home size={18} />
               </div>
               <div>
-              <div className="flex items-center gap-2">
-             <CountUp
-                  from={0}
-                  to={properties.length}
-                  separator=","
-                  direction="up"
-                  duration={1}
-                  className="count-up-text text-xl lg:text-2xl font-bold"
-                />
-                <p className="text-2xl font-semibold">+</p>
-             </div>
+                <div className="flex items-center gap-2">
+                  <CountUp
+                    from={0}
+                    to={properties.length}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text text-xl lg:text-2xl font-bold"
+                  />
+                  <p className="text-2xl font-semibold">+</p>
+                </div>
                 <p className=" text-sm">Properties</p>
               </div>
             </div>
@@ -241,17 +240,17 @@ export default function PropertiesPage() {
                 <MapPin size={18} />
               </div>
               <div>
-             <div className="flex items-center gap-2">
-             <CountUp
-                  from={0}
-                  to={districts.length}
-                  separator=","
-                  direction="up"
-                  duration={1}
-                  className="count-up-text text-xl lg:text-2xl font-bold"
-                />
-                <p className="text-2xl font-semibold">+</p>
-             </div>
+                <div className="flex items-center gap-2">
+                  <CountUp
+                    from={0}
+                    to={districts.length}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text text-xl lg:text-2xl font-bold"
+                  />
+                  <p className="text-2xl font-semibold">+</p>
+                </div>
                 <p className=" text-sm">Locations</p>
               </div>
             </div>

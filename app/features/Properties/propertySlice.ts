@@ -16,7 +16,7 @@ const initialState: PropertyState = {
   error: null,
 };
 
-// Fetch all properties
+// ✅ Fetch all properties
 export const fetchProperties = createAsyncThunk<
   PropertyType[],
   void,
@@ -31,7 +31,23 @@ export const fetchProperties = createAsyncThunk<
   }
 });
 
-// Fetch single property by ID
+// ✅ Fetch properties by category
+export const fetchPropertiesByCategory = createAsyncThunk<
+  PropertyType[],
+  string,
+  { rejectValue: string }
+>("properties/fetchByCategory", async (categoryName, { rejectWithValue }) => {
+  try {
+    const encodedCategoryName = encodeURIComponent(categoryName);
+    const response = await axios.get<PropertyType[]>(`/api/properties/category/${encodedCategoryName}`);
+    return response.data;
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ message: string }>;
+    return rejectWithValue(error.response?.data?.message || "Failed to fetch properties by category");
+  }
+});
+
+// ✅ Fetch single property by ID
 export const fetchPropertyById = createAsyncThunk<
   PropertyType,
   string,
@@ -46,10 +62,10 @@ export const fetchPropertyById = createAsyncThunk<
   }
 });
 
-// Add a property
+// ✅ Add a property
 export const addProperty = createAsyncThunk<
   PropertyType,
-  PropertyType,
+  Omit<PropertyType, '_id'>,
   { rejectValue: string }
 >("properties/add", async (newProperty, { rejectWithValue }) => {
   try {
@@ -61,16 +77,15 @@ export const addProperty = createAsyncThunk<
   }
 });
 
-// Delete a property
+// ✅ Delete a property
 export const deleteProperty = createAsyncThunk<
   string,
   string,
   { rejectValue: string }
 >("properties/delete", async (_id, { rejectWithValue }) => {
   try {
-    const response = await axios.delete(`/api/properties?id=${_id}`);
-    if (response.status === 200) return _id;
-    return rejectWithValue("Failed to delete property");
+    await axios.delete(`/api/properties/${_id}`);
+    return _id;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(error.response?.data?.message || "Failed to delete property");
@@ -89,28 +104,93 @@ const propertySlice = createSlice({
     },
     toggleFavorite: (state, action: PayloadAction<string>) => {
       const property = state.properties.find(p => p._id === action.payload);
-      if (property) property.isFavorite = !property.isFavorite;
+      if (property) {
+        property.isFavorite = !property.isFavorite;
+      }
     },
+    clearProperties: (state) => {
+      state.properties = [];
+    }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProperties.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(fetchProperties.fulfilled, (state, action) => { state.loading = false; state.properties = action.payload; })
-      .addCase(fetchProperties.rejected, (state, action) => { state.loading = false; state.error = action.payload ?? "Failed to fetch properties"; })
+      // Fetch all properties
+      .addCase(fetchProperties.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProperties.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties = action.payload;
+      })
+      .addCase(fetchProperties.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch properties";
+      })
 
-      .addCase(fetchPropertyById.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(fetchPropertyById.fulfilled, (state, action) => { state.loading = false; state.currentProperty = action.payload; })
-      .addCase(fetchPropertyById.rejected, (state, action) => { state.loading = false; state.error = action.payload ?? "Failed to fetch property"; })
+      // Fetch properties by category
+      .addCase(fetchPropertiesByCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPropertiesByCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties = action.payload;
+      })
+      .addCase(fetchPropertiesByCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch properties by category";
+      })
 
-      .addCase(addProperty.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(addProperty.fulfilled, (state, action) => { state.loading = false; state.properties.push(action.payload); })
-      .addCase(addProperty.rejected, (state, action) => { state.loading = false; state.error = action.payload ?? "Failed to add property"; })
+      // Fetch property by ID
+      .addCase(fetchPropertyById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPropertyById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentProperty = action.payload;
+      })
+      .addCase(fetchPropertyById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch property";
+      })
 
-      .addCase(deleteProperty.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(deleteProperty.fulfilled, (state, action) => { state.loading = false; state.properties = state.properties.filter(p => p._id !== action.payload); })
-      .addCase(deleteProperty.rejected, (state, action) => { state.loading = false; state.error = action.payload ?? "Failed to delete property"; });
+      // Add property
+      .addCase(addProperty.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addProperty.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties.push(action.payload);
+      })
+      .addCase(addProperty.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to add property";
+      })
+
+      // Delete property
+      .addCase(deleteProperty.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProperty.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties = state.properties.filter(p => p._id !== action.payload);
+      })
+      .addCase(deleteProperty.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to delete property";
+      });
   },
 });
 
-export const { clearCurrentProperty, clearError, toggleFavorite } = propertySlice.actions;
+export const {
+  clearCurrentProperty,
+  clearError,
+  toggleFavorite,
+  clearProperties
+} = propertySlice.actions;
+
 export default propertySlice.reducer;

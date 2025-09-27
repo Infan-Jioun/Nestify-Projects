@@ -1,15 +1,34 @@
 import Property from "@/app/models/properties";
 import connectToDatabase from "@/lib/mongodb";
-import { NextRequest } from "next/server";
-type Params = { params: { name: string } };
-export async function GET(req: NextRequest, { params }: Params) {
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(req: NextRequest, context: { params: Promise<{ name: string }> }) {
     try {
         await connectToDatabase();
-        const properties = await Property.find({ category: params.name });
-        return new Response(JSON.stringify(properties), { status: 200 });
-    } catch (error) {
-        console.error(error);
-        return new Response(JSON.stringify({ message: "Failed to fetch properties" }), { status: 500 });
-    }
 
+        const params = await context.params;
+        const categoryName = decodeURIComponent(params.name);
+
+        // Case-insensitive search করার জন্য
+        const properties = await Property.find({
+            "category.name": {
+                $regex: new RegExp(`^${categoryName}$`, 'i')
+            }
+        });
+
+        if (!properties || properties.length === 0) {
+            return NextResponse.json(
+                { message: "No properties found for this category" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(properties, { status: 200 });
+    } catch (error) {
+        console.error("Error fetching properties by category:", error);
+        return NextResponse.json(
+            { message: "Failed to fetch properties" },
+            { status: 500 }
+        );
+    }
 }
