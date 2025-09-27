@@ -1,0 +1,435 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { fetchBlogPosts, fetchFeaturedPosts } from "../features/blog/blogSlice";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+    Calendar, Clock, Eye, Heart, Search, ArrowRight, Home,
+    User, Tag, BookOpen, TrendingUp, Building, HomeIcon
+} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+
+// Skeleton Loader Components
+const BlogCardSkeleton = () => (
+    <Card className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-pulse hover:shadow-lg transition-all duration-300">
+        <div className="h-48 bg-gradient-to-r from-gray-200 to-gray-300"></div>
+        <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+                <div className="h-3 bg-gray-200 rounded-full w-20"></div>
+                <div className="h-3 bg-gray-200 rounded-full w-16"></div>
+            </div>
+            <div className="h-5 bg-gray-200 rounded-full mb-3"></div>
+            <div className="h-4 bg-gray-200 rounded-full mb-4 w-3/4"></div>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                    <div className="h-3 bg-gray-200 rounded-full w-16"></div>
+                </div>
+                <div className="h-10 bg-gray-200 rounded-full w-24"></div>
+            </div>
+        </CardContent>
+    </Card>
+);
+
+const FeaturedPostSkeleton = () => (
+    <div className="bg-gradient-to-br from-green-50 via-white to-emerald-50 border border-green-100 rounded-3xl p-8 animate-pulse">
+        <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div className="h-80 bg-gradient-to-r from-gray-200 to-gray-300 rounded-2xl"></div>
+            <div className="space-y-5">
+                <div className="h-4 bg-gray-200 rounded-full w-32"></div>
+                <div className="h-8 bg-gray-200 rounded-full w-full"></div>
+                <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded-full w-1/2"></div>
+                <div className="h-12 bg-gray-200 rounded-full w-40"></div>
+            </div>
+        </div>
+    </div>
+);
+
+export default function BlogComponents() {
+    const dispatch = useDispatch<AppDispatch>();
+    const { posts, featuredPosts, loading, error, totalPages, currentPage } = useSelector(
+        (state: RootState) => state.blog
+    );
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+
+    const categories = [
+        { name: "Real Estate Tips", icon: <BookOpen size={16} /> },
+        { name: "Market Trends", icon: <TrendingUp size={16} /> },
+        { name: "Home Improvement", icon: <HomeIcon size={16} /> },
+        { name: "Investment Guide", icon: <Building size={16} /> },
+        { name: "Legal Advice", icon: <Tag size={16} /> },
+        { name: "Interior Design", icon: <Home size={16} /> }
+    ];
+
+    useEffect(() => {
+        dispatch(fetchBlogPosts({ page: 1, limit: 9, category: selectedCategory }));
+        dispatch(fetchFeaturedPosts());
+    }, [dispatch, selectedCategory]);
+
+    const filteredPosts = posts?.filter(post =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.categories.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))
+    ) || [];
+
+    const formatDate = (dateString: string) => {
+        if (!dateString) return "";
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    };
+
+    const loadMore = () => {
+        if (currentPage < totalPages) {
+            dispatch(fetchBlogPosts({ page: currentPage + 1, limit: 9, category: selectedCategory }));
+        }
+    };
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 flex items-center justify-center py-16">
+                <div className="container mx-auto px-4 text-center">
+                    <Card className="bg-white/80 backdrop-blur-sm border border-red-200 rounded-3xl p-8 max-w-md mx-auto shadow-lg">
+                        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <span className="text-3xl">⚠️</span>
+                        </div>
+                        <h2 className="text-red-600 text-2xl font-bold mb-3">Error Loading Blog</h2>
+                        <p className="text-red-500 mb-6">{error}</p>
+                        <Button
+                            onClick={() => window.location.reload()}
+                            variant="outline"
+                            className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
+                        >
+                            Try Again
+                        </Button>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
+            {/* Header Section */}
+            <section className="relative py-28 px-6 text-center bg-gradient-to-br from-green-500 via-emerald-600 to-teal-700 overflow-hidden">
+                {/* Background Elements */}
+                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-green-400/10 rounded-full blur-3xl"></div>
+
+                <div className="relative container mx-auto px-4">
+                    <div className="max-w-4xl mx-auto">
+                        <Link href="/" className="inline-flex items-center gap-3 text-green-100 hover:text-white mb-8 transition-colors group">
+                            <Home size={18} />
+                            <span className="group-hover:translate-x-1 transition-transform">Back to Home</span>
+                        </Link>
+
+                        <div className="mb-8">
+                            <Badge variant="secondary" className="mb-4 bg-white/20 text-white border-0 px-4 py-2 rounded-full backdrop-blur-sm">
+                                📚 Expert Insights
+                            </Badge>
+                            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                                Real Estate <span className="text-green-200">Blog</span>
+                            </h1>
+                            <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto leading-relaxed">
+                                Discover market trends, investment strategies, and expert tips for your property journey
+                            </p>
+                        </div>
+
+                        {/* Search Bar */}
+                        <div className="max-w-2xl mx-auto relative">
+                            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-300" />
+                            <Input
+                                type="text"
+                                placeholder="Search articles, topics, or keywords..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-12 pr-6 py-4 rounded-2xl border-0 bg-white/10 backdrop-blur-lg text-white placeholder-green-200 focus:bg-white/20 focus:ring-2 focus:ring-green-300 transition-all duration-300"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Categories Filter */}
+            <section className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-10">
+                <div className="container mx-auto px-4 py-6">
+                    <div className="flex flex-wrap gap-3 justify-center">
+                        <Button
+                            variant={selectedCategory === "" ? "default" : "outline"}
+                            onClick={() => setSelectedCategory("")}
+                            className="rounded-full px-6 py-2.5 transition-all duration-300 border-green-200 hover:border-green-400"
+                        >
+                            📖 All Articles
+                        </Button>
+                        {categories.map((category) => (
+                            <Button
+                                key={category.name}
+                                variant={selectedCategory === category.name ? "default" : "outline"}
+                                onClick={() => setSelectedCategory(category.name)}
+                                className="rounded-full px-5 py-2.5 transition-all duration-300 border-green-200 hover:border-green-400 flex items-center gap-2"
+                            >
+                                {category.icon}
+                                {category.name}
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Featured Posts */}
+            <section className="container mx-auto px-4 py-20">
+                <div className="text-center mb-16">
+                    <Badge variant="outline" className="mb-4 bg-green-50 text-green-600 border-green-200 px-4 py-1.5 rounded-full">
+                        <TrendingUp size={16} className="mr-2" />
+                        Featured Content
+                    </Badge>
+                    <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Stories</h2>
+                    <p className="text-gray-600 max-w-2xl mx-auto text-lg">Curated insights from our real estate experts</p>
+                </div>
+
+                {loading && (!featuredPosts || featuredPosts.length === 0) ? (
+                    <FeaturedPostSkeleton />
+                ) : featuredPosts && featuredPosts.length > 0 ? (
+                    <Card className="bg-gradient-to-br from-green-50 via-white to-emerald-50 border border-green-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500">
+                        <div className="grid lg:grid-cols-2 gap-10 items-center">
+                            <div className="relative group">
+                                <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                                    <Image
+                                        src={featuredPosts[0].featuredImage}
+                                        alt={featuredPosts[0].title}
+                                        width={600}
+                                        height={400}
+                                        className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                </div>
+                                <div className="absolute top-4 left-4">
+                                    <Badge className="bg-green-500 text-white border-0 px-3 py-1.5 rounded-full">
+                                        Featured
+                                    </Badge>
+                                </div>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-4 text-sm text-gray-600">
+                                    <span className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full">
+                                        <Calendar size={16} className="text-green-600" />
+                                        {formatDate(featuredPosts[0].publishedAt)}
+                                    </span>
+                                    <span className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
+                                        <Clock size={16} className="text-blue-600" />
+                                        {featuredPosts[0].readTime} min read
+                                    </span>
+                                </div>
+                                <h3 className="text-3xl font-bold text-gray-900 leading-tight">
+                                    {featuredPosts[0].title}
+                                </h3>
+                                <p className="text-gray-600 text-lg leading-relaxed">
+                                    {featuredPosts[0].excerpt}
+                                </p>
+                                <div className="flex items-center gap-6 text-sm text-gray-500">
+                                    <span className="flex items-center gap-2">
+                                        <Eye size={16} />
+                                        {featuredPosts[0].views} views
+                                    </span>
+                                    <span className="flex items-center gap-2">
+                                        <Heart size={16} />
+                                        {featuredPosts[0].likes} likes
+                                    </span>
+                                </div>
+                                <Link href={`/blog/${featuredPosts[0].slug}`}>
+                                    <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:translate-x-1">
+                                        Read Full Story
+                                        <ArrowRight size={18} className="ml-2" />
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    </Card>
+                ) : null}
+            </section>
+
+            {/* Blog Posts Grid */}
+            <section className="container mx-auto px-4 py-8 pb-24">
+                <div className="text-center mb-16">
+                    <Badge variant="outline" className="mb-4 bg-blue-50 text-blue-600 border-blue-200 px-4 py-1.5 rounded-full">
+                        <BookOpen size={16} className="mr-2" />
+                        Latest Articles
+                    </Badge>
+                    <h2 className="text-4xl font-bold text-gray-900 mb-4">Latest Insights</h2>
+                    <p className="text-gray-600 text-lg">Stay updated with the latest real estate market trends and expert advice</p>
+                </div>
+
+                {loading && (!posts || posts.length === 0) ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {Array.from({ length: 6 }).map((_, index) => (
+                            <BlogCardSkeleton key={index} />
+                        ))}
+                    </div>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                            {filteredPosts.map((post) => (
+                                <Card key={post._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-500 group hover:translate-y-2">
+                                    <div className="relative overflow-hidden">
+                                        <Image
+                                            src={post.featuredImage}
+                                            alt={post.title}
+                                            width={400}
+                                            height={250}
+                                            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+                                        />
+                                        <div className="absolute top-4 left-4">
+                                            <Badge className="bg-green-500 text-white border-0 px-3 py-1 rounded-full text-xs">
+                                                {post.categories[0]}
+                                            </Badge>
+                                        </div>
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-t-2xl"></div>
+                                    </div>
+
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center gap-3 text-xs text-gray-500 mb-4">
+                                            <span className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-full">
+                                                <Calendar size={12} />
+                                                {formatDate(post.publishedAt)}
+                                            </span>
+                                            <span className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-full">
+                                                <Clock size={12} />
+                                                {post.readTime} min
+                                            </span>
+                                        </div>
+
+                                        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors duration-300 leading-tight">
+                                            {post.title}
+                                        </h3>
+
+                                        <p className="text-gray-600 mb-5 line-clamp-3 leading-relaxed">
+                                            {post.excerpt}
+                                        </p>
+
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="relative">
+                                                    <Image
+                                                        src={post.author.avatar}
+                                                        alt={post.author.name}
+                                                        width={36}
+                                                        height={36}
+                                                        className="rounded-full border-2 border-green-100"
+                                                    />
+                                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                                                </div>
+                                                <span className="text-sm font-medium text-gray-700">{post.author.name}</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-xs text-gray-500">
+                                                <span className="flex items-center gap-1">
+                                                    <Eye size={12} />
+                                                    {post.views}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Heart size={12} />
+                                                    {post.likes}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <Link href={`/blog/${post.slug}`} className="block">
+                                            <Button
+                                                variant="outline"
+                                                className="w-full border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300 hover:text-green-700 rounded-xl transition-all duration-300 group-hover:scale-105"
+                                            >
+                                                Read More
+                                                <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                                            </Button>
+                                        </Link>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+
+                        {currentPage < totalPages && (
+                            <div className="text-center">
+                                <Button
+                                    onClick={loadMore}
+                                    variant="outline"
+                                    className="px-10 py-3 rounded-full border-green-300 text-green-600 hover:bg-green-500 hover:text-white hover:border-green-500 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                                            Loading...
+                                        </div>
+                                    ) : (
+                                        `Load More (${posts?.length || 0} of ${totalPages * 9})`
+                                    )}
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                )}
+
+                {filteredPosts.length === 0 && !loading && (
+                    <Card className="text-center py-16 max-w-2xl mx-auto bg-white/50 backdrop-blur-sm">
+                        <CardContent>
+                            <div className="w-24 h-24 bg-gradient-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Search size={40} className="text-green-500" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-3">No articles found</h3>
+                            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+                                Try adjusting your search terms or browse different categories to discover relevant content.
+                            </p>
+                            <Button
+                                onClick={() => { setSearchTerm(""); setSelectedCategory(""); }}
+                                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+                            >
+                                Clear Filters & Show All
+                            </Button>
+                        </CardContent>
+                    </Card>
+                )}
+            </section>
+
+            {/* Newsletter Section */}
+            <section className="bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900 text-white py-20 relative overflow-hidden">
+                <div className="absolute inset-0 bg-black/20"></div>
+                <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 right-0 w-80 h-80 bg-green-400/10 rounded-full blur-3xl"></div>
+
+                <div className="relative container mx-auto px-4 text-center">
+                    <div className="max-w-3xl mx-auto">
+                        <Badge variant="secondary" className="mb-6 bg-white/20 text-white border-0 px-4 py-2 rounded-full backdrop-blur-sm">
+                            💌 Stay Informed
+                        </Badge>
+                        <h2 className="text-4xl font-bold mb-4">Stay Updated with Market Insights</h2>
+                        <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                            Get the latest real estate trends, investment opportunities, and expert advice delivered directly to your inbox.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                            <Input
+                                type="email"
+                                placeholder="Enter your email address"
+                                className="flex-1 rounded-2xl border-0 bg-white/10 backdrop-blur-lg text-white placeholder-gray-300 py-3 px-5 focus:bg-white/20 focus:ring-2 focus:ring-green-300 transition-all duration-300"
+                            />
+                            <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                Subscribe Now
+                            </Button>
+                        </div>
+                        <p className="text-gray-400 text-sm mt-4">No spam, unsubscribe at any time</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+}

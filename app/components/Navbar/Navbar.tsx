@@ -37,6 +37,7 @@ export function Navbar() {
     { name: "Properties", href: "/Properties" },
     ...(session ? [{ name: "Dashboard", href: "/dashboard" }] : []),
     { name: "About", href: "/About" },
+    { name: "Blog", href: "/Blog" },
     { name: "Contact", href: "/Contact" },
   ];
 
