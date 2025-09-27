@@ -4,7 +4,7 @@ import React from 'react'
 import Banner from '../Components/Banner/Banner'
 import PopularProperties from '../Components/PopularProperties/PopularProperties';
 import BannerService from '../Components/BannerServices/BannerService'
-import ApartmentTypes from '../Components/ApartmentTypes/ApartmentTypes';
+import ApartmentTypes from '../Components/PropertyTypes/PropertyTypesCard/PropertyTypesCard';
 import FeaturedAgents from '../Components/FeaturedAgents/FeaturedAgents';
 import Ratings from '../Components/Raitngs/Raitngs';
 import TrustedCompany from '../Components/TrustedCompany/TrustedCompany';
