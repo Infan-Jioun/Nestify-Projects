@@ -27,6 +27,7 @@ import MultiSeclectService from "../Components/MultiSeclectService/MultiSeclectS
 import { useRouter } from "next/navigation";
 import ListingStatus from "../Components/ListingStatus/ListingStatus";
 import Skeleton from "react-loading-skeleton";
+import YearBuild from "../Components/YearBuildForm/YearBuild";
 
 // Skeleton Loader Components
 const ImageSectionSkeleton = () => (
@@ -174,6 +175,7 @@ export default function AddPropertyFormPage() {
               "email",
               "geoCountryLocation",
               "category",
+              "yearBuild",
               "listingStatus",
               "images",
               "videos",
@@ -188,11 +190,13 @@ export default function AddPropertyFormPage() {
           name: key,
           value: value as string | number | boolean,
         }));
-     const transformedData: PropertyType = {  
+      const transformedData: PropertyType = {
+
         ...data,
+        yearBuild: data.yearBuild,
         images: uploadedImages,
         videos: data.videos || [],
-          propertyFacilities: data.propertyFacilities || [],
+        propertyFacilities: data.propertyFacilities || [],
         category: {
           name:
             typeof data.category === "string"
@@ -284,7 +288,9 @@ export default function AddPropertyFormPage() {
           <PropertyPrice register={register} errors={errors} />
           <Currency value={watch("currency")} setValue={setValue} errors={errors} />
         </div>
-
+        <div>
+          <YearBuild control={control} />
+        </div>
         <PropertyAddress register={register} errors={errors} />
 
         <Button className="h-10 px-4 w-full rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white border border-gray-300 hover:border-green-500 font-semibold transition">

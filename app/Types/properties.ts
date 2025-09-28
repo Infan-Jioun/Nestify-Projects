@@ -23,6 +23,7 @@ export interface PropertyType {
         lat?: number;
         lng?: number;
     };
+    yearBuild?: number;
     images: string[];
     videos: string[];
     ownerId?: string;

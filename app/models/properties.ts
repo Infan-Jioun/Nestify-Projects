@@ -9,7 +9,7 @@ const categoryFieldSchema = new Schema(
 );
 
 const categorySchema = new Schema({
-    name: { type: String, required: true }, 
+    name: { type: String, required: true },
     fields: [categoryFieldSchema],
 });
 
@@ -28,6 +28,7 @@ const propertySchema = new Schema(
             lat: { type: Number },
             lng: { type: Number },
         },
+        yearBuild: { type: Number },
         images: { type: [String], default: [] },
         videos: { type: [String], default: [] },
         ownerId: { type: String },

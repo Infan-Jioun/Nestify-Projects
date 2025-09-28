@@ -11,6 +11,7 @@ export type Inputs = {
   videos?: string[]
   searchLocation : string
   geoCountryLocation : string
+  yearBuild?: number
   ownerId: string
   contactNumber: string
   email: string
