@@ -1,12 +1,14 @@
+// SearchHomeLocation.tsx
 "use client";
-import { Input } from '@/components/ui/input';
-import React, { useState, useEffect } from 'react';
-import { FaSearch, FaTimes } from 'react-icons/fa';
+
+import { Input } from "@/components/ui/input";
+import React, { useState, useEffect } from "react";
+import { FaSearch, FaTimes } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
-import { bangladeshGeoData } from '@/lib/geo-data';
-import { setQuery, setResults } from '@/app/features/SearchLocation/SearchLocationSlice';
-import { setGeoCountryLocationLoading } from '@/app/features/loader/loaderSlice';
+import { bangladeshGeoData } from "@/lib/geo-data";
+import { setQuery, setResults } from "@/app/features/SearchLocation/SearchLocationSlice";
+import { setGeoCountryLocationLoading } from "@/app/features/loader/loaderSlice";
 import { Circles } from "react-loader-spinner";
 import { setLocation } from "@/app/features/filter/filterSlice";
 
@@ -14,6 +16,7 @@ export default function SearchHomeLocation() {
     const dispatch = useDispatch<AppDispatch>();
     const { query, results } = useSelector((state: RootState) => state.searchLocation);
     const { geoCountryLocationLoading } = useSelector((state: RootState) => state.loader);
+
     const [showDropdown, setShowDropdown] = useState(false);
 
     useEffect(() => {
@@ -30,14 +33,31 @@ export default function SearchHomeLocation() {
             const matches: string[] = [];
 
             bangladeshGeoData.forEach((division) => {
-                if (division.division.toLowerCase().includes(searchValue)) matches.push(`${division.division}`);
+                if (division.division.toLowerCase().includes(searchValue)) {
+                    matches.push(division.division);
+                }
+
                 division.districts.forEach((district) => {
-                    if (district.district.toLowerCase().includes(searchValue)) matches.push(`${district.district}, ${division.division}`);
+                    const districtFull = `${district.district}, ${division.division}`;
+                    if (district.district.toLowerCase().includes(searchValue)) {
+                        matches.push(districtFull);
+                    }
+
                     district.upazilas.forEach((upazila) => {
-                        if (upazila.upazila.toLowerCase().includes(searchValue)) matches.push(`${upazila.upazila}, ${district.district}, ${division.division}`);
-                        upazila.unions.forEach((union) => {
-                            if (union.toLowerCase().includes(searchValue)) matches.push(`${union}, ${upazila.upazila}, ${district.district}, ${division.division}`);
-                        });
+                        const upazilaFull = `${upazila.upazila}, ${district.district}, ${division.division}`;
+                        if (upazila.upazila.toLowerCase().includes(searchValue)) {
+                            matches.push(upazilaFull);
+                        }
+
+                      
+                        if (upazila.unions) {
+                            upazila.unions.forEach((union) => {
+                                const unionFull = `${union}, ${upazila.upazila}, ${district.district}, ${division.division}`;
+                                if (union.toLowerCase().includes(searchValue)) {
+                                    matches.push(unionFull);
+                                }
+                            });
+                        }
                     });
                 });
             });
@@ -45,7 +65,7 @@ export default function SearchHomeLocation() {
             dispatch(setResults(matches.slice(0, 100)));
             setShowDropdown(true);
             dispatch(setGeoCountryLocationLoading(false));
-        }, 500);
+        }, 300);
 
         return () => clearTimeout(handler);
     }, [query, dispatch]);
@@ -58,42 +78,53 @@ export default function SearchHomeLocation() {
     };
 
     const handleClear = () => {
-        dispatch(setQuery(''));
+        dispatch(setQuery(""));
         dispatch(setResults([]));
-        dispatch(setLocation(''));
+        dispatch(setLocation(""));
         setShowDropdown(false);
     };
 
     const highlightMatch = (text: string, query: string) => {
         if (!query) return text;
         const regex = new RegExp(`(${query})`, "gi");
-        return text.split(regex).map((part, i) => regex.test(part) ? <span key={i} className="font-semibold text-green-500">{part}</span> : part);
+        return text.split(regex).map((part, i) =>
+            part.toLowerCase() === query.toLowerCase() ? (
+                <span key={i} className="font-semibold text-green-500">{part}</span>
+            ) : (
+                part
+            )
+        );
     };
 
     return (
-        <div className="p-4 rounded-xl bg-white shadow-sm border border-gray-100">
- 
-            <div className="relative">
-                <Input
-                    value={query}
-                    onChange={(e) => dispatch(setQuery(e.target.value))}
-                    className={`px-8 py-2 w-full border rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400 ${query.trim() !== "" ? "bg-green-50" : "bg-white"}`}
-                    type="search"
-                    placeholder="Search by name or location..."
-                    onFocus={() => query.trim() && setShowDropdown(true)}
-                />
-                <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
-                {query && <FaTimes onClick={handleClear} className="absolute right-3 top-2 text-gray-500 cursor-pointer hover:text-red-500" />}
-                {geoCountryLocationLoading && <div className="absolute right-10 top-2"><Circles height="20" width="20" color="#22c55e" ariaLabel="loading" /></div>}
-                {showDropdown && !geoCountryLocationLoading && results.length > 0 && (
-                    <ul className="absolute z-10 mt-2 w-full max-h-96 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
-                        {results.map((item, index) => <li key={index} className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer" onClick={() => handleSelect(item)}>{highlightMatch(item, query)}</li>)}
-                    </ul>
-                )}
-                {showDropdown && !geoCountryLocationLoading && results.length === 0 && query.trim() !== "" && (
-                    <p className="absolute z-10 mt-2 w-full px-3 py-2 text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-lg">No location foundz</p>
-                )}
-            </div>
+        <div className="relative">
+            <Input
+                value={query}
+                onChange={(e) => dispatch(setQuery(e.target.value))}
+                type="search"
+                placeholder="Search by name or location..."
+                onFocus={() => query.trim() && setShowDropdown(true)}
+                className={`px-8 py-2 w-full border rounded-full focus:ring-2 focus:ring-green-400 focus:border-green-400 ${query.trim() ? "bg-green-50" : "bg-white"}`}
+            />
+            <FaSearch className="absolute left-3 top-2.5 text-gray-500" />
+            {query && !geoCountryLocationLoading && (
+                <FaTimes onClick={handleClear} className="absolute right-3 top-2.5 text-gray-500 cursor-pointer hover:text-red-500" />
+            )}
+            {geoCountryLocationLoading && (
+                <div className="absolute right-3 top-2">
+                    <Circles height="20" width="20" color="#22c55e" ariaLabel="loading" />
+                </div>
+            )}
+            {showDropdown && !geoCountryLocationLoading && results.length > 0 && (
+                <ul className="absolute z-10 mt-2 w-full max-h-96 overflow-y-auto border border-gray-200 rounded-lg shadow-lg bg-white">
+                    {results.map((item, index) => (
+                        <li key={index} className="px-3 py-2 text-sm text-gray-700 hover:bg-green-100 cursor-pointer" onClick={() => handleSelect(item)}>
+                            {highlightMatch(item, query)}
+                        </li>
+                    ))}
+                </ul>
+            )}
+
         </div>
     );
 }
