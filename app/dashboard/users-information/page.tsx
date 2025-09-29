@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { TiUserDeleteOutline } from "react-icons/ti"
 import DeletedConfirmation from "@/app/components/DeleteConfirmation/DeleteConfirmation"
 import Skeleton from "react-loading-skeleton"
-import "react-loading-skeleton/dist/skeleton.css"
+
 
 type User = {
   _id: string

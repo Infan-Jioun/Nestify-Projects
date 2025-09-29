@@ -47,6 +47,7 @@ export interface PropertyType {
     createdAt?: string;
     updatedAt?: string;
     isFavorite?: boolean;
+    districtId? : string
 
 }
 
