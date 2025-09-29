@@ -2,14 +2,14 @@
 
 import { MinusIcon, PlusIcon } from "lucide-react"
 import { Button, Group, Input, Label, NumberField } from "react-aria-components"
-import { Controller,  Control } from "react-hook-form"
+import { Controller, Control } from "react-hook-form"
 import { Inputs } from "../Inputs"
 
 type YearBuildProps = {
   control: Control<Inputs>;
 }
 
-export default function YearBuild({ control}: YearBuildProps) {
+export default function YearBuild({ control }: YearBuildProps) {
   return (
     <Controller
       name="yearBuild"
@@ -32,7 +32,6 @@ export default function YearBuild({ control}: YearBuildProps) {
               >
                 <MinusIcon size={16} aria-hidden="true" />
               </Button>
-              {/* এখানে field props bind করতে হবে */}
               <Input
                 className="bg-background text-foreground w-full grow px-3 py-2 text-center tabular-nums"
                 value={field.value ?? ""}
@@ -45,7 +44,7 @@ export default function YearBuild({ control}: YearBuildProps) {
                 <PlusIcon size={16} aria-hidden="true" />
               </Button>
             </Group>
-     
+
           </div>
         </NumberField>
       )}

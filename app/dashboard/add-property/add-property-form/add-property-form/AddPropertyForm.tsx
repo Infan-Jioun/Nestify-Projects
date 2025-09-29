@@ -193,7 +193,7 @@ export default function AddPropertyFormPage() {
       const transformedData: PropertyType = {
 
         ...data,
-        yearBuild: data.yearBuild,
+        yearBuild: data.yearBuild || 2025,
         images: uploadedImages,
         videos: data.videos || [],
         propertyFacilities: data.propertyFacilities || [],
