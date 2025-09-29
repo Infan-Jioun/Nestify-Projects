@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 
 import {
     ChevronLeft, ChevronRight, MapPin, Bed, Bath, Ruler, Heart, Phone, Mail, ArrowLeft, TreePine, Car, Layers,
-    Home
+    Home,
+    Calendar
 } from "lucide-react";
 import Link from "next/link";
 import { AppDispatch, RootState } from "@/lib/store";
@@ -171,6 +172,7 @@ const getFeatureIcons = (property: PropertyType) => {
             case 'roomsSections':
                 icon = <Layers size={24} />;
                 break;
+            case "yearBuild": icon = <Calendar size={14} />;
             default:
                 icon = <Home size={24} />;
         }
@@ -202,7 +204,8 @@ const getPropertyDetails = (property: PropertyType) => {
         { label: "Status", value: property.status },
         { label: "Listing Status", value: property.listingStatus },
         { label: "Address", value: property.address },
-   
+        { label: "Year Build", value: property.yearBuild || "" },
+
     ];
 
     return [...categoryDetails, ...commonDetails];
@@ -577,7 +580,7 @@ export default function PropertyDetailsPage() {
                         whileTap={{ scale: 0.98 }}
                     >
                         <Button className="w-[250px] mx-auto rounded-full mt-10 bg-green-500 hover:bg-green-700 text-white py-2.5">
-                        Booking    <span className={`px-3 py-1 rounded-full text-sm font-medium ${categoryType === 'land' ? 'bg-yellow-100 text-yellow-800' :
+                            Booking    <span className={`px-3 py-1 rounded-full text-sm font-medium ${categoryType === 'land' ? 'bg-yellow-100 text-yellow-800' :
                                 categoryType === 'commercial' ? 'bg-blue-100 text-blue-800' :
                                     'bg-green-100 text-green-800'
                                 }`}>

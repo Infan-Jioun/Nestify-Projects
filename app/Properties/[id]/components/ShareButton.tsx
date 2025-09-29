@@ -14,9 +14,9 @@ const ShareButton: React.FC<ShareModalButtonProps> = ({ url, title = "Check this
     const [open, setOpen] = useState(false);
     const [copied, setCopied] = useState(false);
 
-    
+
     const handleShare = async () => {
-        if (typeof navigator.share === "function") { 
+        if (typeof navigator.share === "function") {
             try {
                 await navigator.share({ title, url });
                 setOpen(false);
@@ -85,7 +85,7 @@ const ShareButton: React.FC<ShareModalButtonProps> = ({ url, title = "Check this
                             >
                                 <Mail size={16} /> Email
                             </a>
-                            {typeof navigator.share === "function" && ( 
+                            {typeof navigator.share === "function" && (
                                 <Button
                                     variant="ghost"
                                     size="sm"
