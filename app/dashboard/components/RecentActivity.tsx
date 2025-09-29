@@ -10,7 +10,18 @@ interface Activity {
     description: string
     timestamp: Date
     user?: string
-    data?: any
+    data?: {
+        price?: number
+        location?: string
+        userType?: string
+        propertiesCount?: number
+        district?: string
+        propertiesAdded?: number
+        views?: number
+        propertyId?: string
+        rating?: number
+        review?: string
+    }
 }
 
 export default function RecentActivity() {
