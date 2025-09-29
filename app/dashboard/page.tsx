@@ -112,7 +112,7 @@ export default function DashboardPage() {
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                <Link href={"/Properties"}> <StatCard title="Total Properties" value={totalProperties} growth={propertyGrowth} icon={Home} color="green" /></Link>
-              <Link href={"/SeeAllDistrct"}>  <StatCard title="Districts Covered" value={totalDistricts} avg={avgPropertiesPerDistrict} icon={MapPin} color="green" /></Link>
+              <Link href={"/SeeAllDistrict"}>  <StatCard title="Districts Covered" value={totalDistricts} avg={avgPropertiesPerDistrict} icon={MapPin} color="green" /></Link>
            <Link href={"/dashboard/users-information"}>     <StatCard title="Total Users" value={totalUsers} growth={userGrowth} icon={Users} color="purple" /></Link>
                 <StatCard title="Platform Health" value="98.2%" status="All systems operational" icon={TrendingUp} color="orange" />
             </div>
