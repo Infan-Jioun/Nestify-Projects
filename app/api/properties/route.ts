@@ -27,20 +27,3 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function DELETE(req: NextRequest) {
-    await connectToDatabase();
-    try {
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get("id");
-
-        if (!id) return NextResponse.json({ message: "Property id is required" }, { status: 400 });
-
-        const deletedProperty = await Property.findByIdAndDelete(id);
-        if (!deletedProperty) return NextResponse.json({ message: "Property not found" }, { status: 404 });
-
-        return NextResponse.json({ message: "Property deleted successfully", property: deletedProperty }, { status: 200 });
-    } catch (err) {
-        console.error("Failed to delete property:", err);
-        return NextResponse.json({ message: "Failed to delete property" }, { status: 500 });
-    }
-}
