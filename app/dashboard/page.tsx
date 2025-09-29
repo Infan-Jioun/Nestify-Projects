@@ -414,24 +414,8 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* Debug Section */}
-            <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h4 className="font-semibold text-yellow-800 mb-2">Debug Information:</h4>
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                        <strong>Users:</strong> {totalUsers}
-                    </div>
-                    <div>
-                        <strong>Properties:</strong> {totalProperties}
-                    </div>
-                    <div>
-                        <strong>Districts:</strong> {totalDistricts}
-                    </div>
-                </div>
-                <div className="mt-2 text-xs text-yellow-700">
-                    Check browser console for detailed data structure
-                </div>
-            </div>
+     
+          
         </div>
     )
 }
