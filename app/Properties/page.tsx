@@ -20,6 +20,7 @@ import {
   sortProperties,
   setCurrentPage,
   setItemsPerPage,
+  clearFilters,
 } from "../features/filter/filterSlice";
 import Pagination from "../components/PropertyCard/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
@@ -117,6 +118,12 @@ export default function PropertiesPage() {
       if (squareFeat[1] > 0 && (property.floorArea || 0) > squareFeat[1])
         return false;
 
+
+      const propertyYear = property.yearBuild || (property.createdAt ? new Date(property.createdAt).getFullYear() : new Date().getFullYear());
+
+      if (yearBuild[0] > 0 && propertyYear < yearBuild[0]) return false;
+      if (yearBuild[1] > 0 && propertyYear > yearBuild[1]) return false;
+
       if (otherFeatures.length > 0) {
         const hasFeatures = otherFeatures.every((feature) =>
           property.propertyFacilities?.includes(feature)
@@ -136,6 +143,7 @@ export default function PropertiesPage() {
     bedrooms,
     bathrooms,
     squareFeat,
+    yearBuild,
     otherFeatures,
   ]);
 
@@ -152,6 +160,10 @@ export default function PropertiesPage() {
   const handleItemsPerPageChange = (value: number) => {
     dispatch(setItemsPerPage(value));
     dispatch(setCurrentPage(1));
+  };
+
+  const handleClearAllFilters = () => {
+    dispatch(clearFilters());
   };
 
   useEffect(() => {
@@ -174,6 +186,8 @@ export default function PropertiesPage() {
       bathrooms !== "any" ||
       squareFeat[0] > 0 ||
       squareFeat[1] > 0 ||
+      yearBuild[0] > 2000 ||
+      yearBuild[1] < new Date().getFullYear() ||
       otherFeatures.length > 0
     );
   }, [
@@ -185,6 +199,7 @@ export default function PropertiesPage() {
     bedrooms,
     bathrooms,
     squareFeat,
+    yearBuild,
     otherFeatures,
   ]);
 
@@ -295,10 +310,7 @@ export default function PropertiesPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        // Add functionality to clear all filters
-                        console.log("Clear all filters");
-                      }}
+                      onClick={handleClearAllFilters}
                       className="h-8 text-gray-500 hover:text-gray-700"
                     >
                       <FilterX size={14} className="mr-1" />
@@ -430,10 +442,7 @@ export default function PropertiesPage() {
                   </p>
                   {areFiltersApplied && (
                     <Button
-                      onClick={() => {
-                        // Add functionality to clear all filters
-                        console.log("Clear all filters");
-                      }}
+                      onClick={handleClearAllFilters}
                       className="bg-green-600 hover:bg-green-700"
                     >
                       <FilterX size={16} className="mr-2" />

@@ -1,4 +1,3 @@
-// SearchHomeLocation.tsx
 "use client";
 
 import { Input } from "@/components/ui/input";
@@ -49,7 +48,7 @@ export default function SearchHomeLocation() {
                             matches.push(upazilaFull);
                         }
 
-                      
+
                         if (upazila.unions) {
                             upazila.unions.forEach((union) => {
                                 const unionFull = `${union}, ${upazila.upazila}, ${district.district}, ${division.division}`;

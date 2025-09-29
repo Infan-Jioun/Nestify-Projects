@@ -1,7 +1,9 @@
 import { PropertyType } from "@/app/Types/properties";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 type ListingStatus = "All" | "Sale" | "Rent" | "";
 type Currency = "All" | "BDT" | "USD" | "SAR" | "EUR" | "";
+
 interface FilterState {
     location: string;
     listingStatus: ListingStatus;
@@ -108,7 +110,7 @@ const filterSlice = createSlice({
             state.bedrooms = "any";
             state.bathrooms = "any";
             state.squareFeat = [0, 0];
-            state.yearBuild = [0, 0];
+            state.yearBuild = [1900, new Date().getFullYear()];
             state.otherFeatures = [];
             state.currentPage = 1;
         },
@@ -131,7 +133,6 @@ export const {
     setSortOption,
     sortProperties,
     clearFilters,
-
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

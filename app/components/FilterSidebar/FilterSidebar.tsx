@@ -30,6 +30,10 @@ import {
     clearFilters,
     setListingStatus,
     setCurrency,
+    setBedrooms,
+    setBathrooms,
+    setOtherFeatures,
+    setLocation,
 } from "@/app/features/filter/filterSlice";
 import Skeleton from "react-loading-skeleton";
 
@@ -56,7 +60,13 @@ function SidebarContent() {
         } else {
             dispatch(setPropertyType([...filter.propertyType, type]));
         }
-        
+
+        setLocalLoading(true);
+        setTimeout(() => setLocalLoading(false), 500);
+    };
+
+    const handleClearFilters = () => {
+        dispatch(clearFilters());
         setLocalLoading(true);
         setTimeout(() => setLocalLoading(false), 500);
     };
@@ -219,7 +229,7 @@ function SidebarContent() {
                             onChange={(e) =>
                                 dispatch(setYearBuild([Number(e.target.value) || 1900, filter.yearBuild[1]]))
                             }
-                            className="mt-1"
+                            className="mt-1"    
                         />
                     </div>
                     <div className="flex-1">
@@ -249,7 +259,7 @@ function SidebarContent() {
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={() => dispatch(clearFilters())}
+                        onClick={handleClearFilters}
                         className="text-gray-700 border-gray-300"
                     >
                         <X size={16} className="mr-2" />
@@ -270,7 +280,6 @@ export function FilterSidebar() {
             {/* Desktop Sidebar */}
             <div className="hidden md:block w-full">
                 <div className="sticky top-24">
-                    
                     <ScrollArea className="h-[calc(100vh-1px)] pr-4">
                         <SidebarContent />
                     </ScrollArea>
