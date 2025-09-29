@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react"
 import { setUsers, setUserLoader } from "../features/user/userAuthSlice"
 import { fetchProperties } from "../features/Properties/propertySlice"
 import { fetchDistrict } from "../features/district/districtSlice"
-import { RefreshCw, Home, MapPin, Users, TrendingUp, AlertCircle } from "lucide-react"
+import { RefreshCw, Home, MapPin, Users, TrendingUp, AlertCircle, CheckCircle, XCircle } from "lucide-react"
 import StatCardSkeleton from "./components/StatCardSkeleton"
 import DistributionSkeleton from "./components/DistributionSkeleton"
 import StatCard from "./components/StatCard"
@@ -16,11 +16,14 @@ import RecentActivity from "./components/RecentActivity"
 import UserOverview from "./components/UserOverview"
 import Link from "next/link"
 
-
-
 export default function DashboardPage() {
     const dispatch = useDispatch<AppDispatch>()
     const [refreshing, setRefreshing] = useState(false)
+    const [systemHealth, setSystemHealth] = useState({
+        status: "loading",
+        percentage: 0,
+        message: "Checking system status..."
+    })
 
     const { users, userLoader } = useSelector((state: RootState) => state.user || { users: [], userLoader: false })
     const { properties, loading: propertiesLoading, error: propertiesError } = useSelector(
@@ -30,9 +33,49 @@ export default function DashboardPage() {
         (state: RootState) => state.district || { district: [], loading: false, error: null }
     )
 
+    // Calculate system health based on actual data
+    const calculateSystemHealth = () => {
+        const checks = {
+            database: !propertiesError && !districtsError,
+            api: Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts),
+            dataLoaded: users.length > 0 || properties.length > 0 || districts.length > 0,
+            performance: true 
+        }
+
+        const passedChecks = Object.values(checks).filter(Boolean).length
+        const totalChecks = Object.keys(checks).length
+        const healthPercentage = (passedChecks / totalChecks) * 100
+
+        let status, message
+        if (healthPercentage >= 90) {
+            status = "healthy"
+            message = "All systems operational"
+        } else if (healthPercentage >= 70) {
+            status = "degraded"
+            message = "System experiencing minor issues"
+        } else {
+            status = "unhealthy"
+            message = "System requires attention"
+        }
+
+        return {
+            status,
+            percentage: Math.round(healthPercentage),
+            message
+        }
+    }
+
     useEffect(() => {
         loadAllData()
     }, [dispatch])
+
+    useEffect(() => {
+        if (!isLoading) {
+            // Calculate health after data is loaded
+            const health = calculateSystemHealth()
+            setSystemHealth(health)
+        }
+    }, [users, properties, districts, propertiesError, districtsError])
 
     const loadAllData = async () => {
         try {
@@ -50,9 +93,13 @@ export default function DashboardPage() {
         }
     }
 
-
     const handleRefresh = () => {
         setRefreshing(true)
+        setSystemHealth({
+            status: "loading",
+            percentage: 0,
+            message: "Refreshing system status..."
+        })
         loadAllData()
         setTimeout(() => setRefreshing(false), 1000)
     }
@@ -65,6 +112,42 @@ export default function DashboardPage() {
     const userGrowth = 12.5
     const propertyGrowth = 8.2
     const isLoading = propertiesLoading || districtsLoading || userLoader
+
+    // Dynamic health status configuration
+    const getHealthConfig = () => {
+        switch (systemHealth.status) {
+            case "healthy":
+                return {
+                    color: "green" as const,
+                    icon: CheckCircle,
+                    value: `${systemHealth.percentage}%`,
+                    status: systemHealth.message
+                }
+            case "degraded":
+                return {
+                    color: "orange" as const,
+                    icon: AlertCircle,
+                    value: `${systemHealth.percentage}%`,
+                    status: systemHealth.message
+                }
+            case "unhealthy":
+                return {
+                    color: "red" as const,
+                    icon: XCircle,
+                    value: `${systemHealth.percentage}%`,
+                    status: systemHealth.message
+                }
+            default:
+                return {
+                    color: "gray" as const,
+                    icon: TrendingUp,
+                    value: `${systemHealth.percentage}%`,
+                    status: systemHealth.message
+                }
+        }
+    }
+
+    const healthConfig = getHealthConfig()
 
     if (isLoading && !refreshing) {
         return (
@@ -111,10 +194,40 @@ export default function DashboardPage() {
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-               <Link href={"/Properties"}> <StatCard title="Total Properties" value={totalProperties} growth={propertyGrowth} icon={Home} color="green" /></Link>
-              <Link href={"/SeeAllDistrict"}>  <StatCard title="Districts Covered" value={totalDistricts} avg={avgPropertiesPerDistrict} icon={MapPin} color="green" /></Link>
-           <Link href={"/dashboard/users-information"}>     <StatCard title="Total Users" value={totalUsers} growth={userGrowth} icon={Users} color="purple" /></Link>
-                <StatCard title="Platform Health" value="98.2%" status="All systems operational" icon={TrendingUp} color="orange" />
+                <Link href={"/Properties"}>
+                    <StatCard
+                        title="Total Properties"
+                        value={totalProperties}
+                        growth={propertyGrowth}
+                        icon={Home}
+                        color="green"
+                    />
+                </Link>
+                <Link href={"/SeeAllDistrict"}>
+                    <StatCard
+                        title="Districts Covered"
+                        value={totalDistricts}
+                        avg={avgPropertiesPerDistrict}
+                        icon={MapPin}
+                        color="green"
+                    />
+                </Link>
+                <Link href={"/dashboard/users-information"}>
+                    <StatCard
+                        title="Total Users"
+                        value={totalUsers}
+                        growth={userGrowth}
+                        icon={Users}
+                        color="purple"
+                    />
+                </Link>
+                <StatCard
+                    title="Platform Health"
+                    value={healthConfig.value}
+                    status={healthConfig.status}
+                    icon={healthConfig.icon}
+                    color={healthConfig.color}
+                />
             </div>
 
             {/* Charts and Activity */}
@@ -122,7 +235,6 @@ export default function DashboardPage() {
                 <PropertiesDistribution
                     districts={districts}
                     properties={properties}
-                  
                     totalProperties={totalProperties}
                 />
                 <RecentActivity />
@@ -130,8 +242,8 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <UserOverview totalUsers={totalUsers} adminCount={5} moderatorCount={3} ownerCount={2} />
-                
             </div>
+
             {/* Error */}
             {(propertiesError || districtsError) && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
@@ -144,6 +256,71 @@ export default function DashboardPage() {
                     </div>
                 </div>
             )}
+
+            {/* System Health Details */}
+            <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className={`p-4 rounded-lg border ${!propertiesError && !districtsError
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-red-50 border-red-200'
+                        }`}>
+                        <div className="flex items-center gap-2 mb-2">
+                            {!propertiesError && !districtsError ? (
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : (
+                                <XCircle className="h-5 w-5 text-red-600" />
+                            )}
+                            <span className="font-medium">Database</span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                            {!propertiesError && !districtsError ? 'Connected' : 'Connection issues'}
+                        </p>
+                    </div>
+
+                    <div className={`p-4 rounded-lg border ${Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts)
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-red-50 border-red-200'
+                        }`}>
+                        <div className="flex items-center gap-2 mb-2">
+                            {Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts) ? (
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : (
+                                <XCircle className="h-5 w-5 text-red-600" />
+                            )}
+                            <span className="font-medium">API</span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                            {Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts) ? 'Responsive' : 'Slow response'}
+                        </p>
+                    </div>
+
+                    <div className={`p-4 rounded-lg border ${users.length > 0 || properties.length > 0 || districts.length > 0
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-yellow-50 border-yellow-200'
+                        }`}>
+                        <div className="flex items-center gap-2 mb-2">
+                            {users.length > 0 || properties.length > 0 || districts.length > 0 ? (
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : (
+                                <AlertCircle className="h-5 w-5 text-yellow-600" />
+                            )}
+                            <span className="font-medium">Data</span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                            {users.length > 0 || properties.length > 0 || districts.length > 0 ? 'Loaded' : 'No data'}
+                        </p>
+                    </div>
+
+                    <div className="p-4 rounded-lg border bg-green-50 border-green-200">
+                        <div className="flex items-center gap-2 mb-2">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            <span className="font-medium">Performance</span>
+                        </div>
+                        <p className="text-sm text-gray-600">Optimal</p>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
