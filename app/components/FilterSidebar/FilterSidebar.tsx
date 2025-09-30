@@ -3,7 +3,6 @@
 import {
     Sheet,
     SheetContent,
-    SheetFooter,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
@@ -30,10 +29,6 @@ import {
     clearFilters,
     setListingStatus,
     setCurrency,
-    setBedrooms,
-    setBathrooms,
-    setOtherFeatures,
-    setLocation,
 } from "@/app/features/filter/filterSlice";
 import Skeleton from "react-loading-skeleton";
 

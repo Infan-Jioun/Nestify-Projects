@@ -33,6 +33,7 @@ export interface BlogState {
     totalPosts: number;
     currentPage: number;
     totalPages: number;
+    
 }
 
 // Get featured image safely
