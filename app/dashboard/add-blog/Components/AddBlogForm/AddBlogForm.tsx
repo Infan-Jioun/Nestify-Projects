@@ -10,6 +10,7 @@ import { imageUpload } from "@/hooks/useImageUpload";
 import Title from "./Components/Title";
 import Slug from "./Components/Slug";
 import Excerpt from "./Components/Excerpt";
+import Content from "./Components/Content";
 
 export default function AddBlogForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -72,24 +73,17 @@ export default function AddBlogForm() {
             {/* Slug */}
             <div>
                 <Slug register={register} errors={errors} />
-               
+
             </div>
 
             {/* Excerpt */}
             <div>
-               <Excerpt register={register} errors={errors}/>
+                <Excerpt register={register} errors={errors} />
             </div>
 
             {/* Content */}
             <div>
-                <label className="block mb-1 font-medium">Content</label>
-                <textarea
-                    {...register("content", { required: "Content is required" })}
-                    className="w-full border rounded p-2 h-32"
-                />
-                {errors.content && (
-                    <p className="text-red-500 text-sm">{errors.content.message}</p>
-                )}
+                <Content register={register} errors={errors} />
             </div>
 
             {/* Featured Image */}
