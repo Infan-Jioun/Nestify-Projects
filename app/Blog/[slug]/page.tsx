@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useRouter } from "next/navigation";
 import { AppDispatch, RootState } from "@/lib/store";
-import { fetchBlogPostBySlug, likeBlogPost, incrementViewCount } from "@/app/features/blog/blogSlice";
+import { fetchBlogPostBySlug, likeBlogPost, incrementViewCount, setLiked } from "@/app/features/blog/blogSlice";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -77,11 +77,20 @@ export default function BlogPostPage() {
 
     const handleLike = () => {
         if (currentPost && !isLiked) {
-            dispatch(likeBlogPost(currentPost._id));
+            dispatch(likeBlogPost(currentPost.slug));
             setIsLiked(true);
+            if (currentPost) {
+                dispatch(setLiked(currentPost))
+            }
         }
     };
-
+    useEffect(() => {
+        if (slug) {
+            dispatch(fetchBlogPostBySlug(slug as string));
+            // Increment view count with slug
+            dispatch(incrementViewCount(slug as string));
+        }
+    }, [dispatch, slug]);
     const handleShare = async (platform: string) => {
         if (!currentPost) return;
 

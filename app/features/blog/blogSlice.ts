@@ -1,5 +1,5 @@
 "use client";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
 export interface Author {
@@ -212,6 +212,9 @@ const blogSlice = createSlice({
     },
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
+    },
+    setLiked: (state, action: PayloadAction<BlogPost>) => {
+      state.currentPost = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -368,7 +371,7 @@ const blogSlice = createSlice({
   },
 });
 
-export const { clearCurrentPost, clearError, clearOperationError, setCurrentPage } = blogSlice.actions;
+export const { clearCurrentPost, clearError, clearOperationError, setCurrentPage, setLiked } = blogSlice.actions;
 export default blogSlice.reducer;
 
 // Helper functions
