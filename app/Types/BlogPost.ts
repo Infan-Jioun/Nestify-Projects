@@ -5,7 +5,7 @@ export interface BlogPost {
     slug: string;
     excerpt: string;
     content: string;
-    featuredImage: string[];
+    featuredImage: File | string;
     author: {
         name: string;
         avatar: string;

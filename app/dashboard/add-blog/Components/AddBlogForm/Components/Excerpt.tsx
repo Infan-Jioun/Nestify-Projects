@@ -17,7 +17,7 @@ export default function Excerpt({ register, errors }: ExcerptProps) {
                 <Textarea
                     {...register("excerpt", { required: "excerpt is required" })}
                     className="w-full"
-                    placeholder="Enter full address here"
+                    placeholder="Enter full excerot here"
                 />
                 {errors.excerpt && (
                     <span className="text-red-500 text-sm">{errors.excerpt.message}</span>

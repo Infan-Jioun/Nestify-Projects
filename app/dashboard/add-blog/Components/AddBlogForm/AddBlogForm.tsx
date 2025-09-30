@@ -11,6 +11,7 @@ import Title from "./Components/Title";
 import Slug from "./Components/Slug";
 import Excerpt from "./Components/Excerpt";
 import Content from "./Components/Content";
+import ImageFeatured from "./Components/ImageFeatured";
 
 export default function AddBlogForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,7 +23,7 @@ export default function AddBlogForm() {
     const {
         register,
         handleSubmit,
-        reset,
+        reset, setValue,
         formState: { errors },
     } = useForm<BlogPost>();
 
@@ -88,12 +89,7 @@ export default function AddBlogForm() {
 
             {/* Featured Image */}
             <div>
-                <label className="block mb-1 font-medium">Featured Image</label>
-                <input
-                    type="file"
-                    {...register("featuredImage")}
-                    className="w-full border rounded p-2"
-                />
+                <ImageFeatured setValue={setValue} />
             </div>
 
             {/* Author Name */}
