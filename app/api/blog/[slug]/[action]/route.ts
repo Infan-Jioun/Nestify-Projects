@@ -15,33 +15,25 @@ export async function POST(
         const post = await BlogPost.findOne({ slug });
 
         if (!post) {
-            return NextResponse.json(
-                { message: 'Blog post not found' },
-                { status: 404 }
-            );
+            return NextResponse.json({ message: 'Blog post not found' }, { status: 404 });
         }
 
-        let updateData: Record<string, any> = {};
-        const responseData: { postId: string; likes?: number; views?: number } = {
-            postId: post.id.toString(),
-        };
+        const updateData: { $inc: { likes?: number; views?: number } } = { $inc: {} };
+        const responseData: { postId: string; likes?: number; views?: number } = { postId: post.id.toString() };
 
         switch (action) {
             case 'like':
-                updateData = { $inc: { likes: 1 } };
+                updateData.$inc.likes = 1;
                 responseData.likes = post.likes + 1;
                 break;
 
             case 'view':
-                updateData = { $inc: { views: 1 } };
+                updateData.$inc.views = 1;
                 responseData.views = post.views + 1;
                 break;
 
             default:
-                return NextResponse.json(
-                    { message: 'Invalid action' },
-                    { status: 400 }
-                );
+                return NextResponse.json({ message: 'Invalid action' }, { status: 400 });
         }
 
         await BlogPost.findOneAndUpdate({ slug }, updateData);
@@ -50,9 +42,6 @@ export async function POST(
 
     } catch (error) {
         console.error(`Error performing ${params.action} on blog post:`, error);
-        return NextResponse.json(
-            { message: 'Internal server error' },
-            { status: 500 }
-        );
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 }
