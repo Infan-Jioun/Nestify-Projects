@@ -25,6 +25,7 @@ import {
     MessageCircle
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { BlogPost } from "@/app/Types/BlogPost";
 
 // Skeleton Loader
 const BlogPostSkeleton = () => (
@@ -119,18 +120,19 @@ export default function BlogPostPage() {
         }
     };
 
-    const getFeaturedImage = (post: any) => {
+    const getFeaturedImage = (post: BlogPost) => {
         if (post?.featuredImage && typeof post.featuredImage === "string" && post.featuredImage.trim() !== "") {
             return post.featuredImage;
         }
         return "/api/placeholder/800/400";
     };
 
-    const getAuthorAvatar = (author: any) => {
-        if (author?.avatar && typeof author.avatar === "string" && author.avatar.trim() !== "") {
+    // Get author avatar with fallback
+    const getAuthorAvatar = (author?: BlogPost["author"]): string => {
+        if (author?.avatar && author.avatar.trim() !== "") {
             return author.avatar;
         }
-        return "/api/placeholder/60/60";
+        return "/api/placeholder/40/40";
     };
 
     if (loading) {

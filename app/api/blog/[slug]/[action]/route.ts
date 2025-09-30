@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import BlogPost from '@/app/models/BlogPost';
 import connectToDatabase from '@/lib/mongodb';
 
-// POST: Handle blog post actions (like, view, etc.)
+type BlogAction = 'like' | 'view';
+
 export async function POST(
     request: NextRequest,
-    { params }: { params: { slug: string; action: string } }
+    { params }: { params: { slug: string; action: BlogAction } }
 ) {
     try {
         await connectToDatabase();
@@ -21,8 +21,10 @@ export async function POST(
             );
         }
 
-        let updateData: any = {};
-        let responseData: any = { postId: post._id };
+        let updateData: Record<string, any> = {};
+        const responseData: { postId: string; likes?: number; views?: number } = {
+            postId: post.id.toString(),
+        };
 
         switch (action) {
             case 'like':
@@ -42,10 +44,7 @@ export async function POST(
                 );
         }
 
-        await BlogPost.findOneAndUpdate(
-            { slug },
-            updateData
-        );
+        await BlogPost.findOneAndUpdate({ slug }, updateData);
 
         return NextResponse.json(responseData);
 

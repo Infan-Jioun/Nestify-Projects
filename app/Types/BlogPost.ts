@@ -1,3 +1,7 @@
+export interface Author {
+    name?: string;
+    avatar?: string;
+}
 export interface BlogPost {
     _id: string;
     id?: string;
@@ -30,3 +34,19 @@ export interface BlogState {
     currentPage: number;
     totalPages: number;
 }
+
+// Get featured image safely
+const getFeaturedImage = (post: BlogPost): string => {
+    if (typeof post.featuredImage === "string" && post.featuredImage.trim() !== "") {
+        return post.featuredImage;
+    }
+    return "/api/placeholder/400/300"; // Fallback
+};
+
+// Get author avatar safely
+const getAuthorAvatar = (author?: BlogPost["author"]): string => {
+    if (author?.avatar && author.avatar.trim() !== "") {
+        return author.avatar;
+    }
+    return "/api/placeholder/40/40"; // Fallback
+};

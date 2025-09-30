@@ -102,7 +102,7 @@ export default function AddBlogForm() {
             console.log("Final Blog Payload:", payload);
 
             // Dispatch to Redux - use the correct type casting if needed
-            const result = await dispatch(createBlogPost(payload as any));
+            const result = await dispatch(createBlogPost(payload as BlogPost));
 
             if (createBlogPost.fulfilled.match(result)) {
                 // Success handling

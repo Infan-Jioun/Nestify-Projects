@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { BlogPost, BlogState } from "../Types/BlogPost";
 
 // Skeleton Loader Components
 const BlogCardSkeleton = () => (
@@ -114,21 +115,22 @@ export default function BlogComponents() {
         }
     };
 
-    // Get default image if featured image is not available
-    const getFeaturedImage = (post: any) => {
+    
+    const getFeaturedImage = (post: BlogPost) => {
         if (post.featuredImage && typeof post.featuredImage === "string" && post.featuredImage.trim() !== "") {
             return post.featuredImage;
         }
-        return "/api/placeholder/400/300"; // Fallback placeholder image
+        return "/api/placeholder/400/300";
     };
 
-    // Get author avatar with fallback
-    const getAuthorAvatar = (author: any) => {
-        if (author?.avatar && typeof author.avatar === "string" && author.avatar.trim() !== "") {
+    
+    const getAuthorAvatar = (author?: BlogPost["author"]): string => {
+        if (author?.avatar && author.avatar.trim() !== "") {
             return author.avatar;
         }
         return "/api/placeholder/40/40"; // Fallback avatar
     };
+
 
     if (error && isInitialLoad) {
         return (
@@ -181,7 +183,7 @@ export default function BlogComponents() {
                             </p>
                         </div>
 
-                      
+
                     </div>
                 </div>
             </section>
