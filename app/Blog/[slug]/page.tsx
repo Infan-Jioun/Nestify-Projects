@@ -226,7 +226,7 @@ export default function BlogPostPage() {
 
                     {/* Share Options */}
                     {isSharing && (
-                        <div className="mt-4 p-4 bg-white rounded-2xl border border-green-200 shadow-lg">
+                        <div className=" mt-4 p-4 bg-white rounded-2xl border border-green-200 shadow-lg">
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="font-semibold text-gray-900">Share this post</h3>
                                 <Button
@@ -238,7 +238,7 @@ export default function BlogPostPage() {
                                     ✕
                                 </Button>
                             </div>
-                            <div className="flex gap-3">
+                            <div className="grid md:grid-cols-2  gap-3">
                                 <Button
                                     onClick={() => handleShare('facebook')}
                                     className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
