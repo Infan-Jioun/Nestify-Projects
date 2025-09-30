@@ -33,7 +33,7 @@ export default function DashboardPage() {
         (state: RootState) => state.district || { district: [], loading: false, error: null }
     )
 
-    // Calculate system health based on actual data
+   
     const calculateSystemHealth = () => {
         const checks = {
             database: !propertiesError && !districtsError,
@@ -71,7 +71,6 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (!isLoading) {
-            // Calculate health after data is loaded
             const health = calculateSystemHealth()
             setSystemHealth(health)
         }
@@ -113,7 +112,7 @@ export default function DashboardPage() {
     const propertyGrowth = 8.2
     const isLoading = propertiesLoading || districtsLoading || userLoader
 
-    // Dynamic health status configuration
+  
     const getHealthConfig = () => {
         switch (systemHealth.status) {
             case "healthy":
@@ -173,11 +172,11 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50/30 p-6">
+        <div className="min-h-screen bg-gray-50/30 px-1">
             <NextHead title="Dashboard - Nestify" />
 
             {/* Header */}
-            <div className="mb-8 flex justify-between items-center">
+            <div className="mb-8 grid md:grid-cols-2 justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
                     <p className="text-gray-500 mt-2">Welcome to your Nestify management dashboard</p>
@@ -185,7 +184,7 @@ export default function DashboardPage() {
                 <button
                     onClick={handleRefresh}
                     disabled={refreshing}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                    className="mt-2 flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
                 >
                     <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
                     {refreshing ? "Refreshing..." : "Refresh Data"}

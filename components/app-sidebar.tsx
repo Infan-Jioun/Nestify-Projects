@@ -21,9 +21,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
-
-// This is sample data.
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
 
@@ -80,6 +77,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {
             title: "Add city",
             url: "/dashboard/add-city",
+          },
+
+        ],
+      },
+      {
+        title: "Blog",
+        url: "#",
+        icon: Plus,
+        items: [
+          {
+            title: "Add Blog",
+            url: "/dashboard/add-blog",
           },
 
         ],
