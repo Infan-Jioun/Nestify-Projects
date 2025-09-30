@@ -26,6 +26,7 @@ import {
 import Image from "next/image";
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
 import Link from "next/link";
+import { CgProfile } from "react-icons/cg";
 import { signOut, useSession } from "next-auth/react"
 export function DropdownAvatar() {
   const { data: session } = useSession();
@@ -48,38 +49,28 @@ export function DropdownAvatar() {
         <DropdownMenuContent className="max-w-64">
           <DropdownMenuLabel className="flex min-w-0 flex-col">
             <span className="text-foreground truncate text-sm font-medium">
-              Keith Kennedy
+              {session?.user?.name}
             </span>
             <span className="text-muted-foreground truncate text-xs font-normal">
-              k.kennedy@originui.com
+              {session?.user?.email}
             </span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
-              <span>Option 1</span>
+              <CgProfile size={16} className="opacity-60" aria-hidden="true" />
+              <Link href={"/Profile"}> Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Layers2Icon size={16} className="opacity-60" aria-hidden="true" />
-              <span>Option 2</span>
+              <Link href="/dashboard"> Dashboard</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <BookOpenIcon size={16} className="opacity-60" aria-hidden="true" />
-              <span>Option 3</span>
+            <Link href="/Bookmark"> Bookmark</Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <PinIcon size={16} className="opacity-60" aria-hidden="true" />
-              <span>Option 4</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <UserPenIcon size={16} className="opacity-60" aria-hidden="true" />
-              <span>Option 5</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+        
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => signOut()}>
             <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
