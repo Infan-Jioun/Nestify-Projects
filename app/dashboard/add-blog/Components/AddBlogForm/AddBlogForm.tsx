@@ -8,6 +8,7 @@ import { setButtonLoader } from "@/app/features/loader/loaderSlice";
 import { BlogPost } from "@/app/Types/BlogPost";
 import { imageUpload } from "@/hooks/useImageUpload";
 import Title from "./Components/Title";
+import Slug from "./Components/Slug";
 
 export default function AddBlogForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -29,7 +30,7 @@ export default function AddBlogForm() {
         try {
             let imageUrl = "";
 
-   
+
             if (data.featuredImage instanceof File) {
                 const uploadRes = await imageUpload(data.featuredImage);
                 imageUrl = uploadRes.data.url;
@@ -64,20 +65,13 @@ export default function AddBlogForm() {
         >
             {/* Title */}
             <div>
-                <Title register={register} errors={errors}/>
+                <Title register={register} errors={errors} />
             </div>
 
             {/* Slug */}
             <div>
-                <label className="block mb-1 font-medium">Slug</label>
-                <input
-                    type="text"
-                    {...register("slug", { required: "Slug is required" })}
-                    className="w-full border rounded p-2"
-                />
-                {errors.slug && (
-                    <p className="text-red-500 text-sm">{errors.slug.message}</p>
-                )}
+                <Slug register={register} errors={errors} />
+               
             </div>
 
             {/* Excerpt */}
