@@ -4,19 +4,19 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSkletonLoader } from '@/app/features/loader/loaderSlice'
-import { RootState } from '@/lib/store'
+import { AppDispatch, RootState } from '@/lib/store'
 import { fetchBlogPosts, BlogPost as BlogPostType } from '@/app/features/blog/blogSlice'
 import Link from 'next/link'
 
 export default function OurBlog() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader)
   const { posts, loading, error } = useSelector((state: RootState) => state.blog)
   const [localLoading, setLocalLoading] = useState(true)
 
   useEffect(() => {
     // Fetch blog posts when component mounts
-    dispatch(fetchBlogPosts({ page: 1, limit: 3 }) as any)
+    dispatch(fetchBlogPosts({ page: 1, limit: 3 }))
   }, [dispatch])
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export default function OurBlog() {
         ) : (
           <>
             <h2 className="text-3xl font-bold text-gray-800">From Our Blog</h2>
-            <p className="text-gray-500 mt-2">Aliquam lacinia diam quis lacus euismod</p>
+            <p className="text-gray-500 mt-2">Smart property tips for smarter living</p>
           </>
         )}
       </div>
