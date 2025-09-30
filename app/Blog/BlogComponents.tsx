@@ -60,6 +60,7 @@ export default function BlogComponents() {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
     const categories = [
         { name: "Real Estate Tips", icon: <BookOpen size={16} /> },
@@ -71,23 +72,40 @@ export default function BlogComponents() {
     ];
 
     useEffect(() => {
-        dispatch(fetchBlogPosts({ page: 1, limit: 9, category: selectedCategory }));
-        dispatch(fetchFeaturedPosts());
+        const loadData = async () => {
+            try {
+                await Promise.all([
+                    dispatch(fetchBlogPosts({ page: 1, limit: 9, category: selectedCategory })),
+                    dispatch(fetchFeaturedPosts())
+                ]);
+            } catch (err) {
+                console.error("Error loading blog data:", err);
+            } finally {
+                setIsInitialLoad(false);
+            }
+        };
+
+        loadData();
     }, [dispatch, selectedCategory]);
 
+    // Filter posts based on search term
     const filteredPosts = posts?.filter(post =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.categories.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))
+        post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.excerpt?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.categories?.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))
     ) || [];
 
     const formatDate = (dateString: string) => {
         if (!dateString) return "";
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
+        try {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch {
+            return "";
+        }
     };
 
     const loadMore = () => {
@@ -96,7 +114,23 @@ export default function BlogComponents() {
         }
     };
 
-    if (error) {
+    // Get default image if featured image is not available
+    const getFeaturedImage = (post: any) => {
+        if (post.featuredImage && typeof post.featuredImage === "string" && post.featuredImage.trim() !== "") {
+            return post.featuredImage;
+        }
+        return "/api/placeholder/400/300"; // Fallback placeholder image
+    };
+
+    // Get author avatar with fallback
+    const getAuthorAvatar = (author: any) => {
+        if (author?.avatar && typeof author.avatar === "string" && author.avatar.trim() !== "") {
+            return author.avatar;
+        }
+        return "/api/placeholder/40/40"; // Fallback avatar
+    };
+
+    if (error && isInitialLoad) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 flex items-center justify-center py-16">
                 <div className="container mx-auto px-4 text-center">
@@ -147,17 +181,7 @@ export default function BlogComponents() {
                             </p>
                         </div>
 
-                        {/* Search Bar */}
-                        <div className="max-w-2xl mx-auto relative">
-                            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-300" />
-                            <Input
-                                type="text"
-                                placeholder="Search articles, topics, or keywords..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-12 pr-6 py-4 rounded-2xl border-0 bg-white/10 backdrop-blur-lg text-white placeholder-green-200 focus:bg-white/20 focus:ring-2 focus:ring-green-300 transition-all duration-300"
-                            />
-                        </div>
+                      
                     </div>
                 </div>
             </section>
@@ -199,7 +223,7 @@ export default function BlogComponents() {
                     <p className="text-gray-600 max-w-2xl mx-auto text-lg">Curated insights from our real estate experts</p>
                 </div>
 
-                {loading && (!featuredPosts || featuredPosts.length === 0) ? (
+                {loading && isInitialLoad ? (
                     <FeaturedPostSkeleton />
                 ) : featuredPosts && featuredPosts.length > 0 ? (
                     <Card className="bg-gradient-to-br from-green-50 via-white to-emerald-50 border border-green-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500">
@@ -207,8 +231,8 @@ export default function BlogComponents() {
                             <div className="relative group">
                                 <div className="relative overflow-hidden rounded-2xl shadow-2xl">
                                     <Image
-                                        src={featuredPosts[0].featuredImage}
-                                        alt={featuredPosts[0].title}
+                                        src={getFeaturedImage(featuredPosts[0])}
+                                        alt={featuredPosts[0].title || "Featured Post"}
                                         width={600}
                                         height={400}
                                         className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700"
@@ -229,35 +253,52 @@ export default function BlogComponents() {
                                     </span>
                                     <span className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
                                         <Clock size={16} className="text-blue-600" />
-                                        {featuredPosts[0].readTime} min read
+                                        {featuredPosts[0].readTime || 5} min read
                                     </span>
                                 </div>
                                 <h3 className="text-3xl font-bold text-gray-900 leading-tight">
-                                    {featuredPosts[0].title}
+                                    {featuredPosts[0].title || "Featured Post Title"}
                                 </h3>
                                 <p className="text-gray-600 text-lg leading-relaxed">
-                                    {featuredPosts[0].excerpt}
+                                    {featuredPosts[0].excerpt || "Discover amazing insights about real estate market trends and investment opportunities."}
                                 </p>
                                 <div className="flex items-center gap-6 text-sm text-gray-500">
                                     <span className="flex items-center gap-2">
                                         <Eye size={16} />
-                                        {featuredPosts[0].views} views
+                                        {featuredPosts[0].views || 0} views
                                     </span>
                                     <span className="flex items-center gap-2">
                                         <Heart size={16} />
-                                        {featuredPosts[0].likes} likes
+                                        {featuredPosts[0].likes || 0} likes
                                     </span>
                                 </div>
-                                <Link href={`/blog/${featuredPosts[0].slug}`}>
-                                    <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:translate-x-1">
-                                        Read Full Story
-                                        <ArrowRight size={18} className="ml-2" />
-                                    </Button>
-                                </Link>
+                                {featuredPosts && featuredPosts.length > 0 && (
+                                    <Link
+                                        href={`/Blog/${featuredPosts[0].slug || featuredPosts[0]._id}`}
+                                        className="block"
+                                    >
+                                        <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:translate-x-1">
+                                            Read Full Story
+                                            <ArrowRight size={18} className="ml-2" />
+                                        </Button>
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </Card>
-                ) : null}
+                ) : (
+                    <Card className="text-center py-16 bg-white/50 backdrop-blur-sm">
+                        <CardContent>
+                            <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <BookOpen size={40} className="text-gray-400" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-3">No Featured Posts</h3>
+                            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+                                No featured posts available at the moment. Check back later for updates.
+                            </p>
+                        </CardContent>
+                    </Card>
+                )}
             </section>
 
             {/* Blog Posts Grid */}
@@ -271,7 +312,7 @@ export default function BlogComponents() {
                     <p className="text-gray-600 text-lg">Stay updated with the latest real estate market trends and expert advice</p>
                 </div>
 
-                {loading && (!posts || posts.length === 0) ? (
+                {loading && isInitialLoad ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {Array.from({ length: 6 }).map((_, index) => (
                             <BlogCardSkeleton key={index} />
@@ -281,18 +322,18 @@ export default function BlogComponents() {
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                             {filteredPosts.map((post) => (
-                                <Card key={post._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-500 group hover:translate-y-2">
+                                <Card key={post._id || post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-500 group hover:translate-y-2">
                                     <div className="relative overflow-hidden">
                                         <Image
-                                            src={post.featuredImage}
-                                            alt={post.title}
+                                            src={getFeaturedImage(post)}
+                                            alt={post.title || "Blog Post"}
                                             width={400}
                                             height={250}
-                                            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+                                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-700"
                                         />
                                         <div className="absolute top-4 left-4">
                                             <Badge className="bg-green-500 text-white border-0 px-3 py-1 rounded-full text-xs">
-                                                {post.categories[0]}
+                                                {post.categories?.[0] || "Uncategorized"}
                                             </Badge>
                                         </div>
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-t-2xl"></div>
@@ -306,45 +347,47 @@ export default function BlogComponents() {
                                             </span>
                                             <span className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-full">
                                                 <Clock size={12} />
-                                                {post.readTime} min
+                                                {post.readTime || 5} min
                                             </span>
                                         </div>
 
                                         <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors duration-300 leading-tight">
-                                            {post.title}
+                                            {post.title || "Untitled Post"}
                                         </h3>
 
                                         <p className="text-gray-600 mb-5 line-clamp-3 leading-relaxed">
-                                            {post.excerpt}
+                                            {post.excerpt || "No excerpt available for this post."}
                                         </p>
 
                                         <div className="flex items-center justify-between mb-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="relative">
                                                     <Image
-                                                        src={post.author.avatar}
-                                                        alt={post.author.name}
+                                                        src={getAuthorAvatar(post.author)}
+                                                        alt={post.author?.name || "Author"}
                                                         width={36}
                                                         height={36}
                                                         className="rounded-full border-2 border-green-100"
                                                     />
                                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                                                 </div>
-                                                <span className="text-sm font-medium text-gray-700">{post.author.name}</span>
+                                                <span className="text-sm font-medium text-gray-700">
+                                                    {post.author?.name || "Unknown Author"}
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-3 text-xs text-gray-500">
                                                 <span className="flex items-center gap-1">
                                                     <Eye size={12} />
-                                                    {post.views}
+                                                    {post.views || 0}
                                                 </span>
                                                 <span className="flex items-center gap-1">
                                                     <Heart size={12} />
-                                                    {post.likes}
+                                                    {post.likes || 0}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <Link href={`/blog/${post.slug}`} className="block">
+                                        <Link href={`/Blog/${post.slug || post._id}`} className="block">
                                             <Button
                                                 variant="outline"
                                                 className="w-full border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300 hover:text-green-700 rounded-xl transition-all duration-300 group-hover:scale-105"
