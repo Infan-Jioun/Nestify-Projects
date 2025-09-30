@@ -1,4 +1,19 @@
+import {
+  BoltIcon,
+  BookOpenIcon,
+  ChevronDownIcon,
+  Layers2Icon,
+  LogOutIcon,
+  PinIcon,
+  UserPenIcon,
+} from "lucide-react"
 
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,66 +21,69 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { signOut, useSession } from "next-auth/react"
-import { LayoutDashboardIcon, LogOut } from "lucide-react";
 import Image from "next/image";
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react"
 export function DropdownAvatar() {
   const { data: session } = useSession();
   return (
     <div>
-      <DropdownMenu >
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          {/* <motion.button
-            whileHover={{ scale: 1.0, rotate: 5 }}
-            whileTap={{ scale: 0.95 }}
-            className="btn h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
-          >
-            Property
-          </motion.button> */}
-          <Avatar>
-            <AvatarImage className="w-10 h-10  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
-            <AvatarFallback><Image src={profileImage} alt="unavilable" width={40} height={40} className="rounded-full border-2" /></AvatarFallback>
-          </Avatar>
+          <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
+            <Avatar>
+              <AvatarImage className="w-10 h-10  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
+              <AvatarFallback><Image src={profileImage} alt="unavilable" width={40} height={40} className="rounded-full border-2" /></AvatarFallback>
+            </Avatar>
+            <ChevronDownIcon
+              size={16}
+              className="opacity-60"
+              aria-hidden="true"
+            />
+          </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 mr-4.5" align="start">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuContent className="max-w-64">
+          <DropdownMenuLabel className="flex min-w-0 flex-col">
+            <span className="text-foreground truncate text-sm font-medium">
+              Keith Kennedy
+            </span>
+            <span className="text-muted-foreground truncate text-xs font-normal">
+              k.kennedy@originui.com
+            </span>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Option 1</span>
             </DropdownMenuItem>
-
             <DropdownMenuItem>
-              Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              <Layers2Icon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Option 2</span>
             </DropdownMenuItem>
-
-
             <DropdownMenuItem>
-
-              <Link className="flex  items-center gap-3" href={"/dashboard"}>
-                <LayoutDashboardIcon/>
-                Dashboard
-              </Link>
-              <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+              <BookOpenIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Option 3</span>
             </DropdownMenuItem>
-
-
           </DropdownMenuGroup>
-
-          <DropdownMenuItem>Support</DropdownMenuItem>
-
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <PinIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Option 4</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <UserPenIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Option 5</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => signOut()}>
-            <LogOut /> Log out
-            {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
+            <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
+            <span>Sign out</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
