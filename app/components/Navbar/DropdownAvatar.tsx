@@ -36,7 +36,7 @@ export function DropdownAvatar() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
             <Avatar>
-              <AvatarImage className="w-10 h-10  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
+              <AvatarImage className="w-16 h-16  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
               <AvatarFallback><Image src={profileImage} alt="unavilable" width={40} height={40} className="rounded-full border-2" /></AvatarFallback>
             </Avatar>
             <ChevronDownIcon
