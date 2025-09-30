@@ -5,14 +5,19 @@ import connectToDatabase from '@/lib/mongodb';
 
 type BlogAction = 'like' | 'view';
 
-export async function POST(
-    request: NextRequest,
-    context: { params: { slug: string; action: string } } 
+interface RouteParams {
+    params: {
+        slug: string;
+        action: string;
+    };
+}
+
+export async function POST(req: NextRequest, { params }: RouteParams
 ) {
     try {
         await connectToDatabase();
 
-        const { slug, action } = context.params;
+        const { slug, action } = await params;
         if (action !== 'like' && action !== 'view') {
             return NextResponse.json({ message: 'Invalid action' }, { status: 400 });
         }
@@ -39,7 +44,7 @@ export async function POST(
 
         return NextResponse.json(responseData);
     } catch (error) {
-        console.error(`Error performing ${context.params.action} on blog post:`, error);
+        console.error(`Error performing ${(await params).action} on blog post:`, error);
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 }
