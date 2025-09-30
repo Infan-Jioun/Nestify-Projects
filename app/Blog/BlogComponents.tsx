@@ -226,7 +226,7 @@ export default function BlogComponents() {
                 <div className="absolute bottom-40 left-32 w-4 h-4 bg-emerald-300 rounded-full animate-float opacity-40" style={{ animationDelay: '1s' }}></div>
                 <div className="absolute top-60 right-44 w-3 h-3 bg-white rounded-full animate-float opacity-30" style={{ animationDelay: '2s' }}></div>
             </section>            {/* Categories Filter */}
-            <section className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-10">
+            <section className="bg-white/80 backdrop-blur-sm border-b border-gray-100 ">
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex flex-wrap gap-3 justify-center">
                         <Button
