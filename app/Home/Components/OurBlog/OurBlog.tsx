@@ -146,9 +146,11 @@ export default function OurBlog() {
       {/* View All Button */}
       {!localLoading && !skletonLoader && !loading && posts.length > 0 && (
         <div className="text-center mt-12">
-          <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-500 transition-colors duration-300">
-            View All Blog Posts
-          </button>
+          <Link href={"/Blog"}>
+            <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-500 transition-colors duration-300">
+              View All Blog Posts
+            </button>
+          </Link>
         </div>
       )}
     </section>
