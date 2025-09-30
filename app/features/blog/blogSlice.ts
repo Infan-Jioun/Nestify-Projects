@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import { BlogPost } from "@/app/Types/BlogPost";
 
-// State type
+// State typea
 interface BlogState {
   posts: BlogPost[];
   featuredPosts: BlogPost[];
