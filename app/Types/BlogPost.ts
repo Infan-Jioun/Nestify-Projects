@@ -41,7 +41,7 @@ const getFeaturedImage = (post: BlogPost): string => {
     if (typeof post.featuredImage === "string" && post.featuredImage.trim() !== "") {
         return post.featuredImage;
     }
-    return "/api/placeholder/400/300"; // Fallback
+    return "/api/placeholder/400/300";
 };
 
 // Get author avatar safely
@@ -49,5 +49,5 @@ const getAuthorAvatar = (author?: BlogPost["author"]): string => {
     if (author?.avatar && author.avatar.trim() !== "") {
         return author.avatar;
     }
-    return "/api/placeholder/40/40"; // Fallback
+    return "/api/placeholder/40/40"; 
 };
