@@ -12,6 +12,7 @@ import Slug from "./Components/Slug";
 import Excerpt from "./Components/Excerpt";
 import Content from "./Components/Content";
 import ImageFeatured from "./Components/ImageFeatured";
+import AuthorName from "./Components/AuthorName";
 
 export default function AddBlogForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -94,12 +95,7 @@ export default function AddBlogForm() {
 
             {/* Author Name */}
             <div>
-                <label className="block mb-1 font-medium">Author Name</label>
-                <input
-                    type="text"
-                    {...register("author.name", { required: "Author name is required" })}
-                    className="w-full border rounded p-2"
-                />
+                <AuthorName register={register} errors={errors} />
             </div>
 
             {/* Author Bio */}
