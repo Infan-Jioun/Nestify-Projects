@@ -9,6 +9,7 @@ import { BlogPost } from "@/app/Types/BlogPost";
 import { imageUpload } from "@/hooks/useImageUpload";
 import Title from "./Components/Title";
 import Slug from "./Components/Slug";
+import Excerpt from "./Components/Excerpt";
 
 export default function AddBlogForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -76,14 +77,7 @@ export default function AddBlogForm() {
 
             {/* Excerpt */}
             <div>
-                <label className="block mb-1 font-medium">Excerpt</label>
-                <textarea
-                    {...register("excerpt", { required: "Excerpt is required" })}
-                    className="w-full border rounded p-2"
-                />
-                {errors.excerpt && (
-                    <p className="text-red-500 text-sm">{errors.excerpt.message}</p>
-                )}
+               <Excerpt register={register} errors={errors}/>
             </div>
 
             {/* Content */}
