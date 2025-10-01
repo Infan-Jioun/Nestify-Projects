@@ -66,40 +66,7 @@ export function DropdownAvatar() {
             <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
             <span>Sign out</span>
           </DropdownMenuItem>
-        </DropdownMenuContent>  <DropdownMenuContent className="w-56 mr-4.5" align="start">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem>
-              Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-            </DropdownMenuItem>
-
-
-            <DropdownMenuItem>
-
-              <Link className="flex  items-center gap-3" href={"/dashboard"}>
-                <LayoutDashboardIcon />
-                Dashboard
-              </Link>
-              <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-            </DropdownMenuItem>
-
-
-          </DropdownMenuGroup>
-
-          <DropdownMenuItem>Support</DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()}>
-            <LogOut /> Log out
-            {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+        </DropdownMenuContent>  
       </DropdownMenu>
     </div>
   )
