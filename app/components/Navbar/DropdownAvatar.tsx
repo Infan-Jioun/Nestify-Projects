@@ -36,8 +36,8 @@ export function DropdownAvatar() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
             <Avatar>
-              <AvatarImage className="w-16 h-16  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
-              <AvatarFallback><Image src={profileImage} alt="unavilable" width={40} height={40} className="rounded-full border-2" /></AvatarFallback>
+              <AvatarImage className="w-44 h-44  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
+              <AvatarFallback><Image src={profileImage} alt="unavilable" width={100} height={100} className="rounded-full border-2" /></AvatarFallback>
             </Avatar>
             <ChevronDownIcon
               size={16}
@@ -67,10 +67,10 @@ export function DropdownAvatar() {
             </DropdownMenuItem>
             <DropdownMenuItem>
               <BookOpenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <Link href="/Bookmark"> Bookmark</Link>
+              <Link href="/Bookmark"> Bookmark</Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-        
+
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => signOut()}>
             <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
