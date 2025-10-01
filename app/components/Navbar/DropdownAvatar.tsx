@@ -36,7 +36,7 @@ export function DropdownAvatar() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
             <Avatar>
-              <AvatarImage className="rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
+              <AvatarImage className="w-64 h-64 rounded-full border-2 border-green-100 mt-2" src={session?.user?.image ?? ""} />
               <AvatarFallback>
                 <Image src={profileImage} alt="unavilable" width={100} height={100} className="rounded-full border-2 object-cover" /></AvatarFallback>
             </Avatar>
