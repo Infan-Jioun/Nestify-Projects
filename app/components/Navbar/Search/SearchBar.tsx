@@ -3,7 +3,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { AppDispatch, RootState } from "@/lib/store";
-import {setQuery, clearSuggestions, addRecent, removeRecent, fetchSuggestions, clearRecent,Suggestion,
+import {
+    setQuery, clearSuggestions, addRecent, removeRecent, fetchSuggestions, clearRecent, Suggestion,
 } from "@/app/features/search/searchSlice";
 import { Input } from "@/components/ui/input";
 import { Search, X, Clock, Building, MapPin, Loader } from "lucide-react";
@@ -54,7 +55,7 @@ const SearchBox: React.FC = () => {
         setHighlightedIndex(-1);
     };
 
-    
+
     const handleSelect = useCallback(
         (item: Suggestion | string) => {
             const displayText = typeof item === "string" ? item : item.title;
@@ -69,13 +70,13 @@ const SearchBox: React.FC = () => {
                     router.push(`/Properties/${item.id}`);
                 }
             } else {
-                router.push(`/Properties?search=${encodeURIComponent(item)}`); 
+                router.push(`/Properties?search=${encodeURIComponent(item)}`);
             }
         },
         [dispatch, router]
     );
 
- 
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         const totalItems = suggestions.length + (query ? 1 : 0);
         if (e.key === "ArrowDown") {
@@ -92,7 +93,7 @@ const SearchBox: React.FC = () => {
         }
     };
 
-    
+
     const handleFocus = () => setShowDropdown(true);
     const handleBlur = () => setTimeout(() => setShowDropdown(false), 150);
 
@@ -128,7 +129,7 @@ const SearchBox: React.FC = () => {
                     {loading && (
                         <div className="p-4 flex items-center justify-center text-gray-500">
                             <Loader className="h-4 w-4 animate-spin mr-2" />
-                            Searching for "{query}"...
+                            {`No results found for "${query}"`}
                         </div>
                     )}
 
@@ -208,7 +209,7 @@ const SearchBox: React.FC = () => {
                                 onMouseDown={() => handleSelect(query)}
                                 onMouseEnter={() => setHighlightedIndex(suggestions.length)}
                             >
-                               {`No results found for "${query}"`}
+                                {`No results found for "${query}"`}
                             </button>
                         </div>
                     )}
@@ -216,7 +217,7 @@ const SearchBox: React.FC = () => {
                     {/* No results found */}
                     {!loading && query.length >= 2 && suggestions.length === 0 && (
                         <div className="p-4 text-center text-gray-500">
-                        {`No results found for "${query}"`}
+                            {`No results found for "${query}"`}
                         </div>
                     )}
                 </div>
