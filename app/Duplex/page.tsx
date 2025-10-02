@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from '@/lib/store'
 import PropertyCard from '../components/PropertyCard/PropertyCard'
 import { cn } from "@/lib/utils";
 import NextHead from '../components/NextHead/NextHead'
-export default function ApartmentPage() {
+export default function DuplexPage() {
   const dispatch = useDispatch<AppDispatch>()
   const { properties, loading, error } = useSelector((state: RootState) => state.properties)
   const [duplexProperties, setDuplexProperties] = useState<PropertyType[]>([])
@@ -49,7 +49,7 @@ export default function ApartmentPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NextHead title="duplex - Nestify" />
+      <NextHead title="Duplex - Nestify" />
       <div className={cn(
         "relative py-32 px-6  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
         isScrolled ? "py-4" : "py-10"
@@ -111,7 +111,7 @@ export default function ApartmentPage() {
                 </svg>
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">No Duplex Properties Found</h2>
                 <p className="text-gray-600 mb-6">
-                  We couldn't find any Duplex properties matching your criteria.
+                 {" We couldn't find any Duplex properties matching your criteria."}
                 </p>
                 <button
                   onClick={() => dispatch(fetchProperties())}

@@ -111,7 +111,7 @@ export default function HousePage() {
                                 </svg>
                                 <h2 className="text-xl font-semibold text-gray-900 mb-2">No House Properties Found</h2>
                                 <p className="text-gray-600 mb-6">
-                                    We couldn't find any house properties matching your criteria.
+                                    {"We couldn't find any house properties matching your criteria."}
                                 </p>
                                 <button
                                     onClick={() => dispatch(fetchProperties())}

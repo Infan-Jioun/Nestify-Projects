@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from '@/lib/store'
 import PropertyCard from '../components/PropertyCard/PropertyCard'
 import { cn } from "@/lib/utils";
 import NextHead from '../components/NextHead/NextHead'
-export default function ApartmentPage() {
+export default function DuplexPage() {
     const dispatch = useDispatch<AppDispatch>()
     const { properties, loading, error } = useSelector((state: RootState) => state.properties)
     const [WarehouseProperties, setWarehouseProperties] = useState<PropertyType[]>([])
