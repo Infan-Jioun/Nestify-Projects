@@ -211,7 +211,7 @@ const SearchBox: React.FC = () => {
                             {/* Not Found */}
                             {query && query.length >= 2 && suggestions.length === 0 && !loading && (
                                 <div className="p-4 text-center text-gray-500">
-                                        No results found for &quot;"{query}"
+                                        No results found for &quot;{query}&quot;
                                     </div>
                             )}
 
