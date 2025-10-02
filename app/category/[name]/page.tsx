@@ -35,7 +35,7 @@ export default function CategoryNamePage({ params }: CategoryPageProps) {
 
   if (!categoryName) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8">
         <div className="container mx-auto px-4">
           <div className="h-8 bg-gray-200 rounded animate-pulse w-64 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -57,7 +57,7 @@ export default function CategoryNamePage({ params }: CategoryPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8">
         <div className="container mx-auto px-4">
           <div className="h-8 bg-gray-200 rounded animate-pulse w-64 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -79,7 +79,7 @@ export default function CategoryNamePage({ params }: CategoryPageProps) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 text-center">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
             <h2 className="text-red-600 text-xl font-semibold mb-2">Error</h2>

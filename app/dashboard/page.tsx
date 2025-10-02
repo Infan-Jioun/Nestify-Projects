@@ -150,7 +150,7 @@ export default function DashboardPage() {
 
     if (isLoading && !refreshing) {
         return (
-            <div className="min-h-screen bg-gray-50/30 p-6">
+            <div className="min-h-screen/30 p-6">
                 <NextHead title="Dashboard - Nestify" />
                 <div className="mb-8 animate-pulse">
                     <div className="h-8 bg-gray-200 rounded w-64 mb-2"></div>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50/30 px-1">
+        <div className="min-h-screen/30 px-1">
             <NextHead title="Dashboard - Nestify" />
 
             {/* Header */}

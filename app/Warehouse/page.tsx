@@ -48,10 +48,10 @@ export default function WarehousePage() {
     )
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
             <NextHead title="Warehouse - Nestify" />
             <div className={cn(
-                "relative py-32 px-6  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
+                "relative py-32 px-0 lg:px-[137px]  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
                 isScrolled ? "py-4" : "py-10"
             )}>
                 <div className="absolute  w-40 h-40 bg-green-300/30 rounded-full blur-3xl animate-pulse"></div>
