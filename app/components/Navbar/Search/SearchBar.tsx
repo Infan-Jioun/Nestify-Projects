@@ -8,7 +8,7 @@ import {
     setQuery,
     clearSuggestions,
     addRecent,
-    removeRecent,
+    removeRecent,  
     fetchSuggestions,
     Suggestion,
 } from "@/app/features/search/searchSlice";
@@ -46,14 +46,14 @@ const SearchBox: React.FC = () => {
             // First set the query to show in input (Amazon-style)
             const displayText = suggestion.title;
             dispatch(setQuery(displayText));
-
+            
             // Show loading state
             setIsNavigating(true);
             setShowSuggestions(false);
-
+            
             // Add to recent searches
             dispatch(addRecent(displayText));
-
+            
             // Navigate after a small delay to show the query in input
             setTimeout(() => {
                 if (suggestion.type === "category") {
@@ -61,9 +61,9 @@ const SearchBox: React.FC = () => {
                 } else if (suggestion.type === "property") {
                     router.push(`/Properties/${suggestion.id}`);
                 }
-
+                
                 dispatch(clearSuggestions());
-
+                
                 // Reset navigating state
                 setTimeout(() => {
                     setIsNavigating(false);
@@ -91,7 +91,7 @@ const SearchBox: React.FC = () => {
             setIsNavigating(true);
             setShowSuggestions(false);
             router.push(`/search?q=${encodeURIComponent(query)}`);
-
+            
             setTimeout(() => {
                 setIsNavigating(false);
             }, 1000);

@@ -40,7 +40,7 @@ export default function RightSidebar({ links }: Props) {
                         Browse Listings
                     </SidebarHeader>
              <div className='px-5 mb-5'>
-             <SearchBar />
+             {/* <SearchBar /> */}
              </div>
 
                     <nav className="space-y-4">
