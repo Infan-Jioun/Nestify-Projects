@@ -1,4 +1,4 @@
-
+"use client"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,67 +6,104 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react"
-import { BookOpenIcon, Layers2Icon, LayoutDashboardIcon, LogOut, LogOutIcon } from "lucide-react";
+import { BookOpenIcon, Layers2Icon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
 import Link from "next/link";
 import { CgProfile } from "react-icons/cg";
+import { AppDispatch, RootState } from "@/lib/store";
+import { useEffect } from "react";
+import { setCurrentUser } from "@/app/features/user/userAuthSlice";
+import { useDispatch, useSelector } from "react-redux"
 
 export function DropdownAvatar() {
+  const users = useSelector((state: RootState) => state?.user?.users || []);
+  const currentUser = useSelector((state: RootState) => state?.user?.currentUser);
   const { data: session } = useSession();
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Set current user when component mounts or users change
+  useEffect(() => {
+    if (users.length > 0 && !currentUser) {
+      // You might want to set the logged-in user instead of first user
+      // For now, using first user as example
+      dispatch(setCurrentUser(users[0]));
+    }
+  }, [users, currentUser, dispatch]);
+
+  // Fallback to session data if no currentUser in Redux
+  const displayUser = currentUser || {
+    _id: session?.user?.id,
+    name: session?.user?.name,
+    email: session?.user?.email,
+    image: session?.user?.image
+  };
+
   return (
     <div>
-      <DropdownMenu >
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          {/* <motion.button
-            whileHover={{ scale: 1.0, rotate: 5 }}
-            whileTap={{ scale: 0.95 }}
-            className="btn h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
-          >
-            Property
-          </motion.button> */}
-          <Avatar>
-            <AvatarImage className="w-10 h-10  rounded-full border-2 border-green-100" src={session?.user?.image ?? ""} />
-            <AvatarFallback><Image src={profileImage} alt="unavilable" width={40} height={40} className="rounded-full border-2" /></AvatarFallback>
+          <Avatar className="cursor-pointer">
+            <AvatarImage
+              className="w-10 h-10 rounded-full border-2 border-green-100"
+              src={displayUser?.image || session?.user?.image || ""}
+              alt="Profile"
+            />
+            <AvatarFallback>
+              <Image
+                src={profileImage}
+                alt="Profile"
+                width={40}
+                height={40}
+                className="rounded-full border-2"
+              />
+            </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="max-w-64">
+        <DropdownMenuContent className="w-64" align="end">
           <DropdownMenuLabel className="flex min-w-0 flex-col">
             <span className="text-foreground truncate text-sm font-medium">
-              {session?.user?.name}
+              {displayUser?.name || session?.user?.name || "User"}
             </span>
             <span className="text-muted-foreground truncate text-xs font-normal">
-              {session?.user?.email}
+              {displayUser?.email || session?.user?.email || "No email"}
             </span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <CgProfile size={16} className="opacity-60" aria-hidden="true" />
-              <Link href={"/Profile"}> Profile</Link>
+            <DropdownMenuItem asChild>
+              <Link href={`/Profile/${displayUser?._id || session?.user?.id || ''}`} className="flex items-center w-full">
+                <CgProfile size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                <span>Profile</span>
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Layers2Icon size={16} className="opacity-60" aria-hidden="true" />
-              <Link href="/dashboard"> Dashboard</Link>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard" className="flex items-center w-full">
+                <Layers2Icon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                <span>Dashboard</span>
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <BookOpenIcon size={16} className="opacity-60" aria-hidden="true" />
-              <Link href="/Bookmark"> Bookmark</Link>
+            <DropdownMenuItem asChild>
+              <Link href="/bookmark" className="flex items-center w-full">
+                <BookOpenIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                <span>Bookmark</span>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
 
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()}>
-            <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
+          <DropdownMenuItem
+            onClick={() => signOut()}
+            className="cursor-pointer"
+          >
+            <LogOutIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
             <span>Sign out</span>
           </DropdownMenuItem>
-        </DropdownMenuContent>  
+        </DropdownMenuContent>
       </DropdownMenu>
     </div>
   )
