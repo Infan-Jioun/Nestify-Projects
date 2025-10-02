@@ -72,7 +72,7 @@ export default function OfficeSpacePage() {
         </div>
       </div>
 
-      <main className="py-8">
+      <main className="py-8 px-0 lg:px-40">
         <div className="container mx-auto px-4">
           {/* Loading State */}
           {loading && (
