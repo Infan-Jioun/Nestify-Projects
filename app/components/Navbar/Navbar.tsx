@@ -1,35 +1,19 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { LogInIcon, LogOutIcon } from "lucide-react";
-import { SidebarHeader } from "@/components/ui/sidebar";
 import { RxAvatar } from "react-icons/rx";
-
-import SearchBar from "./SearchBar";
-import SidebarFooter from "./SidebarFooter";
 import Image from "next/image";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import { DropdownAvatar } from "./DropdownAvatar";
 import RightSidebar from "./RightSidebar";
 import LeftSidebar from "./LeftSidebar";
-
-
-
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -42,17 +26,14 @@ export function Navbar() {
     { name: "Blog", href: "/Blog" },
     { name: "Contact", href: "/Contact" },
   ];
-
-
-
   const links = [
-    { name: "Apartments", href: "/ApartmentsPage" },
-    { name: "Bungalow", href: "/BungalowPage" },
-    { name: "Houses", href: "/HousesPage" },
-    { name: "Loft", href: "/LoftPage" },
-    { name: "Office", href: "/officePage" },
-    { name: "Townhome", href: "/TownhomePage" },
-    { name: "Vila", href: "/VilaPage" },
+    { name: "Apartment", href: "/Apartment" },
+    { name: "House", href: "/House" },
+    { name: "Duplex", href: "/Duplex" },
+    { name: "Office Space", href: "/OfficeSpace" },
+    { name: "Shop", href: "/Shop" },
+    { name: "Warehouse", href: "/Warehouse" },
+    { name: "Hotel", href: "/Hotel" },
   ];
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -70,12 +51,9 @@ export function Navbar() {
         }`}
     >
       <div className="container mx-auto px-4 md:px-5 lg:px-24 py-3 flex items-center justify-between">
-        {/* Mobile Left Menu */}
         <div className="lg:hidden flex items-center">
           <LeftSidebar navlinks={navlinks} />
         </div>
-
-        {/* Logo + Desktop Nav */}
         <div className="flex justify-center items-center gap-10">
           <Link href="/" className="">
             <Image
@@ -104,8 +82,6 @@ export function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-
-        {/* Right Side Actions */}
         <div className="flex items-center gap-4">
           <div className="hidden lg:flex items-center gap-4">
             {session ? null : (
