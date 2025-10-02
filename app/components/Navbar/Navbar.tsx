@@ -100,7 +100,7 @@ export function Navbar() {
 
 
           </div>
-          {/* <SearchBox /> */}
+          <SearchBox />
           {/* Property Button */}
           <div className="hidden sm:block">
             <motion.button
