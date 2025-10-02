@@ -7,10 +7,10 @@ import { AppDispatch, RootState } from '@/lib/store'
 import PropertyCard from '../components/PropertyCard/PropertyCard'
 import { cn } from "@/lib/utils";
 import NextHead from '../components/NextHead/NextHead'
-export default function DuplexPage() {
+export default function WarehousePage() {
     const dispatch = useDispatch<AppDispatch>()
     const { properties, loading, error } = useSelector((state: RootState) => state.properties)
-    const [WarehouseProperties, setWarehouseProperties] = useState<PropertyType[]>([])
+    const [warehouseProperties, setWarehouseProperties] = useState<PropertyType[]>([])
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
@@ -103,7 +103,7 @@ export default function DuplexPage() {
                     )}
 
                     {/* Empty State */}
-                    {!loading && !error && WarehouseProperties.length === 0 && (
+                    {!loading && !error && warehouseProperties.length === 0 && (
                         <div className="text-center py-12">
                             <div className="bg-white rounded-xl shadow-sm p-8 max-w-md mx-auto">
                                 <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +111,7 @@ export default function DuplexPage() {
                                 </svg>
                                 <h2 className="text-xl font-semibold text-gray-900 mb-2">No Warehouse Properties Found</h2>
                                 <p className="text-gray-600 mb-6">
-                                    We couldn't find any Warehouse properties matching your criteria.
+                                    {"We couldn't find any Warehouse properties matching your criteria"}
                                 </p>
                                 <button
                                     onClick={() => dispatch(fetchProperties())}
@@ -124,9 +124,9 @@ export default function DuplexPage() {
                     )}
 
                     {/* Success State */}
-                    {!loading && !error && WarehouseProperties.length > 0 && (
+                    {!loading && !error && warehouseProperties.length > 0 && (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {WarehouseProperties.map((property) => (
+                            {warehouseProperties.map((property) => (
                                 <PropertyCard key={property._id} property={property} />
                             ))}
                         </div>

@@ -8,13 +8,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
     Calendar, Clock, Eye, Heart, Search, ArrowRight, Home,
-    User, Tag, BookOpen, TrendingUp, Building, HomeIcon
+     Tag, BookOpen, TrendingUp, Building, HomeIcon
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { BlogPost, BlogState } from "../Types/BlogPost";
+import { BlogPost } from "../Types/BlogPost";
 
 // Skeleton Loader Components
 const BlogCardSkeleton = () => (
