@@ -2,10 +2,11 @@ import { DialogTitle } from '@/components/ui/dialog'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { SidebarHeader } from '@/components/ui/sidebar'
 import React from 'react'
-import SearchBar from './SearchBar'
+
 import Link from 'next/link'
 import SidebarFooter from './SidebarFooter'
 import { usePathname } from 'next/navigation'
+import SearchBar from './Search/SearchBar'
 type Props = {
     links: { name: string, href: string }[]
 }
@@ -38,7 +39,9 @@ export default function RightSidebar({ links }: Props) {
                     <SidebarHeader className="font-bold text-black text-xl text-center border-b-2 mb-5">
                         Browse Listings
                     </SidebarHeader>
-                    <SearchBar />
+             <div className='px-5 mb-5'>
+             <SearchBar />
+             </div>
 
                     <nav className="space-y-4">
                         {links.map((link) => (

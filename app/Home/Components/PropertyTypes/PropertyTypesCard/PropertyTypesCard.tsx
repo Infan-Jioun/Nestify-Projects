@@ -75,7 +75,7 @@ export default function ApartmentTypes() {
     count: getPropertiesCountByCategory(category.categoryName)
   }));
 
-  // Filter out categories with 0 properties
+
   const filteredApartmentData = apartmentData.filter(item => item.count > 0);
 
   useEffect(() => {
