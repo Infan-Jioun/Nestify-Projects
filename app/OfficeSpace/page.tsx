@@ -27,7 +27,7 @@ export default function OfficeSpacePage() {
 
   useEffect(() => {
     const officeSpaces = properties.filter(property =>
-      property.category?.name?.toLowerCase() === 'office Space'
+      property.category?.name?.toLowerCase() === 'office space'
     )
     setOfficeSpaceProperties(officeSpaces)
   }, [properties])
