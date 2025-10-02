@@ -14,6 +14,7 @@ import Image from "next/image";
 import { DropdownAvatar } from "./DropdownAvatar";
 import RightSidebar from "./RightSidebar";
 import LeftSidebar from "./LeftSidebar";
+import SearchBox from "./Search/SearchBar";
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -99,6 +100,7 @@ export function Navbar() {
 
 
           </div>
+          <SearchBox />
           {/* Property Button */}
           <div className="hidden sm:block">
             <motion.button

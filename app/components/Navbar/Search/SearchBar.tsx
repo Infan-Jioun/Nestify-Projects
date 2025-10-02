@@ -8,7 +8,7 @@ import {
     setQuery,
     clearSuggestions,
     addRecent,
-    removeRecent,
+    removeRecent,  
     fetchSuggestions,
     Suggestion,
 } from "@/app/features/search/searchSlice";
@@ -22,7 +22,7 @@ const SearchBox: React.FC = () => {
         (state: RootState) => state.search
     );
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [showLoader, setShowLoader] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(false);
 
     // fetch suggestions
     useEffect(() => {
@@ -36,28 +36,39 @@ const SearchBox: React.FC = () => {
         }
     }, [query, dispatch]);
 
-    // typing
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setQuery(e.target.value));
     };
 
-    // suggestion click
+    // Amazon-style suggestion click handler
     const handleSuggestionClick = useCallback(
         (suggestion: Suggestion) => {
-            if (suggestion.type === "category") {
-                router.push(`/category/${encodeURIComponent(suggestion.title)}`);
-                dispatch(addRecent(suggestion.title));
-            } else if (suggestion.type === "property") {
-                router.push(`/Properties/${suggestion.id}`);
-                dispatch(addRecent(suggestion.title));
-            }
-            dispatch(setQuery(""));
-            dispatch(clearSuggestions());
-            setShowLoader(true);
+            // First set the query to show in input (Amazon-style)
+            const displayText = suggestion.title;
+            dispatch(setQuery(displayText));
+            
+            // Show loading state
+            setIsNavigating(true);
+            setShowSuggestions(false);
+            
+            // Add to recent searches
+            dispatch(addRecent(displayText));
+            
+            // Navigate after a small delay to show the query in input
             setTimeout(() => {
-                setShowLoader(false);
-                setShowSuggestions(false);
-            }, 1000);
+                if (suggestion.type === "category") {
+                    router.push(`/category/${encodeURIComponent(suggestion.title)}`);
+                } else if (suggestion.type === "property") {
+                    router.push(`/Properties/${suggestion.id}`);
+                }
+                
+                dispatch(clearSuggestions());
+                
+                // Reset navigating state
+                setTimeout(() => {
+                    setIsNavigating(false);
+                }, 500);
+            }, 100);
         },
         [dispatch, router]
     );
@@ -68,27 +79,22 @@ const SearchBox: React.FC = () => {
         dispatch(fetchSuggestions(recentQuery));
     };
 
-
-    const handleRecentRemove = (recentQuery: string) => {
+    const handleRecentRemove = (e: React.MouseEvent, recentQuery: string) => {
+        e.stopPropagation();
         dispatch(removeRecent(recentQuery));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (query.trim()) {
-            if (suggestions.length > 0) {
-
-                dispatch(addRecent(query.trim()));
-                router.push(`/search?q=${encodeURIComponent(query)}`);
-                setShowLoader(true);
-                setTimeout(() => {
-                    setShowLoader(false);
-                    setShowSuggestions(false);
-                }, 1000);
-            } else {
-
-                setShowSuggestions(true);
-            }
+            dispatch(addRecent(query.trim()));
+            setIsNavigating(true);
+            setShowSuggestions(false);
+            router.push(`/search?q=${encodeURIComponent(query)}`);
+            
+            setTimeout(() => {
+                setIsNavigating(false);
+            }, 1000);
         }
     };
 
@@ -103,7 +109,14 @@ const SearchBox: React.FC = () => {
     };
 
     const handleInputBlur = () => {
-        setTimeout(() => setShowSuggestions(false), 100);
+        setTimeout(() => setShowSuggestions(false), 200);
+    };
+
+    // Enter key press handler for suggestions
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && query.trim()) {
+            handleSubmit(e);
+        }
     };
 
     return (
@@ -118,6 +131,7 @@ const SearchBox: React.FC = () => {
                         onChange={handleInputChange}
                         onFocus={handleInputFocus}
                         onBlur={handleInputBlur}
+                        onKeyDown={handleKeyDown}
                         className="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                     {query && (
@@ -135,11 +149,14 @@ const SearchBox: React.FC = () => {
             {/* Dropdown */}
             {showSuggestions && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-50">
-                    {showLoader ? (
-                        <div className="p-4 text-center text-gray-500">Searching...</div>
+                    {isNavigating ? (
+                        <div className="p-4 text-center text-gray-500 flex items-center justify-center">
+                            <Loader className="h-4 w-4 animate-spin mr-2" />
+                            Navigating to "{query}"...
+                        </div>
                     ) : (
                         <>
-                            {/* Recent */}
+                            {/* Recent Searches */}
                             {!query && recent.length > 0 && (
                                 <div className="p-2 border-b">
                                     <h3 className="text-sm font-semibold text-gray-600 mb-2 flex items-center">
@@ -149,22 +166,19 @@ const SearchBox: React.FC = () => {
                                     {recent.map((recentQuery, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center justify-between px-3 py-2 hover:bg-gray-100 rounded-md"
+                                            className="flex items-center justify-between px-3 py-2 hover:bg-gray-100 rounded-md cursor-pointer"
+                                            onClick={() => handleRecentClick(recentQuery)}
                                         >
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRecentClick(recentQuery)}
-                                                className="flex items-center text-sm flex-1 text-left"
-                                            >
+                                            <div className="flex items-center text-sm flex-1">
                                                 <Clock className="h-3 w-3 mr-2 text-gray-400" />
                                                 {recentQuery}
-                                            </button>
+                                            </div>
                                             <button
                                                 type="button"
-                                                onClick={() => handleRecentRemove(recentQuery)}
-                                                className="text-gray-400 hover:text-red-500"
+                                                onClick={(e) => handleRecentRemove(e, recentQuery)}
+                                                className="text-gray-400 hover:text-red-500 p-1"
                                             >
-                                                <X className="h-4 w-4" />
+                                                <X className="h-3 w-3" />
                                             </button>
                                         </div>
                                     ))}
@@ -182,7 +196,7 @@ const SearchBox: React.FC = () => {
                                             key={index}
                                             type="button"
                                             onClick={() => handleSuggestionClick(suggestion)}
-                                            className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-md flex items-start space-x-3"
+                                            className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-md flex items-start space-x-3 transition-colors duration-150"
                                         >
                                             {suggestion.type === "category" ? (
                                                 <Building className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
@@ -208,16 +222,32 @@ const SearchBox: React.FC = () => {
                                 </div>
                             )}
 
-                            {/* Not Found */}
-                            {query && query.length >= 2 && suggestions.length === 0 && !loading && (
-                                <div className="p-4 text-center text-gray-500">
-                                        No results found for &quot;{query}&quot;
-                                    </div>
+                            {/* Search Results Button (Amazon-style) */}
+                            {query && suggestions.length > 0 && (
+                                <div className="p-2 border-t">
+                                    <button
+                                        type="button"
+                                        onClick={handleSubmit}
+                                        className="w-full text-center px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-md text-sm font-medium transition-colors duration-150"
+                                    >
+                                        See all results for &quot;{query}&quot;
+                                    </button>
+                                </div>
                             )}
 
-                            {/* API Loading */}
+                            {/* No Results Found */}
+                            {query && query.length >= 2 && suggestions.length === 0 && !loading && (
+                                <div className="p-4 text-center text-gray-500">
+                                    No results found for &quot;{query}&quot;
+                                </div>
+                            )}
+
+                            {/* Loading State */}
                             {query && loading && (
-                                <div className="p-4 text-center text-gray-500"><Loader /></div>
+                                <div className="p-4 text-center text-gray-500 flex items-center justify-center">
+                                    <Loader className="h-4 w-4 animate-spin mr-2" />
+                                    Searching for &quot;{query}&quot;...
+                                </div>
                             )}
                         </>
                     )}
