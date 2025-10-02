@@ -15,12 +15,10 @@ const SearchBox: React.FC = () => {
     const { query, suggestions, recent, loading } = useSelector(
         (state: RootState) => state.search
     );
-
     const [showDropdown, setShowDropdown] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Fetch suggestions with debounce
     useEffect(() => {
         if (query.length >= 2) {
             const timer = setTimeout(() => dispatch(fetchSuggestions(query)), 300);
@@ -30,7 +28,6 @@ const SearchBox: React.FC = () => {
         }
     }, [query, dispatch]);
 
-    // Scroll highlighted item into view
     useEffect(() => {
         if (containerRef.current && highlightedIndex >= 0) {
             const items = containerRef.current.querySelectorAll<HTMLDivElement>(".search-item");
@@ -41,14 +38,14 @@ const SearchBox: React.FC = () => {
         }
     }, [highlightedIndex]);
 
-    // Input change
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setQuery(e.target.value));
         setShowDropdown(true);
         setHighlightedIndex(-1);
     };
 
-    // Clear input
+
     const clearInput = () => {
         dispatch(setQuery(""));
         dispatch(clearSuggestions());

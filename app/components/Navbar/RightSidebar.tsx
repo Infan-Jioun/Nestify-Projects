@@ -39,9 +39,9 @@ export default function RightSidebar({ links }: Props) {
                     <SidebarHeader className="font-bold text-black text-xl text-center border-b-2 mb-5">
                         Browse Listings
                     </SidebarHeader>
-             <div className='px-5 mb-5'>
-             {/* <SearchBar /> */}
-             </div>
+                    <div className='px-5 mb-5'>
+                        <SearchBar />
+                    </div>
 
                     <nav className="space-y-4">
                         {links.map((link) => (
