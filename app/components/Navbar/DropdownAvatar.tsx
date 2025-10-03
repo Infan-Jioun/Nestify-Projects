@@ -1,5 +1,13 @@
 "use client"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react"
 import { BookOpenIcon, Layers2Icon, LogOutIcon } from "lucide-react";
@@ -33,12 +41,11 @@ export function DropdownAvatar() {
     }
   }, [users, currentUser, dispatch]);
 
-  // Backend থেকে fetch করে displayUser set করা
   useEffect(() => {
     async function fetchUser() {
       if (session?.user?.email) {
         try {
-          const res = await fetch(`/api/users/${session.user.email}`);
+          const res = await fetch(`/api/users/${session.user.email}`); // ID দিয়ে fetch
           if (!res.ok) throw new Error("User not found");
           const data = await res.json();
           setFetchedUser(data);
@@ -48,7 +55,7 @@ export function DropdownAvatar() {
       }
     }
     fetchUser();
-  }, [session?.user?.email]);
+  }, [session?.user?.id]);
 
   const displayUser: DisplayUser = currentUser || fetchedUser || {
     _id: session?.user?.id,
@@ -59,62 +66,68 @@ export function DropdownAvatar() {
   };
 
   return (
-    <div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="cursor-pointer">
-            <AvatarImage
-              className="w-10 h-10 rounded-full border-2 border-green-100"
-              src={displayUser?.image || ""}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Avatar className="cursor-pointer">
+          <AvatarImage
+            className="w-10 h-10 rounded-full border-2 border-green-100"
+            src={displayUser?.image || ""}
+            alt="Profile"
+          />
+          <AvatarFallback>
+            <Image
+              src={profileImage}
               alt="Profile"
+              width={40}
+              height={40}
+              className="rounded-full border-2"
             />
-            <AvatarFallback>
-              <Image
-                src={profileImage}
-                alt="Profile"
-                width={40}
-                height={40}
-                className="rounded-full border-2"
-              />
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-64" align="end">
-          <DropdownMenuLabel className="flex min-w-0 flex-col">
-            <span className="text-foreground truncate text-sm font-medium">
-              {displayUser?.name || "User"}
-            </span>
-            <span className="text-muted-foreground truncate text-xs font-normal">
-              {displayUser?.email || "No email"}
-            </span>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem asChild>
-              <Link href={displayUser.slug ? `/profile/${displayUser.slug}` : `/profile/${displayUser._id}`}>
-                Profile
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard" className="flex items-center w-full">
-                <Layers2Icon size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                <span>Dashboard</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/bookmark" className="flex items-center w-full">
-                <BookOpenIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                <span>Bookmark</span>
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
-            <LogOutIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
-            <span>Sign out</span>
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-64" align="end">
+        <DropdownMenuLabel className="flex min-w-0 flex-col">
+          <span className="text-foreground truncate text-sm font-medium">
+            {displayUser?.name || "User"}
+          </span>
+          <span className="text-muted-foreground truncate text-xs font-normal">
+            {displayUser?.email || "No email"}
+          </span>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link
+              href={displayUser?.slug ? `/profile/${displayUser.slug}` : `/profile/${displayUser._id}`}
+              className="flex items-center w-full"
+            >
+              <CgProfile size={16} className="opacity-60 mr-2" aria-hidden="true" />
+              Profile
+            </Link>
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard" className="flex items-center w-full">
+              <Layers2Icon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+              <span>Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/bookmark" className="flex items-center w-full">
+              <BookOpenIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+              <span>Bookmark</span>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => signOut()}
+          className="cursor-pointer"
+        >
+          <LogOutIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+          <span>Sign out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
