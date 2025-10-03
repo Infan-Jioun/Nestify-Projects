@@ -100,7 +100,15 @@ const handel = NextAuth({
       if (!email) return false;
 
       const existing = await User.findOne({ email });
-
+      if (account.provider === "credentials") return true;
+      if (existing) {
+        if (
+          existing.provider &&
+          existing.provider !== account.provider
+        ) {
+          return false;
+        }
+      }
       const img = pickImage(user, profile || null);
       const base = {
         name: user?.name || profile?.name || "User",
