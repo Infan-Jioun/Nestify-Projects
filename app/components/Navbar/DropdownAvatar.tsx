@@ -1,13 +1,5 @@
 "use client"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react"
 import { BookOpenIcon, Layers2Icon, LogOutIcon } from "lucide-react";
@@ -35,14 +27,13 @@ export function DropdownAvatar() {
   const dispatch = useDispatch<AppDispatch>();
   const [fetchedUser, setFetchedUser] = useState<DisplayUser | null>(null);
 
-
   useEffect(() => {
     if (users.length > 0 && !currentUser) {
       dispatch(setCurrentUser(users[0]));
     }
   }, [users, currentUser, dispatch]);
 
-
+  // Backend থেকে fetch করে displayUser set করা
   useEffect(() => {
     async function fetchUser() {
       if (session?.user?.email) {
@@ -100,16 +91,7 @@ export function DropdownAvatar() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link
-                href={
-                  displayUser?.slug ? `/profile/${displayUser.slug}`
-                    : displayUser?._id
-                      ? `/profile/${displayUser._id}`
-                      : "#"
-                }
-                className="flex items-center w-full"
-              >
-                <CgProfile size={16} className="opacity-60 mr-2" aria-hidden="true" />
+              <Link href={displayUser.slug ? `/profile/${displayUser.slug}` : `/profile/${displayUser._id}`}>
                 Profile
               </Link>
             </DropdownMenuItem>
@@ -126,12 +108,8 @@ export function DropdownAvatar() {
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => signOut()}
-            className="cursor-pointer"
-          >
+          <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
             <LogOutIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
             <span>Sign out</span>
           </DropdownMenuItem>

@@ -4,35 +4,40 @@ import connectToDatabase from "@/lib/mongodb";
 import { Types } from "mongoose";
 export async function GET(
     req: NextRequest,
-    context: { params: Promise<{ identifier: string }> }
+    context: { params: { identifier: string } }
 ) {
     try {
         await connectToDatabase();
 
-        const { identifier } = await context.params;
+        const { identifier } = context.params;
+        if (!identifier)
+            return NextResponse.json({ error: "Identifier required" }, { status: 400 });
 
-        if (!identifier) {
-            return NextResponse.json(
-                { message: "Identifier is required" },
-                { status: 400 }
-            );
+        let user = null;
+
+        // যদি valid MongoDB ObjectId হয়
+        if (Types.ObjectId.isValid(identifier)) {
+            user = await User.findById(identifier).select("-password -resetTokenHash -resetTokenExpiry");
         }
 
-        const user = await User.findById(identifier);
-
+        // অন্যথায় slug বা email বা providerId দিয়ে খুঁজে দেখ
         if (!user) {
-            return NextResponse.json(
-                { message: "User not found" },
-                { status: 404 }
-            );
+            user = await User.findOne({
+                $or: [
+                    { slug: identifier },
+                    { providerId: identifier },
+                    { email: identifier }
+                ]
+            }).select("-password -resetTokenHash -resetTokenExpiry");
         }
+
+        if (!user)
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
 
         return NextResponse.json(user, { status: 200 });
     } catch (error) {
-        return NextResponse.json(
-            { message: "Internal Server Error", error },
-            { status: 500 }
-        );
+        console.error("Error fetching user:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
 
