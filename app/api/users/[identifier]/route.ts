@@ -3,13 +3,13 @@ import User from "@/app/models/user";
 import connectToDatabase from "@/lib/mongodb";
 import { Types } from "mongoose";
 export async function GET(
-    req: Request,
-    context: { params: { identifier: string } }
+    req: NextRequest,
+    context: { params: Promise<{ identifier: string }> }
 ) {
     try {
         await connectToDatabase();
 
-        const { identifier } = context.params;
+        const { identifier } = await context.params;
 
         if (!identifier) {
             return NextResponse.json(
