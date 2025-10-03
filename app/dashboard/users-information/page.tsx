@@ -3,14 +3,13 @@ import React, { useEffect } from "react"
 import Image from "next/image"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/lib/store"
-import { setUsers, deletedUser, setUserLoader } from "@/app/features/user/userAuthSlice"
+import { setUsers, setUserLoader, setDeletedUser } from "@/app/features/user/userAuthSlice"
 import NextHead from "@/app/components/NextHead/NextHead"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { TiUserDeleteOutline } from "react-icons/ti"
 import DeletedConfirmation from "@/app/components/DeleteConfirmation/DeleteConfirmation"
 import Skeleton from "react-loading-skeleton"
-
 
 type User = {
   _id: string
@@ -26,24 +25,23 @@ export default function UserInformation() {
   const dispatch = useDispatch<AppDispatch>()
   const users = useSelector((state: RootState) => state?.user.users)
   const userLoader = useSelector((state: RootState) => state?.user.userLoader)
-
-  const [deleteUser, setDeleteUser] = React.useState<User | null>(null)
+  const deletedUser = useSelector((state: RootState) => state?.user.deletedUser) // ✅ এখানে redux state থেকে নেওয়া হচ্ছে
 
   useEffect(() => {
     async function fetchUsers() {
       try {
-        dispatch(setUserLoader(true));
-        const res = await fetch("/api/users");
-        const data: User[] = await res.json();
-        dispatch(setUsers(data));
+        dispatch(setUserLoader(true))
+        const res = await fetch("/api/users")
+        const data: User[] = await res.json()
+        dispatch(setUsers(data))
       } catch (err) {
-        console.error("Error fetching users:", err);
+        console.error("Error fetching users:", err)
       } finally {
-        dispatch(setUserLoader(false));
+        dispatch(setUserLoader(false))
       }
     }
-    fetchUsers();
-  }, [dispatch]);
+    fetchUsers()
+  }, [dispatch])
 
   // skeleton card design
   const renderSkeleton = () => (
@@ -122,7 +120,7 @@ export default function UserInformation() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setDeleteUser(user)}
+                onClick={() => dispatch(setDeletedUser(user))} // ✅ dispatch করে পাঠাতে হবে
                 className="mt-5 flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl shadow hover:shadow-lg transition-all duration-200"
               >
                 <TiUserDeleteOutline className="mr-2 text-lg" /> Delete
@@ -132,16 +130,17 @@ export default function UserInformation() {
         </motion.div>
       )}
 
-      {deleteUser && (
+      {deletedUser && (
         <DeletedConfirmation
-          userId={deleteUser._id}
-          userName={deleteUser.name}
-          userEmail={deleteUser.email}
+          userId={deletedUser._id}
+          userName={deletedUser.name}
+          userEmail={deletedUser.email}
           onConfirm={(_id) => {
-            dispatch(deletedUser(_id))
-            setDeleteUser(null)
+            
+            console.log("Deleting user:", _id)
+            dispatch(setDeletedUser(null))
           }}
-          onCancel={() => setDeleteUser(null)}
+          onCancel={() => dispatch(setDeletedUser(null))}
         />
       )}
     </div>

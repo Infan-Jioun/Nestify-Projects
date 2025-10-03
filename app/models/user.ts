@@ -9,6 +9,9 @@ export interface IUser extends Document {
     provider?: "credentials" | "google" | "github";
     providerId?: string | null;
     slug?: string | null;
+    role?: string | null;
+    bio?: string | null;
+    location?: string | null;
     resetTokenHash?: string;
     resetTokenExpiry?: Date;
 }
@@ -21,6 +24,9 @@ const userSchema = new Schema<IUser>({
     provider: { type: String, enum: ["credentials", "google", "github"], default: "credentials" },
     providerId: { type: String, default: null, index: true },
     slug: { type: String, unique: true, sparse: true },
+    role: { type: String, default: "user" },
+    bio: { type: String, default: null },
+    location: { type: String, default: null },
     resetTokenHash: { type: String },
     resetTokenExpiry: { type: Date },
 }, { timestamps: true });

@@ -5,12 +5,12 @@ import { Types } from "mongoose";
 
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ identifier: string }> } // এখানে Promise লাগবে
+  context: { params: Promise<{ identifier: string }> } 
 ) {
   try {
     await connectToDatabase();
 
-    // এখানে await করতে হবে
+   
     const { identifier } = await context.params;
 
     if (!identifier) {

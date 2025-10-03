@@ -6,15 +6,19 @@ interface User {
     email: string;
     role: string;
     image?: string | null;
-
+    bio?: string | null;
+    location?: string | null;
+    slug?: string | null;
+    website?: string | null;
 }
 
 interface UserState {
     users: User[];
     userLoader: boolean;
     currentUser: User | null;
+    deletedUser?: User | null;
     error: string | null;
-    loading: boolean
+    loading: boolean;
 }
 
 const initialState: UserState = {
@@ -22,7 +26,8 @@ const initialState: UserState = {
     userLoader: false,
     currentUser: null,
     error: null,
-    loading: false
+    loading: false,
+    deletedUser : null
 };
 
 // Fetch all users
@@ -45,12 +50,32 @@ export const fetchUsers = createAsyncThunk(
     }
 );
 
-// Fetch single user
+// Fetch single user by slug
+export const fetchUserBySlug = createAsyncThunk(
+    "user/fetchUserBySlug",
+    async (slug: string, { rejectWithValue }) => {
+        try {
+            const res = await fetch(`/api/users/${slug}`);
+            if (!res.ok) {
+                throw new Error("Failed to fetch user");
+            }
+            const data: User = await res.json();
+            return data;
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                return rejectWithValue(err.message);
+            }
+            return rejectWithValue("An unknown error occurred");
+        }
+    }
+);
+
+// Fetch single user by ID
 export const fetchUserById = createAsyncThunk(
     "user/fetchUserById",
     async (id: string, { rejectWithValue }) => {
         try {
-            const res = await fetch(`/api/users/${id}`);
+            const res = await fetch(`/api/users/id/${id}`);
             if (!res.ok) {
                 throw new Error("Failed to fetch user");
             }
@@ -91,10 +116,10 @@ export const updateUser = createAsyncThunk(
             return rejectWithValue("An unknown error occurred");
         }
     }
-);
+);  
 
 // Delete user
-export const deletedUser = createAsyncThunk(
+export const deleteUser = createAsyncThunk(
     "user/deleteUser",
     async (id: string, { rejectWithValue }) => {
         try {
@@ -124,9 +149,21 @@ const userAuthSlice = createSlice({
         setCurrentUser: (state, action: PayloadAction<User>) => {
             state.currentUser = action.payload;
         },
+
+        setDeletedUser: (state, action: PayloadAction<User | null>) => {
+            state.deletedUser = action.payload;
+        },
         clearError: (state) => {
             state.error = null;
         },
+        clearCurrentUser: (state) => {
+            state.currentUser = null;
+        },
+        updateCurrentUser: (state, action: PayloadAction<Partial<User>>) => {
+            if (state.currentUser) {
+                state.currentUser = { ...state.currentUser, ...action.payload };
+            }
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -144,46 +181,81 @@ const userAuthSlice = createSlice({
                 state.error = action.payload as string;
             })
 
+            // Fetch User By Slug
+            .addCase(fetchUserBySlug.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchUserBySlug.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentUser = action.payload;
+            })
+            .addCase(fetchUserBySlug.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.currentUser = null;
+            })
+
             // Fetch User By ID
             .addCase(fetchUserById.pending, (state) => {
-                state.userLoader = true;
+                state.loading = true;
                 state.error = null;
             })
             .addCase(fetchUserById.fulfilled, (state, action) => {
-                state.userLoader = false;
+                state.loading = false;
                 state.currentUser = action.payload;
             })
             .addCase(fetchUserById.rejected, (state, action) => {
-                state.userLoader = false;
+                state.loading = false;
                 state.error = action.payload as string;
             })
 
             // Update User
             .addCase(updateUser.pending, (state) => {
-                state.userLoader = true;
+                state.loading = true;
             })
             .addCase(updateUser.fulfilled, (state, action) => {
-                state.userLoader = false;
+                state.loading = false;
                 const updatedUser = action.payload;
+
+                // Update in users array
                 const index = state.users.findIndex(user => user._id === updatedUser._id);
                 if (index !== -1) {
                     state.users[index] = updatedUser;
                 }
+
+                // Update current user if it's the same user
                 if (state.currentUser && state.currentUser._id === updatedUser._id) {
                     state.currentUser = updatedUser;
                 }
             })
             .addCase(updateUser.rejected, (state, action) => {
-                state.userLoader = false;
+                state.loading = false;
                 state.error = action.payload as string;
             })
 
             // Delete User
-            .addCase(deletedUser.fulfilled, (state, action) => {
+            .addCase(deleteUser.fulfilled, (state, action) => {
                 state.users = action.payload;
+                // Clear current user if it was deleted
+                if (state.currentUser && !action.payload.find(user => user._id === state.currentUser?._id)) {
+                    state.currentUser = null;
+                }
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
+                state.error = action.payload as string;
             });
     },
 });
 
-export const { setUsers, setUserLoader, setCurrentUser, clearError } = userAuthSlice.actions;
+export const {
+    setUsers,
+    setUserLoader,
+    setCurrentUser,
+    clearError,
+    setDeletedUser,
+    clearCurrentUser,
+    updateCurrentUser
+} = userAuthSlice.actions;
+
 export default userAuthSlice.reducer;
