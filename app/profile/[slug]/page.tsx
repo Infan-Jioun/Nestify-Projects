@@ -135,7 +135,7 @@ export default function ProfilePage() {
                     <User className="w-10 h-10 text-red-500" />
                 </motion.div>
                 <h2 className="text-xl font-bold text-gray-800 mb-2">User Not Found</h2>
-                <p className="text-gray-600 mb-4">The user profile you're looking for doesn't exist.</p>
+                <p className="text-gray-600 mb-4">{"The user profile you're looking for doesn't exist."}</p>
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

@@ -35,7 +35,7 @@ userSchema.pre("save", async function (next) {
         const UserModel = models.User || model<IUser>("User", userSchema);
 
 
-        let exists = await UserModel.findOne({ slug: candidate });
+        const exists = await UserModel.findOne({ slug: candidate });
 
         if (exists && exists._id.toString() !== this._id?.toString()) {
 
@@ -52,7 +52,7 @@ userSchema.pre("save", async function (next) {
         this.slug = candidate;
         next();
     } catch (err) {
-        next(err as any);
+        next(err as unknown as Error);
     }
 });
 
