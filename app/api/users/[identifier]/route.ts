@@ -9,25 +9,31 @@ export async function GET(
     try {
         await connectToDatabase();
 
-        const { identifier } = context.params;
+        const { identifier } = context.params; // সরাসরি access
+
         if (!identifier)
-            return NextResponse.json({ error: "Identifier required" }, { status: 400 });
+            return NextResponse.json(
+                { error: "Identifier required" },
+                { status: 400 }
+            );
 
         let user = null;
 
-        // যদি valid MongoDB ObjectId হয়
+        // MongoDB ObjectId
         if (Types.ObjectId.isValid(identifier)) {
-            user = await User.findById(identifier).select("-password -resetTokenHash -resetTokenExpiry");
+            user = await User.findById(identifier).select(
+                "-password -resetTokenHash -resetTokenExpiry"
+            );
         }
 
-        // অন্যথায় slug বা email বা providerId দিয়ে খুঁজে দেখ
+        // slug / email / providerId
         if (!user) {
             user = await User.findOne({
                 $or: [
                     { slug: identifier },
                     { providerId: identifier },
-                    { email: identifier }
-                ]
+                    { email: identifier },
+                ],
             }).select("-password -resetTokenHash -resetTokenExpiry");
         }
 
@@ -37,7 +43,10 @@ export async function GET(
         return NextResponse.json(user, { status: 200 });
     } catch (error) {
         console.error("Error fetching user:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json(
+            { error: "Internal Server Error", details: error },
+            { status: 500 }
+        );
     }
 }
 
