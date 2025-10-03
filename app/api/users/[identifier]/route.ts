@@ -2,21 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/models/user";
 import connectToDatabase from "@/lib/mongodb";
 import { Types } from "mongoose";
-
-type RouteParams = {
-    params: {
-        identifier: string;
-    };
-};
-
 export async function GET(
     req: Request,
-    { params }: RouteParams
+    context: { params: { identifier: string } }
 ) {
     try {
         await connectToDatabase();
 
-        const { identifier } = params;
+        const { identifier } = context.params;
 
         if (!identifier) {
             return NextResponse.json(
