@@ -1,8 +1,9 @@
 "use client"
 import React from "react"
 import { motion } from "framer-motion"
-import UserCard from "./UserCard"
 import { User } from "@/app/Types/user"
+import UserCard from "./UserCard"
+
 
 
 const UserGrid = ({ users, onDelete }: { users: User[], onDelete: (user: User) => void }) => (
