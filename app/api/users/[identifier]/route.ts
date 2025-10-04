@@ -94,11 +94,15 @@ export async function DELETE(
     );
   }
 }
-export async function PUT(req: NextRequest, context: Promise<{ params: { identifier: string } }>) {
+export async function PUT(
+  req: NextRequest,
+  context: { params: Promise<{ identifier: string }> }
+) {
   try {
     await connectToDatabase();
-    const { identifier } = await context.params;
- 
+    const params = await context.params;
+    const { identifier } = params;
+
     const { role } = await req.json();
 
     const validRoles = ["user", "admin", "real_estate_developer"];
@@ -108,17 +112,30 @@ export async function PUT(req: NextRequest, context: Promise<{ params: { identif
 
     const user = Types.ObjectId.isValid(identifier)
       ? await User.findById(identifier)
-      : await User.findOne({ $or: [{ slug: identifier }, { email: identifier }, { providerId: identifier }] });
+      : await User.findOne({ 
+          $or: [
+            { slug: identifier }, 
+            { email: identifier }, 
+            { providerId: identifier }
+          ] 
+        });
 
-    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
-
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
     user.role = role;
     await user.save();
 
-    return NextResponse.json({ message: "Role updated successfully", user }, { status: 200 });
+    return NextResponse.json(
+      { message: "Role updated successfully", user }, 
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" }, 
+      { status: 500 }
+    );
   }
 }
