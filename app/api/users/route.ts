@@ -1,14 +1,18 @@
-import User from "@/app/models/user";
+import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
-import { NextResponse } from "next/server";
+import User from "@/app/models/user";
 
 export async function GET() {
-    await connectToDatabase();
-    const users = await User.find({});
-    if (!users) {
-        return NextResponse.json(users, { status: 200 });
-    } else {
-        return NextResponse.json(users, { status: 404, statusText: "No users found" });
+    try {
+        await connectToDatabase();
+        const users = await User.find({}).lean();
+        return NextResponse.json(users); 
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json({ message: "Failed to fetch users" }, { status: 500 });
     }
-
 }
+
+
+
+

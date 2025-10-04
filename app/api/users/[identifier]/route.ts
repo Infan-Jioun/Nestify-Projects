@@ -5,12 +5,11 @@ import { Types } from "mongoose";
 
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ identifier: string }> } 
+  context: { params: Promise<{ identifier: string }> }
 ) {
   try {
     await connectToDatabase();
 
-   
     const { identifier } = await context.params;
 
     if (!identifier) {
@@ -48,14 +47,77 @@ export async function GET(
     );
   }
 }
-export async function DELETE(req: NextRequest) {
-    try {
-        await connectToDatabase();
-        const url = new URL(req.url);
-        const parts = url.pathname.split("/");
-        const id = parts[parts.length - 1];
-        if (!id || !Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ error: "Invalid user id" }, { status: 400 });
-        } const deletedUser = await User.findByIdAndDelete(id); if (!deletedUser) { return NextResponse.json({ error: "User not found" }, { status: 404 }); } return NextResponse.json({ message: "User deleted successfully", id }, { status: 200 });
-    } catch (error) { console.error("Error deleting user:", error); return NextResponse.json({ error: "Failed to delete user" }, { status: 500 }); }
+
+// DELETE user by identifier (ID, slug, email, etc.)
+export async function DELETE(
+  req: NextRequest,
+  context: { params: Promise<{ identifier: string }> }
+) {
+  try {
+    await connectToDatabase();
+
+
+    const { identifier } = await context.params;
+
+    if (!identifier) {
+      return NextResponse.json({ message: "User identifier required" }, { status: 400 });
+    }
+
+    let deletedUser = null;
+
+    if (Types.ObjectId.isValid(identifier)) {
+      deletedUser = await User.findByIdAndDelete(identifier);
+    }
+    if (!deletedUser) {
+      deletedUser = await User.findOneAndDelete({
+        $or: [
+          { slug: identifier },
+          { email: identifier },
+          { providerId: identifier },
+        ],
+      });
+    }
+
+    if (!deletedUser) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      message: "User successfully deleted",
+      deletedUserId: deletedUser._id.toString()
+    });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    return NextResponse.json(
+      { message: "Deletion failed" },
+      { status: 500 }
+    );
+  }
+}
+export async function PUT(req: NextRequest, context : Promise<{ params: { identifier: string } }>) {
+  try {
+    await connectToDatabase();
+    const { params } = await context;
+    const { identifier } = params;
+    const { role } = await req.json();
+
+    const validRoles = ["user", "admin", "real_estate_developer"];
+    if (!validRoles.includes(role)) {
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 });
+    }
+
+    let user = Types.ObjectId.isValid(identifier)
+      ? await User.findById(identifier)
+      : await User.findOne({ $or: [{ slug: identifier }, { email: identifier }, { providerId: identifier }] });
+
+    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+    user.role = role;
+    await user.save();
+
+    return NextResponse.json({ message: "Role updated successfully", user }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

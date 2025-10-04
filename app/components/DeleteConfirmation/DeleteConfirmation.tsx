@@ -1,12 +1,15 @@
-import { Button } from '@/components/ui/button'
-import React from 'react'
+import { Button } from '@/components/ui/button';
+import React from 'react';
 
 type DeleteConfirmationProps = {
-    userId: string
-    userName: string
-    userEmail: string
-}
-export default function DeleteConfirmation({ userId, userName, onConfirm, onCancel }: DeleteConfirmationProps & { onConfirm: (id: string) => void; onCancel: () => void }) {
+    userId: string;
+    userName: string;
+    userEmail?: string;
+    onConfirm: (id: string) => void;
+    onCancel: () => void;
+};
+
+export default function DeleteConfirmation({ userId, userName, onConfirm, onCancel }: DeleteConfirmationProps) {
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black/50 z-50">
             <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-96 text-center">
@@ -15,10 +18,7 @@ export default function DeleteConfirmation({ userId, userName, onConfirm, onCanc
                     Are you sure you want to delete <span className="font-bold">{userName}</span>?
                 </p>
                 <div className="mt-6 flex justify-center gap-4">
-                    <Button
-                        variant="destructive"
-                        onClick={() => onConfirm(userId)}
-                    >
+                    <Button variant="destructive" onClick={() => onConfirm(userId)}>
                         Yes, Delete
                     </Button>
                     <Button variant="outline" onClick={onCancel}>
@@ -27,5 +27,5 @@ export default function DeleteConfirmation({ userId, userName, onConfirm, onCanc
                 </div>
             </div>
         </div>
-    )
+    );
 }

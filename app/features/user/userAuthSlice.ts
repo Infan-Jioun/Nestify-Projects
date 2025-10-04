@@ -1,10 +1,11 @@
+import { Role } from "@/lib/roles";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
     _id: string;
     name: string;
     email: string;
-    role: string;
+    role: Role;
     image?: string | null;
     bio?: string | null;
     location?: string | null;
@@ -27,7 +28,7 @@ const initialState: UserState = {
     currentUser: null,
     error: null,
     loading: false,
-    deletedUser : null
+    deletedUser: null
 };
 
 // Fetch all users
@@ -45,6 +46,25 @@ export const fetchUsers = createAsyncThunk(
             if (err instanceof Error) {
                 return rejectWithValue(err.message);
             }
+            return rejectWithValue("An unknown error occurred");
+        }
+    }
+);
+// updateUserRole
+export const updateUserRole = createAsyncThunk(
+    "user/updateUserRole",
+    async ({ id, role }: { id: string; role: Role }, { rejectWithValue }) => {
+        try {
+            const res = await fetch(`/api/users/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ role }),
+            });
+            if (!res.ok) throw new Error("Failed to update user role");
+            const data: User = await res.json();
+            return data; 
+        } catch (err: unknown) {
+            if (err instanceof Error) return rejectWithValue(err.message);
             return rejectWithValue("An unknown error occurred");
         }
     }
@@ -116,17 +136,22 @@ export const updateUser = createAsyncThunk(
             return rejectWithValue("An unknown error occurred");
         }
     }
-);  
+);
 
 // Delete user
 export const deleteUser = createAsyncThunk(
     "user/deleteUser",
     async (id: string, { rejectWithValue }) => {
         try {
-            await fetch(`/api/users/${id}`, { method: "DELETE" });
-            const res = await fetch("/api/users");
-            const data: User[] = await res.json();
-            return data;
+            const res = await fetch(`/api/users/${id}`, {
+                method: "DELETE",
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to delete user");
+            }
+            const data = await res.json();
+            return data.deletedUserId;
         } catch (err: unknown) {
             if (err instanceof Error) {
                 return rejectWithValue(err.message);
@@ -181,6 +206,13 @@ const userAuthSlice = createSlice({
                 state.error = action.payload as string;
             })
 
+            .addCase(updateUserRole.fulfilled, (state, action: PayloadAction<User>) => {
+                const updatedUser = action.payload;
+                const index = state.users.findIndex((u) => u._id === updatedUser._id);
+                if (index !== -1) state.users[index] = updatedUser;
+
+                if (state.currentUser?._id === updatedUser._id) state.currentUser = updatedUser;
+            })
             // Fetch User By Slug
             .addCase(fetchUserBySlug.pending, (state) => {
                 state.loading = true;
@@ -236,9 +268,10 @@ const userAuthSlice = createSlice({
 
             // Delete User
             .addCase(deleteUser.fulfilled, (state, action) => {
-                state.users = action.payload;
-                // Clear current user if it was deleted
-                if (state.currentUser && !action.payload.find(user => user._id === state.currentUser?._id)) {
+                const deletedUserId = action.payload;
+                state.users = state.users.filter(user => user._id !== deletedUserId);
+
+                if (state.currentUser && state.currentUser._id === deletedUserId) {
                     state.currentUser = null;
                 }
             })
