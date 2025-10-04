@@ -96,13 +96,15 @@ const Actions: React.FC<ActionsProps> = ({ user, onDelete }) => {
                                 <AvatarImage src={user.image || ""} alt={user.name} />
                                 <AvatarFallback className="bg-green-100 text-green-600">{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
                             </Avatar>
-                            <div className="flex-1">
+                            <div>
+                            <div className="md:flex-1">
                                 <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                             </div>
-                            <Badge variant="secondary" className={currentRole?.color}>
+                            <Badge variant="secondary" className={`${currentRole?.color}` }>
                                 Current: {user.role}
                             </Badge>
+                            </div>
                         </div>
 
                         {/* Role Selection */}

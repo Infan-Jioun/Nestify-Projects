@@ -10,7 +10,7 @@ interface DetailsProps {
 const Details: React.FC<DetailsProps> = ({ user }) => {
     return (
         <div className="space-y-3 mb-6">
-            <div className="flex items-center space-x-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800/30">
+            <div className="md:flex items-center space-x-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800/30">
                 <div className="p-2 bg-green-100 dark:bg-green-800/40 rounded-lg">
                     <FiMail className="w-4 h-4 text-green-600 dark:text-green-400" />
                 </div>
