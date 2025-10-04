@@ -51,12 +51,9 @@ export default function ProfilePage() {
         const text = `Check out ${currentUser?.name}'s profile!`;
 
         const shareUrls = {
-            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(profileUrl)}`,
-            facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`,
-            linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`,
             whatsapp: `https://wa.me/?text=${encodeURIComponent(text + ' ' + profileUrl)}`,
             telegram: `https://t.me/share/url?url=${encodeURIComponent(profileUrl)}&text=${encodeURIComponent(text)}`,
-            reddit: `https://reddit.com/submit?url=${encodeURIComponent(profileUrl)}&title=${encodeURIComponent(text)}`
+          
         };
 
         if (shareUrls[platform as keyof typeof shareUrls]) {
@@ -64,26 +61,6 @@ export default function ProfilePage() {
         }
     };
 
-    // Download profile as vCard
-    const downloadVCard = () => {
-        const vCard = `BEGIN:VCARD
-VERSION:3.0
-FN:${currentUser?.name}
-EMAIL:${currentUser?.email}
-URL:${currentUser?.website || ''}
-NOTE:${currentUser?.bio || ''}
-END:VCARD`;
-
-        const blob = new Blob([vCard], { type: 'text/vcard' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${currentUser?.slug || 'profile'}.vcf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    };
 
     // Enter edit mode
     const enterEditMode = () => {
@@ -131,7 +108,7 @@ END:VCARD`;
         dispatch(fetchUserBySlug(slug));
     }, [slug, dispatch]);
 
-    // Update edit form when currentUser changes
+
     useEffect(() => {
         if (currentUser && !isEditing) {
             setEditForm({
@@ -156,16 +133,7 @@ END:VCARD`;
                 </div>
             </div>
 
-            {/* Tabs Skeleton */}
-            <div className="border-b border-gray-200">
-                <div className="px-8">
-                    <div className="flex space-x-8">
-                        {[...Array(4)].map((_, i) => (
-                            <div key={i} className="h-12 bg-gray-300 rounded w-24"></div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+
 
             {/* Content Skeleton */}
             <div className="px-8 py-8">
@@ -217,7 +185,7 @@ END:VCARD`;
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                         onClick={() => window.history.back()}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200"
+                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200"
                     >
                         Go Back
                     </button>
@@ -233,11 +201,11 @@ END:VCARD`;
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
                     {/* Profile Header */}
-                    <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-16">
+                    <div className="relative bg-gradient-to-r from-green-600 via-green-600 to-green-700 px-8 py-16">
                         <div className="absolute top-6 right-6 flex gap-3">
                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${currentUser.role === 'admin'
                                 ? 'bg-yellow-100 text-yellow-800'
@@ -279,9 +247,9 @@ END:VCARD`;
                                     currentUser.name
                                 )}
                             </h1>
-                            <p className="text-blue-100 text-xl font-light mb-2">{currentUser.email}</p>
+                            <p className="text-green-100 text-xl font-light mb-2">{currentUser.email}</p>
                             {(currentUser.bio || isEditing) && (
-                                <div className="text-blue-200 text-lg max-w-2xl mx-auto">
+                                <div className="text-green-200 text-lg max-w-2xl mx-auto">
                                     {isEditing ? (
                                         <textarea
                                             value={editForm.bio}
@@ -307,7 +275,7 @@ END:VCARD`;
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
                                         className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition duration-200 ${activeTab === tab
-                                            ? 'border-blue-500 text-blue-600'
+                                            ? 'border-green-500 text-green-600'
                                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                             }`}
                                     >
@@ -326,7 +294,7 @@ END:VCARD`;
                                 {/* Profile Information */}
                                 <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                     <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                                        <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
                                         Profile Information
@@ -340,7 +308,7 @@ END:VCARD`;
                                                         type="text"
                                                         value={editForm.name}
                                                         onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                                     />
                                                 ) : (
                                                     <p className="text-lg font-semibold text-gray-900 mt-1">{currentUser.name}</p>
@@ -359,7 +327,7 @@ END:VCARD`;
                                                         type="text"
                                                         value={editForm.location}
                                                         onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                                                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                                         placeholder="Enter your location"
                                                     />
                                                 ) : (
@@ -375,13 +343,13 @@ END:VCARD`;
                                                         type="url"
                                                         value={editForm.website}
                                                         onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
-                                                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                                         placeholder="https://example.com"
                                                     />
                                                 ) : (
                                                     <p className="text-lg font-semibold text-gray-900 mt-1">
                                                         {currentUser.website ? (
-                                                            <a href={currentUser.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                                                            <a href={currentUser.website} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800">
                                                                 {currentUser.website}
                                                             </a>
                                                         ) : 'Not specified'}
@@ -424,25 +392,8 @@ END:VCARD`;
                                     )}
                                 </div>
 
-                                {/* Additional Sections based on active tab */}
-                                {activeTab === 'overview' && (
-                                    <div className="bg-white rounded-xl p-6 border border-gray-200">
-                                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
-                                        <div className="space-y-4">
-                                            <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                                                <div className="flex items-center">
-                                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                                        </svg>
-                                                    </div>
-                                                    <span className="text-gray-700">Profile created</span>
-                                                </div>
-                                                <span className="text-sm text-gray-500">2 days ago</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
+
+
                             </div>
 
                             {/* Sidebar - Social & Actions */}
@@ -461,7 +412,7 @@ END:VCARD`;
                                         onClick={copyProfileLink}
                                         className={`w-full mb-4 py-3 px-4 rounded-lg font-medium transition duration-200 flex items-center justify-center ${copied
                                             ? 'bg-green-600 text-white'
-                                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                            : 'bg-green-600 hover:bg-green-700 text-white'
                                             }`}
                                     >
                                         {copied ? (
@@ -484,12 +435,10 @@ END:VCARD`;
                                     {/* Social Media Grid */}
                                     <div className="grid grid-cols-2 gap-3 mb-4">
                                         {[
-                                            { platform: 'twitter', color: 'bg-[#1DA1F2]', icon: 'Twitter' },
-                                            { platform: 'facebook', color: 'bg-[#1877F2]', icon: 'Facebook' },
-                                            { platform: 'linkedin', color: 'bg-[#0A66C2]', icon: 'LinkedIn' },
+
                                             { platform: 'whatsapp', color: 'bg-[#25D366]', icon: 'WhatsApp' },
                                             { platform: 'telegram', color: 'bg-[#0088cc]', icon: 'Telegram' },
-                                            { platform: 'reddit', color: 'bg-[#FF5700]', icon: 'Reddit' }
+
                                         ].map((social) => (
                                             <button
                                                 key={social.platform}
@@ -501,59 +450,15 @@ END:VCARD`;
                                         ))}
                                     </div>
 
-                                    {/* Download vCard */}
-                                    <button
-                                        onClick={downloadVCard}
-                                        className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200 flex items-center justify-center font-medium"
-                                    >
-                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        Download vCard
-                                    </button>
+
+
                                 </div>
 
-                                {/* Quick Stats */}
-                                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Profile Stats</h3>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-blue-600">0</div>
-                                            <div className="text-xs text-gray-500">Connections</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-green-600">0</div>
-                                            <div className="text-xs text-gray-500">Posts</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-purple-600">0</div>
-                                            <div className="text-xs text-gray-500">Following</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-2xl font-bold text-orange-600">0</div>
-                                            <div className="text-xs text-gray-500">Followers</div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                {/* Contact Actions */}
-                                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
-                                    <div className="space-y-3">
-                                        <button className="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200">
-                                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                            Send Email
-                                        </button>
-                                        <button className="w-full flex items-center justify-center border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg transition duration-200">
-                                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                            </svg>
-                                            Start Chat
-                                        </button>
-                                    </div>
-                                </div>
+
+
+
+
                             </div>
                         </div>
                     </div>
