@@ -53,7 +53,7 @@ const Actions: React.FC<ActionsProps> = ({ user, onDelete }) => {
     return (
         <div className="flex flex-col space-y-3">
             {/* Current Role Display */}
-            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+            <div className="md:flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                 <div className="flex items-center space-x-3">
                     <div className={`p-2 rounded-lg ${currentRole?.color}`}>{currentRole?.icon}</div>
                     <div>
