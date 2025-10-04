@@ -48,7 +48,7 @@ export async function GET(
   }
 }
 
-// DELETE user by identifier (ID, slug, email, etc.)
+
 export async function DELETE(
   req: NextRequest,
   context: { params: Promise<{ identifier: string }> }
@@ -97,8 +97,8 @@ export async function DELETE(
 export async function PUT(req: NextRequest, context: Promise<{ params: { identifier: string } }>) {
   try {
     await connectToDatabase();
-    const { params } = await context;
-    const { identifier } = params;
+    const { identifier } = await context.params;
+ 
     const { role } = await req.json();
 
     const validRoles = ["user", "admin", "real_estate_developer"];
