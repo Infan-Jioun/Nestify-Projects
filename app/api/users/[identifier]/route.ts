@@ -94,7 +94,7 @@ export async function DELETE(
     );
   }
 }
-export async function PUT(req: NextRequest, context : Promise<{ params: { identifier: string } }>) {
+export async function PUT(req: NextRequest, context: Promise<{ params: { identifier: string } }>) {
   try {
     await connectToDatabase();
     const { params } = await context;
@@ -106,11 +106,12 @@ export async function PUT(req: NextRequest, context : Promise<{ params: { identi
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
-    let user = Types.ObjectId.isValid(identifier)
+    const user = Types.ObjectId.isValid(identifier)
       ? await User.findById(identifier)
       : await User.findOne({ $or: [{ slug: identifier }, { email: identifier }, { providerId: identifier }] });
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+
 
     user.role = role;
     await user.save();
