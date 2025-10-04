@@ -35,16 +35,16 @@ const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             whileHover={{ scale: 1.02, y: -5, transition: { duration: 0.2 } }}
-            className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl border border-green-100 dark:border-green-900/30 overflow-hidden transition-all duration-300"
+            className=" group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl border border-green-100 dark:border-green-900/30 overflow-hidden transition-all duration-300"
         >
-            {/* Green Gradient Background */}
+          
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50 to-lime-50 dark:from-green-900/10 dark:via-emerald-900/10 dark:to-lime-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             
-            {/* Green Accent Border on Hover */}
+           
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-green-200 dark:group-hover:border-green-800/40 rounded-2xl transition-all duration-300 pointer-events-none"></div>
             
             <div className="relative z-10 p-6">
-                {/* Header */}
+        
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
                         <div className="relative">

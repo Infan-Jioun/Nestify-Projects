@@ -53,7 +53,10 @@ export const fetchUsers = createAsyncThunk(
 // updateUserRole
 export const updateUserRole = createAsyncThunk(
     "user/updateUserRole",
-    async ({ id, role }: { id: string; role: Role }, { rejectWithValue }) => {
+    async (
+        { id, role }: { id: string; role: Role },
+        { rejectWithValue, dispatch }
+    ) => {
         try {
             const res = await fetch(`/api/users/${id}`, {
                 method: "PUT",
@@ -61,15 +64,18 @@ export const updateUserRole = createAsyncThunk(
                 body: JSON.stringify({ role }),
             });
             if (!res.ok) throw new Error("Failed to update user role");
+
             const data: User = await res.json();
-            return data; 
+
+            await dispatch(fetchUsers());
+
+            return data;
         } catch (err: unknown) {
             if (err instanceof Error) return rejectWithValue(err.message);
             return rejectWithValue("An unknown error occurred");
         }
     }
 );
-
 // Fetch single user by slug
 export const fetchUserBySlug = createAsyncThunk(
     "user/fetchUserBySlug",
