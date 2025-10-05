@@ -112,7 +112,7 @@ export function DropdownAvatar() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/bookmark" className="flex items-center w-full">
+            <Link href="/Bookmark" className="flex items-center w-full">
               <BookOpenIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
               <span>Bookmark</span>
             </Link>
