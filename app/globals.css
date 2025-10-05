@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
-/* @import "@material-tailwind/react/tailwind.css"; */
+
 @plugin "daisyui";
 
 .poppins-thin {
