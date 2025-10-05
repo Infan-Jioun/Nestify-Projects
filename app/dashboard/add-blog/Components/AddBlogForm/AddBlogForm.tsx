@@ -62,10 +62,9 @@ export default function AddBlogForm() {
         try {
             let imageUrl = "";
 
-            // Handle image upload
             if (data.featuredImage instanceof File) {
-                const uploadRes = await imageUpload(data.featuredImage);
-                imageUrl = uploadRes.data.url;
+                const imageUrlFromUpload = await imageUpload(data.featuredImage);
+                imageUrl = imageUrlFromUpload;
             } else if (typeof data.featuredImage === "string") {
                 imageUrl = data.featuredImage;
             }
@@ -135,8 +134,8 @@ export default function AddBlogForm() {
             let imageUrl = "";
 
             if (data.featuredImage instanceof File) {
-                const uploadRes = await imageUpload(data.featuredImage);
-                imageUrl = uploadRes.data.url;
+                const imageUrlFromUpload = await imageUpload(data.featuredImage); // string
+                imageUrl = imageUrlFromUpload;
             } else if (typeof data.featuredImage === "string") {
                 imageUrl = data.featuredImage;
             }
