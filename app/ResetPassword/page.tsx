@@ -33,12 +33,12 @@ export default function ForgotPasswordPage() {
                 body: JSON.stringify({ email: data.email }),
             });
 
-            console.log("📨 Response status:", res.status);
+            console.log("Response status:", res.status);
 
             let result;
             try {
                 result = await res.json();
-                console.log("📨 Response data:", result);
+                console.log("Response data:", result);
             } catch (jsonError) {
                 console.error("❌ JSON Parse Error:", jsonError);
                 toast.error("Invalid response from server");
