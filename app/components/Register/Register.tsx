@@ -174,7 +174,7 @@ export default function Register() {
             </CardDescription>
           </CardHeader>
 
-          {/* ✅ Success / Error Messages */}
+        
           {!!success && (
             <div className='px-3'>
               <p className='text-white text-center bg-green-500 p-2 rounded-2xl flex justify-center items-center gap-4'>

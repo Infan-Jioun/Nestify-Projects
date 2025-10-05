@@ -1,4 +1,3 @@
-// components/otp-input.tsx - FIXED VERSION
 "use client"
 
 import { useState, useRef } from "react"
@@ -32,22 +31,23 @@ export default function OTPInputComponent({
     }
 
     return (
-        <div className="*:not-first:mt-4">
+        <div className="*:not-first:m ">
             <Label htmlFor={id} className="text-sm font-medium">
                 Enter OTP Code
             </Label>
-
-            <OTPInput
+<div className="px-2">
+    
+<OTPInput
                 id={id}
                 ref={inputRef}
                 value={otp}
                 onChange={handleChange}
                 maxLength={length}
-                containerClassName="flex items-center gap-3 has-[:disabled]:opacity-50"
+                containerClassName="flex justify-center items-center  mt-2 border-green-500 has-[:disabled]:opacity-50"
                 disabled={disabled}
                 render={({ slots }) => (
                     <>
-                        <div className="flex">
+                        <div className="flex px-1">
                             {slots.slice(0, 3).map((slot, idx) => (
                                 <Slot key={idx} {...slot} />
                             ))}
@@ -57,7 +57,7 @@ export default function OTPInputComponent({
                             <MinusIcon size={16} aria-hidden="true" />
                         </div>
 
-                        <div className="flex">
+                        <div className="flex px-1">
                             {slots.slice(3).map((slot, idx) => (
                                 <Slot key={idx} {...slot} />
                             ))}
@@ -65,6 +65,7 @@ export default function OTPInputComponent({
                     </>
                 )}
             />
+</div>
 
             <p className="text-xs text-muted-foreground mt-2">
                 Enter the 6-digit code sent to your email
@@ -81,7 +82,7 @@ function Slot(props: SlotProps) {
                 {
                     "border-ring ring-ring/30 z-10 ring-2 shadow-md": props.isActive,
                     "border-green-500 bg-green-50": props.char !== null && !props.isActive
-                }
+                }   
             )}
         >
             {props.char !== null && <div>{props.char}</div>}

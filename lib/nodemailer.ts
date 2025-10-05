@@ -33,7 +33,7 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
         const errorMsg = 'Email configuration missing: ' +
             `EMAIL_USER: ${!!process.env.EMAIL_USER}, ` +
             `EMAIL_PASSWORD: ${!!process.env.EMAIL_PASSWORD}`;
-        console.error('❌', errorMsg);
+        console.error('', errorMsg);
         throw new Error('Email service configuration error');
     }
 
@@ -70,7 +70,7 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
             )
         ]);
 
-        console.log('✅ Production SMTP connection verified');
+        console.log('Production SMTP connection verified');
 
         // Send email with timeout
         const result = await Promise.race([
@@ -80,18 +80,18 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
             )
         ]);
 
-        console.log('✅ Production email sent successfully!');
+        console.log('Production email sent successfully!');
         return result;
 
     } catch (error) {
-        console.error('❌ Production email failed:');
+        console.error(' Production email failed:');
 
         // Detailed production logging
         if (error instanceof Error) {
-            console.error('🔍 Production Error Analysis:', {
+            console.error(' Production Error Analysis:', {
                 name: error.name,
                 message: error.message,
-                stack: error.stack?.split('\n')[0], // First line only
+                stack: error.stack?.split('\n')[0], 
                 nodeEnv: process.env.NODE_ENV,
                 platform: process.platform,
                 hasEmailVars: !!(process.env.EMAIL_USER && process.env.EMAIL_PASSWORD)
