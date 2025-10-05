@@ -400,15 +400,15 @@ export const bangladeshGeoData: Division[] =
           ]
         },
         {
-          "district": "Cox's Bazar",
+          "district": "Cox'sBazar",
           "upazilas": [
             {
               "upazila": "Chakaria",
               "unions": ["Chakaria", "Badarkhali", "Baraitali", "Bheola Manikchar", "Dulahazara", "Fashiakhali", "Harbang", "Kakara", "Khuntakhali", "Konakhali", "Lakhyarchar", "Paschim Bara Bheola", "Purba Bara Bheola", "Saharbil"]
             },
             {
-              "upazila": "Cox's Bazar Sadar",
-              "unions": ["Cox's Bazar Sadar", "Chowfaldandi",
+              "upazila": "Cox'sBazar Sadar",
+              "unions": ["Cox'sBazar Sadar", "Chowfaldandi",
                 "Jhilongjha",
                 "Khurushkul",
                 "Raozan",
