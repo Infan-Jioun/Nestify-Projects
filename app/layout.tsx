@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css";
-
+import "../globals.css";
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import Footer from "./Footer/page";
 import SessionWrapping from "@/lib/SessionWrapping";
 import { Toaster } from "react-hot-toast";
@@ -42,6 +43,8 @@ export default async function RootLayout({
               <DisplayLoader>
 
                 {children}
+                <Analytics />
+                <SpeedInsights />
               </DisplayLoader>
             </TanstackProvider>
 
