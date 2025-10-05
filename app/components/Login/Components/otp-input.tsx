@@ -31,14 +31,16 @@ export default function OTPInputComponent({
     }
 
     return (
-        <div className="*:not-first:m ">
+        <div className="*:not-first:mt-2 ">
+            <div className="w-full mx-auto">
             <Label htmlFor={id} className="text-sm font-medium text-center">
                 Enter OTP Code
             </Label>
+            </div>
 <div className="px-2">
     
 <OTPInput
-                id={id}
+                id={id} 
                 ref={inputRef}
                 value={otp}
                 onChange={handleChange}
