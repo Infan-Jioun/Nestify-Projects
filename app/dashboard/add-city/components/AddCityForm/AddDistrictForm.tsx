@@ -31,14 +31,13 @@ const router = useRouter();
         dispatch(setButtonLoader(true));
         try {
             let imageUrl = "";
-
             if (data.districtImage instanceof File) {
-                const uploadRes = await imageUpload(data.districtImage);
-                imageUrl = uploadRes.data.url;
+                const imageUrlFromUpload = await imageUpload(data.districtImage); // string
+                imageUrl = imageUrlFromUpload;
             } else if (typeof data.districtImage === "string") {
                 imageUrl = data.districtImage;
             }
-
+            
             const payload = {
                 districtName: data.districtName.trim(),
                 districtImage: imageUrl,
