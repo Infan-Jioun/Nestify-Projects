@@ -12,10 +12,12 @@ export interface IUser extends Document {
     role?: string | null;
     bio?: string | null;
     location?: string | null;
-    mobile? : string | null;
-    website? : string | null;
-    resetTokenHash?: string;
-    resetTokenExpiry?: Date;
+    mobile?: string | null;
+    website?: string | null;
+
+    // 🔹 Reset Password Fields (ঠিক করে দিন)
+    resetPasswordToken?: string;  // নাম change করুন
+    resetPasswordExpire?: Date;   // নাম change করুন
 }
 
 const userSchema = new Schema<IUser>({
@@ -31,8 +33,8 @@ const userSchema = new Schema<IUser>({
     location: { type: String, default: null },
     mobile: { type: String, default: null },
     website: { type: String, default: null },
-    resetTokenHash: { type: String },
-    resetTokenExpiry: { type: Date },
+    resetPasswordToken: { type: String }, 
+    resetPasswordExpire: { type: Date },   
 }, { timestamps: true });
 
 
@@ -44,11 +46,9 @@ userSchema.pre("save", async function (next) {
         let candidate = base;
         const UserModel = models.User || model<IUser>("User", userSchema);
 
-
         const exists = await UserModel.findOne({ slug: candidate });
 
         if (exists && exists._id.toString() !== this._id?.toString()) {
-
             const suffix = Date.now().toString(36).slice(-6);
             candidate = `${base}-${suffix}`;
             let tries = 0;
