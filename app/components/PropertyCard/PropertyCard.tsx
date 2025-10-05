@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { PropertyType } from "@/app/Types/properties";
 import { Button } from "@/components/ui/button";
-import { useDispatch } from "react-redux";
-import { deleteProperty } from "@/app/features/Properties/propertySlice";
-import { AppDispatch } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteProperty } from "../../features/Properties/propertySlice";
+import { toggleBookmark } from "../../features/bookmark/bookmarkSlice"; 
+import { AppDispatch, RootState } from "@/lib/store"; 
 import DeleteConfirmation from "./DeletedConfirmation";
 import Skeleton from "react-loading-skeleton";
 import { FaBookmark, FaInfoCircle } from "react-icons/fa";
@@ -19,7 +20,6 @@ type PropertyCardProps = {
   isLoading?: boolean;
   isError?: boolean;
   viewMode?: "grid" | "list";
-
 };
 
 export default function PropertyCard({
@@ -30,7 +30,15 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   const dispatch = useDispatch<AppDispatch>();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+
+  // Get bookmarked properties from Redux store
+  const bookmarkedProperties = useSelector((state: RootState) => state.bookmarks.bookmarkedProperties);
+
+  // Check if current property is bookmarked
+  const isBookmarked = useMemo(() =>
+    bookmarkedProperties.some(bookmarkedProperty => bookmarkedProperty._id === property._id),
+    [bookmarkedProperties, property._id]
+  );
 
   const handleDelete = () => {
     if (property._id) {
@@ -39,7 +47,9 @@ export default function PropertyCard({
     }
   };
 
-  const toggleBookmark = () => setBookmarked(!bookmarked);
+  const handleToggleBookmark = () => {
+    dispatch(toggleBookmark(property));
+  };
 
   if (isLoading) {
     return (
@@ -131,27 +141,27 @@ export default function PropertyCard({
         {/* Status */}
         <div className="flex gap-2">
           <p
-            className={`inline-block px-3 py-1  text-xs rounded-full font-medium ${property.status === "Available"
-              ? "bg-red-100 text-red-600"
-              : property.listingStatus === "Sale"
-                ? "bg-red-100 text-green-600"
-                : "bg-yellow-100 text-yellow-600"
+            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
+                ? "bg-red-100 text-red-600"
+                : property.listingStatus === "Sale"
+                  ? "bg-red-100 text-green-600"
+                  : "bg-yellow-100 text-yellow-600"
               }`}
           >
             {property.listingStatus}
           </p>
           <p
             className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
-              ? "bg-green-100 text-green-600"
-              : property.status === "Sold"
-                ? "bg-red-100 text-red-600"
-                : "bg-yellow-100 text-yellow-600"
+                ? "bg-green-100 text-green-600"
+                : property.status === "Sold"
+                  ? "bg-red-100 text-red-600"
+                  : "bg-yellow-100 text-yellow-600"
               }`}
           >
             {property.status}
           </p>
-                                  
         </div>
+
         {/* Action Buttons */}
         <div className="flex gap-3 mt-4">
           <Link href={`/Properties/${property._id}`}>
@@ -163,11 +173,11 @@ export default function PropertyCard({
             </Button>
           </Link>
           <Button
-            variant={bookmarked ? "secondary" : "ghost"}
+            variant={isBookmarked ? "secondary" : "ghost"}
             className="flex items-center justify-center"
-            onClick={toggleBookmark}
+            onClick={handleToggleBookmark}
           >
-            <FaBookmark className={bookmarked ? "text-yellow-500" : ""} />
+            <FaBookmark className={isBookmarked ? "text-yellow-500 fill-yellow-500" : "text-gray-500"} />
           </Button>
           <Button
             variant="destructive"
