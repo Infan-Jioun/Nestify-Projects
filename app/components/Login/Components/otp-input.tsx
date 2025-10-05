@@ -32,7 +32,7 @@ export default function OTPInputComponent({
 
     return (
         <div className="*:not-first:m ">
-            <Label htmlFor={id} className="text-sm font-medium">
+            <Label htmlFor={id} className="text-sm font-medium text-center">
                 Enter OTP Code
             </Label>
 <div className="px-2">
@@ -67,7 +67,7 @@ export default function OTPInputComponent({
             />
 </div>
 
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-muted-foreground mt-2 text-center">
                 Enter the 6-digit code sent to your email
             </p>
         </div>
