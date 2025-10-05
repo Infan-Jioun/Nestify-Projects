@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
 
-interface Props {
+interface UserNotFoundProps {
     error?: string | null;
 }
 
-export default function UserNotFound({ error }: Props) {
+
+export default function UserNotFound({ error }: UserNotFoundProps) {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
             <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
@@ -26,12 +27,13 @@ export default function UserNotFound({ error }: Props) {
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">User Not Found</h2>
                 <p className="text-gray-600 mb-6">
-                    {error || "The user you're looking for doesn't exist or may have been removed."}
+                    {error ||
+                        "The user you're looking for doesn't exist or may have been removed."}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                         onClick={() => window.history.back()}
-                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200"
                     >
                         Go Back
                     </button>

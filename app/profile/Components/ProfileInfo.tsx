@@ -1,30 +1,31 @@
 "use client";
 import React from "react";
+import { User } from "@/app/Types/user";
 
-interface Props {
-    currentUser: any;
+interface ProfileInfoProps {
+    currentUser: User;
     isEditing: boolean;
-    editForm: any;
-    setEditForm: React.Dispatch<React.SetStateAction<any>>;
-    saveProfile: () => void;
-    cancelEdit: () => void;
+    editForm: {
+        name: string;
+        bio: string;
+        location: string;
+        website: string;
+        mobile: string;
+    };
     saveLoading: boolean;
+    imageUploading: boolean;
+    onInputChange: (field: "name" | "image" | "bio" | "location" | "mobile" | "website", value: string) => void;
+    onSaveProfile: () => void;
+    onCancelEdit: () => void;
 }
 
-export default function ProfileInfo({
-    currentUser,
-    isEditing,
-    editForm,
-    setEditForm,
-    saveProfile,
-    cancelEdit,
-    saveLoading,
-}: Props) {
+
+export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoading, imageUploading, onInputChange, onSaveProfile, onCancelEdit }: ProfileInfoProps) {
     return (
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <svg
-                    className="w-5 h-5 mr-2 text-green-600"
+                    className="w-5 h-5 mr-2 text-blue-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -38,10 +39,7 @@ export default function ProfileInfo({
                 </svg>
                 Profile Information
             </h3>
-
-            {/* Form Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Name + Email */}
                 <div className="space-y-4">
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -51,10 +49,9 @@ export default function ProfileInfo({
                             <input
                                 type="text"
                                 value={editForm.name}
-                                onChange={(e) =>
-                                    setEditForm({ ...editForm, name: e.target.value })
-                                }
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                onChange={(e) => onInputChange("name", e.target.value)}
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                placeholder="Enter your full name"
                             />
                         ) : (
                             <p className="text-lg font-semibold text-gray-900 mt-1">
@@ -70,9 +67,28 @@ export default function ProfileInfo({
                             {currentUser.email}
                         </p>
                     </div>
+                    <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                            Mobile Number
+                        </label>
+                        {isEditing ? (
+                            <input
+                                type="tel"
+                                value={editForm.mobile}
+                                onChange={(e) => {
+                                    console.log("Mobile input:", e.target.value);
+                                    onInputChange("mobile", e.target.value);
+                                }}
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                placeholder="Enter your mobile number"
+                            />
+                        ) : (
+                            <p className="text-lg font-semibold text-gray-900 mt-1">
+                                {currentUser.mobile || "Not specified"}
+                            </p>
+                        )}
+                    </div>
                 </div>
-
-                {/* Location + Website */}
                 <div className="space-y-4">
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -82,10 +98,9 @@ export default function ProfileInfo({
                             <input
                                 type="text"
                                 value={editForm.location}
-                                onChange={(e) =>
-                                    setEditForm({ ...editForm, location: e.target.value })
-                                }
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                onChange={(e) => onInputChange("location", e.target.value)}
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                placeholder="Enter your location"
                             />
                         ) : (
                             <p className="text-lg font-semibold text-gray-900 mt-1">
@@ -101,10 +116,9 @@ export default function ProfileInfo({
                             <input
                                 type="url"
                                 value={editForm.website}
-                                onChange={(e) =>
-                                    setEditForm({ ...editForm, website: e.target.value })
-                                }
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                onChange={(e) => onInputChange("website", e.target.value)}
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                placeholder="https://example.com"
                             />
                         ) : (
                             <p className="text-lg font-semibold text-gray-900 mt-1">
@@ -113,7 +127,7 @@ export default function ProfileInfo({
                                         href={currentUser.website}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-green-600 hover:text-green-800"
+                                        className="text-blue-600 hover:text-blue-800 transition duration-200 break-all"
                                     >
                                         {currentUser.website}
                                     </a>
@@ -123,16 +137,34 @@ export default function ProfileInfo({
                             </p>
                         )}
                     </div>
+                    <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                            Bio
+                        </label>
+                        {isEditing ? (
+                            <textarea
+                                value={editForm.bio}
+                                onChange={(e) => onInputChange("bio", e.target.value)}
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 resize-none"
+                                rows={3}
+                                placeholder="Tell us about yourself..."
+                            />
+                        ) : (
+                            <p className="text-lg font-semibold text-gray-900 mt-1">
+                                {currentUser.bio || "No bio provided"}
+                            </p>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Edit Actions */}
+            {/* Edit Mode Actions */}
             {isEditing && (
                 <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
                     <button
-                        onClick={saveProfile}
-                        disabled={saveLoading}
-                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center disabled:opacity-50"
+                        onClick={onSaveProfile}
+                        disabled={saveLoading || imageUploading}
+                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {saveLoading ? (
                             <>
@@ -159,9 +191,9 @@ export default function ProfileInfo({
                         )}
                     </button>
                     <button
-                        onClick={cancelEdit}
-                        disabled={saveLoading}
-                        className="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-6 rounded-lg transition duration-200 disabled:opacity-50"
+                        onClick={onCancelEdit}
+                        disabled={saveLoading || imageUploading}
+                        className="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-6 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Cancel
                     </button>

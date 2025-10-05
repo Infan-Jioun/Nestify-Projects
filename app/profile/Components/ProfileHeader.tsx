@@ -1,34 +1,47 @@
 "use client";
-import React from "react";
+import React, { useRef, useState } from "react";
+import { User } from "@/app/Types/user";
+import { imageUpload } from "@/hooks/useImageUpload";
 
-interface Props {
-    currentUser: any;
+interface ProfileHeaderProps {
+    currentUser: User;
     isEditing: boolean;
-    editForm: any;
-    setEditForm: React.Dispatch<React.SetStateAction<any>>;
-    enterEditMode: () => void;
+    editForm: {
+        name: string;
+        bio: string;
+        image: string;
+    };
+    imagePreview: string | null;
+    imageUploading: boolean;
+    onEnterEditMode: () => void;
+    onInputChange: (field: "name" | "image" | "bio" | "location" | "mobile" | "website", value: string) => void;
+    onImageSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onRemoveImage: () => void;
 }
 
-export default function ProfileHeader({
-    currentUser,
-    isEditing,
-    editForm,
-    setEditForm,
-    enterEditMode,
-}: Props) {
+
+export default function ProfileHeader({ currentUser, isEditing, editForm, imagePreview, imageUploading, onEnterEditMode, onInputChange, onImageSelect, onRemoveImage, }: ProfileHeaderProps) {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
+
+    const displayImage = imagePreview || currentUser.image || "/image/businessman-character-avatar-isolated.png";
+
     return (
-        <div className="relative bg-gradient-to-r from-green-600 via-green-600 to-green-700 px-8 py-16">
+        <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-16">
             <div className="absolute top-6 right-6 flex gap-3">
                 <span
                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${currentUser.role === "admin"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-green-100 text-green-800"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-green-100 text-green-800"
                         }`}
                 >
                     {currentUser.role === "admin" ? "👑 Admin" : "👤 User"}
                 </span>
                 <button
-                    onClick={enterEditMode}
+                    onClick={onEnterEditMode}
                     disabled={isEditing}
                     className="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full text-sm font-medium transition duration-200 backdrop-blur-sm disabled:opacity-50"
                 >
@@ -51,43 +64,102 @@ export default function ProfileHeader({
 
             <div className="text-center">
                 <div className="relative inline-block">
-                    <img
-                        src={
-                            currentUser.image ||
-                            "/image/businessman-character-avatar-isolated.png"
-                        }
-                        alt={currentUser.name}
-                        className="w-32 h-32 rounded-full border-4 border-white shadow-2xl mx-auto mb-6 object-cover"
-                    />
+                    <div className="relative">
+                        <img
+                            src={displayImage}
+                            alt={currentUser.name}
+                            className="w-32 h-32 rounded-full border-4 border-white shadow-2xl mx-auto mb-6 object-cover"
+                        />
+                        {isEditing && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={triggerFileInput}
+                                        disabled={imageUploading}
+                                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition duration-200 disabled:opacity-50"
+                                    >
+                                        {imageUploading ? (
+                                            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                                        ) : (
+                                            <svg
+                                                className="w-5 h-5 text-gray-700"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                                                />
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                                                />
+                                            </svg>
+                                        )}
+                                    </button>
+                                    {(imagePreview || currentUser.image) && (
+                                        <button
+                                            onClick={onRemoveImage}
+                                            className="p-2 bg-white rounded-full hover:bg-gray-100 transition duration-200"
+                                        >
+                                            <svg
+                                                className="w-5 h-5 text-red-600"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                />
+                                            </svg>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     <div className="absolute bottom-6 right-6 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
                 </div>
+
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={onImageSelect}
+                    accept="image/*"
+                    className="hidden"
+                />
+
                 <h1 className="text-4xl font-bold text-white mb-3">
                     {isEditing ? (
                         <input
                             type="text"
                             value={editForm.name}
-                            onChange={(e) =>
-                                setEditForm({ ...editForm, name: e.target.value })
-                            }
-                            className="bg-white/20 text-white rounded-lg px-3 py-2 text-center text-4xl font-bold backdrop-blur-sm w-full max-w-2xl"
+                            onChange={(e) => onInputChange("name", e.target.value)}
+                            className="bg-white/20 text-white rounded-lg px-3 py-2 text-center text-4xl font-bold backdrop-blur-sm w-full max-w-2xl placeholder-blue-200"
                             placeholder="Enter your name"
                         />
                     ) : (
                         currentUser.name
                     )}
                 </h1>
-                <p className="text-green-100 text-xl font-light mb-2">
+                <p className="text-blue-100 text-xl font-light mb-2">
                     {currentUser.email}
                 </p>
                 {(currentUser.bio || isEditing) && (
-                    <div className="text-green-200 text-lg max-w-2xl mx-auto">
+                    <div className="text-blue-200 text-lg max-w-2xl mx-auto">
                         {isEditing ? (
                             <textarea
                                 value={editForm.bio}
-                                onChange={(e) =>
-                                    setEditForm({ ...editForm, bio: e.target.value })
-                                }
-                                className="bg-white/20 text-white rounded-lg px-3 py-2 text-center w-full backdrop-blur-sm resize-none"
+                                onChange={(e) => onInputChange("bio", e.target.value)}
+                                className="bg-white/20 text-white rounded-lg px-3 py-2 text-center w-full backdrop-blur-sm resize-none placeholder-blue-200"
                                 rows={2}
                                 placeholder="Enter your bio"
                             />

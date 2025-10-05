@@ -9,10 +9,10 @@ interface User {
     image?: string | null;
     bio?: string | null;
     location?: string | null;
-    slug?: string | null;
     website?: string | null;
+    mobile?: string | null;
+    slug?: string | null;
 }
-
 interface UserState {
     users: User[];
     userLoader: boolean;
@@ -211,7 +211,7 @@ const userAuthSlice = createSlice({
                 state.userLoader = false;
                 state.error = action.payload as string;
             })
-
+            /// update user role
             .addCase(updateUserRole.fulfilled, (state, action: PayloadAction<User>) => {
                 const updatedUser = action.payload;
                 const index = state.users.findIndex((u) => u._id === updatedUser._id);
@@ -252,7 +252,7 @@ const userAuthSlice = createSlice({
             .addCase(updateUser.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(updateUser.fulfilled, (state, action) => {
+            .addCase(updateUser.fulfilled, (state, action: PayloadAction<User>) => {
                 state.loading = false;
                 const updatedUser = action.payload;
 
@@ -262,7 +262,7 @@ const userAuthSlice = createSlice({
                     state.users[index] = updatedUser;
                 }
 
-                // Update current user if it's the same user
+                
                 if (state.currentUser && state.currentUser._id === updatedUser._id) {
                     state.currentUser = updatedUser;
                 }
@@ -271,7 +271,6 @@ const userAuthSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
-
             // Delete User
             .addCase(deleteUser.fulfilled, (state, action) => {
                 const deletedUserId = action.payload;
@@ -281,10 +280,10 @@ const userAuthSlice = createSlice({
                     state.currentUser = null;
                 }
             })
-            .addCase(deleteUser.rejected, (state, action) => {
-                state.error = action.payload as string;
-            });
-    },
+        .addCase(deleteUser.rejected, (state, action) => {
+            state.error = action.payload as string;
+        });
+},
 });
 
 export const {

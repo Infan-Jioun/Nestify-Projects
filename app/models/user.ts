@@ -12,6 +12,8 @@ export interface IUser extends Document {
     role?: string | null;
     bio?: string | null;
     location?: string | null;
+    mobile? : string | null;
+    website? : string | null;
     resetTokenHash?: string;
     resetTokenExpiry?: Date;
 }
@@ -27,6 +29,8 @@ const userSchema = new Schema<IUser>({
     role: { type: String, default: "user" },
     bio: { type: String, default: null },
     location: { type: String, default: null },
+    mobile: { type: String, default: null },
+    website: { type: String, default: null },
     resetTokenHash: { type: String },
     resetTokenExpiry: { type: Date },
 }, { timestamps: true });

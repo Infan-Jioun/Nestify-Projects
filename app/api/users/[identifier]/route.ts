@@ -103,38 +103,98 @@ export async function PUT(
     const params = await context.params;
     const { identifier } = params;
 
-    const { role } = await req.json();
-
-    const validRoles = ["user", "admin", "real_estate_developer"];
-    if (!validRoles.includes(role)) {
-      return NextResponse.json({ error: "Invalid role" }, { status: 400 });
-    }
-
+    const updateData = await req.json();
+    console.log("Received update data:", updateData);
     const user = Types.ObjectId.isValid(identifier)
       ? await User.findById(identifier)
-      : await User.findOne({ 
-          $or: [
-            { slug: identifier }, 
-            { email: identifier }, 
-            { providerId: identifier }
-          ] 
-        });
+      : await User.findOne({
+        $or: [
+          { slug: identifier },
+          { email: identifier },
+          { providerId: identifier }
+        ]
+      });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    user.role = role;
-    await user.save();
+    console.log(" User before update:", {
+      name: user.name,
+      role: user.role,
+      mobile: user.mobile,
+      website: user.website,
+      location: user.location,
+      bio: user.bio
 
-    return NextResponse.json(
-      { message: "Role updated successfully", user }, 
-      { status: 200 }
-    );
+    });
+
+    const allowedFields = ['name', "role", 'bio', 'location', 'website', 'mobile', 'image'];
+
+    let hasChanges = false;
+    allowedFields.forEach(field => {
+      if (updateData[field] !== undefined) {
+        const newValue = updateData[field] === '' ? null : updateData[field];
+        const currentValue = user[field];
+
+
+        if (newValue !== currentValue) {
+          user[field] = newValue;
+          hasChanges = true;
+          console.log(`Updated ${field}: from '${currentValue}' to '${newValue}'`);
+        }
+      }
+    });
+
+    if (!hasChanges) {
+      console.log("ℹ️ No changes detected");
+      const currentUserResponse = {
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        image: user.image || null,
+        bio: user.bio || null,
+        location: user.location || null,
+        website: user.website,
+        mobile: user.mobile,
+        slug: user.slug || null,
+        provider: user.provider || null,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
+      return NextResponse.json(currentUserResponse, { status: 200 });
+    }
+
+    await user.save();
+    console.log("User saved successfully");
+    const updatedUser = await User.findById(user._id).select("-password -resetTokenHash -resetTokenExpiry");
+    if (!updatedUser) {
+      return NextResponse.json({ error: "Error retrieving updated user" }, { status: 500 });
+    }
+    const userResponse = {
+      _id: updatedUser._id.toString(),
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      image: updatedUser.image || null,
+      bio: updatedUser.bio || null,
+      location: updatedUser.location || null,
+      website: updatedUser.website || null,
+      mobile: updatedUser.mobile || null,
+      slug: updatedUser.slug || null,
+      provider: updatedUser.provider || null,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt
+    };
+
+    console.log("Sending response:", userResponse);
+
+    return NextResponse.json(userResponse, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error("Error updating user:", error);
     return NextResponse.json(
-      { error: "Internal server error" }, 
+      { error: "Internal server error", details: (error as Error).message },
       { status: 500 }
     );
   }
