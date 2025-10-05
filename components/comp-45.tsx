@@ -36,21 +36,7 @@ export default function Component() {
           </>
         )}
       />
-      <p
-        className="text-muted-foreground mt-2 text-xs"
-        role="region"
-        aria-live="polite"
-      >
-        Built with{" "}
-        <a
-          className="hover:text-foreground underline"
-          href="https://github.com/guilhermerodz/input-otp"
-          target="_blank"
-          rel="noopener nofollow"
-        >
-          Input OTP
-        </a>
-      </p>
+     
     </div>
   )
 }
