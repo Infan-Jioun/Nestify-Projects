@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,8 +18,10 @@ import { fetchPropertyById } from "@/app/features/Properties/propertySlice";
 import { PropertyType } from "@/app/Types/properties";
 import ShareButton from "./components/ShareButton";
 import { Field, propertyCategoryData } from "@/lib/proprtyCategory";
+import { toggleBookmark } from "@/app/features/bookmark/bookmarkSlice";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://nestify-projects.vercel.app"
-// Skeleton Loader Component
+
+
 const SkeletonLoader = () => {
     return (
         <motion.div
@@ -217,8 +219,20 @@ export default function PropertyDetailsPage() {
     const { currentProperty: property, loading, error } = useSelector((state: RootState) => state.properties);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const bookmarkedProperties = useSelector((state: RootState) => state.bookmarks.bookmarkedProperties);
 
+    // Check if current property is bookmarked
+    const isBookmarked = useMemo(() =>
+        bookmarkedProperties.some(bookmarkedProperty => bookmarkedProperty._id === property?._id),
+        [bookmarkedProperties, property?._id]
+    );
+
+
+    const handleToggleBookmark = () => {
+        if (property) {
+            dispatch(toggleBookmark(property));
+        }
+    };
     useEffect(() => {
         if (id) {
             dispatch(fetchPropertyById(id as string));
@@ -484,16 +498,15 @@ export default function PropertyDetailsPage() {
                             whileTap={{ scale: 0.95 }}
                         >
                             <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setIsFavorite(!isFavorite)}
-                                className={`flex items-center ${isFavorite ? 'text-red-500 border-red-200 bg-red-50' : ''}`}
+                                variant={isBookmarked ? "secondary" : "ghost"}
+                                onClick={handleToggleBookmark}
+                                className={`flex items-center ${isBookmarked? 'text-red-500 border-red-200 bg-red-50' : ''}`}
                             >
                                 <Heart
                                     size={18}
-                                    className={`mr-1 ${isFavorite ? 'fill-current' : ''}`}
+                                    className={`mr-1 ${isBookmarked ? 'fill-current' : ''}`}
                                 />
-                                {isFavorite ? 'Saved' : 'Save'}
+                                {isBookmarked ? 'Saved' : 'Save'}
                             </Button>
                         </motion.button>
                         <motion.button
