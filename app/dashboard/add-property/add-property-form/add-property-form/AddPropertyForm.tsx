@@ -156,8 +156,8 @@ export default function AddPropertyFormPage() {
         const files = Array.from(data.images);
         const uploads = await Promise.all(
           files.map(async (file) => {
-            const res = await imageUpload(file);
-            return res?.data?.url || res?.data?.display_url;
+            const url = await imageUpload(file);
+            return url;
           })
         );
         uploadedImages = uploads.filter(Boolean) as string[];
@@ -166,12 +166,7 @@ export default function AddPropertyFormPage() {
         .filter(
           ([key, value]) =>
             ![
-              "title",
-              "currency",
-              "propertySize",
-              "price",
-              "address",
-              "contactNumber",
+              "title", "currency", "propertySize", "price", "address", "contactNumber",
               "email",
               "geoCountryLocation",
               "category",
