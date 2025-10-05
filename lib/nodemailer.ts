@@ -1,3 +1,4 @@
+
 import nodemailer from 'nodemailer';
 
 interface EmailOptions {
@@ -6,70 +7,102 @@ interface EmailOptions {
     html: string;
 }
 
-// Extended Error interface for nodemailer errors
-interface NodemailerError extends Error {
-    code?: string;
-    command?: string;
-    response?: string;
-    responseCode?: number;
-}
+// Production-optimized transporter
+const createTransporter = () => {
+    return nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
+        },
+        // Production optimizations
+        pool: true,
+        maxConnections: 5,
+        maxMessages: 100,
+        rateDelta: 1000,
+        rateLimit: 5
+    });
+};
 
-// Create transporter with Gmail configuration
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-    },
-});
-
-// Email send function
 export async function sendEmail({ to, subject, html }: EmailOptions) {
+    // Enhanced environment variable check
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+        const errorMsg = 'Email configuration missing: ' +
+            `EMAIL_USER: ${!!process.env.EMAIL_USER}, ` +
+            `EMAIL_PASSWORD: ${!!process.env.EMAIL_PASSWORD}`;
+        console.error('❌', errorMsg);
+        throw new Error('Email service configuration error');
+    }
+
+    let transporter;
+
     try {
-        console.log(`📧 Attempting to send email to: ${to}`);
+        console.log(`📧 Production: Sending email to ${to}`);
+
+        transporter = createTransporter();
 
         const mailOptions = {
             from: {
                 name: 'Nestify',
-                address: process.env.EMAIL_FROM || process.env.EMAIL_USER || 'noreply@nestify.app'
+                address: process.env.EMAIL_FROM!
             },
             to,
             subject,
             html,
+            // Important for production deliverability
+            headers: {
+                'X-Priority': '1',
+                'X-MSMail-Priority': 'High',
+                'Importance': 'high'
+            }
         };
 
-        console.log('🔹 Mail options:', {
-            from: mailOptions.from,
-            to: mailOptions.to,
-            subject: mailOptions.subject
-        });
+        console.log('🔹 Production mail options ready');
 
-        // Verify connection
-        await transporter.verify();
-        console.log('SMTP connection verified');
+        // Verify connection with timeout
+        await Promise.race([
+            transporter.verify(),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('SMTP verification timeout')), 10000)
+            )
+        ]);
 
-        // Send email
-        const result = await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully! Message ID:', result.messageId);
+        console.log('✅ Production SMTP connection verified');
 
+        // Send email with timeout
+        const result = await Promise.race([
+            transporter.sendMail(mailOptions),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Email sending timeout')), 15000)
+            )
+        ]);
+
+        console.log('✅ Production email sent successfully!');
         return result;
+
     } catch (error) {
-        console.error(' Email sending failed:');
+        console.error('❌ Production email failed:');
 
-        // Type-safe error handling
-        const nodemailerError = error as NodemailerError;
+        // Detailed production logging
+        if (error instanceof Error) {
+            console.error('🔍 Production Error Analysis:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack?.split('\n')[0], // First line only
+                nodeEnv: process.env.NODE_ENV,
+                platform: process.platform,
+                hasEmailVars: !!(process.env.EMAIL_USER && process.env.EMAIL_PASSWORD)
+            });
+        }
 
-        console.error(' Error details:', {
-            message: nodemailerError.message,
-            code: nodemailerError.code,
-            command: nodemailerError.command,
-            response: nodemailerError.response,
-            responseCode: nodemailerError.responseCode
-        });
+        // Close transporter on error
+        if (transporter) {
+            transporter.close();
+        }
 
-        throw new Error(`Email sending failed: ${nodemailerError.message}`);
+        throw new Error('Failed to send email. Please try again in a moment.');
     }
 }
