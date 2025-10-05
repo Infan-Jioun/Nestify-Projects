@@ -6,7 +6,7 @@ import User from "@/app/models/user";
 import { sendEmail } from "@/lib/nodemailer";
 
 export async function POST(request: NextRequest) {
-    console.log("🚀 Forgot Password API Started");
+    console.log(" Forgot Password API Started");
 
     try {
         // Environment variables check
@@ -75,30 +75,30 @@ export async function POST(request: NextRequest) {
             name: user.name
         });
 
-        // Generate reset token
+     
         const resetToken = crypto.randomBytes(32).toString("hex");
         const resetPasswordToken = crypto
             .createHash("sha256")
             .update(resetToken)
             .digest("hex");
 
-        // Token expiry (1 hour)
+      
         const resetPasswordExpire = new Date(Date.now() + 60 * 60 * 1000);
 
         console.log(" Saving reset token to database...");
 
-        // Database-এ save করুন
+       
         user.resetPasswordToken = resetPasswordToken;
         user.resetPasswordExpire = resetPasswordExpire;
         await user.save();
 
         console.log(" Reset token saved to database");
 
-        // Reset URL তৈরি করুন
+       
         const resetUrl = `${process.env.NEXTAUTH_URL}/ResetPassword/${resetToken}`;
         console.log(" Reset URL:", resetUrl);
 
-        // Email content
+       
         const message = `
       <!DOCTYPE html>
       <html>
