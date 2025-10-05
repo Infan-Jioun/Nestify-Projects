@@ -9,11 +9,7 @@ export interface IOTP extends Document {
 }
 
 const otpSchema = new Schema<IOTP>({
-  email: { 
-    type: String, 
-    required: true, 
-    index: true 
-  },
+  email: {  type: String, required: true,  index: true },
   otp: { 
     type: String, 
     required: true 
