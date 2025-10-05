@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
         setLoading(true);
 
         try {
-            console.log("🔄 Sending forgot password request...", data);
+            console.log("Sending forgot password request...", data);
 
             const res = await fetch("/api/auth/forgot-password", {
                 method: "POST",
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
                 result = await res.json();
                 console.log("Response data:", result);
             } catch (jsonError) {
-                console.error("❌ JSON Parse Error:", jsonError);
+                console.error("JSON Parse Error:", jsonError);
                 toast.error("Invalid response from server");
                 return;
             }
@@ -51,7 +51,7 @@ export default function ForgotPasswordPage() {
                 toast.error(result.error || "Something went wrong. Please try again.");
             }
         } catch (error) {
-            console.error("❌ Network Error:", error);
+            console.error("Network Error:", error);
             toast.error("Network error. Please check your connection.");
         } finally {
             setLoading(false);

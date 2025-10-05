@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     try {
-        console.log('🚀 PRODUCTION: Forgot Password API Called');
+        console.log(' PRODUCTION: Forgot Password API Called');
 
         // Enhanced environment check
         const envCheck = {
@@ -19,14 +19,14 @@ export async function POST(request: NextRequest) {
             MONGODB_URL_SET: !!process.env.MONGODB_URL
         };
 
-        console.log('🔍 Production Environment Check:', envCheck);
+        console.log(' Production Environment Check:', envCheck);
 
         // Parse request
         let body;
         try {
             body = await request.json();
         } catch (error) {
-            console.error('❌ JSON Parse Error:', error);
+            console.error(' JSON Parse Error:', error);
             return NextResponse.json(
                 { error: "Invalid request format" },
                 { status: 400 }
@@ -48,9 +48,9 @@ export async function POST(request: NextRequest) {
         // Database connection
         try {
             await connectToDatabase();
-            console.log('✅ Production database connected');
+            console.log(' Production database connected');
         } catch (dbError) {
-            console.error('❌ Production database error:', dbError);
+            console.error(' Production database error:', dbError);
             return NextResponse.json(
                 { error: "Service temporarily unavailable" },
                 { status: 503 }
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.log(`✅ User found: ${user.email}`);
+        console.log(` User found: ${user.email}`);
 
         // Generate secure token
         const resetToken = crypto.randomBytes(32).toString("hex");
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         const baseUrl = process.env.NEXTAUTH_URL || 'https://nestify-projects.vercel.app';
         const resetUrl = `${baseUrl}/ResetPassword/${resetToken}`;
 
-        console.log(`🔗 Reset URL created for ${user.email}`);
+        console.log(` Reset URL created for ${user.email}`);
 
         // Email content
         const message = `
@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
             );
 
         } catch (emailError) {
-            console.error('❌ PRODUCTION EMAIL FAILURE:', emailError);
+            console.error(' PRODUCTION EMAIL FAILURE:', emailError);
 
             // Clear invalid token
             user.resetPasswordToken = undefined;
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
         }
 
     } catch (error) {
-        console.error('❌ PRODUCTION API ERROR:', error);
+        console.error(' PRODUCTION API ERROR:', error);
         const endTime = Date.now();
         console.log(`💥 Request failed after ${endTime - startTime}ms`);
 
