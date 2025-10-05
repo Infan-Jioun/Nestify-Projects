@@ -25,7 +25,7 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <svg
-                    className="w-5 h-5 mr-2 text-blue-600"
+                    className="w-5 h-5 mr-2 text-green-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -50,7 +50,7 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
                                 type="text"
                                 value={editForm.name}
                                 onChange={(e) => onInputChange("name", e.target.value)}
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                 placeholder="Enter your full name"
                             />
                         ) : (
@@ -79,7 +79,7 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
                                     console.log("Mobile input:", e.target.value);
                                     onInputChange("mobile", e.target.value);
                                 }}
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                 placeholder="Enter your mobile number"
                             />
                         ) : (
@@ -99,7 +99,7 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
                                 type="text"
                                 value={editForm.location}
                                 onChange={(e) => onInputChange("location", e.target.value)}
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                 placeholder="Enter your location"
                             />
                         ) : (
@@ -117,7 +117,7 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
                                 type="url"
                                 value={editForm.website}
                                 onChange={(e) => onInputChange("website", e.target.value)}
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                 placeholder="https://example.com"
                             />
                         ) : (
@@ -127,7 +127,7 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
                                         href={currentUser.website}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-blue-600 hover:text-blue-800 transition duration-200 break-all"
+                                        className="text-green-500 hover:text-green-500 transition duration-200 break-all"
                                     >
                                         {currentUser.website}
                                     </a>
@@ -145,7 +145,7 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
                             <textarea
                                 value={editForm.bio}
                                 onChange={(e) => onInputChange("bio", e.target.value)}
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 resize-none"
+                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200 resize-none"
                                 rows={3}
                                 placeholder="Tell us about yourself..."
                             />

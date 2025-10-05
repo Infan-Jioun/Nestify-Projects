@@ -30,7 +30,7 @@ export default function ProfileHeader({ currentUser, isEditing, editForm, imageP
     const displayImage = imagePreview || currentUser.image || "/image/businessman-character-avatar-isolated.png";
 
     return (
-        <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-16">
+        <div className="relative bg-green-500 px-8 py-16">
             <div className="absolute top-6 right-6 flex gap-3">
                 <span
                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${currentUser.role === "admin"

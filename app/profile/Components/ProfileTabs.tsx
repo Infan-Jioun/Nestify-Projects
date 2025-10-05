@@ -29,7 +29,7 @@ export default function ProfileTabs({
                                 key={tab}
                                 onClick={() => onTabChange(tab)}
                                 className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition duration-200 ${activeTab === tab
-                                        ? "border-blue-500 text-blue-600"
+                                        ? "border-green-500 text-green-500"
                                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                     }`}
                             >
@@ -64,8 +64,8 @@ export default function ProfileTabs({
                     onClick={onCopyProfileLink}
                     disabled={isEditing}
                     className={`w-full mb-4 py-3 px-4 rounded-lg font-medium transition duration-200 flex items-center justify-center ${copied
-                            ? "bg-green-600 text-white"
-                            : "bg-blue-600 hover:bg-blue-700 text-white"
+                            ? "bg-green-500 text-white"
+                            : "bg-green-500 hover:bg-green-500 text-white"
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                     {copied ? (

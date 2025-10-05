@@ -247,7 +247,7 @@ export default function ProfilePage() {
     if (!currentUser || error) return <UserNotFound error={error || undefined} />;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
                     <ProfileHeader
@@ -270,7 +270,7 @@ export default function ProfilePage() {
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
                                         className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition duration-200 ${activeTab === tab
-                                            ? "border-blue-500 text-blue-600"
+                                            ? "border-green-500 text-green-500"
                                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                             }`}
                                     >
