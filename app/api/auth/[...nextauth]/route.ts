@@ -71,7 +71,7 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
-        // Credentials provider এর জন্য সরাসরি allow
+       
         if (!account || account.provider === "credentials") {
           return true;
         }
@@ -114,7 +114,7 @@ const authOptions: NextAuthOptions = {
             await UserModel.updateOne({ _id: existingUser._id }, { $set: updates });
           }
         }
-
+       
         return true;
       } catch (error) {
         console.error("SignIn callback error:", error);

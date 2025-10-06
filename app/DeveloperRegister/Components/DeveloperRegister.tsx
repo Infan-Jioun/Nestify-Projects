@@ -33,9 +33,14 @@ type Inputs = {
     name: string
     email: string
     password: string
+    mobile: string | null;
+    location: string | null;
+    role: "real_estate_developer"
+
+
 }
 
-export default function Register() {
+export default function DeveloperRegister() {
     const dispatch = useDispatch();
     const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
     const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
@@ -67,10 +72,11 @@ export default function Register() {
     const onSubmit: SubmitHandler<Inputs> = async (formData) => {
         dispatch(setButtonLoader(true));
         try {
+            const payload = {...formData, role: "real_estate_developer"};
             const res = await fetch("/api/auth/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
 
             const data = await res.json();
@@ -91,27 +97,7 @@ export default function Register() {
         }
     };
 
-    const handelGoogleRegister = async () => {
-        dispatch(setGoogleLoader(true));
-        try {
-            await signIn("google", { callbackUrl: "/" });
-        } catch (err) {
-            console.error("Google sign-in error:", err);
-        } finally {
-            dispatch(setGoogleLoader(false));
-        }
-    };
-
-    const handelGithubRegister = async () => {
-        dispatch(setGithubLoader(true));
-        try {
-            await signIn("github", { callbackUrl: "/" });
-        } catch (err) {
-            console.error("GitHub sign-in error:", err);
-        } finally {
-            dispatch(setGithubLoader(false));
-        }
-    };
+  
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -158,7 +144,7 @@ export default function Register() {
 
     return (
         <div>
-            <NextHead title='Register - Nestify' />
+            <NextHead title='Developer - Nestify' />
             <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
                 <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
                     <CardHeader className="text-center space-y-2">
@@ -193,7 +179,7 @@ export default function Register() {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <CardContent className="space-y-4">
                             <div className="grid gap-1">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name">Developer Name</Label>
                                 <Input {...register("name", { required: "Name is required" })}
                                     id="name"
                                     type="text"
@@ -211,7 +197,24 @@ export default function Register() {
                                 />
                                 {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
                             </div>
-
+                            <div className="grid gap-1">
+                                <Label htmlFor="location">Location</Label>
+                                <Input {...register("location", { required: "Location is required" })}
+                                    id="location"
+                                    type="text"
+                                    placeholder="exp : Cox'sBazar "
+                                />
+                                {errors.location && <p className="text-sm text-red-500">{errors.location.message}</p>}
+                            </div>
+                            <div className="grid gap-1">
+                                <Label htmlFor="mobile">Phone</Label>
+                                <Input {...register("mobile", { required: "Name is required" })}
+                                    id="mobile"
+                                    type="text"
+                                    placeholder="exp : 0123233232323 "
+                                />
+                                {errors.mobile && <p className="text-sm text-red-500">{errors.mobile.message}</p>}
+                            </div>
                             <div className="grid gap-1 relative">
                                 <Label htmlFor="password">Password</Label>
                                 <div className="relative">
@@ -250,7 +253,7 @@ export default function Register() {
                                         Creating Account...
                                     </div>
                                 ) : (
-                                    "Sign up"
+                                    "Create Devleoper Account"
                                 )}
                             </Button>
 
@@ -263,38 +266,7 @@ export default function Register() {
                         </CardFooter>
                     </form>
 
-                    <div className='px-6 pb-6'>
-                        <Button
-                            onClick={handelGoogleRegister}
-                            variant="outline"
-                            className="w-full mb-2"
-                            disabled={googleLoader}
-                        >
-                            {googleLoader ? (
-                                <div className="flex items-center justify-center">
-                                    <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
-                                    Continuing with Google...
-                                </div>
-                            ) : (
-                                "Continue with Google"
-                            )}
-                        </Button>
-                        <Button
-                            onClick={handelGithubRegister}
-                            variant="outline"
-                            className="w-full"
-                            disabled={githubLoader}
-                        >
-                            {githubLoader ? (
-                                <div className="flex items-center justify-center">
-                                    <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
-                                    Continuing with GitHub...
-                                </div>
-                            ) : (
-                                "Continue with Github"
-                            )}
-                        </Button>
-                    </div>
+           
                 </Card>
             </div>
         </div>

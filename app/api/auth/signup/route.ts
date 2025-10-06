@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs"
 
 export async function POST(request: Request) {
-    const { name, email, password } = await request.json();
+    const { name, email, password, location, mobile, role } = await request.json();
     const isVaildEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -31,7 +31,10 @@ export async function POST(request: Request) {
         const newUser = new User({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            location : location || null,
+            mobile: mobile || null,
+            role: role || "user"
         });
         await newUser.save();
         return NextResponse.json({ message: " Welcome to our website" }, { status: 201 })
