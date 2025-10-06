@@ -33,7 +33,7 @@ const authOptions: NextAuthOptions = {
 
           await connectToDatabase();
           const userDoc = await UserModel.findOne({ email: credentials.email });
-          
+
           if (!userDoc || !userDoc.password) {
             return null;
           }
@@ -85,7 +85,7 @@ const authOptions: NextAuthOptions = {
 
         const existingUser = await UserModel.findOne({ email });
         const extendedProfile = profile as ExtendedProfile;
-        
+
         const image = user.image || extendedProfile?.picture || extendedProfile?.avatar_url || null;
 
         const userData = {
@@ -103,7 +103,7 @@ const authOptions: NextAuthOptions = {
         } else {
           // Update existing user
           const updates: Record<string, unknown> = {};
-          
+
           if (!existingUser.provider) updates.provider = userData.provider;
           if (!existingUser.providerAccountId) updates.providerAccountId = userData.providerAccountId;
           if (!existingUser.image && userData.image) updates.image = userData.image;
@@ -124,19 +124,25 @@ const authOptions: NextAuthOptions = {
 
     async jwt({ token, user, account }) {
       try {
-        // User object থাকলে (login সময়) token update করুন
+      
         if (user) {
           token.id = user.id;
           token.role = user.role || UserRole.USER;
         }
 
-        // Social login এর জন্য database থেকে role fetch করুন
         if ((account?.provider === "google" || account?.provider === "github") && token.email) {
           await connectToDatabase();
           const dbUser = await UserModel.findOne({ email: token.email });
           if (dbUser) {
             token.role = dbUser.role || UserRole.USER;
             token.id = (dbUser._id as Types.ObjectId).toString();
+          }
+        }
+        if (token.email) {
+          await connectToDatabase();
+          const dbUser = await UserModel.findOne({ email: token.email })
+          if (dbUser) {
+            token.role = dbUser.role ?? token.role ?? UserRole.USER
           }
         }
 
