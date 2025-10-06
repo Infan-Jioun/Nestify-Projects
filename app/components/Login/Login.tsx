@@ -108,7 +108,7 @@ export function Login() {
     setShowPassword(!showPassword);
   };
 
-  // 🔹 Skeleton Loader Fix
+  //  Skeleton Loader Fix
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 overflow-hidden">
@@ -142,7 +142,7 @@ export function Login() {
     );
   }
 
-  // 🔹 Login Form
+  //  Login Form
   return (
     <div className="min-h-screen bg-green-100 flex items-center justify-center dark:bg-gray-900 px-4 overflow-hidden">
       <NextHead title="Login | Nestify" />

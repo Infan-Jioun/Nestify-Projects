@@ -6,7 +6,7 @@ import User from "@/app/models/user";
 
 export async function POST(request: NextRequest) {
     try {
-        console.log("🔹 Reset Password API Called");
+        console.log(" Reset Password API Called");
 
         const { token, password } = await request.json();
 
@@ -18,20 +18,19 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Hash the token to compare with database
+
         const resetPasswordToken = crypto
             .createHash("sha256")
             .update(token)
             .digest("hex");
 
-        console.log("🔹 Searching user with valid token...");
+        console.log(" Searching user with valid token...");
 
         await connectToDatabase();
 
-        // Find user with valid token and not expired
         const user = await User.findOne({
-            resetPasswordToken, // 🔹 NEW field name
-            resetPasswordExpire: { $gt: new Date() }, // 🔹 NEW field name
+            resetPasswordToken, 
+            resetPasswordExpire: { $gt: new Date() }, 
         });
 
         if (!user) {
@@ -41,16 +40,12 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
-
         console.log(" Valid token found for user:", user.email);
-
-        // Hash new password
         const hashedPassword = await bcrypt.hash(password, 12);
-
-        // Update user password and clear reset token
+    
         user.password = hashedPassword;
-        user.resetPasswordToken = undefined; 
-        user.resetPasswordExpire = undefined; 
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
         await user.save();
 
         console.log(" Password reset successful for:", user.email);

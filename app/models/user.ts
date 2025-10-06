@@ -15,7 +15,7 @@ export interface IUser extends Document {
     mobile?: string | null;
     website?: string | null;
 
-    // 🔹 Reset Password Fields (ঠিক করে দিন)
+    //  Reset Password Fields (ঠিক করে দিন)
     resetPasswordToken?: string;  // নাম change করুন
     resetPasswordExpire?: Date;   // নাম change করুন
 }

@@ -39,7 +39,7 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
     let transporter;
 
     try {
-        console.log(`📧 Production: Sending email to ${to}`);
+        console.log(` Production: Sending email to ${to}`);
 
         transporter = createTransporter();
 
@@ -59,7 +59,7 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
             }
         };
 
-        console.log('🔹 Production mail options ready');
+        console.log(' Production mail options ready');
 
         // Verify connection with timeout
         await Promise.race([
