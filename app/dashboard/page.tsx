@@ -297,15 +297,17 @@ export default function DashboardPage() {
                         color="green"
                     />
                 </Link>
-                <Link href={"/dashboard/users-information"}>
-                    <StatCard
-                        title="Total Users"
-                        value={totalUsers}
-                        growth={userGrowth}
-                        icon={Users}
-                        color="purple"
-                    />
-                </Link>
+                {
+                    session.user.role === UserRole.ADMIN && <Link href={"/dashboard/users-information"}>
+                        <StatCard
+                            title="Total Users"
+                            value={totalUsers}
+                            growth={userGrowth}
+                            icon={Users}
+                            color="purple"
+                        />
+                    </Link>
+                }
                 <StatCard
                     title="Platform Health"
                     value={healthConfig.value}
