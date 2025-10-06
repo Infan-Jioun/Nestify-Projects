@@ -11,9 +11,11 @@ import UserNotFound from "../Components/UserNotFound";
 import ProfileHeader from "../Components/ProfileHeader";
 import ProfileTabs from "../Components/ProfileTabs";
 import ProfileInfo from "../Components/ProfileInfo";
+import { useRoleGuard } from "@/app/hook/useRoleGuard";
+import { UserRole } from "@/app/Types/auth";
 interface UpdateUserData {
     _id: string;
-    name?: string;
+    name?: string;                                  
     bio?: string | null;
     location?: string | null;
     website?: string | null;
@@ -22,6 +24,10 @@ interface UpdateUserData {
 }
 
 export default function ProfilePage() {
+    useRoleGuard({
+        allowedRoles: [UserRole.USER, UserRole.REAL_ESTATE_DEVELOPER, UserRole.ADMIN],
+        callbackUrl: "/"
+    })
     const params = useParams();
     const slug = params?.slug as string;
     const dispatch = useDispatch<AppDispatch>();

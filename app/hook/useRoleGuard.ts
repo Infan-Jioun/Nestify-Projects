@@ -31,7 +31,7 @@ export function useRoleGuard({
 
         // Session না থাকলে login page এ redirect করুন
         if (!session?.user) {
-            console.log("❌ No session, redirecting to login")
+            console.log(" No session, redirecting to login")
             const loginUrl = `/LoginPage?callbackUrl=${encodeURIComponent(callbackUrl)}`
             router.push(loginUrl)
             return
@@ -50,12 +50,12 @@ export function useRoleGuard({
 
         // Role check
         if (!userRole || !allowedRoles.includes(userRole)) {
-            console.log("❌ Access denied, redirecting to:", redirectTo)
+            console.log(" Access denied, redirecting to:", redirectTo)
             router.push(redirectTo)
             return
         }
 
-        console.log("✅ Access granted")
+        console.log(" Access granted")
     }, [session, status, router, allowedRoles, redirectTo, callbackUrl])
 
     return {
