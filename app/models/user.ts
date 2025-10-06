@@ -8,14 +8,13 @@ export interface IUser extends Document {
     password?: string | null;
     image?: string | null;
     provider?: "credentials" | "google" | "github";
-    providerId?: string | null;
+    providerAccountId?: string | null;
     slug?: string | null;
-    role?: string | null;
+    role?: UserRole;
     bio?: string | null;
     location?: string | null;
     mobile?: string | null;
     website?: string | null;
-
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
 }
@@ -25,8 +24,12 @@ const userSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true },
     password: { type: String, default: null },
     image: { type: String, default: null },
-    provider: { type: String, enum: ["credentials", "google", "github"], default: "credentials" },
-    providerId: { type: String, default: null, index: true },
+    provider: {
+        type: String,
+        enum: ["credentials", "google", "github"],
+        default: "credentials"
+    },
+    providerAccountId: { type: String, default: null, index: true },
     slug: { type: String, unique: true, sparse: true },
     role: {
         type: String,
@@ -40,7 +43,6 @@ const userSchema = new Schema<IUser>({
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },
 }, { timestamps: true });
-
 
 userSchema.pre("save", async function (next) {
     try {
@@ -66,7 +68,7 @@ userSchema.pre("save", async function (next) {
         this.slug = candidate;
         next();
     } catch (err) {
-        next(err as unknown as Error);
+        next(err as Error);
     }
 });
 

@@ -1,10 +1,11 @@
-import { Role } from "./user";
-
 export enum UserRole {
     USER = "user",
-    REAL_ESTATE_DEVELOPER = "real_estate_developer",
-    ADMIN = "ADMIN"
+    ADMIN = "admin",
+    REAL_ESTATE_DEVELOPER = "real_estate_developer"
 }
+
+export type Role = "user" | "admin" | "real_estate_developer";
+
 export interface User {
     _id: string;
     name: string;
@@ -19,14 +20,37 @@ export interface User {
     provider?: string;
     createdAt?: string;
 }
-export interface AuthState {
-    user: User | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    token: string | null;
+
+export interface EditForm {
+    name: string;
+    bio: string;
+    location: string;
+    website: string;
+    mobile: string;
+    image: string;
 }
 
-export interface ProtectedRouteConfig {
-    allowedRoles: UserRole[];
-    redirectPath: string;
+// NextAuth type extensions
+declare module "next-auth" {
+    interface User {
+        id: string;
+        role: UserRole;
+    }
+
+    interface Session {
+        user: {
+            id: string;
+            name: string;
+            email: string;
+            image?: string | null;
+            role: UserRole;
+        }
+    }
+}
+
+declare module "next-auth/jwt" {
+    interface JWT {
+        id: string;
+        role: UserRole;
+    }
 }
