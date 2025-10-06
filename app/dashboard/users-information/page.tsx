@@ -11,10 +11,16 @@ import UserSkeletonGrid from "./Components/UserSkeletonGrid"
 import UserGrid from "./Components/UserGrid"
 import UserEmptyState from "./Components/UserEmptyState"
 import { User } from "@/app/Types/user"
+import { useRoleGuard } from "@/app/hook/useRoleGuard"
+import { UserRole } from "@/app/Types/auth"
 
 
 
 export default function UserInformation() {
+  useRoleGuard({
+    allowedRoles: [UserRole.ADMIN],
+    callbackUrl: "/dashboard/users-information"
+  })
   const dispatch = useDispatch<AppDispatch>()
   const users = useSelector((state: RootState) => state.user.users)
   const userLoader = useSelector((state: RootState) => state.user.userLoader)
