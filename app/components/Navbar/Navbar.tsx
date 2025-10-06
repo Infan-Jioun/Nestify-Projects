@@ -23,6 +23,7 @@ export function Navbar() {
   const navlinks = [
     { name: "Home", href: "/" },
     { name: "Properties", href: "/Properties" },
+
     ...(session && (session.user.role === UserRole.ADMIN || session.user.role === UserRole.REAL_ESTATE_DEVELOPER)
       ? [{ name: "Dashboard", href: "/dashboard" }]
       : []),
@@ -45,7 +46,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (pathname === "/Authentication" ||  "/LoginPage" || pathname === "/RegisterPage" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
     return null;
   }
 

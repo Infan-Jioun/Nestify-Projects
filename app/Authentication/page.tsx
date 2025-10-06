@@ -65,7 +65,7 @@ export default function AuthenticationPage() {
                         </motion.div>
                     </div>
 
-                    <Link href="/Developer-register" className="block">
+                    <Link href="/DeveloperRegister" className="block">
                         <motion.div
                             className="text-4xl mb-6 text-green-300 group-hover:text-green-200 transition-colors duration-300"
                             whileHover={{ scale: 1.1 }}
