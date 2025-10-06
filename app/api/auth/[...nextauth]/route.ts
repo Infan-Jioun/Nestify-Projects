@@ -1,177 +1,164 @@
-import { Session } from "next-auth";
-import { JWT } from "next-auth/jwt";
+// app/api/auth/[...nextauth]/route.ts
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import GithubProvider from "next-auth/providers/github";
+import GitHubProvider from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
-import NextAuth, { User as NextAuthUser, Account, Profile } from "next-auth";
 import { Types } from "mongoose";
 import connectToDatabase from "@/lib/mongodb";
-import User from "@/app/models/user";
+import UserModel from "@/app/models/user";
 import { UserRole } from "@/app/Types/auth";
+import { Profile } from "next-auth";
 
 interface ExtendedProfile extends Profile {
-  id?: string | number;
   picture?: string;
   avatar_url?: string;
+  id?: string | number;
 }
 
-
-type ExtendedUser = NextAuthUser & {
-  id?: string;
+interface ExtendedUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
   image?: string | null;
+  role?: UserRole;
 }
 
-
-function pickImage(
-  user: Partial<ExtendedUser> | null | undefined,
-  profile: ExtendedProfile | null | undefined
-): string | null {
-  if (user?.image) return user.image;
-  if (profile?.picture) return profile.picture;
-  if (profile?.avatar_url) return profile.avatar_url;
-  return null;
+interface ExtendedJWT {
+  id?: string;
+  name?: string;
+  email?: string;
+  image?: string | null;
+  role?: UserRole;
 }
 
-const handel = NextAuth({
+const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
 
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID! as string,
-      clientSecret: process.env.GOOGLE_SECRET_ID! as string,
-    }),
-    GithubProvider({
-      clientId: process.env.GITHUB_ID! as string,
-      clientSecret: process.env.GITHUB_SECRET_ID! as string,
-    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        try {
-          if (!credentials?.email || !credentials.password) {
-            throw new Error("Missing email or password");
-          }
+      authorize: async (credentials) => {
+        if (!credentials?.email || !credentials.password) return null;
 
-          await connectToDatabase();
-          const user = await User.findOne({ email: credentials.email });
-          if (!user) throw new Error("User not found");
+        await connectToDatabase();
+        const userDoc = await UserModel.findOne({ email: credentials.email });
+        if (!userDoc || !userDoc.password) return null;
 
-          if (!user.password) throw new Error("No password set for this user");
+        const isValid = await bcrypt.compare(credentials.password, userDoc.password);
+        if (!isValid) return null;
 
-          const isValidPassword = await bcrypt.compare(
-            credentials.password,
-            user.password as string
-          );
-          if (!isValidPassword) throw new Error("Invalid password");
-
-          return {
-            id: (user._id as Types.ObjectId).toString(),
-            name: user.name,
-            email: user.email,
-            image: user.image || null,
-          } as ExtendedUser;
-        } catch (err) {
-          console.error("Authorize error:", err);
-          return null;
-        }
+        return {
+          id: (userDoc._id as Types.ObjectId).toString(),
+          name: userDoc.name,
+          email: userDoc.email,
+          image: userDoc.image ?? null,
+          role: userDoc.role ?? UserRole.USER,
+        };
       },
+
+
+    }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID ?? "",
+      clientSecret: process.env.GOOGLE_SECRET_ID ?? "",
+    }),
+
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID ?? "",
+      clientSecret: process.env.GITHUB_SECRET_ID ?? "",
     }),
   ],
 
   callbacks: {
-    async signIn({
-      user,
-      account,
-      profile,
-    }: {
-      user: ExtendedUser;
-      account: Account | null;
-      profile?: ExtendedProfile;
-    }) {
+
+    async signIn({ user, account, profile }) {
       if (!account || account.provider === "credentials") return true;
 
       await connectToDatabase();
-
       const email = user?.email;
       if (!email) return false;
 
-      const existing = await User.findOne({ email });
-      if (account.provider === "credentials") return true;
-      if (existing) {
-        if (
-          existing.provider &&
-          existing.provider !== account.provider
-        ) {
-          return false;
-        }
-      }
-      const img = pickImage(user, profile || null);
+      const existing = await UserModel.findOne({ email });
+      const p = profile as ExtendedProfile | undefined;
+      const img = (user as ExtendedUser).image ?? p?.picture ?? p?.avatar_url ?? null;
+
       const base = {
-        name: user?.name || profile?.name || "User",
+        name: user?.name ?? p?.name ?? "User",
         email,
         image: img,
-        provider: account.provider as "google" | "github",
-        providerAccountId:
-          account.providerAccountId ?? profile?.id?.toString() ?? null,
+        provider: account.provider,
+        providerAccountId: account.providerAccountId ?? p?.id?.toString() ?? null,
+        role: existing?.role ?? UserRole.USER,
       };
 
       if (!existing) {
-        await User.create(base);
+        await UserModel.create(base);
       } else {
         const updates: Record<string, unknown> = {};
         if (!existing.provider) updates.provider = base.provider;
-        if (!existing.providerAccountId)
-          updates.providerAccountId = base.providerAccountId;
+        if (!existing.providerAccountId) updates.providerAccountId = base.providerAccountId;
         if (!existing.image && base.image) updates.image = base.image;
-        if (existing.name !== base.name && base.name) updates.name = base.name;
+        if (!existing.name && base.name) updates.name = base.name;
+        if (!existing.role) updates.role = base.role;
 
         if (Object.keys(updates).length > 0) {
-          await User.updateOne({ _id: existing._id }, { $set: updates });
+          await UserModel.updateOne({ _id: existing._id }, { $set: updates });
         }
       }
+
       return true;
     },
 
     async jwt({ token, user }) {
+      const t = token as ExtendedJWT;
+
       if (user) {
         const u = user as ExtendedUser;
-        token.id = u.id;
-        token.name = u.name;
-        token.email = u.email;
-        token.image = u.image || null;
-        role: token.role as UserRole
+        t.id = u.id;
+        t.name = u.name ?? t.name;
+        t.email = u.email ?? t.email;
+        t.image = u.image ?? t.image ?? null;
+        t.role = u.role ?? t.role ?? UserRole.USER;
       }
-      return token;
+
+    
+      if (!t.role && t.email) {
+        await connectToDatabase();
+        const dbUser = await UserModel.findOne({ email: t.email });
+        t.role = dbUser?.role ?? UserRole.USER;
+      }
+
+      return t as any; 
     },
 
-    async session({
-      session,
-      token,
-    }: {
-      session: Session;
-      token: JWT & { id?: string; image?: string | null };
-    }) {
+   
+    async session({ session, token }) {
+      const t = token as ExtendedJWT;
+
       session.user = {
-        id: token.id as string,
-        name: token.name as string,
-        email: token.email as string,
-        image: token.image ?? null,
-        role: token.role as UserRole
+        id: t.id as string,
+        name: t.name as string,
+        email: t.email as string,
+        image: t.image ?? null,
+        role: t.role ?? UserRole.USER,
       };
+
       return session;
     },
   },
 
   pages: {
-    signIn: "/RegisterPage",
+    signIn: "/LoginPage",
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-});
+};
 
-export { handel as GET, handel as POST };
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

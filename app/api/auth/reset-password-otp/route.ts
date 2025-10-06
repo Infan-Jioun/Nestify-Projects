@@ -7,7 +7,7 @@ import OTP from "@/app/models/otp";
 export async function POST(request: NextRequest) {
   try {
     const { email, otp, newPassword } = await request.json();
-    
+
     if (!email || !otp || !newPassword) {
       return NextResponse.json(
         { error: "Email, OTP and new password are required" },

@@ -139,7 +139,7 @@ export function Login() {
 
   function isAuthorizedRoute(path: string, role: string): boolean {
     const roleRoutes: Record<string, string[]> = {
-      user: ["/profile", "/properties"],
+      user: ["/", "/properties"],
       real_estate_developer: ["/dashboard", "/dashboard/properties"],
       admin: ["/dashboard", "/admin"]
     };
@@ -150,7 +150,7 @@ export function Login() {
 
   function getDefaultRoute(role: string): string {
     const defaultRoutes: Record<string, string> = {
-      user: "/profile",
+      user: "/",
       real_estate_developer: "/dashboard",
       admin: "/admin"
     };

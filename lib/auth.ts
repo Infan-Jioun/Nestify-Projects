@@ -38,6 +38,7 @@ interface SignInParams {
   profile?: ExtendedProfile
 }
 
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
 
