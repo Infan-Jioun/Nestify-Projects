@@ -4,24 +4,66 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { UserRole } from './Types/auth'
 
+// Role-based routes definition
 const roleRoutes: Record<UserRole, string[]> = {
-    [UserRole.USER]: ["/profile"],
+    [UserRole.USER]: [
+        "/profile",
+        "/settings",
+        "/my-properties",
+        "/favorites",
+        "/bookings",
+        "/reviews"
+    ],
     [UserRole.REAL_ESTATE_DEVELOPER]: [
         "/dashboard",
         "/dashboard/add-properties",
+        "/dashboard/my-listings",
+        "/dashboard/analytics",
+        "/dashboard/messages",
+        "/dashboard/earnings",
+        "/dashboard/subscriptions"
     ],
     [UserRole.ADMIN]: [
+        "/admin",
+        "/admin/dashboard",
+        "/admin/users",
+        "/admin/properties",
+        "/admin/settings",
+        "/admin/reports",
+        "/admin/analytics",
         "/dashboard",
-        "/dashboard/add-properties",
-        "/dashboard/add-city",
         "/dashboard/users-information",
+        "/dashboard/add-city",
         "/dashboard/settings",
-        "/admin"
+        "/dashboard/all-properties"
     ]
 }
 
+// Public routes that don't require authentication
+const publicRoutes = [
+    "/",
+    "/login",
+    "/register",
+    "/about",
+    "/contact",
+    "/properties",
+    "/property",
+    "/blog",
+    "/privacy",
+    "/terms"
+]
+
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
+
+    // Public routes check
+    const isPublicRoute = publicRoutes.some(route =>
+        pathname === route || pathname.startsWith(route + '/')
+    )
+
+    if (isPublicRoute) {
+        return NextResponse.next()
+    }
 
     // সব protected routes collect করুন
     const allProtectRoutes = Object.values(roleRoutes).flat()
@@ -52,16 +94,12 @@ export async function middleware(request: NextRequest) {
     // User role পাওয়ার চেষ্টা করুন
     const userRole = token.role as UserRole
 
-    // Debugging
-    console.log('🛡️ Middleware Debug:')
-    console.log('User Role from token:', userRole)
-    console.log('Token data:', token)
-    console.log('Requested path:', pathname)
-
-    // Temporary: Allow access while we fix role issue
-    if (!userRole) {
-        console.log('⚠️ No role found in token, but allowing access temporarily')
-        return NextResponse.next()
+    // Debugging (development এ only)
+    if (process.env.NODE_ENV === 'development') {
+        console.log('🛡️ Middleware Debug:')
+        console.log('User Role from token:', userRole)
+        console.log('Requested path:', pathname)
+        console.log('Token data:', { id: token.id, email: token.email, role: token.role })
     }
 
     // Role check
@@ -71,6 +109,7 @@ export async function middleware(request: NextRequest) {
         )
 
         if (!hasAccess) {
+            // Access না থাকলে unauthorized page এ redirect করুন
             console.log('❌ Access denied for role:', userRole, 'to path:', pathname)
             return NextResponse.redirect(new URL('/unauthorized', request.url))
         }
@@ -89,8 +128,13 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
+        // Protect all dashboard and admin routes
         '/profile/:path*',
         '/dashboard/:path*',
         '/admin/:path*',
+        '/settings/:path*',
+        '/my-properties/:path*',
+        '/favorites/:path*',
+        '/bookings/:path*'
     ]
 }

@@ -1,4 +1,4 @@
-// app/hook/useRoleGuard.ts
+// app/hooks/useRoleGuard.ts
 "use client"
 
 import { useEffect, useState } from "react"
@@ -22,9 +22,6 @@ export function useRoleGuard({
     const [isChecking, setIsChecking] = useState(true)
 
     useEffect(() => {
-        console.log("🛡️ useRoleGuard - Status:", status)
-        console.log("🛡️ useRoleGuard - Session:", session)
-
         if (status === "loading") {
             setIsChecking(true)
             return
@@ -42,14 +39,16 @@ export function useRoleGuard({
 
         const userRole = session.user.role as UserRole
 
-        console.log("🔐 Role Check:")
-        console.log("User Role:", userRole)
-        console.log("User ID:", session.user.id)
-        console.log("User Email:", session.user.email)
-        console.log("Allowed Roles:", allowedRoles)
-        console.log("Has Access:", allowedRoles.includes(userRole))
+        // Debugging
+        if (process.env.NODE_ENV === 'development') {
+            console.log('🔐 Role Guard Debug:')
+            console.log('User Role:', userRole)
+            console.log('User ID:', session.user.id)
+            console.log('Allowed Roles:', allowedRoles)
+            console.log('Has Access:', allowedRoles.includes(userRole))
+        }
 
-        // Role undefined হলে বা access না থাকলে
+        // Role check
         if (!userRole || !allowedRoles.includes(userRole)) {
             console.log("❌ Access denied, redirecting to:", redirectTo)
             router.push(redirectTo)

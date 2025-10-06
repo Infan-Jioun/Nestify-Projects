@@ -1,4 +1,4 @@
-
+// app/unauthorized/page.tsx
 import Link from "next/link"
 import NextHead from "../components/NextHead/NextHead"
 
@@ -15,7 +15,7 @@ export default function UnauthorizedPage() {
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
                     <p className="text-gray-600 mb-6">
-                        You don't have permission to access this page. Please contact the administrator if you believe this is an error.
+                        {" You don't have permission to access this page. Please contact the administrator if you believe this is an error."}
                     </p>
                     <div className="space-y-3">
                         <Link

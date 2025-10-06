@@ -8,33 +8,16 @@ import { Types } from "mongoose";
 import connectToDatabase from "@/lib/mongodb";
 import UserModel from "@/app/models/user";
 import { UserRole } from "@/app/Types/auth";
-import { Profile } from "next-auth";
 
-interface ExtendedProfile extends Profile {
+interface ExtendedProfile {
   picture?: string;
   avatar_url?: string;
   id?: string | number;
-}
-
-interface ExtendedUser {
-  id: string;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-  role?: UserRole;
-}
-
-interface ExtendedJWT {
-  id?: string;
   name?: string;
-  email?: string;
-  image?: string | null;
-  role?: UserRole;
 }
 
 const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
-
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -43,113 +26,138 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        if (!credentials?.email || !credentials.password) return null;
+        try {
+          if (!credentials?.email || !credentials.password) {
+            return null;
+          }
 
-        await connectToDatabase();
-        const userDoc = await UserModel.findOne({ email: credentials.email });
-        if (!userDoc || !userDoc.password) return null;
+          await connectToDatabase();
+          const userDoc = await UserModel.findOne({ email: credentials.email });
+          
+          if (!userDoc || !userDoc.password) {
+            return null;
+          }
 
-        const isValid = await bcrypt.compare(credentials.password, userDoc.password);
-        if (!isValid) return null;
+          const isValid = await bcrypt.compare(credentials.password, userDoc.password);
+          if (!isValid) {
+            return null;
+          }
 
-        return {
-          id: (userDoc._id as Types.ObjectId).toString(),
-          name: userDoc.name,
-          email: userDoc.email,
-          image: userDoc.image ?? null,
-          role: userDoc.role ?? UserRole.USER,
-        };
+          return {
+            id: (userDoc._id as Types.ObjectId).toString(),
+            name: userDoc.name,
+            email: userDoc.email,
+            image: userDoc.image || null,
+            role: userDoc.role || UserRole.USER,
+          };
+        } catch (error) {
+          console.error("Authorization error:", error);
+          return null;
+        }
       },
-
-
     }),
 
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID ?? "",
-      clientSecret: process.env.GOOGLE_SECRET_ID ?? "",
+      clientId: process.env.GOOGLE_ID || "",
+      clientSecret: process.env.GOOGLE_SECRET_ID || "",
     }),
 
     GitHubProvider({
-      clientId: process.env.GITHUB_ID ?? "",
-      clientSecret: process.env.GITHUB_SECRET_ID ?? "",
+      clientId: process.env.GITHUB_ID || "",
+      clientSecret: process.env.GITHUB_SECRET_ID || "",
     }),
   ],
 
   callbacks: {
-
     async signIn({ user, account, profile }) {
-      if (!account || account.provider === "credentials") return true;
-
-      await connectToDatabase();
-      const email = user?.email;
-      if (!email) return false;
-
-      const existing = await UserModel.findOne({ email });
-      const p = profile as ExtendedProfile | undefined;
-      const img = (user as ExtendedUser).image ?? p?.picture ?? p?.avatar_url ?? null;
-
-      const base = {
-        name: user?.name ?? p?.name ?? "User",
-        email,
-        image: img,
-        provider: account.provider,
-        providerAccountId: account.providerAccountId ?? p?.id?.toString() ?? null,
-        role: existing?.role ?? UserRole.USER,
-      };
-
-      if (!existing) {
-        await UserModel.create(base);
-      } else {
-        const updates: Record<string, unknown> = {};
-        if (!existing.provider) updates.provider = base.provider;
-        if (!existing.providerAccountId) updates.providerAccountId = base.providerAccountId;
-        if (!existing.image && base.image) updates.image = base.image;
-        if (!existing.name && base.name) updates.name = base.name;
-        if (!existing.role) updates.role = base.role;
-
-        if (Object.keys(updates).length > 0) {
-          await UserModel.updateOne({ _id: existing._id }, { $set: updates });
+      try {
+        // Credentials provider এর জন্য সরাসরি allow
+        if (!account || account.provider === "credentials") {
+          return true;
         }
-      }
 
-      return true;
-    },
-
-    async jwt({ token, user }) {
-      const t = token as ExtendedJWT;
-
-      if (user) {
-        const u = user as ExtendedUser;
-        t.id = u.id;
-        t.name = u.name ?? t.name;
-        t.email = u.email ?? t.email;
-        t.image = u.image ?? t.image ?? null;
-        t.role = u.role ?? t.role ?? UserRole.USER;
-      }
-
-    
-      if (!t.role && t.email) {
         await connectToDatabase();
-        const dbUser = await UserModel.findOne({ email: t.email });
-        t.role = dbUser?.role ?? UserRole.USER;
-      }
+        const email = user.email;
 
-      return t as any; 
+        if (!email) {
+          return false;
+        }
+
+        const existingUser = await UserModel.findOne({ email });
+        const extendedProfile = profile as ExtendedProfile;
+        
+        const image = user.image || extendedProfile?.picture || extendedProfile?.avatar_url || null;
+
+        const userData = {
+          name: user.name || extendedProfile?.name || "User",
+          email: email,
+          image: image,
+          provider: account.provider,
+          providerAccountId: account.providerAccountId || extendedProfile?.id?.toString() || null,
+          role: existingUser?.role || UserRole.USER,
+        };
+
+        if (!existingUser) {
+          // Create new user
+          await UserModel.create(userData);
+        } else {
+          // Update existing user
+          const updates: Record<string, unknown> = {};
+          
+          if (!existingUser.provider) updates.provider = userData.provider;
+          if (!existingUser.providerAccountId) updates.providerAccountId = userData.providerAccountId;
+          if (!existingUser.image && userData.image) updates.image = userData.image;
+          if (existingUser.name !== userData.name) updates.name = userData.name;
+          if (!existingUser.role) updates.role = userData.role;
+
+          if (Object.keys(updates).length > 0) {
+            await UserModel.updateOne({ _id: existingUser._id }, { $set: updates });
+          }
+        }
+
+        return true;
+      } catch (error) {
+        console.error("SignIn callback error:", error);
+        return false;
+      }
     },
 
-   
+    async jwt({ token, user, account }) {
+      try {
+        // User object থাকলে (login সময়) token update করুন
+        if (user) {
+          token.id = user.id;
+          token.role = user.role || UserRole.USER;
+        }
+
+        // Social login এর জন্য database থেকে role fetch করুন
+        if ((account?.provider === "google" || account?.provider === "github") && token.email) {
+          await connectToDatabase();
+          const dbUser = await UserModel.findOne({ email: token.email });
+          if (dbUser) {
+            token.role = dbUser.role || UserRole.USER;
+            token.id = (dbUser._id as Types.ObjectId).toString();
+          }
+        }
+
+        return token;
+      } catch (error) {
+        console.error("JWT callback error:", error);
+        return token;
+      }
+    },
+
     async session({ session, token }) {
-      const t = token as ExtendedJWT;
-
-      session.user = {
-        id: t.id as string,
-        name: t.name as string,
-        email: t.email as string,
-        image: t.image ?? null,
-        role: t.role ?? UserRole.USER,
-      };
-
-      return session;
+      try {
+        if (session.user && token.id && token.role) {
+          session.user.id = token.id;
+          session.user.role = token.role;
+        }
+        return session;
+      } catch (error) {
+        console.error("Session callback error:", error);
+        return session;
+      }
     },
   },
 
