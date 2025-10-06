@@ -15,6 +15,7 @@ import { DropdownAvatar } from "./DropdownAvatar";
 import RightSidebar from "./RightSidebar";
 import LeftSidebar from "./LeftSidebar";
 import SearchBox from "./Search/SearchBar";
+import { UserRole } from "@/app/Types/auth";
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -22,7 +23,9 @@ export function Navbar() {
   const navlinks = [
     { name: "Home", href: "/" },
     { name: "Properties", href: "/Properties" },
-    ...(session ? [{ name: "Dashboard", href: "/dashboard" }] : []),
+    ...(session && (session.user.role === UserRole.ADMIN || session.user.role === UserRole.REAL_ESTATE_DEVELOPER)
+      ? [{ name: "Dashboard", href: "/dashboard" }]
+      : []),
     { name: "About", href: "/About" },
     { name: "Blog", href: "/Blog" },
     { name: "Contact", href: "/Contact" },

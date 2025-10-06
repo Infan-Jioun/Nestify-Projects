@@ -28,8 +28,7 @@ export function useRoleGuard({
         }
 
         setIsChecking(false)
-
-        // Session না থাকলে login page এ redirect করুন
+   
         if (!session?.user) {
             console.log(" No session, redirecting to login")
             const loginUrl = `/LoginPage?callbackUrl=${encodeURIComponent(callbackUrl)}`
@@ -41,7 +40,7 @@ export function useRoleGuard({
 
         // Debugging
         if (process.env.NODE_ENV === 'development') {
-            console.log('🔐 Role Guard Debug:')
+            console.log(' Role Guard Debug:')
             console.log('User Role:', userRole)
             console.log('User ID:', session.user.id)
             console.log('Allowed Roles:', allowedRoles)
