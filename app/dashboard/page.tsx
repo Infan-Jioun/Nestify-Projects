@@ -1,3 +1,4 @@
+// app/dashboard/page.tsx
 "use client"
 
 import { useDispatch, useSelector } from "react-redux"
@@ -15,8 +16,13 @@ import PropertiesDistribution from "./components/PropertiesDistribution"
 import RecentActivity from "./components/RecentActivity"
 import UserOverview from "./components/UserOverview"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { UserRole } from "../Types/auth"
 
 export default function DashboardPage() {
+    const { data: session, status } = useSession()
+    const router = useRouter()
     const dispatch = useDispatch<AppDispatch>()
     const [refreshing, setRefreshing] = useState(false)
     const [systemHealth, setSystemHealth] = useState({
@@ -33,13 +39,31 @@ export default function DashboardPage() {
         (state: RootState) => state.district || { district: [], loading: false, error: null }
     )
 
-   
+    // Authentication check
+    useEffect(() => {
+        if (status === "loading") return // Still loading
+
+        if (!session?.user) {
+            router.push('/LoginPage?callbackUrl=/dashboard')
+            return
+        }
+
+        // Role check
+        const userRole = session.user.role as UserRole
+        const allowedRoles = [UserRole.REAL_ESTATE_DEVELOPER, UserRole.ADMIN]
+
+        if (!allowedRoles.includes(userRole)) {
+            router.push('/unauthorized')
+            return
+        }
+    }, [session, status, router])
+
     const calculateSystemHealth = () => {
         const checks = {
             database: !propertiesError && !districtsError,
             api: Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts),
             dataLoaded: users.length > 0 || properties.length > 0 || districts.length > 0,
-            performance: true 
+            performance: true
         }
 
         const passedChecks = Object.values(checks).filter(Boolean).length
@@ -66,8 +90,10 @@ export default function DashboardPage() {
     }
 
     useEffect(() => {
-        loadAllData()
-    }, [dispatch])
+        if (session?.user) {
+            loadAllData()
+        }
+    }, [dispatch, session])
 
     useEffect(() => {
         if (!isLoading) {
@@ -110,9 +136,32 @@ export default function DashboardPage() {
 
     const userGrowth = 12.5
     const propertyGrowth = 8.2
-    const isLoading = propertiesLoading || districtsLoading || userLoader
+    const isLoading = propertiesLoading || districtsLoading || userLoader || status === "loading"
 
-  
+    // Show loading while checking authentication
+    if (status === "loading") {
+        return (
+            <div className="min-h-screen/30 p-6">
+                <NextHead title="Dashboard - Nestify" />
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+                </div>
+            </div>
+        )
+    }
+
+    // Show loading while checking access
+    if (!session?.user) {
+        return (
+            <div className="min-h-screen/30 p-6">
+                <NextHead title="Dashboard - Nestify" />
+                <div className="flex justify-center items-center h-64">
+                    <p>Redirecting to login...</p>
+                </div>
+            </div>
+        )
+    }
+
     const getHealthConfig = () => {
         switch (systemHealth.status) {
             case "healthy":
@@ -179,7 +228,9 @@ export default function DashboardPage() {
             <div className="mb-8 grid md:grid-cols-2 justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                    <p className="text-gray-500 mt-2">Welcome to your Nestify management dashboard</p>
+                    <p className="text-gray-500 mt-2">
+                        Welcome back, {session.user.name}!
+                    </p>
                 </div>
                 <button
                     onClick={handleRefresh}
@@ -261,8 +312,8 @@ export default function DashboardPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className={`p-4 rounded-lg border ${!propertiesError && !districtsError
-                            ? 'bg-green-50 border-green-200'
-                            : 'bg-red-50 border-red-200'
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-red-50 border-red-200'
                         }`}>
                         <div className="flex items-center gap-2 mb-2">
                             {!propertiesError && !districtsError ? (
@@ -278,8 +329,8 @@ export default function DashboardPage() {
                     </div>
 
                     <div className={`p-4 rounded-lg border ${Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts)
-                            ? 'bg-green-50 border-green-200'
-                            : 'bg-red-50 border-red-200'
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-red-50 border-red-200'
                         }`}>
                         <div className="flex items-center gap-2 mb-2">
                             {Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts) ? (
@@ -295,8 +346,8 @@ export default function DashboardPage() {
                     </div>
 
                     <div className={`p-4 rounded-lg border ${users.length > 0 || properties.length > 0 || districts.length > 0
-                            ? 'bg-green-50 border-green-200'
-                            : 'bg-yellow-50 border-yellow-200'
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-yellow-50 border-yellow-200'
                         }`}>
                         <div className="flex items-center gap-2 mb-2">
                             {users.length > 0 || properties.length > 0 || districts.length > 0 ? (

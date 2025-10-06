@@ -8,6 +8,7 @@ import NextAuth, { User as NextAuthUser, Account, Profile } from "next-auth";
 import { Types } from "mongoose";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/app/models/user";
+import { UserRole } from "@/app/Types/auth";
 
 interface ExtendedProfile extends Profile {
   id?: string | number;
@@ -143,6 +144,7 @@ const handel = NextAuth({
         token.name = u.name;
         token.email = u.email;
         token.image = u.image || null;
+        role: token.role as UserRole
       }
       return token;
     },
@@ -159,6 +161,7 @@ const handel = NextAuth({
         name: token.name as string,
         email: token.email as string,
         image: token.image ?? null,
+        role: token.role as UserRole
       };
       return session;
     },

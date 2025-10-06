@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import NextHead from "../NextHead/NextHead";
@@ -51,6 +51,8 @@ export function Login() {
   const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
@@ -66,26 +68,38 @@ export function Login() {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     dispatch(setButtonLoader(true));
 
-    const res = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    });
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+        callbackUrl,
+      });
 
-    if (res?.ok) {
-      router.push("/");
-      toast.success("Successfully Login");
-    } else {
-      toast.error("Login failed. Please check your credentials.");
+      if (result?.ok) {
+
+        const session = await getSession();
+
+        if (session?.user) {
+          toast.success("Successfully Login");
+          router.push(callbackUrl);
+          router.refresh(); 
+        }
+      } else {
+        toast.error(result?.error || "Login failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error("Login failed. Please try again.");
+    } finally {
+      dispatch(setButtonLoader(false));
     }
-
-    dispatch(setButtonLoader(false));
   };
 
   const handelGoogleLogin = async () => {
     dispatch(setGoogleLoader(true));
     try {
-      await signIn("google", { callbackUrl: "/" });
+      await signIn("google", { callbackUrl });
     } catch (error) {
       toast.error("Google login failed");
     } finally {
@@ -96,7 +110,7 @@ export function Login() {
   const handelGithubLogin = async () => {
     dispatch(setGithubLoader(true));
     try {
-      await signIn("github", { callbackUrl: "/" });
+      await signIn("github", { callbackUrl });
     } catch (error) {
       toast.error("GitHub login failed");
     } finally {
@@ -108,7 +122,7 @@ export function Login() {
     setShowPassword(!showPassword);
   };
 
-  //  Skeleton Loader Fix
+  // Skeleton Loader
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 overflow-hidden">
@@ -142,7 +156,6 @@ export function Login() {
     );
   }
 
-  //  Login Form
   return (
     <div className="min-h-screen bg-green-100 flex items-center justify-center dark:bg-gray-900 px-4 overflow-hidden">
       <NextHead title="Login | Nestify" />
@@ -270,4 +283,25 @@ export function Login() {
       </Card>
     </div>
   );
+}
+function isAuthorizedRoute(path: string, role: string): boolean {
+  const roleRoutes = {
+    user: ["/profile", "/properties"],
+    real_estate_developer: ["/dashboard", "/dashboard/properties"],
+    admin: ["/dashboard", "/admin"]
+  };
+
+  return roleRoutes[role as keyof typeof roleRoutes]?.some(route =>
+    path.startsWith(route)
+  ) || false;
+}
+
+function getDefaultRoute(role: string): string {
+  const defaultRoutes = {
+    user: "/profile",
+    real_estate_developer: "/dashboard",
+    admin: "/admin"
+  };
+
+  return defaultRoutes[role as keyof typeof defaultRoutes] || "/";
 }

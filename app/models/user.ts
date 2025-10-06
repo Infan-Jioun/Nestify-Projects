@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema, model, models } from "mongoose";
 import slugify from "slugify";
+import { UserRole } from "../Types/auth";
 
 export interface IUser extends Document {
     name: string;
@@ -15,9 +16,8 @@ export interface IUser extends Document {
     mobile?: string | null;
     website?: string | null;
 
-    //  Reset Password Fields (ঠিক করে দিন)
-    resetPasswordToken?: string;  // নাম change করুন
-    resetPasswordExpire?: Date;   // নাম change করুন
+    resetPasswordToken?: string;
+    resetPasswordExpire?: Date;
 }
 
 const userSchema = new Schema<IUser>({
@@ -28,13 +28,17 @@ const userSchema = new Schema<IUser>({
     provider: { type: String, enum: ["credentials", "google", "github"], default: "credentials" },
     providerId: { type: String, default: null, index: true },
     slug: { type: String, unique: true, sparse: true },
-    role: { type: String, default: "user" },
+    role: {
+        type: String,
+        enum: Object.values(UserRole),
+        default: UserRole.USER
+    },
     bio: { type: String, default: null },
     location: { type: String, default: null },
     mobile: { type: String, default: null },
     website: { type: String, default: null },
-    resetPasswordToken: { type: String }, 
-    resetPasswordExpire: { type: Date },   
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: Date },
 }, { timestamps: true });
 
 
