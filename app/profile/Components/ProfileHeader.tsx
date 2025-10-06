@@ -2,6 +2,7 @@
 import React, { useRef, useState } from "react";
 import { User } from "@/app/Types/user";
 import { imageUpload } from "@/hooks/useImageUpload";
+import { UserRole } from "@/app/Types/auth";
 
 interface ProfileHeaderProps {
     currentUser: User;
@@ -19,7 +20,16 @@ interface ProfileHeaderProps {
     onRemoveImage: () => void;
 }
 
-
+export function getRoleLabel(role?: UserRole | string): string {
+    switch (role) {
+        case UserRole.ADMIN:
+            return "Admin";
+        case UserRole.REAL_ESTATE_DEVELOPER:
+            return "Real Estate Developer";
+        default:
+            return "User";
+    }
+}
 export default function ProfileHeader({ currentUser, isEditing, editForm, imagePreview, imageUploading, onEnterEditMode, onInputChange, onImageSelect, onRemoveImage, }: ProfileHeaderProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +48,8 @@ export default function ProfileHeader({ currentUser, isEditing, editForm, imageP
                         : "bg-green-100 text-green-800"
                         }`}
                 >
-                    {currentUser.role === "admin" ? "👑 Admin" : "👤 User"}
+                    <p>Role: {getRoleLabel(currentUser.role)}</p>
+
                 </span>
                 <button
                     onClick={onEnterEditMode}
