@@ -158,7 +158,7 @@ export default function DashboardPage() {
                 <div className="flex justify-center items-center h-64">
                     <div className="text-center">
                         <h2 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h2>
-                        <p className="text-gray-600">You don't have permission to access the dashboard.</p>
+                        <p className="text-gray-600">{"You don't have permission to access the dashboard."}</p>
                         <p className="text-sm text-gray-500 mt-2">
                             User Role: {userRole || "undefined"}<br />
                             User ID: {session?.user?.id || "undefined"}
