@@ -102,14 +102,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
 
   }
-
+  const filterNav = data.navMain.filter(item => !item.roles || item.roles.includes(userRole))
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={filterNav} />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
