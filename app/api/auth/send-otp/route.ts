@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 import connectToDatabase from "@/lib/mongodb";
 import OTP from "@/app/models/otp";
 import { sendEmail } from "@/lib/nodemailer";
