@@ -106,12 +106,6 @@ export function DropdownAvatar() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard" className="flex items-center w-full">
-              <Layers2Icon size={16} className="opacity-60 mr-2" aria-hidden="true" />
-              <span>Dashboard</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
             <Link href="/Bookmark" className="flex items-center w-full">
               <BookOpenIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
               <span>Bookmark</span>
