@@ -28,11 +28,20 @@ import {
   setGithubLoader,
 } from "@/app/features/loader/loaderSlice";
 import { RootState } from "@/lib/store";
+import { UserRole } from "@/app/Types/auth";
 
 type Inputs = {
   email: string;
   password: string;
 };
+
+interface CustomSessionUser {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  role: UserRole;
+}
 
 export function Login() {
   const dispatch = useDispatch();
@@ -77,13 +86,19 @@ export function Login() {
       });
 
       if (result?.ok) {
-
         const session = await getSession();
 
         if (session?.user) {
+          const user = session.user as CustomSessionUser;
+          const userRole = user.role || UserRole.USER;
+          const defaultRoute = getDefaultRoute(userRole);
+
+          const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
+          const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
+
           toast.success("Successfully Login");
-          router.push(callbackUrl);
-          router.refresh(); 
+          router.push(redirectUrl);
+          router.refresh();
         }
       } else {
         toast.error(result?.error || "Login failed. Please check your credentials.");
@@ -122,7 +137,27 @@ export function Login() {
     setShowPassword(!showPassword);
   };
 
-  // Skeleton Loader
+  function isAuthorizedRoute(path: string, role: string): boolean {
+    const roleRoutes: Record<string, string[]> = {
+      user: ["/profile", "/properties"],
+      real_estate_developer: ["/dashboard", "/dashboard/properties"],
+      admin: ["/dashboard", "/admin"]
+    };
+
+    const allowedRoutes = roleRoutes[role] || [];
+    return allowedRoutes.some(route => path.startsWith(route));
+  }
+
+  function getDefaultRoute(role: string): string {
+    const defaultRoutes: Record<string, string> = {
+      user: "/profile",
+      real_estate_developer: "/dashboard",
+      admin: "/admin"
+    };
+
+    return defaultRoutes[role] || "/";
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 overflow-hidden">
@@ -283,25 +318,4 @@ export function Login() {
       </Card>
     </div>
   );
-}
-function isAuthorizedRoute(path: string, role: string): boolean {
-  const roleRoutes = {
-    user: ["/profile", "/properties"],
-    real_estate_developer: ["/dashboard", "/dashboard/properties"],
-    admin: ["/dashboard", "/admin"]
-  };
-
-  return roleRoutes[role as keyof typeof roleRoutes]?.some(route =>
-    path.startsWith(route)
-  ) || false;
-}
-
-function getDefaultRoute(role: string): string {
-  const defaultRoutes = {
-    user: "/profile",
-    real_estate_developer: "/dashboard",
-    admin: "/admin"
-  };
-
-  return defaultRoutes[role as keyof typeof defaultRoutes] || "/";
 }
