@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -32,20 +33,25 @@ export default function ResetPasswordPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
+  const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm<Inputs>();
   const newPassword = watch("newPassword");
 
   // Send OTP
   const sendOTP = async (email: string) => {
     setLoading(true);
     try {
+      console.log(" Sending OTP to:", email);
+
       const res = await fetch("/api/auth/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
+      console.log(" OTP Response status:", res.status);
+
       const result = await res.json();
+      console.log(" OTP Response data:", result);
 
       if (res.ok) {
         toast.success("OTP sent to your email!");
@@ -56,6 +62,7 @@ export default function ResetPasswordPage() {
         toast.error(result.error || "Failed to send OTP");
       }
     } catch (error) {
+      console.error(" OTP Send Error:", error);
       toast.error("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -63,25 +70,34 @@ export default function ResetPasswordPage() {
   };
 
   // Verify OTP
-  const verifyOTP = async (otp: string) => {
+  const verifyOTP = async (otpCode: string) => {
     setLoading(true);
+    setOtp(otpCode); // Store OTP for final step
     try {
+      console.log(" Verifying OTP:", { email, otp: otpCode });
+
       const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email, otp: otpCode }),
       });
 
+      console.log(" Verify OTP Response status:", res.status);
+
       const result = await res.json();
+      console.log(" Verify OTP Response data:", result);
 
       if (res.ok) {
         toast.success("OTP verified!");
         setStep('newPassword');
       } else {
         toast.error(result.error || "Invalid OTP");
+        setOtp(''); // Reset OTP on failure
       }
     } catch (error) {
+      console.error(" OTP Verify Error:", error);
       toast.error("Network error. Please try again.");
+      setOtp(''); // Reset OTP on error
     } finally {
       setLoading(false);
     }
@@ -91,26 +107,42 @@ export default function ResetPasswordPage() {
   const resetPassword: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
     try {
+      console.log(" Resetting password with:", {
+        email,
+        otp,
+        newPassword: data.newPassword
+      });
+
+      const requestBody = {
+        email: email,
+        otp: otp,
+        newPassword: data.newPassword
+      };
+
+      console.log(" Request body:", requestBody);
+
       const res = await fetch("/api/auth/reset-password-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          otp,
-          newPassword: data.newPassword
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log(" Reset Password Response status:", res.status);
+
       const result = await res.json();
+      console.log(" Reset Password Response data:", result);
 
       if (res.ok) {
         toast.success("Password reset successfully!");
         // Redirect to login
-        window.location.href = "/LoginPage";
+        setTimeout(() => {
+          window.location.href = "/LoginPage";
+        }, 2000);
       } else {
         toast.error(result.error || "Failed to reset password");
       }
     } catch (error) {
+      console.error(" Reset Password Error:", error);
       toast.error("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -119,7 +151,7 @@ export default function ResetPasswordPage() {
 
   // Countdown timer
   const startCountdown = () => {
-    setCountdown(60);
+    setCountdown(120);
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -139,17 +171,17 @@ export default function ResetPasswordPage() {
 
   return (
     <div>
-      <NextHead title='Reset Password -\ Nestify' />
+      <NextHead title='Reset Password | Nestify' />
       <div className="min-h-screen bg-green-100 flex items-center justify-center dark:bg-gray-900 px-4">
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-2xl font-bold">
-              <Image 
+              <Image
                 className="mx-auto"
                 src="https://i.ibb.co/RpTRch3g/Nestify.png"
                 alt="logo"
                 width={80}
-                height={80} 
+                height={80}
               />
             </CardTitle>
             <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
@@ -160,36 +192,55 @@ export default function ResetPasswordPage() {
           </CardHeader>
 
           <CardContent>
+            {/* Step Progress Indicator */}
+            <div className="flex justify-center mb-6">
+              <div className="flex space-x-2">
+                {['email', 'otp', 'newPassword'].map((stepName, index) => (
+                  <div
+                    key={stepName}
+                    className={`w-3 h-3 rounded-full ${step === stepName
+                      ? 'bg-green-500'
+                      : index < ['email', 'otp', 'newPassword'].indexOf(step)
+                        ? 'bg-green-300'
+                        : 'bg-gray-300'
+                      }`}
+                  />
+                ))}
+              </div>
+            </div>
+
             {/* Step 1: Email Input */}
             {step === 'email' && (
               <div className="space-y-4">
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input 
-                    {...register("email", { 
-                      required: "Email is required",
-                      pattern: {
-                        value: /^\S+@\S+\.\S+$/i,
-                        message: "Invalid email address"
-                      }
-                    })}
+                  <Input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     id="email"
                     type="email"
                     placeholder="you@example.com"
-                    onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
+                    className={errors.email ? "border-red-500" : ""}
                   />
                   {errors.email && (
                     <p className="text-red-500 text-sm">{errors.email.message}</p>
                   )}
                 </div>
-                
-                <Button 
+
+                <Button
                   onClick={() => sendOTP(email)}
                   className="w-full bg-green-500 hover:bg-green-600"
                   disabled={loading || !email}
                 >
-                  {loading ? "Sending..." : "Send OTP"}
+                  {loading ? (
+                    <div className="flex items-center">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Sending...
+                    </div>
+                  ) : (
+                    "Send OTP"
+                  )}
                 </Button>
               </div>
             )}
@@ -197,11 +248,15 @@ export default function ResetPasswordPage() {
             {/* Step 2: OTP Input */}
             {step === 'otp' && (
               <div className="space-y-4">
-                <OTPInputComponent 
+                <p className="text-[12px] text-center text-gray-400">
+                  OTP sent to: <strong>{email}</strong>
+                </p>
+
+                <OTPInputComponent
                   onComplete={verifyOTP}
                   disabled={loading}
                 />
-                
+
                 <div className="text-center">
                   <Button
                     variant="outline"
@@ -216,7 +271,10 @@ export default function ResetPasswordPage() {
 
                 <Button
                   variant="ghost"
-                  onClick={() => setStep('email')}
+                  onClick={() => {
+                    setStep('email');
+                    setOtp('');
+                  }}
                   className="w-full"
                 >
                   Change Email
@@ -230,8 +288,8 @@ export default function ResetPasswordPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="newPassword">New Password</Label>
                   <div className="relative">
-                    <Input 
-                      {...register("newPassword", { 
+                    <Input
+                      {...register("newPassword", {
                         required: "Password is required",
                         minLength: {
                           value: 6,
@@ -264,10 +322,10 @@ export default function ResetPasswordPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <div className="relative">
-                    <Input 
-                      {...register("confirmPassword", { 
+                    <Input
+                      {...register("confirmPassword", {
                         required: "Please confirm password",
-                        validate: value => 
+                        validate: value =>
                           value === newPassword || "Passwords don't match"
                       })}
                       id="confirmPassword"
@@ -293,23 +351,30 @@ export default function ResetPasswordPage() {
                   )}
                 </div>
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full bg-green-500 hover:bg-green-600"
                   disabled={loading}
                 >
-                  {loading ? "Resetting..." : "Reset Password"}
+                  {loading ? (
+                    <div className="flex items-center">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Resetting...
+                    </div>
+                  ) : (
+                    "Reset Password"
+                  )}
                 </Button>
               </form>
             )}
           </CardContent>
 
           <CardFooter>
-            <Link 
-              href="/LoginPage" 
+            <Link
+              href="/LoginPage"
               className="text-sm text-center text-green-600 hover:text-green-700 w-full"
             >
-              Back to Login
+              Back to LoginPage
             </Link>
           </CardFooter>
         </Card>

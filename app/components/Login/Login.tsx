@@ -151,8 +151,8 @@ export function Login() {
   function getDefaultRoute(role: string): string {
     const defaultRoutes: Record<string, string> = {
       user: "/",
-      real_estate_developer: "/dashboard",
-      admin: "/admin"
+      real_estate_developer: "/",
+      admin: "/"
     };
 
     return defaultRoutes[role] || "/";

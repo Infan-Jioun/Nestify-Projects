@@ -4,7 +4,6 @@ import { useState, useRef } from "react"
 import { OTPInput, SlotProps } from "input-otp"
 import { MinusIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Label } from "@/components/ui/label"
 
 interface OTPInputProps {
     onComplete: (otp: string) => void;
@@ -12,64 +11,56 @@ interface OTPInputProps {
     disabled?: boolean;
 }
 
-const generateId = () => `otp-${Math.random().toString(36).substr(2, 9)}`;
-
 export default function OTPInputComponent({
     onComplete,
     length = 6,
     disabled = false
 }: OTPInputProps) {
-    const [id] = useState(generateId());
     const [otp, setOtp] = useState("")
     const inputRef = useRef<HTMLInputElement>(null)
 
     const handleChange = (value: string) => {
+        console.log("OTP Input changed:", value);
         setOtp(value)
         if (value.length === length) {
+            console.log(" OTP Complete, calling onComplete:", value);
             onComplete(value)
         }
     }
 
     return (
-        <div className="*:not-first:mt-2 ">
-            <div className="flex justify-center items-center">
-                <Label htmlFor={id} className="text-sm font-medium text-center">
-                    Enter OTP Code
-                </Label>
-            </div>
-            <div className="px-2">
+        <div className="*:not-first:mt-4">
+            <p className="text-sm font-medium mb-3 text-center">Enter OTP Code</p>
 
-                <OTPInput
-                    id={id}
-                    ref={inputRef}
-                    value={otp}
-                    onChange={handleChange}
-                    maxLength={length}
-                    containerClassName="flex justify-center items-center  mt-2 border-green-500 has-[:disabled]:opacity-50"
-                    disabled={disabled}
-                    render={({ slots }) => (
-                        <>
-                            <div className="flex px-1">
-                                {slots.slice(0, 3).map((slot, idx) => (
-                                    <Slot key={idx} {...slot} />
-                                ))}
-                            </div>
+            <OTPInput
+                ref={inputRef}
+                value={otp}
+                onChange={handleChange}
+                maxLength={length}
+                containerClassName="flex justify-center items-center  gap-2 has-[:disabled]:opacity-50"
+                disabled={disabled}
+                render={({ slots }) => (
+                    <>
+                        <div className="flex">
+                            {slots.slice(0, 3).map((slot, idx) => (
+                                <Slot key={idx} {...slot} />
+                            ))}
+                        </div>
 
-                            <div className="text-muted-foreground/80 mx-2">
-                                <MinusIcon size={16} aria-hidden="true" />
-                            </div>
+                        <div className="text-muted-foreground/80 mx-2">
+                            <MinusIcon size={16} aria-hidden="true" />
+                        </div>
 
-                            <div className="flex px-1">
-                                {slots.slice(3).map((slot, idx) => (
-                                    <Slot key={idx} {...slot} />
-                                ))}
-                            </div>
-                        </>
-                    )}
-                />
-            </div>
+                        <div className="flex">
+                            {slots.slice(3).map((slot, idx) => (
+                                <Slot key={idx} {...slot} />
+                            ))}
+                        </div>
+                    </>
+                )}
+            />
 
-            <p className="text-xs text-muted-foreground mt-2 text-center">
+            <p className="text-xs text-center text-muted-foreground mt-2">
                 Enter the 6-digit code sent to your email
             </p>
         </div>
