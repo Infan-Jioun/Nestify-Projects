@@ -21,9 +21,10 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
+import { UserRole } from "@/app/Types/auth"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
-
+  const userRole = session?.user?.role as UserRole
   const data = {
     user: {
       name: session?.user.name ?? "Guest User",
@@ -49,6 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "#",
         icon: User,
         isActive: true,
+        roles: [UserRole.ADMIN],
         items: [
           {
             title: "Users Information",
@@ -61,6 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Properties",
         url: "#",
         icon: Plus,
+        roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER],
         items: [
           {
             title: "Add Property",
@@ -73,6 +76,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Cities",
         url: "#",
         icon: AreaChartIcon,
+        roles: [UserRole.ADMIN],
         items: [
           {
             title: "Add city",
@@ -85,6 +89,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Blog",
         url: "#",
         icon: Plus,
+        roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER],
         items: [
           {
             title: "Add Blog",
