@@ -275,7 +275,7 @@ export function Login() {
             <p className="text-sm text-center text-muted-foreground">
               {"Don't have an account?"}{" "}
               <Link
-                href={"/RegisterPage"}
+                href={"/Authentication"}
                 className="relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded"
               >
                 Sign Up
