@@ -10,7 +10,7 @@ export interface Category {
 }
 
 export interface PropertyType {
-    _id?: string;
+    _id?: string | null;
     title: string;
     category: Category;
     listingStatus: string

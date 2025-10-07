@@ -4,10 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
-
 import { AppDispatch, RootState } from "@/lib/store";
 import { fetchPropertyById } from "@/app/features/Properties/propertySlice";
-import { PropertyType } from "@/app/Types/properties";
 import { toggleBookmark } from "@/app/features/bookmark/bookmarkSlice";
 
 import SkeletonLoader from "./components/SkeletonLoader";

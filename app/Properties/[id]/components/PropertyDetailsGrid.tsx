@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Phone, Mail } from "lucide-react";
 import DetailRow from "./DetailRow";
 import { PropertyDetail } from "../../utils/propertyUtils";
+import BookingModal from "./BookingModal";
 
 interface PropertyDetailsGridProps {
     property: PropertyType;
@@ -74,16 +75,20 @@ const PropertyDetailsGrid = ({ property, propertyDetails, categoryType }: Proper
                         </div>
                     </motion.div>
                 </div>
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                >
-                    <Button className="w-[250px] mx-auto rounded-full mt-10 bg-green-500 hover:bg-green-700 text-white py-2.5">
-                        Booking <span className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeStyles(categoryType)}`}>
-                            {property.category?.name || 'Property'}
-                        </span>
-                    </Button>
-                </motion.button>
+
+                <BookingModal property={property}>
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full"
+                    >
+                        <Button className="w-[250px] mx-auto rounded-full mt-10 bg-green-500 hover:bg-green-700 text-white py-2.5">
+                            Book Visit <span className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeStyles(categoryType)}`}>
+                                {property.category?.name || 'Property'}
+                            </span>
+                        </Button>
+                    </motion.button>
+                </BookingModal>
             </motion.div>
         </motion.div>
     );

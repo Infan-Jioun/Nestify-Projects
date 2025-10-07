@@ -12,6 +12,8 @@ import districtSliceReducer from '../app/features/district/districtSlice'
 import blogSliceReducer from '../app/features/blog/blogSlice'
 import searchSliceReducer from '../app/features/search/searchSlice';
 import bookmarkReducer from '../app/features/bookmark/bookmarkSlice';
+import bookingReducer from '../app/features/booking/bookingSlice';
+
 
 export const store = configureStore({
     reducer: {
@@ -31,7 +33,8 @@ export const store = configureStore({
         district: districtSliceReducer,
         search: searchSliceReducer,
         bookmarks: bookmarkReducer,
-
+        booking: bookingReducer,
+        // users: userReduceruserA
 
     },
 
