@@ -1,21 +1,15 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-
 import Booking from '@/app/models/Booking';
 import connectToDatabase from '@/lib/mongodb';
 import { authOptions } from '@/lib/auth-options';
 
-
 export async function POST(request: NextRequest) {
     try {
-
         await connectToDatabase();
 
-        // Get server session using your authOptions
         const session = await getServerSession(authOptions);
 
-        // Check if user is authenticated
         if (!session?.user) {
             return NextResponse.json(
                 { error: 'Unauthorized. Please log in to book a property.' },
@@ -25,7 +19,6 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        // Validate required fields
         const requiredFields = ['propertyId', 'name', 'email', 'mobile', 'date', 'time'];
         const missingFields = requiredFields.filter(field => !body[field]);
 
@@ -36,7 +29,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(body.email)) {
             return NextResponse.json(
@@ -44,7 +36,6 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
-
 
         const mobileRegex = /^[0-9+\-\s()]{10,}$/;
         if (!mobileRegex.test(body.mobile)) {
@@ -54,7 +45,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validate date (should not be in the past)
         const selectedDate = new Date(body.date);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -66,7 +56,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Verify that the logged in user matches the booking email
         if (session.user.email !== body.email) {
             return NextResponse.json(
                 { error: 'Email does not match logged in user' },
@@ -74,7 +63,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Create booking in MongoDB
         const booking = await Booking.create({
             propertyId: body.propertyId,
             userId: session.user.id!,
@@ -89,7 +77,10 @@ export async function POST(request: NextRequest) {
                 address: body.propertyAddress,
                 price: body.propertyPrice,
                 currency: body.propertyCurrency,
-                images: body.propertyImages || []
+                images: body.propertyImages || [],
+                status: body.propertyStatus,
+                listingStatus: body.propertyListingStatus,
+                contact: body.propertyContact,
             },
             status: 'pending'
         });
@@ -114,8 +105,11 @@ export async function POST(request: NextRequest) {
             }
         }, { status: 201 });
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Booking API error:', error);
+
+
+
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }
@@ -123,13 +117,10 @@ export async function POST(request: NextRequest) {
     }
 }
 
-
 export async function GET(request: NextRequest) {
     try {
-        // Connect to MongoDB first
         await connectToDatabase();
 
-        // Get server session
         const session = await getServerSession(authOptions);
 
         if (!session?.user) {
@@ -140,15 +131,29 @@ export async function GET(request: NextRequest) {
         }
 
         const { searchParams } = new URL(request.url);
-
+        const limit = parseInt(searchParams.get('limit') || '10');
+        const page = parseInt(searchParams.get('page') || '1');
 
         const userBookings = await Booking.find({
             userId: session.user.id
-        }).sort({ createdAt: -1 });
+        })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip((page - 1) * limit);
+
+        const totalBookings = await Booking.countDocuments({
+            userId: session.user.id
+        });
 
         return NextResponse.json({
             success: true,
             bookings: userBookings,
+            pagination: {
+                page,
+                limit,
+                total: totalBookings,
+                pages: Math.ceil(totalBookings / limit)
+            },
             userInfo: {
                 id: session.user.id,
                 email: session.user.email,

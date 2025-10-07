@@ -12,7 +12,7 @@ interface BookingFormData {
 interface BookingState {
     formData: BookingFormData;
     isAutoFilled: boolean;
-    recentBookings: string[]; // property IDs
+    recentBookings: string[];
 }
 
 const initialState: BookingState = {

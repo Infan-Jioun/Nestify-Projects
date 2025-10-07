@@ -28,7 +28,6 @@ import {
     Clock,
     User,
     Mail,
-
     MapPin,
     Home,
     Loader2,
@@ -61,7 +60,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
         (state: RootState) => state.booking
     );
 
-    //  Session from NextAuth
+    // Session from NextAuth
     const { data: session } = useSession();
     const currentUser = session?.user;
 
@@ -75,16 +74,15 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
         }
     }, [isOpen, dispatch]);
 
-
     useEffect(() => {
         if (isOpen && currentUser && !isAutoFilled) {
             const autoFillData = {
                 name: currentUser.name || "",
                 email: currentUser.email || "",
-                // mobile: "",
-                // date: "",
-                // time: "",
-                message: `Hello, I'm interested in viewing "${property.title}" located at ${property.address}. Please contact me to schedule a visit.`,
+                mobile: "",
+                date: "",
+                time: "",
+                message: `Hello, I'm interested in viewing "${property.title}" located at ${property.address}. Please contact me to schedule a visit.` ,
             };
             dispatch(setBookingFormData(autoFillData));
         }
@@ -120,16 +118,27 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     propertyId: property._id,
-                    userEmail: currentUser.email,
-                    ...formData,
+                    name: formData.name,
+                    email: formData.email,
+                    mobile: formData.mobile,
+                    date: formData.date,
+                    time: formData.time,
+                    message: formData.message,
                     propertyTitle: property.title,
                     propertyAddress: property.address,
                     propertyPrice: property.price,
                     propertyCurrency: property.currency,
+                    propertyImages: property.images || [],
+                    propertyStatus: property.status,
+                    propertyListingStatus: property.listingStatus,
+                    propertyContact: property.contactNumber,
                 }),
             });
 
-            if (!response.ok) throw new Error("Failed to submit booking");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit booking");
+            }
 
             const result = await response.json();
             console.log("Booking submitted successfully:", result);
@@ -141,7 +150,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
             toast.success("Booking request submitted successfully! We'll contact you within 24 hours.");
         } catch (error) {
             console.error("Booking failed:", error);
-            toast.error(" Failed to submit booking. Please try again or contact us directly.");
+        
         } finally {
             setIsLoading(false);
         }
@@ -164,9 +173,9 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
     };
 
     const timeSlots = [
-        "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "14:00", "14:30", "15:00", "15:30",
-        "16:00",
-        "16:30",
+        "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", 
+        "12:00", "12:30", "14:00", "14:30", "15:00", "15:30",
+        "16:00", "16:30",
     ];
 
     const getInitials = (name: string) =>
@@ -268,7 +277,6 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
         );
     }
 
-
     // Show Booking Form if user is logged in OR we haven't checked user status yet
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -350,12 +358,12 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                             {currentUser.image ? (
                                 <img
                                     src={currentUser.image}
-                                    alt={currentUser.name}
+                                    alt={currentUser.name || 'User'}
                                     className="w-8 h-8 rounded-full"
                                 />
                             ) : (
                                 <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-medium">
-                                    {getInitials(currentUser.name)}
+                                    {getInitials(currentUser.name || 'User')}
                                 </div>
                             )}
                             <div className="flex-1 min-w-0">
@@ -393,7 +401,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                             />
                         </div>
 
-                        {/* mobile Field */}
+                        {/* Mobile Field */}
                         <div className="space-y-2">
                             <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">
                                 Phone *
@@ -405,7 +413,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                                 value={formData.mobile}
                                 onChange={handleInputChange}
                                 required
-                                placeholder="mobile number"
+                                placeholder="Phone number"
                                 className="focus:ring-green-500 focus:border-green-500"
                             />
                         </div>
