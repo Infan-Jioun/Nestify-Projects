@@ -1,59 +1,33 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useSession } from "next-auth/react";
-import toast from "react-hot-toast";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { X } from "lucide-react";
-import { PropertyType } from "@/app/Types/properties";
-import {
-    setBookingFormData,
-    updateBookingFormField,
-    resetBookingForm,
-    clearAutoFill,
-    addRecentBooking,
-} from "@/app/features/booking/bookingSlice";
-import { AppDispatch, RootState } from "@/lib/store";
-
-import BookingLoginPrompt from "./BookingLoginPrompt";
 import BookingHeader from "./BookingHeader";
-import BookingForm from "./BookingForm";
 import PropertySummary from "./PropertySummary";
-import UserBadge from "./UserBadge";
-
-interface BookingModalProps {
-    property: PropertyType;
-    children: React.ReactNode;
-}
+import UserInfoBadge from "./UserInfoBadge";
+import BookingForm from "./BookingForm";
+import LoginPrompt from "./LoginPrompt";
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import { BookingModalProps, FormDataType } from "@/app/Types/Booking";
 
 const BookingModal = ({ property, children }: BookingModalProps) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [hasCheckedUser, setHasCheckedUser] = useState(false);
-
-    const dispatch = useDispatch<AppDispatch>();
-    const { formData, isAutoFilled } = useSelector(
-        (state: RootState) => state.booking
-    );
     const { data: session } = useSession();
     const currentUser = session?.user;
+    const [open, setOpen] = useState(false);
+    const [hasCheckedUser, setHasCheckedUser] = useState(false);
+    const [formData, setFormData] = useState<FormDataType>({
+        name: "",
+        email: "",
+        mobile: "",
+        date: "",
+        time: "",
+        message: "",
+    });
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Reset form when modal closes
+    // Auto-fill form when modal opens and user is logged in
     useEffect(() => {
-        if (!isOpen) {
-            setHasCheckedUser(false);
-            setTimeout(() => {
-                dispatch(resetBookingForm());
-            }, 300);
-        }
-    }, [isOpen, dispatch]);
-
-    // Auto-fill user data
-    useEffect(() => {
-        if (isOpen && currentUser && !isAutoFilled) {
+        if (open && currentUser) {
             const autoFillData = {
                 name: currentUser.name || "",
                 email: currentUser.email || "",
@@ -62,67 +36,171 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                 time: "",
                 message: `Hello, I'm interested in viewing "${property.title}" located at ${property.address}. Please contact me to schedule a visit.`,
             };
-            dispatch(setBookingFormData(autoFillData));
+            setFormData(autoFillData);
         }
-    }, [isOpen, currentUser, dispatch, property, isAutoFilled]);
+    }, [open, currentUser, property]);
 
-    const handleOpenChange = (open: boolean) => {
-        setIsOpen(open);
-        if (!open) setHasCheckedUser(false);
+    // Reset form when modal closes
+    useEffect(() => {
+        if (!open) {
+            setHasCheckedUser(false);
+            setTimeout(() => {
+                setFormData({
+                    name: "",
+                    email: "",
+                    mobile: "",
+                    date: "",
+                    time: "",
+                    message: "",
+                });
+            }, 300);
+        }
+    }, [open]);
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // If not logged in → show login prompt
+    const handleSelectChange = (field: keyof FormDataType, value: string) => {
+        setFormData({ ...formData, [field]: value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Check if user is logged in
+        if (!currentUser) {
+            setHasCheckedUser(true);
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("/api/bookings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    // User form data
+                    name: formData.name,
+                    email: formData.email,
+                    mobile: formData.mobile,
+                    date: formData.date,
+                    time: formData.time,
+                    message: formData.message,
+
+                    // Property data
+                    propertyId: property._id,
+                    propertyTitle: property.title,
+                    propertyAddress: property.address,
+                    propertyPrice: property.price,
+                    propertyEmail: property.email || "info@property.com",
+                    propertyCurrency: property.currency,
+                    propertyImages: property.images || [],
+                    propertyStatus: property.status,
+                    propertyListingStatus: property.listingStatus,
+                    propertyContact: property.contactNumber,
+
+                    // User info from session
+                    userId: currentUser.id,
+                    userImage: currentUser.image,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit booking");
+            }
+
+            const result = await response.json();
+            console.log("Booking submitted successfully:", result);
+
+            // Reset form and close modal
+            setFormData({
+                name: "",
+                email: "",
+                mobile: "",
+                date: "",
+                time: "",
+                message: "",
+            });
+            setOpen(false);
+
+            toast.success("Booking request submitted successfully! We'll contact you within 24 hours.");
+        } catch (error: unknown) {
+            console.error("Booking failed:", error);
+            if (error instanceof Error) {
+                toast.error(error.message || "Failed to submit booking. Please try again or contact us directly.");
+            } else {
+                toast.error("Failed to submit booking. Please try again or contact us directly.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleLoginRedirect = () => {
+        window.location.href = "/LoginPage?redirect=" + encodeURIComponent(window.location.pathname);
+        setOpen(false);
+    };
+
+    const handleCloseLoginPrompt = () => {
+        setHasCheckedUser(false);
+        setOpen(false);
+    };
+
+    const isAutoFilled = !!currentUser?.name && !!currentUser?.email && formData.name === currentUser.name;
+
+    // Show login prompt if user is not logged in and has tried to submit
     if (!currentUser && hasCheckedUser) {
         return (
-            <BookingLoginPrompt
-                property={property}
-                isOpen={isOpen}
-                onOpenChange={handleOpenChange}
-                onClose={() => setIsOpen(false)}
-                onLoginRedirect={() => {
-                    window.location.href =
-                        "/LoginPage?redirect=" + encodeURIComponent(window.location.pathname);
-                    setIsOpen(false);
-                }}
-                onMaybeLater={() => {
-                    setHasCheckedUser(false);
-                    setIsOpen(false);
-                }}
-            >
-                {children}
-            </BookingLoginPrompt>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>{children}</DialogTrigger>
+                <DialogContent className="max-w-lg w-[95vw] max-h-[95vh] overflow-y-auto rounded-2xl p-0 border-0">
+                    {/* Scrollable container for mobile */}
+                    <div className="h-full overflow-y-auto">
+                        <LoginPrompt
+                            property={property}
+                            onLoginRedirect={handleLoginRedirect}
+                            onClose={handleCloseLoginPrompt}
+                        />
+                    </div>
+                </DialogContent>
+            </Dialog>
         );
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
 
-            <DialogContent className="sm:max-w-[500px] w-[95vw] max-h-[90vh] overflow-y-auto p-0 gap-0 border-0">
-                {/* Mobile Close Button */}
-                <div className="sm:hidden absolute top-4 right-4 z-50">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setIsOpen(false)}
-                        className="h-8 w-8 rounded-full bg-black/20 text-white hover:bg-black/30"
-                    >
-                        <X className="h-4 w-4" />
-                    </Button>
-                </div>
+            <DialogContent className="max-w-lg w-[95vw] max-h-[95vh] overflow-y-auto rounded-2xl p-0 border-0">
+                {/* Scrollable container for mobile */}
+                <div className="h-full overflow-y-auto">
+                    <BookingHeader
+                        isAutoFilled={isAutoFilled}
+                        currentUser={currentUser}
+                    />
+                    <PropertySummary property={property} />
 
-                <BookingHeader currentUser={currentUser} isAutoFilled={isAutoFilled} />
-                <PropertySummary property={property} />
-                {currentUser && <UserBadge currentUser={currentUser} />}
-                <BookingForm
-                    formData={formData}
-                    property={property}
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                    currentUser={currentUser}
-                    dispatch={dispatch}
-                    setHasCheckedUser={setHasCheckedUser}
-                />
+                    {currentUser && (
+                        <UserInfoBadge currentUser={currentUser} />
+                    )}
+
+                    <BookingForm
+                        formData={formData}
+                        handleInputChange={handleInputChange}
+                        handleSelectChange={handleSelectChange}
+                        handleSubmit={handleSubmit}
+                        isLoading={isLoading}
+                        currentUser={currentUser}
+                        property={property}
+                    />
+                </div>
             </DialogContent>
         </Dialog>
     );
