@@ -1,3 +1,4 @@
+
 export interface CategoryField {
     id: string;
     name: string;
@@ -10,10 +11,10 @@ export interface Category {
 }
 
 export interface PropertyType {
-    _id?: string | null;
+    _id?: string ;
     title: string;
     category: Category;
-    listingStatus: string
+    listingStatus: string;
     price: number;
     currency: string;
     propertySize: number;
@@ -47,7 +48,6 @@ export interface PropertyType {
     createdAt?: string;
     updatedAt?: string;
     isFavorite?: boolean;
-    districtName?: string
-
+    districtName?: string;
 }
 

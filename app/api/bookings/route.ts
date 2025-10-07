@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
 
         console.log(' Booking created successfully:', {
             id: booking._id,
-            propertyEmail: booking.propertyDetails.email
+            propertyEmail: booking.propertyDetails.email 
         });
 
         return NextResponse.json({
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
                 bookingDate: booking.bookingDate,
                 bookingTime: booking.bookingTime,
                 status: booking.status,
-                propertyDetails: booking.propertyDetails
+                propertyDetails: booking.propertyDetails 
             },
             user: {
                 id: session.user.id,

@@ -16,7 +16,7 @@ const initialState: PropertyState = {
   error: null,
 };
 
-//  Fetch all properties
+// Fetch all properties
 export const fetchProperties = createAsyncThunk<
   PropertyType[],
   void,
@@ -27,11 +27,11 @@ export const fetchProperties = createAsyncThunk<
     return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to fetch properties");
+    return rejectWithValue(error.response?.data?.message || "Failed to load properties");
   }
 });
 
-//  Fetch properties by category
+// Fetch properties by category
 export const fetchPropertiesByCategory = createAsyncThunk<
   PropertyType[],
   string,
@@ -39,15 +39,17 @@ export const fetchPropertiesByCategory = createAsyncThunk<
 >("properties/fetchByCategory", async (categoryName, { rejectWithValue }) => {
   try {
     const encodedCategoryName = encodeURIComponent(categoryName);
-    const response = await axios.get<PropertyType[]>(`/api/properties/category/${encodedCategoryName}`);
+    const response = await axios.get<PropertyType[]>(
+      `/api/properties/category/${encodedCategoryName}`
+    );
     return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to fetch properties by category");
+    return rejectWithValue(error.response?.data?.message || "Failed to load properties by category");
   }
 });
 
-//  Fetch single property by ID
+// Fetch a single property by ID
 export const fetchPropertyById = createAsyncThunk<
   PropertyType,
   string,
@@ -58,11 +60,28 @@ export const fetchPropertyById = createAsyncThunk<
     return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to fetch property");
+    return rejectWithValue(error.response?.data?.message || "Failed to load property details");
   }
 });
 
-//  Add a property
+// Update property status (e.g., mark as "Sold" after booking)
+export const updatePropertyStatus = createAsyncThunk<
+  PropertyType,
+  { propertyId: string; status: "Available" | "Rented" | "Sold" | "Pending" },
+  { rejectValue: string }
+>("properties/updateStatus", async ({ propertyId, status }, { rejectWithValue }) => {
+  try {
+    const response = await axios.put<PropertyType>(`/api/properties/${propertyId}`, {
+      status
+    });
+    return response.data;
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ message: string }>;
+    return rejectWithValue(error.response?.data?.message || "Failed to update property status");
+  }
+});
+
+// Add a new property
 export const addProperty = createAsyncThunk<
   PropertyType,
   Omit<PropertyType, '_id'>,
@@ -77,7 +96,7 @@ export const addProperty = createAsyncThunk<
   }
 });
 
-//  Delete a property
+// Delete a property
 export const deleteProperty = createAsyncThunk<
   string,
   string,
@@ -96,20 +115,44 @@ const propertySlice = createSlice({
   name: "properties",
   initialState,
   reducers: {
+    // Clear current property
     clearCurrentProperty: (state) => {
       state.currentProperty = null;
     },
+
+    // Clear errors
     clearError: (state) => {
       state.error = null;
     },
+
+    // Toggle favorite
     toggleFavorite: (state, action: PayloadAction<string>) => {
       const property = state.properties.find(p => p._id === action.payload);
-      if (property) {
-        property.isFavorite = !property.isFavorite;
+      if (property) property.isFavorite = !property.isFavorite;
+
+      if (state.currentProperty && state.currentProperty._id === action.payload) {
+        state.currentProperty.isFavorite = !state.currentProperty.isFavorite;
       }
     },
+
+    // Clear all properties
     clearProperties: (state) => {
       state.properties = [];
+    },
+
+    // Update property status locally
+    updatePropertyStatusLocal: (
+      state,
+      action: PayloadAction<{ propertyId: string; status: "Available" | "Rented" | "Sold" | "Pending" }>
+    ) => {
+      const { propertyId, status } = action.payload;
+
+      const index = state.properties.findIndex(p => p._id === propertyId);
+      if (index !== -1) state.properties[index].status = status;
+
+      if (state.currentProperty && state.currentProperty._id === propertyId) {
+        state.currentProperty.status = status;
+      }
     }
   },
   extraReducers: (builder) => {
@@ -125,10 +168,10 @@ const propertySlice = createSlice({
       })
       .addCase(fetchProperties.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to fetch properties";
+        state.error = action.payload || "Failed to load properties";
       })
 
-      // Fetch properties by category
+      // Fetch by category
       .addCase(fetchPropertiesByCategory.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -139,10 +182,10 @@ const propertySlice = createSlice({
       })
       .addCase(fetchPropertiesByCategory.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to fetch properties by category";
+        state.error = action.payload || "Failed to load properties by category";
       })
 
-      // Fetch property by ID
+      // Fetch single property
       .addCase(fetchPropertyById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -153,7 +196,27 @@ const propertySlice = createSlice({
       })
       .addCase(fetchPropertyById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to fetch property";
+        state.error = action.payload || "Failed to load property details";
+      })
+
+      // Update property status
+      .addCase(updatePropertyStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updatePropertyStatus.fulfilled, (state, action) => {
+        state.loading = false;
+
+        const updatedProperty = action.payload;
+        const index = state.properties.findIndex(p => p._id === updatedProperty._id);
+        if (index !== -1) state.properties[index] = updatedProperty;
+
+        if (state.currentProperty && state.currentProperty._id === updatedProperty._id) {
+          state.currentProperty = updatedProperty;
+        }
+      })
+      .addCase(updatePropertyStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update property status";
       })
 
       // Add property
@@ -178,6 +241,10 @@ const propertySlice = createSlice({
       .addCase(deleteProperty.fulfilled, (state, action) => {
         state.loading = false;
         state.properties = state.properties.filter(p => p._id !== action.payload);
+
+        if (state.currentProperty && state.currentProperty._id === action.payload) {
+          state.currentProperty = null;
+        }
       })
       .addCase(deleteProperty.rejected, (state, action) => {
         state.loading = false;
@@ -190,7 +257,8 @@ export const {
   clearCurrentProperty,
   clearError,
   toggleFavorite,
-  clearProperties
+  clearProperties,
+  updatePropertyStatusLocal
 } = propertySlice.actions;
 
 export default propertySlice.reducer;

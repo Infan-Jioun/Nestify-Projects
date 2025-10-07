@@ -7,7 +7,7 @@ import Link from "next/link";
 
 interface LoginPromptProps {
     property: {
-        _id?: string;
+        _id?: string | null; 
         title: string;
         address: string;
         price: number;
@@ -21,7 +21,6 @@ interface LoginPromptProps {
     onLoginRedirect: () => void;
     onClose: () => void;
 }
-
 const LoginPrompt: React.FC<LoginPromptProps> = () => {
     return (
         <motion.div
