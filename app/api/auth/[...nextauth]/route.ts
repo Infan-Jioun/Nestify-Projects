@@ -49,12 +49,20 @@ const authOptions: NextAuthOptions = {
             email: userDoc.email,
             image: userDoc.image || null,
             role: userDoc.role || UserRole.USER,
+            bio: userDoc.bio || null,
+            location: userDoc.location || null,
+            website: userDoc.website || null,
+            mobile: userDoc.mobile || null,
+            slug: userDoc.slug || null,
+            provider: userDoc.provider || null,
+            createdAt: userDoc.createdAt?.toISOString?.() || undefined,
           };
         } catch (error) {
           console.error("Authorization error:", error);
           return null;
         }
       },
+
     }),
 
     GoogleProvider({
@@ -71,7 +79,7 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
-       
+
         if (!account || account.provider === "credentials") {
           return true;
         }
@@ -114,7 +122,7 @@ const authOptions: NextAuthOptions = {
             await UserModel.updateOne({ _id: existingUser._id }, { $set: updates });
           }
         }
-       
+
         return true;
       } catch (error) {
         console.error("SignIn callback error:", error);
@@ -124,7 +132,7 @@ const authOptions: NextAuthOptions = {
 
     async jwt({ token, user, account }) {
       try {
-      
+
         if (user) {
           token.id = user.id;
           token.role = user.role || UserRole.USER;
