@@ -174,7 +174,7 @@ const BookingForm = ({
             {/* Additional Info */}
             <div className="text-center space-y-2 pt-2">
                 <p className="text-xs text-gray-500 px-2">
-                    We'll confirm your appointment via email and SMS within 24 hours
+                    {"We'll confirm your appointment via email and SMS within 24 hours"}
                 </p>
                 {currentUser ? (
                     <div className="flex items-center justify-center gap-2 text-xs">
