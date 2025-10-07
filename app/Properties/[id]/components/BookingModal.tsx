@@ -74,13 +74,13 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
         }
     }, [isOpen, dispatch]);
 
-    // Auto-fill form when modal opens for logged in users
+   
     useEffect(() => {
         if (isOpen && currentUser && !isAutoFilled) {
             const autoFillData = {
                 name: currentUser.name || "",
                 email: currentUser.email || "",
-                phone: (currentUser as any).mobile || "",
+                phone: currentUser?.mobile || "",
                 date: "",
                 time: "",
                 message: `Hello, I'm interested in viewing "${property.title}" located at ${property.address}. Please contact me to schedule a visit.`,
@@ -163,18 +163,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
     };
 
     const timeSlots = [
-        "09:00",
-        "09:30",
-        "10:00",
-        "10:30",
-        "11:00",
-        "11:30",
-        "12:00",
-        "12:30",
-        "14:00",
-        "14:30",
-        "15:00",
-        "15:30",
+        "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "14:00", "14:30", "15:00", "15:30",
         "16:00",
         "16:30",
     ];
@@ -213,7 +202,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                                 Login to Book This Property
                             </h3>
                             <p className="text-gray-600 text-sm">
-                                You need to be logged in to schedule property viewings and manage your appointments.
+                                {"You need to be logged in to schedule property viewings and manage your appointments."}
                             </p>
                         </div>
 
@@ -310,7 +299,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="flex items-center gap-2 mt-3 text-green-200 text-xs bg-white/10 p-2 rounded-lg"
                             >
-                                <span>✅ Form auto-filled with your profile</span>
+                                <span> Form auto-filled with your profile</span>
                             </motion.div>
                         )}
                     </div>
@@ -523,7 +512,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                     {/* Additional Info */}
                     <div className="text-center space-y-2">
                         <p className="text-xs text-gray-500">
-                            We'll confirm your appointment via email and SMS within 24 hours
+                            {"We'll confirm your appointment via email and SMS within 24 hours"}
                         </p>
                         {currentUser ? (
                             <div className="flex items-center justify-center gap-2 text-xs">

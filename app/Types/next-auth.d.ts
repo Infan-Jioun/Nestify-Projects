@@ -10,6 +10,7 @@ declare module "next-auth" {
       name: string
       role: UserRole
       image?: string | null
+      mobile: string
     }
   }
 
@@ -19,6 +20,7 @@ declare module "next-auth" {
     name: string
     role: UserRole
     image?: string | null
+    mobile: string
   }
 }
 
