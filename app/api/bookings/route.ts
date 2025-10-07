@@ -1,10 +1,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
 
 import Booking from '@/app/models/Booking';
 import connectToDatabase from '@/lib/mongodb';
+import { authOptions } from '@/lib/auth-options';
 
 
 export async function POST(request: NextRequest) {
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        
+
         const mobileRegex = /^[0-9+\-\s()]{10,}$/;
         if (!mobileRegex.test(body.mobile)) {
             return NextResponse.json(
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     }
 }
 
-// GET endpoint to fetch user's bookings
+
 export async function GET(request: NextRequest) {
     try {
         // Connect to MongoDB first
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url);
 
-        // Fetch bookings from MongoDB
+
         const userBookings = await Booking.find({
             userId: session.user.id
         }).sort({ createdAt: -1 });
