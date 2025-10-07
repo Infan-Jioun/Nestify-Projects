@@ -60,7 +60,7 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
         (state: RootState) => state.booking
     );
 
-    // ✅ Session from NextAuth
+    //  Session from NextAuth
     const { data: session } = useSession();
     const currentUser = session?.user;
 
