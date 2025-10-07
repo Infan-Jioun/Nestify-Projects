@@ -1,38 +1,41 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
 import { PropertyType } from "@/app/Types/properties";
 import { Button } from "@/components/ui/button";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteProperty } from "../../features/Properties/propertySlice";
-import { toggleBookmark } from "../../features/bookmark/bookmarkSlice"; 
-import { AppDispatch, RootState } from "@/lib/store"; 
-import DeleteConfirmation from "./DeletedConfirmation";
-import Skeleton from "react-loading-skeleton";
+
 import { FaBookmark, FaInfoCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
-import Carousal from "../Carousal/Carousal";
+
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { deleteProperty } from "@/app/features/Properties/propertySlice";
+import { toggleBookmark } from "@/app/features/bookmark/bookmarkSlice";
+import DeleteConfirmation from "./DeletedConfirmation";
+import Carousal from "../Carousal/Carousal";
 
-type PropertyCardProps = {
+interface PropertyCardProps {
   property: PropertyType;
   isLoading?: boolean;
   isError?: boolean;
   viewMode?: "grid" | "list";
-};
+  showDeveloperInfo?: boolean;
+}
 
 export default function PropertyCard({
   property,
   isLoading,
   isError,
   viewMode = "grid",
+  showDeveloperInfo = true,
 }: PropertyCardProps) {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Get bookmarked properties from Redux store
-  const bookmarkedProperties = useSelector((state: RootState) => state.bookmarks.bookmarkedProperties);
+  const bookmarkedProperties = useAppSelector((state) => state.bookmarks.bookmarkedProperties);
 
   // Check if current property is bookmarked
   const isBookmarked = useMemo(() =>
@@ -58,15 +61,16 @@ export default function PropertyCard({
         viewMode === "list" && "flex"
       )}>
         {viewMode === "list" && (
-          <Skeleton width={300} height={200} className="flex-shrink-0" />
+          <div className="w-64 h-48 bg-gray-200 flex-shrink-0" />
         )}
         <div className="p-4 flex-1">
           {viewMode === "grid" && (
-            <Skeleton height={180} className="mb-4 rounded-lg" />
+            <div className="h-48 bg-gray-200 mb-4 rounded-lg" />
           )}
-          <Skeleton width={`60%`} height={20} className="mb-2" />
-          <Skeleton width={`40%`} height={15} className="mb-3" />
-          <Skeleton count={2} />
+          <div className="h-5 bg-gray-200 mb-2 w-3/4 rounded" />
+          <div className="h-4 bg-gray-200 mb-3 w-1/2 rounded" />
+          <div className="h-3 bg-gray-200 mb-2 rounded" />
+          <div className="h-3 bg-gray-200 w-2/3 rounded" />
         </div>
       </div>
     );
@@ -74,7 +78,9 @@ export default function PropertyCard({
 
   if (isError) {
     return (
-      <p className="text-center text-red-500 py-6">Failed to load property</p>
+      <div className="border rounded-2xl shadow-md p-6 text-center text-red-500 bg-white">
+        Failed to load property
+      </div>
     );
   }
 
@@ -90,7 +96,7 @@ export default function PropertyCard({
       <div className="p-4 relative">
         {/* Price */}
         <p className="absolute top-3 right-3 bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-lg shadow">
-          {property.price.toLocaleString()} {property.currency}
+          {property.price?.toLocaleString()} {property.currency}
         </p>
 
         {/* Title & Address */}
@@ -141,33 +147,42 @@ export default function PropertyCard({
         {/* Status */}
         <div className="flex gap-2">
           <p
-            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
-                ? "bg-red-100 text-red-600"
-                : property.listingStatus === "Sale"
-                  ? "bg-red-100 text-green-600"
-                  : "bg-yellow-100 text-yellow-600"
-              }`}
+            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
+              property.listingStatus === "Sale" 
+                ? "bg-red-100 text-red-600" 
+                : "bg-yellow-100 text-yellow-600"
+            }`}
           >
             {property.listingStatus}
           </p>
           <p
-            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
+            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
+              property.status === "Available"
                 ? "bg-green-100 text-green-600"
                 : property.status === "Sold"
-                  ? "bg-red-100 text-red-600"
-                  : "bg-yellow-100 text-yellow-600"
-              }`}
+                ? "bg-red-100 text-red-600"
+                : "bg-yellow-100 text-yellow-600"
+            }`}
           >
             {property.status}
           </p>
         </div>
 
+        {/* Developer Info (Optional) */}
+        {showDeveloperInfo && property.ownerId && (
+          <div className="pt-3 border-t border-gray-200 mt-3">
+            <p className="text-xs text-gray-500">
+              Listed by Developer
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-3 mt-4">
-          <Link href={`/Properties/${property._id}`}>
+          <Link href={`/properties/${property._id}`} className="flex-1">
             <Button
               variant="outline"
-              className="flex-1 flex items-center justify-center gap-2"
+              className="w-full flex items-center justify-center gap-2"
             >
               <FaInfoCircle /> Details
             </Button>

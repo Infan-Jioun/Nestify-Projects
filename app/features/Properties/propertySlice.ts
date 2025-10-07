@@ -1,3 +1,4 @@
+// lib/slices/propertySlice.ts
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import { PropertyType } from "@/app/Types/properties";
@@ -64,17 +65,17 @@ export const fetchPropertyById = createAsyncThunk<
   }
 });
 
-// Update property status (e.g., mark as "Sold" after booking)
+// Update property status
 export const updatePropertyStatus = createAsyncThunk<
   PropertyType,
   { propertyId: string; status: "Available" | "Rented" | "Sold" | "Pending" },
   { rejectValue: string }
 >("properties/updateStatus", async ({ propertyId, status }, { rejectWithValue }) => {
   try {
-    const response = await axios.put<PropertyType>(`/api/properties/${propertyId}`, {
+    const response = await axios.put<{ property: PropertyType }>(`/api/properties/${propertyId}`, {
       status
     });
-    return response.data;
+    return response.data.property;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(error.response?.data?.message || "Failed to update property status");
@@ -111,21 +112,33 @@ export const deleteProperty = createAsyncThunk<
   }
 });
 
+// Fetch properties by developer
+export const fetchPropertiesByDeveloper = createAsyncThunk<
+  PropertyType[],
+  string,
+  { rejectValue: string }
+>("properties/fetchByDeveloper", async (userId, { rejectWithValue }) => {
+  try {
+    const response = await axios.get<{ properties: PropertyType[] }>(
+      `/api/properties/developer/${userId}`
+    );
+    return response.data.properties;
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ message: string }>;
+    return rejectWithValue(error.response?.data?.message || "Failed to load developer properties");
+  }
+});
+
 const propertySlice = createSlice({
   name: "properties",
   initialState,
   reducers: {
-    // Clear current property
     clearCurrentProperty: (state) => {
       state.currentProperty = null;
     },
-
-    // Clear errors
     clearError: (state) => {
       state.error = null;
     },
-
-    // Toggle favorite
     toggleFavorite: (state, action: PayloadAction<string>) => {
       const property = state.properties.find(p => p._id === action.payload);
       if (property) property.isFavorite = !property.isFavorite;
@@ -134,13 +147,9 @@ const propertySlice = createSlice({
         state.currentProperty.isFavorite = !state.currentProperty.isFavorite;
       }
     },
-
-    // Clear all properties
     clearProperties: (state) => {
       state.properties = [];
     },
-
-    // Update property status locally
     updatePropertyStatusLocal: (
       state,
       action: PayloadAction<{ propertyId: string; status: "Available" | "Rented" | "Sold" | "Pending" }>
@@ -249,6 +258,20 @@ const propertySlice = createSlice({
       .addCase(deleteProperty.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to delete property";
+      })
+
+      // Fetch by developer
+      .addCase(fetchPropertiesByDeveloper.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPropertiesByDeveloper.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties = action.payload;
+      })
+      .addCase(fetchPropertiesByDeveloper.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to load developer properties";
       });
   },
 });

@@ -13,6 +13,7 @@ import blogSliceReducer from '../app/features/blog/blogSlice'
 import searchSliceReducer from '../app/features/search/searchSlice';
 import bookmarkReducer from '../app/features/bookmark/bookmarkSlice';
 import bookingReducer from '../app/features/booking/bookingSlice';
+import developerReducer from '../app/features/developer/developerSlice';
 
 
 export const store = configureStore({
@@ -23,6 +24,7 @@ export const store = configureStore({
         loader: loaderReducer,
         skeleton: skeletionReducer,
         blog: blogSliceReducer,
+        developer: developerReducer,
         // Property Reducer
         properties: propertiesReducer,
         propertyCategory: propertyCategoryReducer,
