@@ -144,7 +144,7 @@ const UserBookings = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">No Bookings Yet</h3>
                 <p className="text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed">
-                    You haven't scheduled any property viewings yet. Start exploring our premium properties and book your first viewing experience.
+                    {"You haven't scheduled any property viewings yet. Start exploring our premium properties and book your first viewing experience."}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/25">
@@ -166,7 +166,7 @@ const UserBookings = () => {
                     <Loader2 className="h-8 w-8 animate-spin text-green-600" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">Loading Your Bookings</h3>
-                <p className="text-gray-600">We're preparing your property viewing schedule...</p>
+                <p className="text-gray-600">{"We're preparing your property viewing schedule..."}</p>
             </CardContent>
         </Card>
     );
@@ -376,7 +376,7 @@ const UserBookings = () => {
                     </div>
                     <div>
                         <div className="text-lg font-bold">Recently Viewed</div>
-                        <CardDescription>Properties you've shown interest in</CardDescription>
+                        <CardDescription>{"Properties you've shown interest in"}</CardDescription>
                     </div>
                 </CardTitle>
             </CardHeader>
