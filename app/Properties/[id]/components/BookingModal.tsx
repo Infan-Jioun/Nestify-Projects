@@ -28,7 +28,7 @@ import {
     Clock,
     User,
     Mail,
-  
+
     MapPin,
     Home,
     Loader2,
@@ -44,6 +44,7 @@ import {
     addRecentBooking,
 } from "@/app/features/booking/bookingSlice";
 import { AppDispatch, RootState } from "@/lib/store";
+import toast from "react-hot-toast";
 
 interface BookingModalProps {
     property: PropertyType;
@@ -137,10 +138,10 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
             dispatch(resetBookingForm());
             setIsOpen(false);
 
-            alert(" Booking request submitted successfully! We'll contact you within 24 hours.");
+            toast.success("Booking request submitted successfully! We'll contact you within 24 hours.");
         } catch (error) {
             console.error("Booking failed:", error);
-            alert(" Failed to submit booking. Please try again or contact us directly.");
+            toast.error(" Failed to submit booking. Please try again or contact us directly.");
         } finally {
             setIsLoading(false);
         }
