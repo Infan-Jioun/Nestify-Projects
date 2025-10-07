@@ -1,34 +1,70 @@
+// app/api/bookings/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Booking from '@/app/models/Booking';
 import connectToDatabase from '@/lib/mongodb';
 import { authOptions } from '@/lib/auth-options';
 
+interface BookingRequestBody {
+    propertyId: string;
+    name: string;
+    email: string;
+    mobile: string;
+    date: string;
+    time: string;
+    message?: string;
+    propertyTitle: string;
+    propertyEmail?: string;
+    propertyAddress: string;
+    propertyPrice: number;
+    propertyCurrency: string;
+    propertyImages?: string[];
+    propertyStatus?: string;
+    propertyListingStatus?: string;
+    propertyContact?: string;
+}
+
 export async function POST(request: NextRequest) {
     try {
+        console.log('Starting booking process...');
+
         await connectToDatabase();
+        console.log('Database connected');
 
         const session = await getServerSession(authOptions);
+        console.log('Session user:', session?.user?.email);
 
         if (!session?.user) {
+            console.log(' No session found');
             return NextResponse.json(
                 { error: 'Unauthorized. Please log in to book a property.' },
                 { status: 401 }
             );
         }
 
-        const body = await request.json();
+        const body: BookingRequestBody = await request.json();
+        console.log('📦 Request body:', {
+            propertyId: body.propertyId,
+            name: body.name,
+            email: body.email,
+            propertyEmail: body.propertyEmail // Check if propertyEmail is coming
+        });
 
-        const requiredFields = ['propertyId', 'name', 'email', 'mobile', 'date', 'time'];
+        // Validate required fields
+        const requiredFields: (keyof BookingRequestBody)[] = [
+            'propertyId', 'name', 'email', 'mobile', 'date', 'time'
+        ];
         const missingFields = requiredFields.filter(field => !body[field]);
 
         if (missingFields.length > 0) {
+            console.log(' Missing fields:', missingFields);
             return NextResponse.json(
                 { error: `Missing required fields: ${missingFields.join(', ')}` },
                 { status: 400 }
             );
         }
 
+        // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(body.email)) {
             return NextResponse.json(
@@ -37,6 +73,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Validate mobile number
         const mobileRegex = /^[0-9+\-\s()]{10,}$/;
         if (!mobileRegex.test(body.mobile)) {
             return NextResponse.json(
@@ -45,6 +82,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Validate date
         const selectedDate = new Date(body.date);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -56,16 +94,24 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Verify email matches session
         if (session.user.email !== body.email) {
+            console.log('Email mismatch:', {
+                sessionEmail: session.user.email,
+                bodyEmail: body.email
+            });
             return NextResponse.json(
                 { error: 'Email does not match logged in user' },
                 { status: 400 }
             );
         }
 
-        const booking = await Booking.create({
+        console.log('Creating booking in database...');
+
+        // Create booking with all property details including email
+        const bookingData = {
             propertyId: body.propertyId,
-            userId: session.user.id!,
+            userId: session.user.id || session.user.email,
             userName: body.name,
             userEmail: body.email,
             userMobile: body.mobile,
@@ -74,6 +120,7 @@ export async function POST(request: NextRequest) {
             message: body.message || '',
             propertyDetails: {
                 title: body.propertyTitle,
+                email: body.propertyEmail || '',
                 address: body.propertyAddress,
                 price: body.propertyPrice,
                 currency: body.propertyCurrency,
@@ -82,10 +129,17 @@ export async function POST(request: NextRequest) {
                 listingStatus: body.propertyListingStatus,
                 contact: body.propertyContact,
             },
-            status: 'pending'
-        });
+            status: 'pending' as const
+        };
 
-        console.log('Booking saved to MongoDB:', booking);
+        console.log('Booking data to save:', bookingData);
+
+        const booking = await Booking.create(bookingData);
+
+        console.log(' Booking created successfully:', {
+            id: booking._id,
+            propertyEmail: booking.propertyDetails.email
+        });
 
         return NextResponse.json({
             success: true,
@@ -95,7 +149,8 @@ export async function POST(request: NextRequest) {
                 propertyId: booking.propertyId,
                 bookingDate: booking.bookingDate,
                 bookingTime: booking.bookingTime,
-                status: booking.status
+                status: booking.status,
+                propertyDetails: booking.propertyDetails
             },
             user: {
                 id: session.user.id,
@@ -106,12 +161,28 @@ export async function POST(request: NextRequest) {
         }, { status: 201 });
 
     } catch (error: unknown) {
-        console.error('Booking API error:', error);
+        console.error(' Booking API error:', error);
 
+        if (error instanceof Error) {
+            if (error.name === 'ValidationError') {
+                return NextResponse.json(
+                    { error: 'Validation error: ' + error.message },
+                    { status: 400 }
+                );
+            }
 
+            // MongoDB duplicate error
+            const mongoError = error as { code?: number };
+            if (mongoError.code === 11000) {
+                return NextResponse.json(
+                    { error: 'Duplicate booking found' },
+                    { status: 400 }
+                );
+            }
+        }
 
         return NextResponse.json(
-            { error: 'Internal server error' },
+            { error: 'Internal server error. Please try again.' },
             { status: 500 }
         );
     }
@@ -135,14 +206,14 @@ export async function GET(request: NextRequest) {
         const page = parseInt(searchParams.get('page') || '1');
 
         const userBookings = await Booking.find({
-            userId: session.user.id
+            userId: session.user.id || session.user.email
         })
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip((page - 1) * limit);
 
         const totalBookings = await Booking.countDocuments({
-            userId: session.user.id
+            userId: session.user.id || session.user.email
         });
 
         return NextResponse.json({
@@ -162,7 +233,7 @@ export async function GET(request: NextRequest) {
             }
         });
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Get bookings API error:', error);
         return NextResponse.json(
             { error: 'Internal server error' },

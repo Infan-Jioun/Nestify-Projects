@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
+
 export interface IBooking extends Document {
     propertyId: string;
     userId: string;
@@ -10,6 +11,7 @@ export interface IBooking extends Document {
     message: string;
     propertyDetails: {
         title: string;
+        email?: string;
         address: string;
         price: number;
         currency: string;
@@ -58,6 +60,7 @@ const BookingSchema: Schema = new Schema({
     },
     propertyDetails: {
         title: { type: String, required: true },
+        email: { type: String },
         address: { type: String, required: true },
         price: { type: Number, required: true },
         currency: { type: String, required: true },
@@ -75,4 +78,5 @@ const BookingSchema: Schema = new Schema({
     timestamps: true
 });
 
-export default models?.Booking || model<IBooking>('Booking', BookingSchema);
+const Booking = models.Booking || model<IBooking>('Booking', BookingSchema);
+export default Booking;

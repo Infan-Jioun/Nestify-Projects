@@ -47,11 +47,10 @@ const bookingSlice = createSlice({
             state.isAutoFilled = false;
         },
         addRecentBooking: (state, action: PayloadAction<string>) => {
-            // Add property ID to recent bookings, remove duplicates
             state.recentBookings = [
                 action.payload,
                 ...state.recentBookings.filter(id => id !== action.payload)
-            ].slice(0, 10); // Keep only last 10
+            ].slice(0, 10); 
         },
         clearRecentBookings: (state) => {
             state.recentBookings = [];
@@ -59,10 +58,7 @@ const bookingSlice = createSlice({
     }
 });
 
-export const {
-    setBookingFormData,
-    updateBookingFormField,
-    resetBookingForm,
+export const {setBookingFormData, updateBookingFormField, resetBookingForm,
     clearAutoFill,
     addRecentBooking,
     clearRecentBookings
