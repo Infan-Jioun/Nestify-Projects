@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface BookingFormData {
     name: string;
     email: string;
-    phone: string;
+    mobile: string;
     date: string;
     time: string;
     message: string;
@@ -19,7 +19,7 @@ const initialState: BookingState = {
     formData: {
         name: "",
         email: "",
-        phone: "",
+        mobile: "",
         date: "",
         time: "",
         message: ""

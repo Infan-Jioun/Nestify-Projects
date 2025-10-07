@@ -28,7 +28,7 @@ import {
     Clock,
     User,
     Mail,
-    Phone,
+  
     MapPin,
     Home,
     Loader2,
@@ -74,15 +74,15 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
         }
     }, [isOpen, dispatch]);
 
-   
+
     useEffect(() => {
         if (isOpen && currentUser && !isAutoFilled) {
             const autoFillData = {
                 name: currentUser.name || "",
                 email: currentUser.email || "",
-                phone: currentUser?.mobile || "",
-                date: "",
-                time: "",
+                // mobile: "",
+                // date: "",
+                // time: "",
                 message: `Hello, I'm interested in viewing "${property.title}" located at ${property.address}. Please contact me to schedule a visit.`,
             };
             dispatch(setBookingFormData(autoFillData));
@@ -392,19 +392,19 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                             />
                         </div>
 
-                        {/* Phone Field */}
+                        {/* mobile Field */}
                         <div className="space-y-2">
-                            <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
+                            <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">
                                 Phone *
                             </Label>
                             <Input
-                                id="phone"
-                                name="phone"
+                                id="mobile"
+                                name="mobile"
                                 type="tel"
-                                value={formData.phone}
+                                value={formData.mobile}
                                 onChange={handleInputChange}
                                 required
-                                placeholder="Phone number"
+                                placeholder="mobile number"
                                 className="focus:ring-green-500 focus:border-green-500"
                             />
                         </div>
