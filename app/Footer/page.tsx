@@ -72,15 +72,8 @@ export default function Footer() {
               ➤
             </button>
           </div>
-          <h3 className="font-semibold mt-6 mb-3">Apps</h3>
-          <div className="space-y-3">
-            <button className="bg-black text-white w-full flex items-center justify-center py-2 rounded hover:bg-gray-800 transition">
-              <span className="mr-2"></span> Apple Store
-            </button>
-            <button className="bg-black text-white w-full flex items-center justify-center py-2 rounded hover:bg-gray-800 transition">
-              <span className="mr-2">▶</span> Google Play
-            </button>
-          </div>
+       
+        
         </div>
       </div>
 
