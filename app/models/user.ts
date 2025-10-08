@@ -1,3 +1,4 @@
+// app/models/user.ts
 import mongoose, { Document, Schema, model, models } from "mongoose";
 import slugify from "slugify";
 import { UserRole } from "../Types/auth";
@@ -17,6 +18,9 @@ export interface IUser extends Document {
     website?: string | null;
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
+    emailVerified?: boolean;
+    emailVerifyToken?: string;
+    emailVerifyExpire?: Date;
 }
 
 const userSchema = new Schema<IUser>({
@@ -42,6 +46,9 @@ const userSchema = new Schema<IUser>({
     website: { type: String, default: null },
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },
+    emailVerified: { type: Boolean, default: false },
+    emailVerifyToken: { type: String },
+    emailVerifyExpire: { type: Date },
 }, { timestamps: true });
 
 userSchema.pre("save", async function (next) {

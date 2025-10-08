@@ -1,54 +1,33 @@
-import User from "@/app/models/user";
+// app/api/auth/verify-email/route.ts
+import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import User from "@/app/models/user";
 import OTP from "@/app/models/otp";
 import { sendEmail } from "@/lib/nodemailer";
 
-export async function POST(request: Request) {
-    const { name, email, password, location, mobile, role } = await request.json();
-
-    const isValidEmail = (email: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
-    if (!name || !email || !password) {
-        return NextResponse.json({ message: "All fields are required" }, { status: 400 })
-    }
-
-    if (!isValidEmail(email)) {
-        return NextResponse.json({ message: "Invalid email format" }, { status: 400 })
-    }
-
-    if (password.length < 8) {
-        return NextResponse.json({ message: "Password must be at least 8 characters" }, { status: 400 })
-    }
-
+export async function POST(request: NextRequest) {
     try {
-        await connectToDatabase();
-        const existingUser = await User.findOne({ email });
+        const { email } = await request.json();
 
-        if (existingUser) {
-            return NextResponse.json({ message: "User Already Exists" }, { status: 400 })
+        if (!email) {
+            return NextResponse.json(
+                { error: "Email is required" },
+                { status: 400 }
+            );
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        await connectToDatabase();
 
-        // Create user with email not verified
-        const newUser = new User({
-            name,
-            email,
-            password: hashedPassword,
-            location: location || null,
-            mobile: mobile || null,
-            role: role || "user",
-            emailVerified: false
-        });
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
+            );
+        }
 
-        await newUser.save();
-
-        // Generate and send OTP
+        // Generate 6-digit OTP
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
@@ -62,7 +41,7 @@ export async function POST(request: Request) {
             expiresAt
         });
 
-        // Send OTP email
+        // Send verification email with OTP
         const otpMessage = `
             <!DOCTYPE html>
             <html>
@@ -83,14 +62,14 @@ export async function POST(request: Request) {
                         <div class="logo">Nestify</div>
                     </div>
                     <div class="content">
-                        <h2 style="text-align: center; color: #1f2937;">Welcome to Nestify!</h2>
-                        <p style="color: #4b5563; line-height: 1.6;">Thank you for registering. Please use the OTP code below to verify your email address and complete your registration:</p>
+                        <h2 style="text-align: center; color: #1f2937;">Verify Your Email Address</h2>
+                        <p style="color: #4b5563; line-height: 1.6;">Use the OTP code below to verify your email address:</p>
                         
                         <div class="otp-code">${otp}</div>
                         
                         <p class="warning">This OTP will expire in 10 minutes.</p>
                         
-                        <p style="color: #4b5563; line-height: 1.6;">If you didn't create an account with Nestify, please ignore this email.</p>
+                        <p style="color: #4b5563; line-height: 1.6;">If you didn't request this, please ignore this email.</p>
                     </div>
                     <div class="footer">
                         <p>&copy; 2024 Nestify. All rights reserved.</p>
@@ -107,12 +86,15 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json({
-            message: "Registration successful! Please check your email for the verification OTP.",
+            message: "Verification OTP sent to your email",
             success: true
-        }, { status: 201 });
+        });
 
     } catch (error) {
-        console.log("Signup error:", error);
-        return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
+        console.error("Send verification OTP error:", error);
+        return NextResponse.json(
+            { error: "Failed to send verification OTP" },
+            { status: 500 }
+        );
     }
 }

@@ -14,6 +14,11 @@ interface ExtendedProfile {
     id?: string | number;
     name?: string;
 }
+interface ExtendedUser {
+    id?: string;
+    role?: UserRole;
+    emailVerified?: boolean;
+}
 
 export const authOptions: NextAuthOptions = {
     session: { strategy: "jwt" },
@@ -24,22 +29,43 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
+            // Update your authOptions - the authorize function
             authorize: async (credentials) => {
                 try {
                     if (!credentials?.email || !credentials.password) {
-                        return null;
+                        throw new Error('MISSING_CREDENTIALS');
                     }
 
                     await connectToDatabase();
                     const userDoc = await UserModel.findOne({ email: credentials.email });
 
                     if (!userDoc || !userDoc.password) {
-                        return null;
+                        throw new Error('INVALID_CREDENTIALS');
+                    }
+
+                    // Check if email is verified for credential users
+                    if (userDoc.provider === 'credentials' && !userDoc.emailVerified) {
+                        // Return user data but with a special flag
+                        return {
+                            id: (userDoc._id as Types.ObjectId).toString(),
+                            name: userDoc.name,
+                            email: userDoc.email,
+                            image: userDoc.image || null,
+                            role: userDoc.role || UserRole.USER,
+                            bio: userDoc.bio || null,
+                            location: userDoc.location || null,
+                            website: userDoc.website || null,
+                            mobile: userDoc.mobile || null,
+                            slug: userDoc.slug || null,
+                            provider: userDoc.provider || null,
+                            createdAt: userDoc.createdAt?.toISOString?.() || undefined,
+                            emailVerified: false // Add this flag
+                        };
                     }
 
                     const isValid = await bcrypt.compare(credentials.password, userDoc.password);
                     if (!isValid) {
-                        return null;
+                        throw new Error('INVALID_CREDENTIALS');
                     }
 
                     return {
@@ -55,14 +81,18 @@ export const authOptions: NextAuthOptions = {
                         slug: userDoc.slug || null,
                         provider: userDoc.provider || null,
                         createdAt: userDoc.createdAt?.toISOString?.() || undefined,
+                        emailVerified: true // Add this flag
                     };
                 } catch (error) {
+                    if (error instanceof Error) {
+                        throw error;
+                    }
                     console.error("Authorization error:", error);
-                    return null;
+                    throw new Error('LOGIN_FAILED');
                 }
             },
         }),
-        
+
         GoogleProvider({
             clientId: process.env.GOOGLE_ID || "",
             clientSecret: process.env.GOOGLE_SECRET_ID || "",
@@ -124,12 +154,22 @@ export const authOptions: NextAuthOptions = {
                 return false;
             }
         },
-
-        async jwt({ token, user, account }) {
+        // Update the jwt callback in authOptions
+        async jwt({ token, user, account, trigger }) {
             try {
                 if (user) {
                     token.id = user.id;
                     token.role = user.role || UserRole.USER;
+                    token.emailVerified = (user as ExtendedUser).emailVerified || false;
+                }
+
+                // Handle email verification updates
+                if (trigger === "update") {
+                    await connectToDatabase();
+                    const dbUser = await UserModel.findOne({ email: token.email });
+                    if (dbUser) {
+                        token.emailVerified = dbUser.emailVerified;
+                    }
                 }
 
                 if ((account?.provider === "google" || account?.provider === "github") && token.email) {
@@ -138,13 +178,16 @@ export const authOptions: NextAuthOptions = {
                     if (dbUser) {
                         token.role = dbUser.role || UserRole.USER;
                         token.id = (dbUser._id as Types.ObjectId).toString();
+                        token.emailVerified = dbUser.emailVerified || true; // OAuth users are auto-verified
                     }
                 }
+
                 if (token.email) {
                     await connectToDatabase();
                     const dbUser = await UserModel.findOne({ email: token.email })
                     if (dbUser) {
-                        token.role = dbUser.role ?? token.role ?? UserRole.USER
+                        token.role = dbUser.role ?? token.role ?? UserRole.USER;
+                        token.emailVerified = dbUser.emailVerified ?? token.emailVerified ?? false;
                     }
                 }
 

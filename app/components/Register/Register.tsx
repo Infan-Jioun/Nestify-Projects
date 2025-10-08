@@ -7,12 +7,12 @@ import { BiError } from "react-icons/bi";
 import { MdOutlineCheck } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,11 +20,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import NextHead from '../NextHead/NextHead'
 import { useSelector, useDispatch } from 'react-redux'
-import { 
-  setButtonLoader, 
-  setSkletonLoader, 
-  setGoogleLoader, 
-  setGithubLoader 
+import {
+  setButtonLoader,
+  setSkletonLoader,
+  setGoogleLoader,
+  setGithubLoader
 } from '@/app/features/loader/loaderSlice'
 import { RootState } from '@/lib/store'
 import { Eye, EyeOff } from 'lucide-react'
@@ -45,14 +45,14 @@ export default function Register() {
   const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null); 
+  const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<Inputs>(); 
+  } = useForm<Inputs>();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -78,7 +78,12 @@ export default function Register() {
       if (res.ok) {
         setSuccess(data.message || "Account created successfully");
         setError(null);
-        router.push("/LoginPage");
+
+        // Store email for verification
+        localStorage.setItem("verificationEmail", formData.email);
+
+        // Redirect to verification page
+        router.push("/verify-email");
       } else if (res.status === 400) {
         setError(data.message || "Invalid request");
       } else if (res.status === 500) {
@@ -120,7 +125,7 @@ export default function Register() {
   if (isLoading) {
     return (
       <div>
-        <NextHead title='Register - Nestify'/>
+        <NextHead title='Register - Nestify' />
         <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
           <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
             <CardHeader className="text-center space-y-2">
@@ -158,7 +163,7 @@ export default function Register() {
 
   return (
     <div>
-      <NextHead title='Register - Nestify'/>
+      <NextHead title='Register - Nestify' />
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
           <CardHeader className="text-center space-y-2">
@@ -174,7 +179,7 @@ export default function Register() {
             </CardDescription>
           </CardHeader>
 
-        
+
           {!!success && (
             <div className='px-3'>
               <p className='text-white text-center bg-green-500 p-2 rounded-2xl flex justify-center items-center gap-4'>
@@ -215,11 +220,11 @@ export default function Register() {
               <div className="grid gap-1 relative">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Input 
-                    {...register("password", { required: "Password is required" })} 
-                    id="password" 
-                    placeholder='Type your password' 
-                    type={showPassword ? "text" : "password"} 
+                  <Input
+                    {...register("password", { required: "Password is required" })}
+                    id="password"
+                    placeholder='Type your password'
+                    type={showPassword ? "text" : "password"}
                     className="pr-10"
                   />
                   <button
@@ -239,8 +244,8 @@ export default function Register() {
             </CardContent>
 
             <CardFooter className="flex flex-col gap-3 mt-7">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-green-500 hover:bg-green-600"
                 disabled={buttonLoader}
               >
@@ -264,9 +269,9 @@ export default function Register() {
           </form>
 
           <div className='px-6 pb-6'>
-            <Button 
-              onClick={handelGoogleRegister} 
-              variant="outline" 
+            <Button
+              onClick={handelGoogleRegister}
+              variant="outline"
               className="w-full mb-2"
               disabled={googleLoader}
             >
@@ -279,9 +284,9 @@ export default function Register() {
                 "Continue with Google"
               )}
             </Button>
-            <Button 
-              onClick={handelGithubRegister} 
-              variant="outline" 
+            <Button
+              onClick={handelGithubRegister}
+              variant="outline"
               className="w-full"
               disabled={githubLoader}
             >

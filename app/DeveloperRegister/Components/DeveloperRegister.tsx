@@ -72,11 +72,10 @@ export default function DeveloperRegister() {
     const onSubmit: SubmitHandler<Inputs> = async (formData) => {
         dispatch(setButtonLoader(true));
         try {
-            const payload = {...formData, role: "real_estate_developer"};
             const res = await fetch("/api/auth/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(formData)
             });
 
             const data = await res.json();
@@ -84,7 +83,10 @@ export default function DeveloperRegister() {
             if (res.ok) {
                 setSuccess(data.message || "Account created successfully");
                 setError(null);
-                router.push("/LoginPage");
+
+                
+                localStorage.setItem("verificationEmail", formData.email);
+                router.push("/verify-email");
             } else if (res.status === 400) {
                 setError(data.message || "Invalid request");
             } else if (res.status === 500) {
@@ -97,7 +99,7 @@ export default function DeveloperRegister() {
         }
     };
 
-  
+
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -266,7 +268,7 @@ export default function DeveloperRegister() {
                         </CardFooter>
                     </form>
 
-           
+
                 </Card>
             </div>
         </div>

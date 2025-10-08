@@ -74,6 +74,7 @@ export function Login() {
 
   const isLoading = loading || skletonLoader;
 
+  // Update the onSubmit function in your Login component
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     dispatch(setButtonLoader(true));
 
@@ -85,23 +86,44 @@ export function Login() {
         callbackUrl,
       });
 
+      console.log("SignIn result:", result); // Debug log
+
       if (result?.ok) {
         const session = await getSession();
+        console.log("Session:", session); // Debug log
 
         if (session?.user) {
-          const user = session.user as CustomSessionUser;
+          const user = session.user as CustomSessionUser & { emailVerified?: boolean };
+
+          // Check if email is verified
+          // if (!user.emailVerified) {
+          //   // Store email for verification
+          //   localStorage.setItem("verificationEmail", data.email);
+          //   // Redirect to verification page
+          //   router.push("/verify-email");
+          //   toast.error("Please verify your email before logging in.");
+          //   return;
+          // }
+
           const userRole = user.role || UserRole.USER;
           const defaultRoute = getDefaultRoute(userRole);
 
           const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
           const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
 
-          toast.success("Successfully Login");
+          toast.success("Successfully logged in!");
           router.push(redirectUrl);
           router.refresh();
         }
       } else {
-        toast.error(result?.error || "Login failed. Please check your credentials.");
+        // Handle specific error cases
+        if (result?.error === 'CredentialsSignin' || result?.error === 'INVALID_CREDENTIALS') {
+          toast.error("Invalid email or password");
+        } else if (result?.error) {
+          toast.error(result.error);
+        } else {
+          toast.error("Login failed. Please check your credentials.");
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
