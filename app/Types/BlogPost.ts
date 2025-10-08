@@ -33,9 +33,18 @@ export interface BlogState {
     totalPosts: number;
     currentPage: number;
     totalPages: number;
-    
-}
 
+}
+export interface FetchBlogPostsParams {
+    page: number;
+    limit: number;
+    category?: string;
+    search?: string;
+}
+export interface Category {
+    name: string;
+    icon: React.ReactNode;
+}
 // Get featured image safely
 const getFeaturedImage = (post: BlogPost): string => {
     if (typeof post.featuredImage === "string" && post.featuredImage.trim() !== "") {
@@ -49,5 +58,5 @@ const getAuthorAvatar = (author?: BlogPost["author"]): string => {
     if (author?.avatar && author.avatar.trim() !== "") {
         return author.avatar;
     }
-    return "/api/placeholder/40/40"; 
+    return "/api/placeholder/40/40";
 };
