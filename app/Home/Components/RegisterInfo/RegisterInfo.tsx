@@ -96,7 +96,7 @@ export default function RegisterInfo() {
 
                     {/* CTA Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 pt-6 lg:pt-8">
-                      <Link href="/RegisterPage">
+                      <Link href="/Authentication">
                         <button className="bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2">
                           🌱 Get Started Free
                         </button>

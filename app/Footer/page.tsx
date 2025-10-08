@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 export default function Footer() {
   const pathname = usePathname();
-  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister" ||  pathname === "verify-email" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
     return null;
   }
   return (

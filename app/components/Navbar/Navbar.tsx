@@ -46,7 +46,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister"  || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister"  || pathname === "/verify-email" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
     return null;
   }
 

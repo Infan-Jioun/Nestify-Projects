@@ -72,10 +72,11 @@ export default function DeveloperRegister() {
     const onSubmit: SubmitHandler<Inputs> = async (formData) => {
         dispatch(setButtonLoader(true));
         try {
+            const payload = {...formData, role: "real_estate_developer"};
             const res = await fetch("/api/auth/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
 
             const data = await res.json();
@@ -98,8 +99,6 @@ export default function DeveloperRegister() {
             dispatch(setButtonLoader(false));
         }
     };
-
-
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -268,7 +267,7 @@ export default function DeveloperRegister() {
                         </CardFooter>
                     </form>
 
-
+           
                 </Card>
             </div>
         </div>
