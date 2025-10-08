@@ -15,6 +15,8 @@ import { deleteProperty } from "@/app/features/Properties/propertySlice";
 import { toggleBookmark } from "@/app/features/bookmark/bookmarkSlice";
 import DeleteConfirmation from "./DeletedConfirmation";
 import Carousal from "../Carousal/Carousal";
+import { useSession } from "next-auth/react";
+import { UserRole } from "@/app/Types/auth";
 
 interface PropertyCardProps {
   property: PropertyType;
@@ -33,7 +35,7 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   const dispatch = useAppDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+  const { data: session } = useSession();
   // Get bookmarked properties from Redux store
   const bookmarkedProperties = useAppSelector((state) => state.bookmarks.bookmarkedProperties);
 
@@ -147,22 +149,20 @@ export default function PropertyCard({
         {/* Status */}
         <div className="flex gap-2">
           <p
-            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
-              property.listingStatus === "Sale" 
-                ? "bg-red-100 text-red-600" 
-                : "bg-yellow-100 text-yellow-600"
-            }`}
+            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.listingStatus === "Sale"
+              ? "bg-red-100 text-red-600"
+              : "bg-yellow-100 text-yellow-600"
+              }`}
           >
             {property.listingStatus}
           </p>
           <p
-            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
-              property.status === "Available"
-                ? "bg-green-100 text-green-600"
-                : property.status === "Sold"
+            className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
+              ? "bg-green-100 text-green-600"
+              : property.status === "Sold"
                 ? "bg-red-100 text-red-600"
                 : "bg-yellow-100 text-yellow-600"
-            }`}
+              }`}
           >
             {property.status}
           </p>
@@ -179,7 +179,7 @@ export default function PropertyCard({
 
         {/* Action Buttons */}
         <div className="flex gap-3 mt-4">
-          <Link href={`/properties/${property._id}`} className="flex-1">
+          <Link href={`/Properties/${property._id}`} className="flex-1">
             <Button
               variant="outline"
               className="w-full flex items-center justify-center gap-2"
@@ -194,12 +194,16 @@ export default function PropertyCard({
           >
             <FaBookmark className={isBookmarked ? "text-yellow-500 fill-yellow-500" : "text-gray-500"} />
           </Button>
-          <Button
-            variant="destructive"
-            onClick={() => setShowDeleteModal(true)}
-          >
-            Delete
-          </Button>
+          {
+            session?.user?.role === UserRole.ADMIN && (
+              <Button
+                variant="destructive"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                Delete
+              </Button>
+            )
+          }
         </div>
       </div>
 

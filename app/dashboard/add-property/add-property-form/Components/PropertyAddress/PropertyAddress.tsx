@@ -16,7 +16,7 @@ export default function PropertyAddress({ register, errors }: PropertyAddressPro
                 <Label className="mb-2 block text-gray-700 text-xs">Property Address</Label>
                 <Textarea
                     {...register("address", { required: "Address is required" })}
-                    className="w-full"
+                    className="w-96"
                     placeholder="Enter full address here"
                 />
                 {errors.address && (

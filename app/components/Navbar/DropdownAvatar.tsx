@@ -45,7 +45,7 @@ export function DropdownAvatar() {
     async function fetchUser() {
       if (session?.user?.email) {
         try {
-          const res = await fetch(`/api/users/${session.user.email}`); // ID দিয়ে fetch
+          const res = await fetch(`/api/users/${session.user.email}`); 
           if (!res.ok) throw new Error("User not found");
           const data = await res.json();
           setFetchedUser(data);

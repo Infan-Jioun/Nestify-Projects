@@ -9,6 +9,7 @@ import * as RPNInput from "react-phone-number-input"
 import flags from "react-phone-number-input/flags"
 import { MailIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useSession } from 'next-auth/react'
 
 type ContactInfoProps = {
     register: UseFormRegister<Inputs>
@@ -18,7 +19,7 @@ type ContactInfoProps = {
 
 export default function ContactInfo({ register, errors, control }: ContactInfoProps) {
     const id = useId()
-
+  const {data: session} = useSession();
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             {/* Email Input */}
@@ -27,9 +28,11 @@ export default function ContactInfo({ register, errors, control }: ContactInfoPr
                 <div className="relative">
                     <Input
                         id={id}
-                        className="peer pe-9"
+                        className="text-xs"
                         placeholder="Email"
                         type="email"
+                        value={session?.user.email}
+                        readOnly
                         {...register("email", { required: "Email is required" })}
                     />
                     {errors.email && (
