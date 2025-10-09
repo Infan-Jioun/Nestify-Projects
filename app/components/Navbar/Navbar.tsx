@@ -46,7 +46,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister"  || pathname === "/verify-email" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister" || pathname === "/verify-email" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
     return null;
   }
 
@@ -107,13 +107,15 @@ export function Navbar() {
           {/* <SearchBox /> */}
           {/* Property Button */}
           <div className="hidden sm:block">
-            <motion.button
-              whileHover={{ scale: 1.0 }}
-              whileTap={{ scale: 0.95 }}
-              className="btn h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
-            >
-              Property
-            </motion.button>
+            <Link href={"/Properties/UserBookings"}>
+              <motion.button
+                whileHover={{ scale: 1.0 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
+              >
+              My Bookings
+              </motion.button>
+            </Link>
           </div>
           {/* Right Menu */}
           <div className="hidden lg:block">
