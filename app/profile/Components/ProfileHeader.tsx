@@ -297,7 +297,7 @@ export default function ProfileHeader({
                                             className="italic text-green-500 leading-relaxed"
                                             whileHover={{ scale: 1.02 }}
                                         >
-                                            "{currentUser.bio}"
+                                            {currentUser.bio}
                                         </motion.p>
                                     )}
                                 </motion.div>
