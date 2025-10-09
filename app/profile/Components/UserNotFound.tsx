@@ -33,7 +33,7 @@ export default function UserNotFound({ error }: UserNotFoundProps) {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                         onClick={() => window.history.back()}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200"
+                        className="bg-green-500 hover:bg-green-500 text-white font-medium py-3 px-6 rounded-lg transition duration-200"
                     >
                         Go Back
                     </button>

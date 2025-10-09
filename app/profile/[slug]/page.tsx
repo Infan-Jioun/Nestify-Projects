@@ -253,7 +253,7 @@ export default function ProfilePage() {
     if (!currentUser || error) return <UserNotFound error={error || undefined} />;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="relative py-20 lg:py-32 px-4 sm:px-6 text-center bg-gradient-to-br from-green-50 via-white to-emerald-50 overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
                     <ProfileHeader

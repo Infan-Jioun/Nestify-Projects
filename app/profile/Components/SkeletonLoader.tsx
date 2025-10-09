@@ -15,10 +15,10 @@ export default function SkeletonLoader() {
       </div>
 
       {/* Tabs Skeleton */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200 mt-3">
         <div className="px-8">
           <div className="flex space-x-8">
-            {[...Array(4)].map((_, i) => (
+            {[...Array(1)].map((_, i) => (
               <div key={i} className="h-12 bg-gray-300 rounded w-24"></div>
             ))}
           </div>
