@@ -40,7 +40,9 @@ export default function ProfileHeader({ currentUser, isEditing, editForm, imageP
     const displayImage = imagePreview || currentUser.image || "/image/businessman-character-avatar-isolated.png";
 
     return (
-        <div className="relative bg-green-500 px-8 py-16">
+        <div className="relative py-32 px-6 text-center bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden">
+            <div className="absolute top-10 left-10 w-40 h-40 bg-green-300/30 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-10 right-10 w-52 h-52 bg-yellow-300/30 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute top-6 right-6 flex gap-3">
                 <span
                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${currentUser.role === "admin"
@@ -54,7 +56,7 @@ export default function ProfileHeader({ currentUser, isEditing, editForm, imageP
                 <button
                     onClick={onEnterEditMode}
                     disabled={isEditing}
-                    className="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full text-sm font-medium transition duration-200 backdrop-blur-sm disabled:opacity-50"
+                    className="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 text-green-500 rounded-full text-sm font-medium transition duration-200 backdrop-blur-sm disabled:opacity-50"
                 >
                     <svg
                         className="w-4 h-4 mr-2"
@@ -93,7 +95,7 @@ export default function ProfileHeader({ currentUser, isEditing, editForm, imageP
                                             <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                                         ) : (
                                             <svg
-                                                className="w-5 h-5 text-gray-700"
+                                                className="w-5 h-5 text-green-700"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -148,20 +150,20 @@ export default function ProfileHeader({ currentUser, isEditing, editForm, imageP
                     className="hidden"
                 />
 
-                <h1 className="text-4xl font-bold text-white mb-3">
+                <h1 className="text-4xl font-bold text-green-500 mb-3">
                     {isEditing ? (
                         <input
                             type="text"
                             value={editForm.name}
                             onChange={(e) => onInputChange("name", e.target.value)}
-                            className="bg-white/20 text-white rounded-lg px-3 py-2 text-center text-4xl font-bold backdrop-blur-sm w-full max-w-2xl placeholder-blue-200"
+                            className="bg-white/20 text-green-500 rounded-lg px-3 py-2 text-center text-3xl font-bold backdrop-blur-sm w-full max-w-2xl placeholder-blue-200"
                             placeholder="Enter your name"
                         />
                     ) : (
                         currentUser.name
                     )}
                 </h1>
-                <p className="text-blue-100 text-xl font-light mb-2">
+                <p className=" bg-green-300 rounded-full    text-green-900 text-xl font-light mb-2">
                     {currentUser.email}
                 </p>
                 {(currentUser.bio || isEditing) && (
@@ -170,7 +172,7 @@ export default function ProfileHeader({ currentUser, isEditing, editForm, imageP
                             <textarea
                                 value={editForm.bio}
                                 onChange={(e) => onInputChange("bio", e.target.value)}
-                                className="bg-white/20 text-white rounded-lg px-3 py-2 text-center w-full backdrop-blur-sm resize-none placeholder-blue-200"
+                                className="bg-white/20 text-green-500 rounded-lg px-3 py-2 text-center w-full backdrop-blur-sm resize-none placeholder-blue-200"
                                 rows={2}
                                 placeholder="Enter your bio"
                             />
