@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react"
-import { BookOpenIcon, Layers2Icon, LogOutIcon } from "lucide-react";
+import { BookOpenIcon, Layers2Icon, LogOutIcon, Save } from "lucide-react";
 import Image from "next/image";
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
 import Link from "next/link";
@@ -45,7 +45,7 @@ export function DropdownAvatar() {
     async function fetchUser() {
       if (session?.user?.email) {
         try {
-          const res = await fetch(`/api/users/${session.user.email}`); 
+          const res = await fetch(`/api/users/${session.user.email}`);
           if (!res.ok) throw new Error("User not found");
           const data = await res.json();
           setFetchedUser(data);
@@ -111,9 +111,9 @@ export function DropdownAvatar() {
               <span>Bookmark</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/Properties/UserBookings" className="flex items-center w-full">
-              <BookOpenIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+          <DropdownMenuItem asChild className="flex lg:hidden">
+            <Link href="/Properties/UserBookings" className="flex items-center w-full ">
+              <Save size={16} className="opacity-60 mr-2" aria-hidden="true" />
               <span>My Bookings</span>
             </Link>
           </DropdownMenuItem>
