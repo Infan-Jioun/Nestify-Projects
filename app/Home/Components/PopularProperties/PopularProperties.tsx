@@ -54,7 +54,7 @@ export default function PopularProperties() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className=" container mx-auto px-4 md:px-5 lg:px-20 py-12 ">
       {/* Header & Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -62,7 +62,7 @@ export default function PopularProperties() {
             Discover Popular Properties
           </h2>
           <p className="text-gray-500 text-center sm:text-left">
-          {"Explore top-rated properties and standout features curated for you."}
+            {"Explore top-rated properties and standout features curated for you."}
           </p>
         </div>
         <div className="flex space-x-3 px-1">
@@ -71,8 +71,8 @@ export default function PopularProperties() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-2 py-2 rounded-md border ${activeTab === tab
-                  ? "bg-black text-white"
-                  : "bg-white text-black hover:bg-gray-100"
+                ? "bg-black text-white"
+                : "bg-white text-black hover:bg-gray-100"
                 }`}
             >
               {tab}
@@ -89,7 +89,7 @@ export default function PopularProperties() {
             <PropertyCardSkeleton key={index} />
           ))
         ) : filteredProperties.length > 0 ? (
-          
+
           filteredProperties.map((property) => (
             <PropertyCard
               key={property._id}
