@@ -7,7 +7,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 import type { RootState } from "@/lib/store";
 import Link from "next/link";
-
+import {motion} from "framer-motion"
+import { GoArrowUpRight } from "react-icons/go";
 const agents = [
   {
     name: "Marvin McKinney",
@@ -152,10 +153,14 @@ export default function FeaturedAgents() {
                   List your own property
                 </li>
               </ul>
-              <Link href={"/About"}>
-                <button className="mt-4 px-6 py-2 bg-black text-white rounded-md inline-flex items-center gap-2">
-                  See More
-                </button>
+              <Link href="/About">
+                <motion.button
+                  whileHover={{ scale: 1.0 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn w-[250px] h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
+                >
+                  See More <GoArrowUpRight />
+                </motion.button>
               </Link>
             </>
           )}

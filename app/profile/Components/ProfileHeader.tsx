@@ -217,7 +217,7 @@ export default function ProfileHeader({
                                                     </svg>
                                                 )}
                                             </motion.button>
-                                      
+
                                         </div>
                                     </motion.div>
                                 )}
