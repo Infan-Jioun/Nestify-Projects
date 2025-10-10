@@ -86,11 +86,11 @@ export function Login() {
         callbackUrl,
       });
 
-      console.log("SignIn result:", result); // Debug log
+      console.log("SignIn result:", result); 
 
       if (result?.ok) {
         const session = await getSession();
-        console.log("Session:", session); // Debug log
+        console.log("Session:", session); 
 
         if (session?.user) {
           const user = session.user as CustomSessionUser & { emailVerified?: boolean };
@@ -148,7 +148,7 @@ export function Login() {
     dispatch(setGithubLoader(true));
     try {
       await signIn("github", { callbackUrl });
-    } catch () {
+    } catch (error) {
       toast.error("GitHub login failed");
     } finally {
       dispatch(setGithubLoader(false));
