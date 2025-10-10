@@ -7,7 +7,8 @@ import { setSkletonLoader } from '@/app/features/loader/loaderSlice'
 import { AppDispatch, RootState } from '@/lib/store'
 import { fetchBlogPosts, BlogPost as BlogPostType } from '@/app/features/blog/blogSlice'
 import Link from 'next/link'
-
+import { motion } from "framer-motion"
+import { GoArrowUpRight } from 'react-icons/go'
 export default function OurBlog() {
   const dispatch = useDispatch<AppDispatch>()
   const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader)
@@ -146,10 +147,14 @@ export default function OurBlog() {
       {/* View All Button */}
       {!localLoading && !skletonLoader && !loading && posts.length > 0 && (
         <div className="text-center mt-12">
-          <Link href={"/Blog"}>
-            <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-500 transition-colors duration-300">
-              View All Blog Posts
-            </button>
+          <Link href="/Blog">
+            <motion.button
+              whileHover={{ scale: 1.0 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn w-[250px] h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
+            >
+              View All Blog Posts <GoArrowUpRight />
+            </motion.button>
           </Link>
         </div>
       )}
