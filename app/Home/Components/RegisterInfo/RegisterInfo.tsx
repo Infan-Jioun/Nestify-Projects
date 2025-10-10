@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setSkletonLoader } from '@/app/features/loader/loaderSlice'
 import { RootState } from '@/lib/store'
 import Link from 'next/link'
-
+import { motion } from "framer-motion"
+import { GoArrowUpRight } from 'react-icons/go'
 export default function RegisterInfo() {
   const dispatch = useDispatch()
   const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader)
@@ -97,11 +98,15 @@ export default function RegisterInfo() {
                     {/* CTA Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 pt-6 lg:pt-8">
                       <Link href="/Authentication">
-                        <button className="bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2">
-                          🌱 Get Started Free
-                        </button>
+                        <motion.button
+                          whileHover={{ scale: 1.0 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="btn w-[250px] h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
+                        >
+                          Get Started Free <GoArrowUpRight />
+                        </motion.button>
                       </Link>
-                     
+
                     </div>
 
                     {/* Trust Indicators */}
