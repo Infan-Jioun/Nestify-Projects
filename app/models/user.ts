@@ -1,5 +1,4 @@
-// app/models/user.ts
-import mongoose, { Document, Schema, model, models } from "mongoose";
+import { Document, Schema, model, models } from "mongoose";
 import slugify from "slugify";
 import { UserRole } from "../Types/auth";
 

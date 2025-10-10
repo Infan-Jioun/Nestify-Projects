@@ -148,7 +148,7 @@ export function Login() {
     dispatch(setGithubLoader(true));
     try {
       await signIn("github", { callbackUrl });
-    } catch (error) {
+    } catch () {
       toast.error("GitHub login failed");
     } finally {
       dispatch(setGithubLoader(false));

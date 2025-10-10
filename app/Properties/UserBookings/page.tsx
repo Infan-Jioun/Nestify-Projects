@@ -1,3 +1,4 @@
+// components/UserBookings.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -8,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Home, Clock, User, Loader2, Phone, Mail, RefreshCw, Trash2, Eye, Edit3, MoreVertical, ChevronRight, Star, Shield, Zap } from "lucide-react";
-import { addRecentBooking, clearRecentBookings } from "@/app/features/booking/bookingSlice";
+import { addRecentBooking, clearRecentBookings, rescheduleBooking, cancelBooking } from "@/app/features/booking/bookingSlice";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,6 +17,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { RescheduleDialog } from "./Components/RescheduleDialog";
 
 interface Booking {
     _id: string;
@@ -45,12 +47,14 @@ interface Booking {
 const UserBookings = () => {
     const { data: session } = useSession();
     const dispatch = useDispatch<AppDispatch>();
-    const { recentBookings } = useSelector((state: RootState) => state.booking);
+    const { recentBookings, rescheduleLoading, cancelLoading } = useSelector((state: RootState) => state.booking);
 
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState("");
+    const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
     const fetchUserBookings = async (isRefresh = false) => {
         if (!session?.user) return;
@@ -90,6 +94,62 @@ const UserBookings = () => {
             fetchUserBookings();
         }
     }, [session]);
+
+    const handleReschedule = async (bookingId: string, bookingDate: string, bookingTime: string, message?: string) => {
+        try {
+            const result = await dispatch(rescheduleBooking({
+                bookingId,
+                bookingDate,
+                bookingTime,
+                message
+            })).unwrap();
+
+            if (result.success) {
+                // Update local state
+                setBookings(prev => prev.map(booking =>
+                    booking._id === bookingId
+                        ? { ...booking, ...result.booking }
+                        : booking
+                ));
+                setRescheduleDialogOpen(false);
+                setSelectedBooking(null);
+            }
+        } catch (error) {
+            console.error("Failed to reschedule booking:", error);
+        }
+    };
+
+    const handleCancel = async (bookingId: string, propertyId: string) => {
+        if (!confirm("Are you sure you want to cancel this booking?")) {
+            return;
+        }
+
+        try {
+            const result = await dispatch(cancelBooking({
+                bookingId,
+                propertyId
+            })).unwrap();
+
+            if (result.success) {
+                // Update local state
+                setBookings(prev => prev.map(booking =>
+                    booking._id === bookingId
+                        ? { ...booking, status: 'cancelled' }
+                        : booking
+                ));
+
+                // Property status will be automatically updated to "Available" via Redux
+                console.log("Booking cancelled and property status updated to Available");
+            }
+        } catch (error) {
+            console.error("Failed to cancel booking:", error);
+        }
+    };
+
+    const openRescheduleDialog = (booking: Booking) => {
+        setSelectedBooking(booking);
+        setRescheduleDialogOpen(true);
+    };
 
     const getStatusConfig = (status: string) => {
         switch (status) {
@@ -209,6 +269,8 @@ const UserBookings = () => {
     // Booking Card Component
     const BookingCard = ({ booking }: { booking: Booking }) => {
         const statusConfig = getStatusConfig(booking.status);
+        const isRescheduleLoading = rescheduleLoading[booking._id] || false;
+        const isCancelLoading = cancelLoading[booking._id] || false;
 
         return (
             <Card className="group hover:shadow-lg sm:hover:shadow-2xl transition-all duration-500 border-0 bg-white overflow-hidden relative mx-2 sm:mx-0">
@@ -243,13 +305,21 @@ const UserBookings = () => {
                                         <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
                                         View Details
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-xs sm:text-sm font-medium rounded-lg">
+                                    <DropdownMenuItem
+                                        className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-xs sm:text-sm font-medium rounded-lg"
+                                        onClick={() => openRescheduleDialog(booking)}
+                                        disabled={booking.status === 'cancelled' || booking.status === 'completed'}
+                                    >
                                         <Edit3 className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
                                         Reschedule
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-xs sm:text-sm font-medium text-rose-600 rounded-lg">
+                                    <DropdownMenuItem
+                                        className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-xs sm:text-sm font-medium text-rose-600 rounded-lg"
+                                        onClick={() => handleCancel(booking._id, booking.propertyId)}
+                                        disabled={booking.status === 'cancelled' || booking.status === 'completed' || isCancelLoading}
+                                    >
                                         <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                                        Cancel Booking
+                                        {isCancelLoading ? 'Cancelling...' : 'Cancel Booking'}
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -378,18 +448,30 @@ const UserBookings = () => {
                         <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
                             <Button
                                 size="sm"
-                                className="bg-gradient-to-r from-green-500 to-sky-600 hover:from-green-600 hover:to-sky-700 shadow-lg shadow-green-500/25 border-0 text-white px-3 sm:px-6 py-2 h-9 sm:h-10 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex-1 sm:flex-none text-xs sm:text-sm"
+                                onClick={() => openRescheduleDialog(booking)}
+                                disabled={booking.status === 'cancelled' || booking.status === 'completed' || isRescheduleLoading}
+                                className="bg-gradient-to-r from-green-500 to-sky-600 hover:from-green-600 hover:to-sky-700 shadow-lg shadow-green-500/25 border-0 text-white px-3 sm:px-6 py-2 h-9 sm:h-10 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex-1 sm:flex-none text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Edit3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                                Reschedule
+                                {isRescheduleLoading ? (
+                                    <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
+                                ) : (
+                                    <Edit3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                )}
+                                {isRescheduleLoading ? 'Rescheduling...' : 'Reschedule'}
                             </Button>
                             <Button
                                 size="sm"
                                 variant="outline"
-                                className="border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300 px-3 sm:px-6 py-2 h-9 sm:h-10 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex-1 sm:flex-none text-xs sm:text-sm"
+                                onClick={() => handleCancel(booking._id, booking.propertyId)}
+                                disabled={booking.status === 'cancelled' || booking.status === 'completed' || isCancelLoading}
+                                className="border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300 px-3 sm:px-6 py-2 h-9 sm:h-10 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex-1 sm:flex-none text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                                Cancel
+                                {isCancelLoading ? (
+                                    <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
+                                ) : (
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                )}
+                                {isCancelLoading ? 'Cancelling...' : 'Cancel'}
                             </Button>
                         </div>
                     </div>
@@ -504,94 +586,105 @@ const UserBookings = () => {
     if (error) return <ErrorStateCard />;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50/30 via-white to-emerald-50/20">
-            <div className="space-y-6 sm:space-y-8 px-2 sm:px-4 lg:px-6 xl:px-8 max-w-7xl mx-auto py-4 sm:py-6 md:py-8">
-                {/* Header Section */}
-                <div className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 text-center bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-teal-500/10 rounded-2xl sm:rounded-3xl overflow-hidden border border-green-200/50 mx-2 sm:mx-0">
-                    {/* Background Elements */}
-                    <div className="absolute top-0 left-0 w-48 h-48 sm:w-72 sm:h-72 bg-green-300/20 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
-                    <div className="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-300/20 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 sm:w-64 sm:h-64 bg-green-300/10 rounded-full blur-2xl sm:blur-3xl"></div>
+        <>
+            <div className="min-h-screen bg-gradient-to-br from-green-50/30 via-white to-emerald-50/20">
+                <div className="space-y-6 sm:space-y-8 px-2 sm:px-4 lg:px-6 xl:px-8 max-w-7xl mx-auto py-4 sm:py-6 md:py-8">
+                    {/* Header Section */}
+                    <div className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 text-center bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-teal-500/10 rounded-2xl sm:rounded-3xl overflow-hidden border border-green-200/50 mx-2 sm:mx-0">
+                        {/* Background Elements */}
+                        <div className="absolute top-0 left-0 w-48 h-48 sm:w-72 sm:h-72 bg-green-300/20 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
+                        <div className="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-300/20 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 sm:w-64 sm:h-64 bg-green-300/10 rounded-full blur-2xl sm:blur-3xl"></div>
 
-                    <div className="relative z-10">
-                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6 md:gap-8">
-                            <div className="text-center lg:text-left">
-                                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black bg-gradient-to-br from-gray-900 to-green-800 bg-clip-text text-transparent mb-3 sm:mb-4">
-                                    Property Viewings
-                                </h1>
-                                <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                                    {bookings.length === 0
-                                        ? "Schedule your first property viewing experience and discover your dream home"
-                                        : `You have ${bookings.length} scheduled viewing${bookings.length === 1 ? '' : 's'} - Manage your appointments seamlessly`
-                                    }
-                                </p>
+                        <div className="relative z-10">
+                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6 md:gap-8">
+                                <div className="text-center lg:text-left">
+                                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black bg-gradient-to-br from-gray-900 to-green-800 bg-clip-text text-transparent mb-3 sm:mb-4">
+                                        Property Viewings
+                                    </h1>
+                                    <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                                        {bookings.length === 0
+                                            ? "Schedule your first property viewing experience and discover your dream home"
+                                            : `You have ${bookings.length} scheduled viewing${bookings.length === 1 ? '' : 's'} - Manage your appointments seamlessly`
+                                        }
+                                    </p>
+                                </div>
+                                <Button
+                                    onClick={() => fetchUserBookings(true)}
+                                    disabled={refreshing}
+                                    className="bg-white/90 backdrop-blur-sm hover:bg-white text-gray-900 border-2 border-green-200 shadow-lg sm:shadow-2xl shadow-green-500/20 px-6 sm:px-8 py-3 h-12 sm:h-14 rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 hover:scale-105 w-full lg:w-auto mt-4 lg:mt-0 text-sm sm:text-base"
+                                >
+                                    <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3 ${refreshing ? 'animate-spin' : ''}`} />
+                                    {refreshing ? 'Refreshing...' : 'Refresh Data'}
+                                </Button>
                             </div>
-                            <Button
-                                onClick={() => fetchUserBookings(true)}
-                                disabled={refreshing}
-                                className="bg-white/90 backdrop-blur-sm hover:bg-white text-gray-900 border-2 border-green-200 shadow-lg sm:shadow-2xl shadow-green-500/20 px-6 sm:px-8 py-3 h-12 sm:h-14 rounded-xl sm:rounded-2xl font-semibold transition-all duration-300 hover:scale-105 w-full lg:w-auto mt-4 lg:mt-0 text-sm sm:text-base"
-                            >
-                                <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3 ${refreshing ? 'animate-spin' : ''}`} />
-                                {refreshing ? 'Refreshing...' : 'Refresh Data'}
-                            </Button>
                         </div>
                     </div>
-                </div>
 
-                {/* Stats Bar */}
-                {bookings.length > 0 && (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-2 sm:px-0">
-                        <Card className="border-0 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg shadow-green-100/50">
-                            <CardContent className="p-4 sm:p-6 text-center">
-                                <div className="text-xl sm:text-2xl font-bold text-green-600">{bookings.length}</div>
-                                <div className="text-xs sm:text-sm text-gray-600 font-medium">Total Bookings</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="border-0 bg-gradient-to-br from-green-50 to-sky-50 shadow-lg shadow-green-100/50">
-                            <CardContent className="p-4 sm:p-6 text-center">
-                                <div className="text-xl sm:text-2xl font-bold text-green-600">
-                                    {bookings.filter(b => b.status === 'confirmed').length}
-                                </div>
-                                <div className="text-xs sm:text-sm text-gray-600 font-medium">Confirmed</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="border-0 bg-gradient-to-br from-amber-50 to-yellow-50 shadow-lg shadow-amber-100/50">
-                            <CardContent className="p-4 sm:p-6 text-center">
-                                <div className="text-xl sm:text-2xl font-bold text-amber-600">
-                                    {bookings.filter(b => b.status === 'pending').length}
-                                </div>
-                                <div className="text-xs sm:text-sm text-gray-600 font-medium">Pending</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="border-0 bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg shadow-purple-100/50">
-                            <CardContent className="p-4 sm:p-6 text-center">
-                                <div className="text-xl sm:text-2xl font-bold text-purple-600">
-                                    {bookings.filter(b => b.status === 'completed').length}
-                                </div>
-                                <div className="text-xs sm:text-sm text-gray-600 font-medium">Completed</div>
-                            </CardContent>
-                        </Card>
+                    {/* Stats Bar */}
+                    {bookings.length > 0 && (
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-2 sm:px-0">
+                            <Card className="border-0 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg shadow-green-100/50">
+                                <CardContent className="p-4 sm:p-6 text-center">
+                                    <div className="text-xl sm:text-2xl font-bold text-green-600">{bookings.length}</div>
+                                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Total Bookings</div>
+                                </CardContent>
+                            </Card>
+                            <Card className="border-0 bg-gradient-to-br from-green-50 to-sky-50 shadow-lg shadow-green-100/50">
+                                <CardContent className="p-4 sm:p-6 text-center">
+                                    <div className="text-xl sm:text-2xl font-bold text-green-600">
+                                        {bookings.filter(b => b.status === 'confirmed').length}
+                                    </div>
+                                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Confirmed</div>
+                                </CardContent>
+                            </Card>
+                            <Card className="border-0 bg-gradient-to-br from-amber-50 to-yellow-50 shadow-lg shadow-amber-100/50">
+                                <CardContent className="p-4 sm:p-6 text-center">
+                                    <div className="text-xl sm:text-2xl font-bold text-amber-600">
+                                        {bookings.filter(b => b.status === 'pending').length}
+                                    </div>
+                                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Pending</div>
+                                </CardContent>
+                            </Card>
+                            <Card className="border-0 bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg shadow-purple-100/50">
+                                <CardContent className="p-4 sm:p-6 text-center">
+                                    <div className="text-xl sm:text-2xl font-bold text-purple-600">
+                                        {bookings.filter(b => b.status === 'completed').length}
+                                    </div>
+                                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Completed</div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    )}
+
+                    {/* Bookings Grid */}
+                    {bookings.length === 0 ? (
+                        <EmptyStateCard />
+                    ) : (
+                        <div className="grid gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0">
+                            {bookings.map((booking) => (
+                                <BookingCard key={booking._id} booking={booking} />
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Additional Cards */}
+                    <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0">
+                        {recentBookings.length > 0 && <RecentPropertiesCard />}
+                        <SupportCard />
                     </div>
-                )}
-
-                {/* Bookings Grid */}
-                {bookings.length === 0 ? (
-                    <EmptyStateCard />
-                ) : (
-                    <div className="grid gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0">
-                        {bookings.map((booking) => (
-                            <BookingCard key={booking._id} booking={booking} />
-                        ))}
-                    </div>
-                )}
-
-                {/* Additional Cards */}
-                <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0">
-                    {recentBookings.length > 0 && <RecentPropertiesCard />}
-                    <SupportCard />
                 </div>
             </div>
-        </div>
+
+            {/* Reschedule Dialog */}
+            <RescheduleDialog
+                open={rescheduleDialogOpen}
+                onOpenChange={setRescheduleDialogOpen}
+                booking={selectedBooking}
+                onReschedule={handleReschedule}
+                loading={selectedBooking ? rescheduleLoading[selectedBooking._id] : false}
+            />
+        </>
     );
 };
 

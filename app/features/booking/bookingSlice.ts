@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PropertyType } from '@/app/Types/properties';
-import { updatePropertyStatus } from '../Properties/propertySlice';
+import { updatePropertyStatus, setPropertyAvailable, setPropertySold } from '../Properties/propertySlice';
 import { FormDataType } from '@/app/Types/Booking';
-
 
 interface BookingFormData {
     name: string;
@@ -20,8 +19,33 @@ interface BookingState {
     loading: boolean;
     error: string | null;
     success: boolean;
+    rescheduleLoading: { [bookingId: string]: boolean };
+    cancelLoading: { [bookingId: string]: boolean };
 }
-
+interface Booking {
+    _id: string;
+    propertyId: string;
+    userId: string;
+    userName: string;
+    userEmail: string;
+    userMobile: string;
+    bookingDate: string;
+    bookingTime: string;
+    message: string;
+    propertyDetails: {
+        title: string;
+        address: string;
+        price: number;
+        currency: string;
+        images?: string[];
+        status?: string;
+        listingStatus?: string;
+        contact?: string;
+    };
+    status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+    createdAt: string;
+    updatedAt: string;
+}
 const initialState: BookingState = {
     formData: {
         name: "",
@@ -35,7 +59,9 @@ const initialState: BookingState = {
     recentBookings: [],
     loading: false,
     error: null,
-    success: false
+    success: false,
+    rescheduleLoading: {},
+    cancelLoading: {}
 };
 
 // Thunk to submit a booking
@@ -57,15 +83,12 @@ export const submitBooking = createAsyncThunk<
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    // User form data
                     name: formData.name,
                     email: formData.email,
                     mobile: formData.mobile,
                     date: formData.date,
                     time: formData.time,
                     message: formData.message,
-
-                    // Property data
                     propertyId: property._id,
                     propertyTitle: property.title,
                     propertyAddress: property.address,
@@ -76,8 +99,6 @@ export const submitBooking = createAsyncThunk<
                     propertyStatus: property.status,
                     propertyListingStatus: property.listingStatus,
                     propertyContact: property.contactNumber,
-
-                    // User session info
                     userId: currentUser.id,
                     userImage: currentUser.image,
                 }),
@@ -92,10 +113,14 @@ export const submitBooking = createAsyncThunk<
 
             // If booking is successful, update property status to "Sold"
             if (result.success && property._id) {
+                // API call to update property status
                 dispatch(updatePropertyStatus({
                     propertyId: property._id,
                     status: "Sold"
                 }));
+
+                // Local state update immediately
+                dispatch(setPropertySold(property._id));
             }
 
             return {
@@ -113,101 +138,211 @@ export const submitBooking = createAsyncThunk<
     }
 );
 
+// Thunk to reschedule a booking
+export const rescheduleBooking = createAsyncThunk<
+    { success: boolean; booking: Booking },
+    {
+        bookingId: string;
+        bookingDate: string;
+        bookingTime: string;
+        message?: string;
+    },
+    { rejectValue: string }
+>(
+    "booking/reschedule",
+    async ({ bookingId, bookingDate, bookingTime, message }, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`/api/bookings/${bookingId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    bookingDate,
+                    bookingTime,
+                    message
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to reschedule booking");
+            }
+
+            const result = await response.json();
+            return result;
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
+            return rejectWithValue("Failed to reschedule booking");
+        }
+    }
+);
+
+// Thunk to cancel a booking
+export const cancelBooking = createAsyncThunk<
+    { success: boolean; booking: Booking; propertyId: string },
+    { bookingId: string; propertyId: string },
+    { rejectValue: string }
+>(
+    "booking/cancel",
+    async ({ bookingId, propertyId }, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await fetch(`/api/bookings/${bookingId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to cancel booking");
+            }
+
+            const result = await response.json();
+
+            // When booking is cancelled, update property status back to "Available"
+            if (result.success && propertyId) {
+                // API call to update property status
+                dispatch(updatePropertyStatus({
+                    propertyId: propertyId,
+                    status: "Available"
+                }));
+
+                // Local state update immediately
+                dispatch(setPropertyAvailable(propertyId));
+            }
+
+            return {
+                ...result,
+                propertyId
+            };
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
+            return rejectWithValue("Failed to cancel booking");
+        }
+    }
+);
+
 const bookingSlice = createSlice({
     name: 'booking',
     initialState,
     reducers: {
-        // Set booking form data
         setBookingFormData: (state, action: PayloadAction<Partial<BookingFormData>>) => {
             state.formData = { ...state.formData, ...action.payload };
             state.isAutoFilled = true;
         },
-
-        // Update a single booking form field
         updateBookingFormField: (state, action: PayloadAction<{ field: keyof BookingFormData; value: string }>) => {
             state.formData[action.payload.field] = action.payload.value;
         },
-
-        // Reset the booking form
         resetBookingForm: (state) => {
             state.formData = initialState.formData;
             state.isAutoFilled = false;
             state.success = false;
             state.error = null;
         },
-
-        // Clear auto-fill flag
         clearAutoFill: (state) => {
             state.isAutoFilled = false;
         },
-
-        // Add a recent booking
         addRecentBooking: (state, action: PayloadAction<string>) => {
             state.recentBookings = [
                 action.payload,
                 ...state.recentBookings.filter(id => id !== action.payload)
             ].slice(0, 10);
         },
-
-        // Clear recent bookings
         clearRecentBookings: (state) => {
             state.recentBookings = [];
         },
-
-        // Clear errors
         clearBookingError: (state) => {
             state.error = null;
         },
-
-        // Clear success state
         clearBookingSuccess: (state) => {
             state.success = false;
+        },
+        setRescheduleLoading: (state, action: PayloadAction<{ bookingId: string; loading: boolean }>) => {
+            state.rescheduleLoading[action.payload.bookingId] = action.payload.loading;
+        },
+        setCancelLoading: (state, action: PayloadAction<{ bookingId: string; loading: boolean }>) => {
+            state.cancelLoading[action.payload.bookingId] = action.payload.loading;
         }
     },
     extraReducers: (builder) => {
         builder
-            // Booking submission - pending
+            // Submit Booking
             .addCase(submitBooking.pending, (state) => {
                 state.loading = true;
                 state.error = null;
                 state.success = false;
             })
-            // Booking submission - fulfilled
             .addCase(submitBooking.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = true;
                 state.error = null;
-
-                // Add to recent bookings
                 if (action.payload.propertyId) {
                     state.recentBookings = [
                         action.payload.propertyId,
                         ...state.recentBookings.filter(id => id !== action.payload.propertyId)
                     ].slice(0, 10);
                 }
-
-                // Reset form
                 state.formData = initialState.formData;
                 state.isAutoFilled = false;
             })
-            // Booking submission - rejected
             .addCase(submitBooking.rejected, (state, action) => {
                 state.loading = false;
                 state.success = false;
                 state.error = action.payload || "Failed to submit booking";
+            })
+            // Reschedule Booking
+            .addCase(rescheduleBooking.pending, (state, action) => {
+                const bookingId = action.meta.arg.bookingId;
+                state.rescheduleLoading[bookingId] = true;
+                state.error = null;
+            })
+            .addCase(rescheduleBooking.fulfilled, (state, action) => {
+                const bookingId = action.meta.arg.bookingId;
+                state.rescheduleLoading[bookingId] = false;
+                state.success = true;
+            })
+            .addCase(rescheduleBooking.rejected, (state, action) => {
+                const bookingId = action.meta.arg.bookingId;
+                state.rescheduleLoading[bookingId] = false;
+                state.error = action.payload || "Failed to reschedule booking";
+            })
+            // Cancel Booking
+            .addCase(cancelBooking.pending, (state, action) => {
+                const bookingId = action.meta.arg.bookingId;
+                state.cancelLoading[bookingId] = true;
+                state.error = null;
+            })
+            .addCase(cancelBooking.fulfilled, (state, action) => {
+                const bookingId = action.meta.arg.bookingId;
+                state.cancelLoading[bookingId] = false;
+                state.success = true;
+            })
+            .addCase(cancelBooking.rejected, (state, action) => {
+                const bookingId = action.meta.arg.bookingId;
+                state.cancelLoading[bookingId] = false;
+                state.error = action.payload || "Failed to cancel booking";
             });
     }
 });
 
-export const {
-    setBookingFormData,
+export const { setBookingFormData,
     updateBookingFormField,
     resetBookingForm,
     clearAutoFill,
     addRecentBooking,
     clearRecentBookings,
     clearBookingError,
-    clearBookingSuccess
+    clearBookingSuccess,
+    setRescheduleLoading,
+    setCancelLoading
 } = bookingSlice.actions;
 
 export default bookingSlice.reducer;

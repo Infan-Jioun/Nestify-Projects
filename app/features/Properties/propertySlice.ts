@@ -1,4 +1,4 @@
-// lib/slices/propertySlice.ts
+
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import { PropertyType } from "@/app/Types/properties";
@@ -162,6 +162,28 @@ const propertySlice = createSlice({
       if (state.currentProperty && state.currentProperty._id === propertyId) {
         state.currentProperty.status = status;
       }
+    },
+
+    setPropertyAvailable: (state, action: PayloadAction<string>) => {
+      const propertyId = action.payload;
+
+      const index = state.properties.findIndex(p => p._id === propertyId);
+      if (index !== -1) state.properties[index].status = "Available";
+
+      if (state.currentProperty && state.currentProperty._id === propertyId) {
+        state.currentProperty.status = "Available";
+      }
+    },
+ 
+    setPropertySold: (state, action: PayloadAction<string>) => {
+      const propertyId = action.payload;
+
+      const index = state.properties.findIndex(p => p._id === propertyId);
+      if (index !== -1) state.properties[index].status = "Sold";
+
+      if (state.currentProperty && state.currentProperty._id === propertyId) {
+        state.currentProperty.status = "Sold";
+      }
     }
   },
   extraReducers: (builder) => {
@@ -281,7 +303,9 @@ export const {
   clearError,
   toggleFavorite,
   clearProperties,
-  updatePropertyStatusLocal
+  updatePropertyStatusLocal,
+  setPropertyAvailable,
+  setPropertySold
 } = propertySlice.actions;
 
 export default propertySlice.reducer;

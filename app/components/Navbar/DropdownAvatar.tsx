@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react"
-import { BookOpenIcon, Layers2Icon, LogOutIcon, Save } from "lucide-react";
+import { BookOpenIcon,  LogOutIcon, Save } from "lucide-react";
 import Image from "next/image";
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
 import Link from "next/link";

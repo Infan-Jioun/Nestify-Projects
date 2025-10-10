@@ -1,8 +1,7 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User } from "@/app/Types/user";
-import { imageUpload } from "@/hooks/useImageUpload";
 import { UserRole } from "@/app/Types/auth";
 
 interface ProfileHeaderProps {
@@ -41,7 +40,6 @@ export default function ProfileHeader({
     onEnterEditMode,
     onInputChange,
     onImageSelect,
-    onRemoveImage,
 }: ProfileHeaderProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 

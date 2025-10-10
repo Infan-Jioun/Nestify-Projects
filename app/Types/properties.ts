@@ -1,4 +1,3 @@
-
 export interface CategoryField {
     id: string;
     name: string;
