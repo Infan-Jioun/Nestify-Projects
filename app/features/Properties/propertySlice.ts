@@ -27,16 +27,16 @@ export const fetchPropertiesByEmail = createAsyncThunk<
     const res = await axios.get<PropertiesResponse>(
       `/api/properties/real_estate_developer/by-email?email=${encodeURIComponent(email)}`
     );
-    return { 
-      properties: res.data.properties, 
-      count: res.data.count 
+    return {
+      properties: res.data.properties,
+      count: res.data.count
     };
   } catch (err: unknown) {
     const error = err as AxiosError<{ error?: string; message?: string }>;
     console.error('fetchPropertiesByEmail error:', error.response?.data);
     return rejectWithValue(
-      error.response?.data?.error || 
-      error.response?.data?.message || 
+      error.response?.data?.error ||
+      error.response?.data?.message ||
       'Failed to fetch properties by email'
     );
   }
@@ -54,7 +54,7 @@ export const fetchProperties = createAsyncThunk<
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(
-      error.response?.data?.message || 
+      error.response?.data?.message ||
       "Failed to load properties"
     );
   }
@@ -75,7 +75,7 @@ export const fetchPropertiesByCategory = createAsyncThunk<
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(
-      error.response?.data?.message || 
+      error.response?.data?.message ||
       "Failed to load properties by category"
     );
   }
@@ -93,7 +93,7 @@ export const fetchPropertyById = createAsyncThunk<
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(
-      error.response?.data?.message || 
+      error.response?.data?.message ||
       "Failed to load property details"
     );
   }
@@ -107,15 +107,36 @@ export const updatePropertyStatus = createAsyncThunk<
 >("properties/updateStatus", async ({ propertyId, status }, { rejectWithValue }) => {
   try {
     const response = await axios.put<{ property: PropertyType }>(
-      `/api/properties/${propertyId}`, 
+      `/api/properties/${propertyId}`,
       { status }
     );
     return response.data.property;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(
-      error.response?.data?.message || 
+      error.response?.data?.message ||
       "Failed to update property status"
+    );
+  }
+});
+
+// Update property - ADD THIS MISSING ACTION
+export const updateProperty = createAsyncThunk<
+  PropertyType,
+  { propertyId: string; propertyData: Partial<PropertyType> },
+  { rejectValue: string }
+>("properties/update", async ({ propertyId, propertyData }, { rejectWithValue }) => {
+  try {
+    const response = await axios.put<{ property: PropertyType }>(
+      `/api/properties/${propertyId}`,
+      propertyData
+    );
+    return response.data.property;
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ message: string }>;
+    return rejectWithValue(
+      error.response?.data?.message ||
+      "Failed to update property"
     );
   }
 });
@@ -132,7 +153,7 @@ export const addProperty = createAsyncThunk<
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(
-      error.response?.data?.message || 
+      error.response?.data?.message ||
       "Failed to add property"
     );
   }
@@ -150,7 +171,7 @@ export const deleteProperty = createAsyncThunk<
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
     return rejectWithValue(
-      error.response?.data?.message || 
+      error.response?.data?.message ||
       "Failed to delete property"
     );
   }
@@ -297,6 +318,28 @@ const propertySlice = createSlice({
       .addCase(updatePropertyStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update property status";
+      })
+
+      // Update property - ADD THIS MISSING CASE
+      .addCase(updateProperty.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProperty.fulfilled, (state, action) => {
+        state.loading = false;
+
+        const updatedProperty = action.payload;
+        const index = state.properties.findIndex(p => p._id === updatedProperty._id);
+        if (index !== -1) {
+          state.properties[index] = updatedProperty;
+        }
+
+        if (state.currentProperty && state.currentProperty._id === updatedProperty._id) {
+          state.currentProperty = updatedProperty;
+        }
+      })
+      .addCase(updateProperty.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update property";
       })
 
       // Add property

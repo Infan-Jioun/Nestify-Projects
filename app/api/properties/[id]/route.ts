@@ -1,176 +1,178 @@
+// app/api/properties/[id]/route.ts
 import Property from '@/app/models/properties';
 import { authOptions } from '@/lib/auth-options';
 import connectToDatabase from '@/lib/mongodb';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
+import { SessionUser } from '@/app/Types/properties';
 
+// GET - Get single property by ID
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  await connectToDatabase();
-  try {
-    const { id } = await context.params;
-    if (!id) {
-      return NextResponse.json({ message: "ID is required" }, { status: 400 });
-    }
-    const property = await Property.findById(id);
-    if (!property) {
-      return NextResponse.json({ message: "Property not found" }, { status: 404 });
-    }
-    return NextResponse.json(property, { status: 200 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Failed to fetch property" }, { status: 500 });
-  }
-}
-export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  await connectToDatabase();
-  try {
-    const { id } = await context.params;
-
-    if (!id) return NextResponse.json({ message: "Property id is required" }, { status: 400 });
-
-    const deletedProperty = await Property.findByIdAndDelete(id);
-    if (!deletedProperty) return NextResponse.json({ message: "Property not found" }, { status: 404 });
-
-    return NextResponse.json({ message: "Property deleted successfully", property: deletedProperty }, { status: 200 });
-  } catch (err) {
-    console.error("Failed to delete property:", err);
-    return NextResponse.json({ message: "Failed to delete property" }, { status: 500 });
-  }
-}
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    console.log('Starting property status update...');
-
     await connectToDatabase();
-    console.log('Database connected');
+    try {
+        const { id } = await context.params;
+        
+        if (!id) {
+            return NextResponse.json({ message: "ID is required" }, { status: 400 });
+        }
 
-    const session = await getServerSession(authOptions);
-    console.log('Session user:', session?.user?.email);
+        const property = await Property.findById(id);
+        
+        if (!property) {
+            return NextResponse.json({ message: "Property not found" }, { status: 404 });
+        }
 
-    if (!session?.user) {
-      console.log('No session found - Unauthorized');
-      return NextResponse.json(
-        { error: 'Unauthorized. Please log in to update property.' },
-        { status: 401 }
-      );
+        return NextResponse.json(property, { status: 200 });
+    } catch (error) {
+        console.error("Failed to fetch property:", error);
+        return NextResponse.json({ message: "Failed to fetch property" }, { status: 500 });
     }
+}
 
+// DELETE - Delete property by ID
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+    try {
+        const session = await getServerSession(authOptions);
 
-    const { id } = await params;
-    const propertyId = id;
+        if (!session?.user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
-    console.log('Property ID to update:', propertyId);
+        await connectToDatabase();
+        
+        const { id } = await context.params;
 
-    if (!propertyId) {
-      return NextResponse.json(
-        { error: 'Property ID is required' },
-        { status: 400 }
-      );
+        if (!id) {
+            return NextResponse.json({ message: "Property id is required" }, { status: 400 });
+        }
+
+        const deletedProperty = await Property.findByIdAndDelete(id);
+        
+        if (!deletedProperty) {
+            return NextResponse.json({ message: "Property not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ 
+            success: true,
+            message: "Property deleted successfully", 
+            property: deletedProperty 
+        }, { status: 200 });
+    } catch (error: unknown) {
+        console.error("Failed to delete property:", error);
+        
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        return NextResponse.json({ 
+            error: "Failed to delete property",
+            details: errorMessage 
+        }, { status: 500 });
     }
+}
 
-    const body = await request.json();
-    console.log('Update request body:', body);
+// PUT - Update property
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+    try {
+        const session = await getServerSession(authOptions);
 
-    const allowedFields = ['status'];
-    const invalidFields = Object.keys(body).filter(field => !allowedFields.includes(field));
+        if (!session?.user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
-    if (invalidFields.length > 0) {
-      return NextResponse.json(
-        { error: `Only status field can be updated. Invalid fields: ${invalidFields.join(', ')}` },
-        { status: 400 }
-      );
-    }
+        await connectToDatabase();
 
-    const validStatuses = ['Available', 'Rented', 'Sold', 'Pending'];
-    if (body.status && !validStatuses.includes(body.status)) {
-      return NextResponse.json(
-        { error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` },
-        { status: 400 }
-      );
-    }
+        const { id } = await context.params;
+        const propertyId = id;
 
-  
-    const existingProperty = await Property.findById(propertyId);
-    if (!existingProperty) {
-      return NextResponse.json(
-        { error: 'Property not found' },
-        { status: 404 }
-      );
-    }
+        if (!propertyId) {
+            return NextResponse.json({ error: 'Property ID is required' }, { status: 400 });
+        }
 
-    console.log('Existing property found:', {
-      id: existingProperty._id,
-      currentStatus: existingProperty.status
-    });
+        const body = await req.json();
+        console.log('Update request body:', body);
 
- 
-    const updateData: { status?: string; updatedAt?: Date } = {};
-    if (body.status) {
-      updateData.status = body.status;
-    }
-    updateData.updatedAt = new Date();
+        // Define allowed fields for update
+        const allowedFields = [
+            'status', 'title', 'price', 'currency', 'propertySize', 'address',
+            'geoCountryLocation', 'yearBuild', 'images', 'videos', 'contactNumber',
+            'bedrooms', 'bathrooms', 'drawingRoom', 'kitchen', 'floor', 'furnishing',
+            'floorArea', 'parkingSpaces', 'roomsSections', 'landArea', 'plotNumber',
+            'landType', 'facilities', 'propertyFacilities', 'districtName'
+        ];
 
-    console.log('Data to update:', updateData);
+        const updateData: Record<string, unknown> = {};
 
+        // Filter only allowed fields
+        Object.keys(body).forEach(field => {
+            if (allowedFields.includes(field)) {
+                updateData[field] = body[field];
+            }
+        });
 
-    const updatedProperty = await Property.findByIdAndUpdate(
-      propertyId,
-      { $set: updateData },
-      { new: true, runValidators: true }
-    );
+        // Add updatedAt timestamp
+        updateData.updatedAt = new Date();
 
-    if (!updatedProperty) {
-      return NextResponse.json(
-        { error: 'Failed to update property' },
-        { status: 500 }
-      );
-    }
+        // Validate status if provided
+        if (updateData.status) {
+            const validStatuses = ['Available', 'Rented', 'Sold', 'Pending'];
+            if (!validStatuses.includes(updateData.status as string)) {
+                return NextResponse.json(
+                    { error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` },
+                    { status: 400 }
+                );
+            }
+        }
 
-    console.log('Property updated successfully:', {
-      id: updatedProperty._id,
-      newStatus: updatedProperty.status
-    });
+        // Check if property exists
+        const existingProperty = await Property.findById(propertyId);
+        if (!existingProperty) {
+            return NextResponse.json({ error: 'Property not found' }, { status: 404 });
+        }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Property status updated successfully',
-      property: {
-        _id: updatedProperty._id,
-        title: updatedProperty.title,
-        status: updatedProperty.status,
-        price: updatedProperty.price,
-        address: updatedProperty.address,
-        updatedAt: updatedProperty.updatedAt
-      }
-    }, { status: 200 });
-
-  } catch (error: unknown) {
-    console.error('Property update API error:', error);
-
-    if (error instanceof Error) {
-     // MongoDB validation error
-      if (error.name === 'ValidationError') {
-        return NextResponse.json(
-          { error: 'Validation error: ' + error.message },
-          { status: 400 }
+        // Update the property
+        const updatedProperty = await Property.findByIdAndUpdate(
+            propertyId,
+            { $set: updateData },
+            { new: true, runValidators: true }
         );
-      }
 
-  
-      if (error.name === 'CastError') {
+        if (!updatedProperty) {
+            return NextResponse.json({ error: 'Failed to update property' }, { status: 500 });
+        }
+
+        console.log('Property updated successfully:', {
+            id: updatedProperty._id,
+            updatedFields: Object.keys(updateData)
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: 'Property updated successfully',
+            property: updatedProperty
+        }, { status: 200 });
+
+    } catch (error: unknown) {
+        console.error('Property update API error:', error);
+
+        if (error instanceof Error) {
+            // MongoDB validation error
+            if (error.name === 'ValidationError') {
+                return NextResponse.json(
+                    { error: 'Validation error: ' + error.message },
+                    { status: 400 }
+                );
+            }
+
+            // Cast error (invalid ID format)
+            if (error.name === 'CastError') {
+                return NextResponse.json(
+                    { error: 'Invalid property ID format' },
+                    { status: 400 }
+                );
+            }
+        }
+
         return NextResponse.json(
-          { error: 'Invalid property ID' },
-          { status: 400 }
+            { error: 'Internal server error. Please try again.' },
+            { status: 500 }
         );
-      }
     }
-
-    return NextResponse.json(
-      { error: 'Internal server error. Please try again.' },
-      { status: 500 }
-    );
-  }
 }
