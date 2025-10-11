@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
 import { BiError } from "react-icons/bi";
 import { MdOutlineCheck } from "react-icons/md";
 import { Button } from "@/components/ui/button";

@@ -220,7 +220,7 @@ export default function MyProperties() {
                 <div className="bg-white rounded-2xl shadow-sm p-12 text-center border border-gray-100">
                     <div className="text-6xl mb-4">🏠</div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-3">No Properties Found</h3>
-                    <p className="text-gray-600 mb-8 text-lg">You haven't added any properties yet.</p>
+                    <p className="text-gray-600 mb-8 text-lg">{"You haven't added any properties yet."}</p>
                     <Link
                         href="/dashboard/real_estate_developer/add-property"
                         className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition-colors font-semibold text-lg"
