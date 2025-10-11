@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/lib/store'
 import { fetchPropertiesByEmail } from '@/app/features/Properties/propertySlice'
 import { PropertyType, SessionUser } from '@/app/Types/properties'
+import Link from 'next/link'
 
 interface DeveloperStats {
   totalProperties: number;
@@ -34,7 +35,7 @@ export default function DeveloperPage() {
     if (status === 'authenticated' && session?.user?.email) {
       const userEmail = session.user.email;
       console.log('Fetching properties for user:', userEmail);
-      
+
       dispatch(fetchPropertiesByEmail(userEmail))
         .unwrap()
         .then((result) => {
@@ -50,7 +51,7 @@ export default function DeveloperPage() {
   useEffect(() => {
     if (properties && properties.length > 0 && !propertiesLoading) {
       console.log('Calculating stats for properties:', properties.length);
-      
+
       const totalProperties = properties.length;
       const activeListings = properties.filter(prop => prop.status === 'Available').length;
       const soldProperties = properties.filter(prop => prop.status === 'Sold').length;
@@ -102,12 +103,14 @@ export default function DeveloperPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard
-          title="My Properties"
-          value={properties?.length || 0}
-          change={`${properties?.length || 0} properties managed`}
-          trend="neutral"
-        />
+        <Link href={"/dashboard/real_estate_developer/MyProperties"}>
+          <StatCard
+            title="My Properties"
+            value={properties?.length || 0}
+            change={`${properties?.length || 0} properties managed`}
+            trend="neutral"
+          />
+        </Link>
         <StatCard
           title="Active Listings"
           value={developerStats.activeListings}
@@ -265,11 +268,11 @@ function DeveloperSkeleton() {
 }
 
 // Stat Card Component
-function StatCard({ 
-  title, 
-  value, 
-  change, 
-  trend 
+function StatCard({
+  title,
+  value,
+  change,
+  trend
 }: {
   title: string;
   value: string | number;
@@ -338,10 +341,10 @@ function PropertyItem({ property }: { property: PropertyType }) {
 }
 
 // Status Item Component
-function StatusItem({ 
-  status, 
-  count, 
-  color 
+function StatusItem({
+  status,
+  count,
+  color
 }: {
   status: string;
   count: number;
