@@ -1,3 +1,4 @@
+// app/api/bookings/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Booking from '@/app/models/Booking';
@@ -21,7 +22,6 @@ export async function PUT(
             );
         }
 
-        // Await the params first
         const { id } = await params;
 
         if (!id) {
@@ -32,55 +32,19 @@ export async function PUT(
         }
 
         const body = await request.json();
-        const { bookingDate, bookingTime, message } = body;
+        const { status } = body;
 
-        // Validate required fields
-        if (!bookingDate || !bookingTime) {
+        if (!status || !['pending', 'confirmed', 'cancelled', 'completed'].includes(status)) {
             return NextResponse.json(
-                { error: 'Date and time are required' },
+                { error: 'Valid status is required' },
                 { status: 400 }
             );
         }
 
-        // Validate date format
-        const selectedDate = new Date(bookingDate);
-        if (isNaN(selectedDate.getTime())) {
-            return NextResponse.json(
-                { error: 'Invalid date format' },
-                { status: 400 }
-            );
-        }
-
-        // Validate date is not in the past
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (selectedDate < today) {
-            return NextResponse.json(
-                { error: 'Selected date cannot be in the past' },
-                { status: 400 }
-            );
-        }
-
-        // Validate time format
-        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (!timeRegex.test(bookingTime)) {
-            return NextResponse.json(
-                { error: 'Invalid time format' },
-                { status: 400 }
-            );
-        }
-
-        // Find and update the booking
         const booking = await Booking.findOneAndUpdate(
+            { _id: id },
             {
-                _id: id,
-                userId: session.user.id || session.user.email
-            },
-            {
-                bookingDate,
-                bookingTime,
-                ...(message && { message }),
+                status: status,
                 updatedAt: new Date()
             },
             { new: true }
@@ -95,21 +59,15 @@ export async function PUT(
 
         return NextResponse.json({
             success: true,
-            message: 'Booking rescheduled successfully',
-            booking
+            message: 'Booking status updated successfully',
+            booking: {
+                _id: booking._id.toString(),
+                status: booking.status
+            }
         });
 
     } catch (error: unknown) {
-        console.error('Reschedule booking error:', error);
-
-        // Handle specific MongoDB errors
-        if (error instanceof Error && error.name === 'CastError') {
-            return NextResponse.json(
-                { error: 'Invalid booking ID format' },
-                { status: 400 }
-            );
-        }
-
+        console.error('Update booking error:', error);
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }
@@ -133,7 +91,6 @@ export async function DELETE(
             );
         }
 
-        // Await the params first
         const { id } = await params;
 
         if (!id) {
@@ -143,11 +100,7 @@ export async function DELETE(
             );
         }
 
-        // Find the booking first to get propertyId
-        const existingBooking = await Booking.findOne({
-            _id: id,
-            userId: session.user.id || session.user.email
-        });
+        const existingBooking = await Booking.findOne({ _id: id });
 
         if (!existingBooking) {
             return NextResponse.json(
@@ -158,12 +111,8 @@ export async function DELETE(
 
         const propertyId = existingBooking.propertyId;
 
-        // Update the booking status to cancelled
         const booking = await Booking.findOneAndUpdate(
-            {
-                _id: id,
-                userId: session.user.id || session.user.email
-            },
+            { _id: id },
             {
                 status: 'cancelled',
                 updatedAt: new Date()
@@ -178,7 +127,6 @@ export async function DELETE(
             );
         }
 
-        // Update property status back to Available
         if (propertyId) {
             try {
                 await Property.findByIdAndUpdate(
@@ -186,33 +134,24 @@ export async function DELETE(
                     {
                         status: 'Available',
                         updatedAt: new Date()
-                    },
-                    { new: true }
+                    }
                 );
             } catch (propertyError) {
                 console.error('Error updating property status:', propertyError);
-                // Continue even if property update fails
             }
         }
 
         return NextResponse.json({
             success: true,
             message: 'Booking cancelled successfully',
-            booking,
-            propertyId
+            booking: {
+                _id: booking._id.toString(),
+                status: booking.status
+            }
         });
 
     } catch (error: unknown) {
         console.error('Cancel booking error:', error);
-
-        // Handle specific MongoDB errors
-        if (error instanceof Error && error.name === 'CastError') {
-            return NextResponse.json(
-                { error: 'Invalid booking ID format' },
-                { status: 400 }
-            );
-        }
-
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }

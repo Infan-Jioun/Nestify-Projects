@@ -25,6 +25,7 @@ import { UserRole } from "@/app/Types/auth"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
   const userRole = session?.user?.role as UserRole
+  const userId = session?.user?.id;
   const data = {
     user: {
       name: session?.user.name ?? "Guest User",
@@ -67,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: "Developers",
-            url: "/dashboard/developer",
+            url: `/dashboard/developer/${userId}`,
           },
           {
             title: "Add Property",

@@ -1,6 +1,4 @@
-
 "use client"
-
 import { useDispatch, useSelector } from "react-redux"
 import NextHead from "../components/NextHead/NextHead"
 import { AppDispatch, RootState } from "@/lib/store"

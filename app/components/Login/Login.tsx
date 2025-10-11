@@ -86,11 +86,11 @@ export function Login() {
         callbackUrl,
       });
 
-      console.log("SignIn result:", result); 
+      console.log("SignIn result:", result); // Debug log
 
       if (result?.ok) {
         const session = await getSession();
-        console.log("Session:", session); 
+        console.log("Session:", session); // Debug log
 
         if (session?.user) {
           const user = session.user as CustomSessionUser & { emailVerified?: boolean };

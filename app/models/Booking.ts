@@ -1,6 +1,8 @@
-import  { Schema, Document, models, model } from 'mongoose';
+// app/models/Booking.ts
+import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export interface IBooking extends Document {
+    _id: mongoose.Types.ObjectId;
     propertyId: string;
     userId: string;
     userName: string;
