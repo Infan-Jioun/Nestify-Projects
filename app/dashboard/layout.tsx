@@ -16,10 +16,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .replace(/\b\w/g, (char) => char.toUpperCase())
     return (
         <SidebarProvider>
-            <AppSidebar />
+            {/* <AppSidebar /> */}
             <SidebarInset>
                 {/* Dashboard Header */}
-                <header className=" h-16 shrink-0 items-center gap-2 px-4 border-b">
+                {/* <header className=" h-16 shrink-0 items-center gap-2 px-4 border-b">
                     <SidebarTrigger className="-ml-1" />
                     <Separator className="mr-2 h-4" />
                     <Breadcrumb>
@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             )}
                         </BreadcrumbList>
                     </Breadcrumb>
-                </header>
+                </header> */}
 
 
                 <main className="flex flex-1 flex-col gap-4 p-4 pt-0 ">

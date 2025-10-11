@@ -19,13 +19,16 @@ import { UserRole } from "@/app/Types/auth";
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const userRole = session?.user?.role as UserRole
+  const userId = session?.user?.id;
   const [scrolled, setScrolled] = useState(false);
+
   const navlinks = [
     { name: "Home", href: "/" },
     { name: "Properties", href: "/Properties" },
 
     ...(session && (session.user.role === UserRole.ADMIN || session.user.role === UserRole.REAL_ESTATE_DEVELOPER)
-      ? [{ name: "Dashboard", href: "/dashboard" }]
+      ? [{ name: "Dashboard", href: `/dashboard/${userRole.toLowerCase()}/${userId}` }]
       : []),
     { name: "About", href: "/About" },
     { name: "Blog", href: "/Blog" },
@@ -113,7 +116,7 @@ export function Navbar() {
                 whileTap={{ scale: 0.95 }}
                 className="btn h-10 px-4 rounded-full bg-white text-black border border-gray-300 hover:text-green-500 transition"
               >
-              My Bookings
+                My Bookings
               </motion.button>
             </Link>
           </div>

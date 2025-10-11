@@ -1,13 +1,13 @@
 
 import NextAuth, { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import bcrypt from "bcryptjs";
-import { Types } from "mongoose";
-import connectToDatabase from "@/lib/mongodb";
-import UserModel from "@/app/models/user";
-import { UserRole } from "@/app/Types/auth";
+// import CredentialsProvider from "next-auth/providers/credentials";
+// import GoogleProvider from "next-auth/providers/google";
+// import GitHubProvider from "next-auth/providers/github";
+// import bcrypt from "bcryptjs";
+// import { Types } from "mongoose";
+// import connectToDatabase from "@/lib/mongodb";
+// import UserModel from "@/app/models/user";
+// import { UserRole } from "@/app/Types/auth";
 import { authOptions } from "@/lib/auth-options";
 
 interface ExtendedProfile {

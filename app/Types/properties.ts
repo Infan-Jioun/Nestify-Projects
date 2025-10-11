@@ -10,7 +10,7 @@ export interface Category {
 }
 
 export interface PropertyType {
-    _id?: string ;
+    _id?: string;
     title: string;
     category: Category;
     listingStatus: string;
@@ -49,4 +49,16 @@ export interface PropertyType {
     isFavorite?: boolean;
     districtName?: string;
 }
+export interface PropertiesResponse {
+    email: string;
+    count: number;
+    properties: PropertyType[];
+}
 
+
+export interface SessionUser {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string;
+}

@@ -1,7 +1,7 @@
-
+// app/features/Properties/propertySlice.ts
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
-import { PropertyType } from "@/app/Types/properties";
+import { PropertyType, PropertiesResponse, SessionUser } from "@/app/Types/properties";
 
 interface PropertyState {
   properties: PropertyType[];
@@ -17,6 +17,31 @@ const initialState: PropertyState = {
   error: null,
 };
 
+// Fetch properties by developer
+export const fetchPropertiesByEmail = createAsyncThunk<
+  { properties: PropertyType[]; count: number },
+  string,
+  { rejectValue: string }
+>('properties/fetchByEmail', async (email, { rejectWithValue }) => {
+  try {
+    const res = await axios.get<PropertiesResponse>(
+      `/api/properties/real_estate_developer/by-email?email=${encodeURIComponent(email)}`
+    );
+    return { 
+      properties: res.data.properties, 
+      count: res.data.count 
+    };
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ error?: string; message?: string }>;
+    console.error('fetchPropertiesByEmail error:', error.response?.data);
+    return rejectWithValue(
+      error.response?.data?.error || 
+      error.response?.data?.message || 
+      'Failed to fetch properties by email'
+    );
+  }
+});
+
 // Fetch all properties
 export const fetchProperties = createAsyncThunk<
   PropertyType[],
@@ -28,7 +53,10 @@ export const fetchProperties = createAsyncThunk<
     return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to load properties");
+    return rejectWithValue(
+      error.response?.data?.message || 
+      "Failed to load properties"
+    );
   }
 });
 
@@ -46,7 +74,10 @@ export const fetchPropertiesByCategory = createAsyncThunk<
     return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to load properties by category");
+    return rejectWithValue(
+      error.response?.data?.message || 
+      "Failed to load properties by category"
+    );
   }
 });
 
@@ -61,7 +92,10 @@ export const fetchPropertyById = createAsyncThunk<
     return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to load property details");
+    return rejectWithValue(
+      error.response?.data?.message || 
+      "Failed to load property details"
+    );
   }
 });
 
@@ -72,20 +106,24 @@ export const updatePropertyStatus = createAsyncThunk<
   { rejectValue: string }
 >("properties/updateStatus", async ({ propertyId, status }, { rejectWithValue }) => {
   try {
-    const response = await axios.put<{ property: PropertyType }>(`/api/properties/${propertyId}`, {
-      status
-    });
+    const response = await axios.put<{ property: PropertyType }>(
+      `/api/properties/${propertyId}`, 
+      { status }
+    );
     return response.data.property;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to update property status");
+    return rejectWithValue(
+      error.response?.data?.message || 
+      "Failed to update property status"
+    );
   }
 });
 
 // Add a new property
 export const addProperty = createAsyncThunk<
   PropertyType,
-  Omit<PropertyType, '_id'>,
+  Omit<PropertyType, '_id' | 'createdAt' | 'updatedAt'>,
   { rejectValue: string }
 >("properties/add", async (newProperty, { rejectWithValue }) => {
   try {
@@ -93,7 +131,10 @@ export const addProperty = createAsyncThunk<
     return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to add property");
+    return rejectWithValue(
+      error.response?.data?.message || 
+      "Failed to add property"
+    );
   }
 });
 
@@ -108,24 +149,10 @@ export const deleteProperty = createAsyncThunk<
     return _id;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to delete property");
-  }
-});
-
-// Fetch properties by developer
-export const fetchPropertiesByDeveloper = createAsyncThunk<
-  PropertyType[],
-  string,
-  { rejectValue: string }
->("properties/fetchByDeveloper", async (userId, { rejectWithValue }) => {
-  try {
-    const response = await axios.get<{ properties: PropertyType[] }>(
-      `/api/properties/developer/${userId}`
+    return rejectWithValue(
+      error.response?.data?.message || 
+      "Failed to delete property"
     );
-    return response.data.properties;
-  } catch (err: unknown) {
-    const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to load developer properties");
   }
 });
 
@@ -141,7 +168,9 @@ const propertySlice = createSlice({
     },
     toggleFavorite: (state, action: PayloadAction<string>) => {
       const property = state.properties.find(p => p._id === action.payload);
-      if (property) property.isFavorite = !property.isFavorite;
+      if (property) {
+        property.isFavorite = !property.isFavorite;
+      }
 
       if (state.currentProperty && state.currentProperty._id === action.payload) {
         state.currentProperty.isFavorite = !state.currentProperty.isFavorite;
@@ -157,29 +186,33 @@ const propertySlice = createSlice({
       const { propertyId, status } = action.payload;
 
       const index = state.properties.findIndex(p => p._id === propertyId);
-      if (index !== -1) state.properties[index].status = status;
+      if (index !== -1) {
+        state.properties[index].status = status;
+      }
 
       if (state.currentProperty && state.currentProperty._id === propertyId) {
         state.currentProperty.status = status;
       }
     },
-
     setPropertyAvailable: (state, action: PayloadAction<string>) => {
       const propertyId = action.payload;
 
       const index = state.properties.findIndex(p => p._id === propertyId);
-      if (index !== -1) state.properties[index].status = "Available";
+      if (index !== -1) {
+        state.properties[index].status = "Available";
+      }
 
       if (state.currentProperty && state.currentProperty._id === propertyId) {
         state.currentProperty.status = "Available";
       }
     },
- 
     setPropertySold: (state, action: PayloadAction<string>) => {
       const propertyId = action.payload;
 
       const index = state.properties.findIndex(p => p._id === propertyId);
-      if (index !== -1) state.properties[index].status = "Sold";
+      if (index !== -1) {
+        state.properties[index].status = "Sold";
+      }
 
       if (state.currentProperty && state.currentProperty._id === propertyId) {
         state.currentProperty.status = "Sold";
@@ -188,6 +221,20 @@ const propertySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch by developer
+      .addCase(fetchPropertiesByEmail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPropertiesByEmail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties = action.payload.properties;
+      })
+      .addCase(fetchPropertiesByEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to load developer properties";
+      })
+
       // Fetch all properties
       .addCase(fetchProperties.pending, (state) => {
         state.loading = true;
@@ -239,7 +286,9 @@ const propertySlice = createSlice({
 
         const updatedProperty = action.payload;
         const index = state.properties.findIndex(p => p._id === updatedProperty._id);
-        if (index !== -1) state.properties[index] = updatedProperty;
+        if (index !== -1) {
+          state.properties[index] = updatedProperty;
+        }
 
         if (state.currentProperty && state.currentProperty._id === updatedProperty._id) {
           state.currentProperty = updatedProperty;
@@ -280,20 +329,6 @@ const propertySlice = createSlice({
       .addCase(deleteProperty.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to delete property";
-      })
-
-      // Fetch by developer
-      .addCase(fetchPropertiesByDeveloper.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchPropertiesByDeveloper.fulfilled, (state, action) => {
-        state.loading = false;
-        state.properties = action.payload;
-      })
-      .addCase(fetchPropertiesByDeveloper.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to load developer properties";
       });
   },
 });
