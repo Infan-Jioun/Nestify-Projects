@@ -145,7 +145,7 @@ export default function SoldPropertiesPage() {
                     <div className="text-4xl sm:text-6xl mb-4">🏠</div>
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">No Sold Properties Yet</h3>
                     <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
-                        You haven't sold any properties yet. Start by marking your properties as sold.
+                        {"You haven't sold any properties yet. Start by marking your properties as sold."}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <Link

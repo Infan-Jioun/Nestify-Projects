@@ -9,7 +9,6 @@ import BookingDetailsModal from './components/BookingDetailsModal'
 import BookingsSkeleton from './components/BookingsSkeleton'
 import { Booking, BookingStats } from '@/app/Types/Booking'
 
-
 export default function BookingsPage() {
     const { data: session, status } = useSession();
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -117,23 +116,28 @@ export default function BookingsPage() {
                 throw new Error(errorData.error || 'Failed to update booking status');
             }
 
-            const result = await response.json();
+            // Remove unused variable 'result'
+            await response.json();
 
-            // Update local state
+            // Update local state with proper type
             setBookings(prevBookings =>
                 prevBookings.map(booking =>
                     booking._id === bookingId
-                        ? { ...booking, status: newStatus as any, updatedAt: new Date().toISOString() }
+                        ? { 
+                            ...booking, 
+                            status: newStatus as Booking['status'], 
+                            updatedAt: new Date().toISOString() 
+                        }
                         : booking
                 )
             );
 
             setUpdateSuccess(`Booking status updated to ${newStatus} successfully`);
 
-            // Refresh stats
+            // Refresh stats with proper type
             const updatedBookings = bookings.map(booking =>
                 booking._id === bookingId
-                    ? { ...booking, status: newStatus as any }
+                    ? { ...booking, status: newStatus as Booking['status'] }
                     : booking
             );
 
@@ -184,7 +188,7 @@ export default function BookingsPage() {
 
             {updateError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
-                    <strong>Error:</strong> {updateError}
+                    <strong>Error:</strong> {updateSuccess}
                 </div>
             )}
 
