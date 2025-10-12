@@ -19,8 +19,10 @@ interface LocationProps {
     watch: UseFormWatch<Inputs>
     setValue: UseFormSetValue<Inputs>
 }
-
-export default function PropertyLocation({ register, errors, setValue }: LocationProps) {
+type props = {
+   setValue : UseFormSetValue<Inputs>
+}
+export default function PropertyLocation({ register, errors, setValue }: LocationProps,) {
     const dispatch = useDispatch<AppDispatch>()
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
     const { geoCountryLocationLoading } = useSelector((state: RootState) => state.loader)

@@ -167,14 +167,14 @@ export default function MyProperties() {
                     </div>
                     <Link
                         href="/dashboard/real_estate_developer/add-property"
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-500 transition-colors font-medium"
                     >
                         + Add New Property
                     </Link>
                 </div>
 
                 <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="bg-green-500 text-green-500 px-3 py-1 rounded-full text-sm font-medium">
                         Total: {properties?.length || 0}
                     </div>
                     <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -223,7 +223,7 @@ export default function MyProperties() {
                     <p className="text-gray-600 mb-8 text-lg">{"You haven't added any properties yet."}</p>
                     <Link
                         href="/dashboard/real_estate_developer/add-property"
-                        className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition-colors font-semibold text-lg"
+                        className="bg-green-500 text-white px-8 py-4 rounded-xl hover:bg-green-500 transition-colors font-semibold text-lg"
                     >
                         Add Your First Property
                     </Link>

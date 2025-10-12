@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PropertyType } from '@/app/Types/properties'
 import {
     MapPin,
@@ -46,6 +46,8 @@ export default function PropertyCard({
     onCancelDelete,
     onConfirmDelete
 }: PropertyCardProps) {
+    const [localStatusValue, setLocalStatusValue] = useState(statusValue)
+
     const getStatusColor = (status: string): string => {
         switch (status) {
             case 'Available': return 'bg-emerald-500 text-white border-emerald-600'
@@ -109,6 +111,23 @@ export default function PropertyCard({
             return `$${(price / 1000).toFixed(1)}K`
         }
         return `$${price}`
+    }
+
+    const handleStatusChange = (value: string) => {
+        setLocalStatusValue(value)
+        onStatusChange(value)
+    }
+
+    const handleStatusUpdate = () => {
+        onStatusUpdate()
+        // Reset local state after update
+        setLocalStatusValue(property.status)
+    }
+
+    const handleCancelEdit = () => {
+        onCancelEdit()
+        // Reset to original status
+        setLocalStatusValue(property.status)
     }
 
     return (
@@ -219,8 +238,8 @@ export default function PropertyCard({
                     {isEditing ? (
                         <div className="space-y-3 mb-4 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
                             <select
-                                value={statusValue}
-                                onChange={(e) => onStatusChange(e.target.value)}
+                                value={localStatusValue}
+                                onChange={(e) => handleStatusChange(e.target.value)}
                                 className="w-full p-3 border border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-emerald-900"
                             >
                                 <option value="Available">Available</option>
@@ -230,14 +249,14 @@ export default function PropertyCard({
                             </select>
                             <div className="flex gap-2">
                                 <button
-                                    onClick={onStatusUpdate}
+                                    onClick={handleStatusUpdate}
                                     className="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl hover:bg-emerald-700 transition-colors font-medium flex items-center justify-center gap-2 border border-emerald-700"
                                 >
                                     <RefreshCw className="w-4 h-4" />
                                     Update Status
                                 </button>
                                 <button
-                                    onClick={onCancelEdit}
+                                    onClick={handleCancelEdit}
                                     className="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl hover:bg-emerald-600 transition-colors font-medium border border-emerald-600"
                                 >
                                     Cancel
