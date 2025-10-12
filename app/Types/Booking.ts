@@ -35,3 +35,43 @@ export interface LoginPromptProps {
     onLoginRedirect: () => void;
     onClose: () => void;
 }
+
+export interface Booking {
+    _id: string;
+    propertyId: string;
+    userId: string;
+    userName: string;
+    userEmail: string;
+    userMobile: string;
+    bookingDate: string;
+    bookingTime: string;
+    message: string;
+    propertyDetails: {
+        title: string;
+        address: string;
+        price: number;
+        currency: string;
+        images?: string[];
+        status?: string;
+        listingStatus?: string;
+        contact?: string;
+        email?: string;
+    };
+    status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface BookingStats {
+    total: number;
+    pending: number;
+    confirmed: number;
+    completed: number;
+    cancelled: number;
+}
+
+export interface StatusOption {
+    value: string;
+    label: string;
+    color: string;
+}

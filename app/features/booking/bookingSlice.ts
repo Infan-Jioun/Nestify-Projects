@@ -22,6 +22,7 @@ interface BookingState {
     rescheduleLoading: { [bookingId: string]: boolean };
     cancelLoading: { [bookingId: string]: boolean };
 }
+
 interface Booking {
     _id: string;
     propertyId: string;
@@ -46,6 +47,7 @@ interface Booking {
     createdAt: string;
     updatedAt: string;
 }
+
 const initialState: BookingState = {
     formData: {
         name: "",
@@ -333,7 +335,8 @@ const bookingSlice = createSlice({
     }
 });
 
-export const { setBookingFormData,
+export const {
+    setBookingFormData,
     updateBookingFormField,
     resetBookingForm,
     clearAutoFill,
