@@ -129,7 +129,29 @@ export default function AdminPage() {
 
     const userGrowth = 12.5
     const propertyGrowth = 8.2
+    const userCounts = useMemo(() => {
+        if (!Array.isArray(users)) {
+            return {
+                total: 0,
+                adminCount: 0,
+                real_esate_developerCount: 0,
+                regularUserCount: 0
+            }
+        }
 
+        const adminCount = users.filter(user => user.role === UserRole.ADMIN).length
+        const real_esate_developerCount = users.filter(user => user.role === UserRole.REAL_ESTATE_DEVELOPER).length
+        const regularUserCount = users.filter(user =>
+            user.role !== UserRole.ADMIN && user.role !== UserRole.REAL_ESTATE_DEVELOPER
+        ).length
+
+        return {
+            total: users.length,
+            adminCount,
+            real_esate_developerCount,
+            regularUserCount
+        }
+    }, [users])
     // Loading states
     const isLoading = propertiesLoading || districtsLoading || userLoader || status === "loading" || roleLoading
 
@@ -315,9 +337,11 @@ export default function AdminPage() {
                 <RecentActivity />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <UserOverview totalUsers={totalUsers} adminCount={5} moderatorCount={3} ownerCount={2} />
-            </div>
+            <UserOverview
+                totalUsers={userCounts.total}
+                adminCount={userCounts.adminCount}
+                real_esate_developerCount={userCounts.real_esate_developerCount}
+            />
 
             {/* Error */}
             {(propertiesError || districtsError) && (
