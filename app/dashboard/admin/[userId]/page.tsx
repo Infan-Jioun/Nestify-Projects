@@ -195,7 +195,7 @@ export default function AdminPage() {
                             <XCircle className="h-12 w-12 text-red-600" />
                         </div>
                         <h2 className="text-2xl font-bold text-red-600 mb-4">Unauthorized Access</h2>
-                        <p className="text-gray-600 mb-2">You don't have permission to access the admin dashboard.</p>
+                        <p className="text-gray-600 mb-2">{"You don't have permission to access the admin dashboard."}</p>
                         <p className="text-sm text-gray-500 mb-4">
                             Your Role: <span className="font-medium">{session?.user?.role || "Unknown"}</span><br />
                             Required Role: <span className="font-medium">ADMIN</span>
