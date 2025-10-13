@@ -12,6 +12,7 @@ interface User {
     website?: string | null;
     mobile?: string | null;
     slug?: string | null;
+    createdAt?: string; 
 }
 interface UserState {
     users: User[];

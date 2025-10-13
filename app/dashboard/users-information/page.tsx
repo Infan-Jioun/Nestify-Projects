@@ -14,8 +14,6 @@ import { User } from "@/app/Types/user"
 import { useRoleGuard } from "@/app/hook/useRoleGuard"
 import { UserRole } from "@/app/Types/auth"
 
-
-
 export default function UserInformation() {
   useRoleGuard({
     allowedRoles: [UserRole.ADMIN],
@@ -25,6 +23,7 @@ export default function UserInformation() {
   const users = useSelector((state: RootState) => state.user.users)
   const userLoader = useSelector((state: RootState) => state.user.userLoader)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
+  const [sortedUsers, setSortedUsers] = useState<User[]>([])
 
   useEffect(() => {
     async function fetchUsers() {
@@ -43,6 +42,20 @@ export default function UserInformation() {
     fetchUsers()
   }, [dispatch])
 
+  
+  useEffect(() => {
+    if (users.length > 0) {
+      const sorted = [...users].sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+        return dateB - dateA
+      })
+      setSortedUsers(sorted)
+    } else {
+      setSortedUsers([])
+    }
+  }, [users])
+
   const handleDeleteConfirm = async () => {
     if (!userToDelete) return
     try {
@@ -60,8 +73,8 @@ export default function UserInformation() {
       <NextHead title="User Management - Nestify" />
       <UserHeader totalUsers={users.length} />
 
-      {userLoader ? <UserSkeletonGrid /> : users.length > 0 ? (
-        <UserGrid users={users} onDelete={setUserToDelete} />
+      {userLoader ? <UserSkeletonGrid /> : sortedUsers.length > 0 ? (
+        <UserGrid users={sortedUsers} onDelete={setUserToDelete} />
       ) : <UserEmptyState />}
 
       {userToDelete && (
