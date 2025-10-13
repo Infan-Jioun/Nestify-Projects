@@ -187,7 +187,7 @@ export default function DeveloperPage() {
               <ActionButton
                 title="Add Property"
                 icon={<Plus className="w-5 h-5 sm:w-6 sm:h-6" />}
-                href="/dashboard/real_estate_developer/add-property"
+                href="/dashboard/add-property"
               />
               <ActionButton
                 title="Add Blog"
