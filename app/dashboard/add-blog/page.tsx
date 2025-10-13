@@ -12,7 +12,7 @@ export default function AddBlogPage() {
     })
     return (
         <div>
-            <BlogBanner />
+            {/* <BlogBanner /> */}
             <AddBlogForm />
         </div>
     )

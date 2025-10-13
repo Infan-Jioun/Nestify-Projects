@@ -20,7 +20,8 @@ import {
   Clock,
   Users,
   ArrowRight,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Book
 } from 'lucide-react'
 
 interface DeveloperStats {
@@ -189,9 +190,9 @@ export default function DeveloperPage() {
                 href="/dashboard/real_estate_developer/add-property"
               />
               <ActionButton
-                title="View Listings"
-                icon={<List className="w-5 h-5 sm:w-6 sm:h-6" />}
-                href="/dashboard/real_estate_developer/MyProperties"
+                title="Add Blog"
+                icon={<Book className="w-5 h-5 sm:w-6 sm:h-6" />}
+                href="/dashboard/add-blog"
               />
               <ActionButton
                 title="Analytics"
