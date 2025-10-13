@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {Card, CardContent,
+import {
+  Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -59,7 +61,7 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
@@ -72,7 +74,7 @@ export function Login() {
 
   const isLoading = loading || skletonLoader;
 
-  // Handle login with email/password
+  // Update the onSubmit function in your Login component
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     dispatch(setButtonLoader(true));
 
@@ -84,20 +86,20 @@ export function Login() {
         callbackUrl,
       });
 
-      console.log("SignIn result:", result);
+      console.log("SignIn result:", result); // Debug log
 
       if (result?.ok) {
         const session = await getSession();
-        console.log("Session:", session);
+        console.log("Session:", session); // Debug log
 
         if (session?.user) {
-          const user = session.user as CustomSessionUser & {
-            emailVerified?: boolean;
-          };
+          const user = session.user as CustomSessionUser & { emailVerified?: boolean };
 
-          // Uncomment this if you implement email verification later
+          // Check if email is verified
           // if (!user.emailVerified) {
+          //   // Store email for verification
           //   localStorage.setItem("verificationEmail", data.email);
+          //   // Redirect to verification page
           //   router.push("/verify-email");
           //   toast.error("Please verify your email before logging in.");
           //   return;
@@ -114,10 +116,8 @@ export function Login() {
           router.refresh();
         }
       } else {
-        if (
-          result?.error === "CredentialsSignin" ||
-          result?.error === "INVALID_CREDENTIALS"
-        ) {
+        // Handle specific error cases
+        if (result?.error === 'CredentialsSignin' || result?.error === 'INVALID_CREDENTIALS') {
           toast.error("Invalid email or password");
         } else if (result?.error) {
           toast.error(result.error);
@@ -126,63 +126,30 @@ export function Login() {
         }
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error('Login error:', error);
       toast.error("Login failed. Please try again.");
     } finally {
       dispatch(setButtonLoader(false));
     }
   };
 
-  // Google Login
-  const handleGoogleLogin = async () => {
+  const handelGoogleLogin = async () => {
     dispatch(setGoogleLoader(true));
     try {
-      const result = await signIn("google", {
-        callbackUrl,
-        redirect: false,
-      });
-
-      if (result?.error === "USER_NOT_FOUND") {
-        toast.error("Account not found. Please register first.");
-        setTimeout(() => {
-          router.push("/Authentication");
-        }, 2000);
-        return;
-      }
-
-      if (result?.ok) {
-        toast.success("Logged in successfully with Google!");
-        router.push(callbackUrl);
-      }
+      await signIn("google", { callbackUrl });
     } catch (error) {
-      console.error("Google login error:", error);
-      toast.error("Google login failed.");
+      toast.error("Google login failed");
     } finally {
       dispatch(setGoogleLoader(false));
     }
   };
 
-  // GitHub Login
-  const handleGithubLogin = async () => {
+  const handelGithubLogin = async () => {
     dispatch(setGithubLoader(true));
     try {
-      const result = await signIn("github", {
-        callbackUrl,
-        redirect: false,
-      });
-
-      if (result?.error === "USER_NOT_FOUND") {
-        toast.error("Account not found. Please register first.");
-        return;
-      }
-
-      if (result?.error) {
-        toast.error("GitHub login failed.");
-        return;
-      }
+      await signIn("github", { callbackUrl });
     } catch (error) {
-      console.error("GitHub login error:", error);
-      toast.error("GitHub login failed.");
+      toast.error("GitHub login failed");
     } finally {
       dispatch(setGithubLoader(false));
     }
@@ -196,18 +163,18 @@ export function Login() {
     const roleRoutes: Record<string, string[]> = {
       user: ["/", "/properties"],
       real_estate_developer: ["/dashboard", "/dashboard/properties"],
-      admin: ["/dashboard", "/admin"],
+      admin: ["/dashboard", "/admin"]
     };
 
     const allowedRoutes = roleRoutes[role] || [];
-    return allowedRoutes.some((route) => path.startsWith(route));
+    return allowedRoutes.some(route => path.startsWith(route));
   }
 
   function getDefaultRoute(role: string): string {
     const defaultRoutes: Record<string, string> = {
       user: "/",
       real_estate_developer: "/",
-      admin: "/",
+      admin: "/"
     };
 
     return defaultRoutes[role] || "/";
@@ -292,7 +259,7 @@ export function Login() {
                   {...register("password", { required: true })}
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder="Type your password"
                   className="pr-10"
                   required
                 />
@@ -328,7 +295,7 @@ export function Login() {
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              Don’t have an account?{" "}
+              {"Don't have an account?"}{" "}
               <Link
                 href={"/Authentication"}
                 className="relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded"
@@ -338,10 +305,9 @@ export function Login() {
             </p>
           </CardFooter>
         </form>
-
         <div className="px-6 pb-6">
           <Button
-            onClick={handleGoogleLogin}
+            onClick={handelGoogleLogin}
             variant="outline"
             className="w-full mb-2"
             disabled={googleLoader}
@@ -356,7 +322,7 @@ export function Login() {
             )}
           </Button>
           <Button
-            onClick={handleGithubLogin}
+            onClick={handelGithubLogin}
             variant="outline"
             className="w-full"
             disabled={githubLoader}
@@ -367,7 +333,7 @@ export function Login() {
                 Continuing with GitHub...
               </div>
             ) : (
-              "Continue with GitHub"
+              "Continue with Github"
             )}
           </Button>
         </div>

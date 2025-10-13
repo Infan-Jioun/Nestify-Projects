@@ -105,7 +105,6 @@ export const authOptions: NextAuthOptions = {
     ],
 
     callbacks: {
-
         async signIn({ user, account, profile }) {
             try {
                 if (!account || account.provider === "credentials") {
@@ -120,12 +119,6 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 const existingUser = await UserModel.findOne({ email });
-
-
-                if (!existingUser) {
-                    throw new Error('USER_NOT_FOUND');
-                }
-
                 const extendedProfile = profile as ExtendedProfile;
 
                 const image = user.image || extendedProfile?.picture || extendedProfile?.avatar_url || null;
@@ -136,31 +129,28 @@ export const authOptions: NextAuthOptions = {
                     image: image,
                     provider: account.provider,
                     providerAccountId: account.providerAccountId || extendedProfile?.id?.toString() || null,
-                    role: existingUser.role || UserRole.USER,
+                    role: existingUser?.role || UserRole.USER,
                 };
 
-                // শুধু existing user এর ডাটা আপডেট করবো
-                const updates: Record<string, unknown> = {};
+                if (!existingUser) {
+                    await UserModel.create(userData);
+                } else {
+                    const updates: Record<string, unknown> = {};
 
-                if (!existingUser.provider) updates.provider = userData.provider;
-                if (!existingUser.providerAccountId) updates.providerAccountId = userData.providerAccountId;
-                if (!existingUser.image && userData.image) updates.image = userData.image;
-                if (existingUser.name !== userData.name) updates.name = userData.name;
-                if (!existingUser.role) updates.role = userData.role;
+                    if (!existingUser.provider) updates.provider = userData.provider;
+                    if (!existingUser.providerAccountId) updates.providerAccountId = userData.providerAccountId;
+                    if (!existingUser.image && userData.image) updates.image = userData.image;
+                    if (existingUser.name !== userData.name) updates.name = userData.name;
+                    if (!existingUser.role) updates.role = userData.role;
 
-                if (Object.keys(updates).length > 0) {
-                    await UserModel.updateOne({ _id: existingUser._id }, { $set: updates });
+                    if (Object.keys(updates).length > 0) {
+                        await UserModel.updateOne({ _id: existingUser._id }, { $set: updates });
+                    }
                 }
 
                 return true;
             } catch (error) {
                 console.error("SignIn callback error:", error);
-
-                // Specific error handle করবো
-                if (error instanceof Error && error.message === 'USER_NOT_FOUND') {
-                    throw error; // NextAuth কে error pass করবো
-                }
-
                 return false;
             }
         },
