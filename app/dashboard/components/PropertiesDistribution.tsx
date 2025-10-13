@@ -154,18 +154,13 @@ export default function PropertiesDistribution({ districts, properties, totalPro
                 </div>
 
                 {/* Coverage Indicator */}
-                <div className="mt-4 flex items-center justify-between text-sm">
+                <div className="mt-4 flex gap-3 items-center justify-between text-sm">
                     <span className="text-gray-600">Coverage Rate</span>
                     <div className="flex items-center gap-2">
-                        <div className="w-20 bg-gray-200 rounded-full h-2">
-                            <div
-                                className="h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-500"
-                                style={{ width: `${(totalInTopDistricts / totalProperties) * 100}%` }}
-                            />
-                        </div>
-                        <span className="font-medium text-gray-900">
+                        <div className=" text-green-900 font-bold">
                             {((totalInTopDistricts / totalProperties) * 100).toFixed(1)}%
-                        </span>
+                        </div>
+
                     </div>
                 </div>
             </div>

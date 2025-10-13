@@ -25,7 +25,7 @@ export default function AdminPage() {
     const dispatch = useDispatch<AppDispatch>()
     const [refreshing, setRefreshing] = useState(false)
     const [systemHealth, setSystemHealth] = useState({
-        status: "loading",
+        status: "Loading...",
         percentage: 0,
         message: "Checking system status..."
     })
@@ -164,7 +164,7 @@ export default function AdminPage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
                     <div className="ml-4 text-sm">
                         <p>Checking access...</p>
-                        <p className="text-gray-500">Role: {userRole || "undefined"}</p>
+                        <p className="text-gray-500">Role: {userRole || (session?.user.role ? session.user.role : "Loading...")}</p>
                         <p className="text-gray-500">Status: {status}</p>
                     </div>
                 </div>
