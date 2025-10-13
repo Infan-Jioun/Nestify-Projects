@@ -12,11 +12,12 @@ const roleRoutes: Record<UserRole, string[]> = {
         "/dashboard",
         "/dashboard/add-properties",
         "/dashboard/add-blog",
+        // Remove admin-specific routes from real estate developer
     ],
     [UserRole.ADMIN]: [
         "/profile",
         "/dashboard/admin",
-        "/dashboard/users-information",
+        "/dashboard/users-information", 
         "/dashboard/add-city",
         "/dashboard/add-properties",
         "/dashboard/add-blog"
@@ -34,13 +35,6 @@ const publicRoutes = [
     "/Bookmark",
 ]
 
-// Common routes that multiple roles can access
-const commonRoutes = [
-    "/profile",
-    "/dashboard/add-properties",
-    "/dashboard/add-blog"
-]
-
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
@@ -50,22 +44,12 @@ export async function middleware(request: NextRequest) {
         console.log('Requested path:', pathname)
     }
 
-    // Check public routes
+    // Check public routes first
     const isPublicRoute = publicRoutes.some(route =>
         pathname === route || pathname.startsWith(route + '/')
     )
 
     if (isPublicRoute) {
-        return NextResponse.next()
-    }
-
-    // Get all protected routes
-    const allProtectRoutes = Object.values(roleRoutes).flat()
-    const isProtectRoute = allProtectRoutes.some(route =>
-        pathname.startsWith(route)
-    )
-
-    if (!isProtectRoute) {
         return NextResponse.next()
     }
 
@@ -88,6 +72,39 @@ export async function middleware(request: NextRequest) {
         console.log('Token data:', { id: token.id, email: token.email, role: token.role })
     }
 
+    // Special case: /dashboard/admin routes - ONLY ADMIN can access
+    if (pathname.startsWith('/dashboard/admin')) {
+        if (userRole === UserRole.ADMIN) {
+            console.log('Access granted to admin route for ADMIN role')
+            return NextResponse.next()
+        } else {
+            console.log('Access denied to admin route for role:', userRole)
+            return NextResponse.redirect(new URL('/unauthorized', request.url))
+        }
+    }
+
+    // Special case: /dashboard/users-information - ONLY ADMIN can access
+    if (pathname.startsWith('/dashboard/users-information')) {
+        if (userRole === UserRole.ADMIN) {
+            console.log('Access granted to users-information for ADMIN role')
+            return NextResponse.next()
+        } else {
+            console.log('Access denied to users-information for role:', userRole)
+            return NextResponse.redirect(new URL('/unauthorized', request.url))
+        }
+    }
+
+    // Special case: /dashboard/add-city - ONLY ADMIN can access
+    if (pathname.startsWith('/dashboard/add-city')) {
+        if (userRole === UserRole.ADMIN) {
+            console.log('Access granted to add-city for ADMIN role')
+            return NextResponse.next()
+        } else {
+            console.log('Access denied to add-city for role:', userRole)
+            return NextResponse.redirect(new URL('/unauthorized', request.url))
+        }
+    }
+
     // Special case: /dashboard route access
     if (pathname === '/dashboard' || pathname === '/dashboard/') {
         // REAL_ESTATE_DEVELOPER and ADMIN can access /dashboard
@@ -100,34 +117,7 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    // Special case: /dashboard/admin routes - only ADMIN can access
-    if (pathname.startsWith('/dashboard/admin')) {
-        if (userRole === UserRole.ADMIN) {
-            console.log('Access granted to admin route for ADMIN role')
-            return NextResponse.next()
-        } else {
-            console.log('Access denied to admin route for role:', userRole)
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Check common routes (multiple roles can access)
-    const isCommonRoute = commonRoutes.some(route =>
-        pathname.startsWith(route)
-    )
-
-    if (isCommonRoute) {
-        // REAL_ESTATE_DEVELOPER and ADMIN can access common routes
-        if (userRole === UserRole.REAL_ESTATE_DEVELOPER || userRole === UserRole.ADMIN) {
-            console.log('Access granted to common route for role:', userRole)
-            return NextResponse.next()
-        } else {
-            console.log('Access denied to common route for role:', userRole)
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Role-specific route checking
+    // Check role-specific routes
     if (userRole && roleRoutes[userRole]) {
         const hasAccess = roleRoutes[userRole].some(route =>
             pathname.startsWith(route)
@@ -142,11 +132,9 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    // No valid role found
-    console.log('No valid role found, redirecting to login')
-    const loginUrl = new URL('/LoginPage', request.url)
-    loginUrl.searchParams.set('callbackUrl', pathname)
-    return NextResponse.redirect(loginUrl)
+    // No valid role found or route not found in allowed routes
+    console.log('No valid role or route not allowed, redirecting to unauthorized')
+    return NextResponse.redirect(new URL('/unauthorized', request.url))
 }
 
 export const config = {

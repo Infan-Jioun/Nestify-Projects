@@ -104,7 +104,7 @@ export default function DeveloperPage() {
   const sessionUser = session?.user as SessionUser;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div className="min-h-screen px-1 lg:px-10 py-10 bg-gray-50 p-4 sm:p-6">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Developer Dashboard</h1>

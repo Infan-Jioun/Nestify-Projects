@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useDispatch, useSelector } from "react-redux"
@@ -30,8 +29,6 @@ export default function AdminPage() {
         message: "Checking system status..."
     })
 
-
-
     const { users, userLoader } = useSelector((state: RootState) => state.user || { users: [], userLoader: false })
     const { properties, loading: propertiesLoading, error: propertiesError } = useSelector(
         (state: RootState) => state.properties || { properties: [], loading: false, error: null }
@@ -40,14 +37,11 @@ export default function AdminPage() {
         (state: RootState) => state.district || { district: [], loading: false, error: null }
     )
 
-    // Role guard - Temporary: Allow access while debugging role issue
+    // Role guard - Only allow ADMIN access
     const { hasAccess, isLoading: roleLoading, userRole } = useRoleGuard({
-        allowedRoles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER],
+        allowedRoles: [UserRole.ADMIN],
         callbackUrl: "/dashboard"
     })
-
-    // Temporary: Force access for admin users while we fix the role issue
-    const tempHasAccess = session?.user ? true : false
 
     const calculateSystemHealth = () => {
         const checks = {
@@ -81,10 +75,10 @@ export default function AdminPage() {
     }
 
     useEffect(() => {
-        if (session?.user && tempHasAccess) {
+        if (session?.user && session.user.role === UserRole.ADMIN) {
             loadAllData()
         }
-    }, [dispatch, session, tempHasAccess])
+    }, [dispatch, session])
 
     useEffect(() => {
         if (!roleLoading && !userLoader) {
@@ -114,7 +108,7 @@ export default function AdminPage() {
     const handleRefresh = () => {
         setRefreshing(true)
         setSystemHealth({
-            status: "loading",
+            status: "Loading...",
             percentage: 0,
             message: "Refreshing system status..."
         })
@@ -129,6 +123,7 @@ export default function AdminPage() {
 
     const userGrowth = 12.5
     const propertyGrowth = 8.2
+
     const userCounts = useMemo(() => {
         if (!Array.isArray(users)) {
             return {
@@ -152,6 +147,7 @@ export default function AdminPage() {
             regularUserCount
         }
     }, [users])
+
     // Loading states
     const isLoading = propertiesLoading || districtsLoading || userLoader || status === "loading" || roleLoading
 
@@ -164,7 +160,7 @@ export default function AdminPage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
                     <div className="ml-4 text-sm">
                         <p>Checking access...</p>
-                        <p className="text-gray-500">Role: {userRole || (session?.user.role ? session.user.role : "Loading...")}</p>
+                        <p className="text-gray-500">Role: {userRole || (session?.user?.role ? session.user.role : "Loading...")}</p>
                         <p className="text-gray-500">Status: {status}</p>
                     </div>
                 </div>
@@ -172,21 +168,27 @@ export default function AdminPage() {
         )
     }
 
-    // Show access denied if no access (temporary disabled)
-    if (!tempHasAccess) {
+    // Show unauthorized access if user is not ADMIN
+    if (session?.user?.role !== UserRole.ADMIN) {
         return (
             <div className="min-h-screen/30 p-6">
-                <NextHead title="Access Denied - Nestify" />
+                <NextHead title="Unauthorized Access - Nestify" />
                 <div className="flex justify-center items-center h-64">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h2>
-                        <p className="text-gray-600">{"You don't have permission to access the dashboard."}</p>
-                        <p className="text-sm text-gray-500 mt-2">
-                            User Role: {userRole || "undefined"}<br />
-                            User ID: {session?.user?.id || "undefined"}
+                        <div className="bg-red-100 p-4 rounded-full mb-4 inline-block">
+                            <XCircle className="h-12 w-12 text-red-600" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-red-600 mb-4">Unauthorized Access</h2>
+                        <p className="text-gray-600 mb-2">You don't have permission to access the admin dashboard.</p>
+                        <p className="text-sm text-gray-500 mb-4">
+                            Your Role: <span className="font-medium">{session?.user?.role || "Unknown"}</span><br />
+                            Required Role: <span className="font-medium">ADMIN</span>
                         </p>
-                        <Link href="/" className="mt-4 inline-block text-blue-600 hover:underline">
-                            Go back to Home
+                        <Link
+                            href="/dashboard"
+                            className="inline-block px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        >
+                            Go to User Dashboard
                         </Link>
                     </div>
                 </div>
@@ -271,7 +273,7 @@ export default function AdminPage() {
             {/* Header */}
             <div className="mb-8 grid md:grid-cols-2 justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+                    <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
                     <p className="text-gray-500 mt-2">
                         Welcome back, {session.user.name}!
                         {session.user.role && ` (${session.user.role})`}
@@ -307,17 +309,15 @@ export default function AdminPage() {
                         color="green"
                     />
                 </Link>
-                {
-                    session.user.role === UserRole.ADMIN && <Link href={"/dashboard/users-information"}>
-                        <StatCard
-                            title="Total Users"
-                            value={totalUsers}
-                            growth={userGrowth}
-                            icon={Users}
-                            color="purple"
-                        />
-                    </Link>
-                }
+                <Link href={"/dashboard/users-information"}>
+                    <StatCard
+                        title="Total Users"
+                        value={totalUsers}
+                        growth={userGrowth}
+                        icon={Users}
+                        color="purple"
+                    />
+                </Link>
                 <StatCard
                     title="Platform Health"
                     value={healthConfig.value}

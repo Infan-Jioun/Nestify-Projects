@@ -7,7 +7,7 @@ import { UserRole } from '@/app/Types/auth'
 
 export default function AddBlogPage() {
     useRoleGuard({
-        allowedRoles: [UserRole.REAL_ESTATE_DEVELOPER , UserRole.ADMIN],
+        allowedRoles: [UserRole.REAL_ESTATE_DEVELOPER, UserRole.ADMIN],
         callbackUrl: "/dashboard"
     })
     return (
