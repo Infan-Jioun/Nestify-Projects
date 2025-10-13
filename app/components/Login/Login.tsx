@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn, getSession } from "next-auth/react";
+import { signIn, getSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -136,8 +136,47 @@ export function Login() {
   const handelGoogleLogin = async () => {
     dispatch(setGoogleLoader(true));
     try {
-      await signIn("google", { callbackUrl });
+      // First, perform Google sign-in (this will fetch user information)
+      const result = await signIn("google", {
+        callbackUrl,
+        redirect: false
+      });
+
+      console.log("Google signIn result:", result);
+
+      if (result?.error) {
+        // If there's any other error
+        toast.error("Google login failed");
+        return;
+      }
+
+      if (result?.ok) {
+        // Get the user email from the session
+        const session = await getSession();
+        const userEmail = session?.user?.email;
+
+        if (!userEmail) {
+          toast.error("Email information not found");
+          return;
+        }
+
+        // Check if the user exists in the database
+        const checkResponse = await fetch(`/api/check-user?email=${encodeURIComponent(userEmail)}`);
+        const checkResult = await checkResponse.json();
+
+        if (!checkResult.userExists) {
+          toast.error("Account not found. Please register first.");
+          // Sign out to clear the session
+          await signOut({ redirect: false });
+          return;
+        }
+
+        // Everything is fine, redirect the user
+        toast.success("Logged in successfully!");
+        router.push(callbackUrl);
+      }
     } catch (error) {
+      console.error('Google login error:', error);
       toast.error("Google login failed");
     } finally {
       dispatch(setGoogleLoader(false));
@@ -147,13 +186,52 @@ export function Login() {
   const handelGithubLogin = async () => {
     dispatch(setGithubLoader(true));
     try {
-      await signIn("github", { callbackUrl });
+      // First, perform GitHub sign-in
+      const result = await signIn("github", {
+        callbackUrl,
+        redirect: false
+      });
+
+      console.log("GitHub signIn result:", result);
+
+      if (result?.error) {
+        toast.error("GitHub login failed");
+        return;
+      }
+
+      if (result?.ok) {
+        // Get the user email from the session
+        const session = await getSession();
+        const userEmail = session?.user?.email;
+
+        if (!userEmail) {
+          toast.error("Email information not found");
+          return;
+        }
+
+        // Check if the user exists in the database
+        const checkResponse = await fetch(`/api/check-user?email=${encodeURIComponent(userEmail)}`);
+        const checkResult = await checkResponse.json();
+
+        if (!checkResult.userExists) {
+          toast.error("Account not found. Please register first.");
+          // Sign out to clear the session
+          await signOut({ redirect: false });
+          return;
+        }
+
+        // Everything is fine, redirect the user
+        toast.success("Logged in successfully!");
+        router.push(callbackUrl);
+      }
     } catch (error) {
+      console.error('GitHub login error:', error);
       toast.error("GitHub login failed");
     } finally {
       dispatch(setGithubLoader(false));
     }
   };
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

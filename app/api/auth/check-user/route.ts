@@ -1,25 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import connectToDatabase from '@/lib/mongodb';
 import UserModel from '@/app/models/user';
-import { authOptions } from '@/lib/auth-options';
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        const { searchParams } = new URL(request.url);
+        const email = searchParams.get('email');
 
-        if (!session?.user?.email) {
-            return NextResponse.json({ userExists: false });
+        if (!email) {
+            return NextResponse.json(
+                { error: 'Email parameter is required' },
+                { status: 400 }
+            );
         }
 
         await connectToDatabase();
-        const existingUser = await UserModel.findOne({ email: session.user.email });
+        const existingUser = await UserModel.findOne({ email });
 
         return NextResponse.json({
             userExists: !!existingUser
         });
     } catch (error) {
         console.error('Check user error:', error);
-        return NextResponse.json({ userExists: false });
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
 }
