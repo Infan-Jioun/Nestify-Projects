@@ -291,14 +291,14 @@ export default function AdminPage() {
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div className="mb-4 lg:mb-0">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <Shield className="h-6 w-6 text-blue-600" />
+                            <div className="p-2 bg-green-100 rounded-lg">
+                                <Shield className="h-6 w-6 text-green-600" />
                             </div>
                             <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
                         </div>
                         <p className="text-gray-600">
-                            Welcome back, <span className="font-semibold text-blue-600">{session.user.name}</span>!
-                            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                            Welcome back, <span className="font-semibold text-green-600">{session.user.name}</span>!
+                            <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
                                 {session.user.role}
                             </span>
                         </p>
@@ -329,7 +329,7 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <Link
                         href="/dashboard/add-property"
-                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200 group"
                     >
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
@@ -344,11 +344,11 @@ export default function AdminPage() {
 
                     <Link
                         href="/dashboard/add-city"
-                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200 group"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                                <Building className="h-5 w-5 text-blue-600" />
+                            <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
+                                <Building className="h-5 w-5 text-green-600" />
                             </div>
                             <div>
                                 <h3 className="font-semibold text-gray-900">Add City</h3>
@@ -359,7 +359,7 @@ export default function AdminPage() {
 
                     <Link
                         href="/dashboard/add-blog"
-                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200 group"
                     >
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
@@ -374,7 +374,7 @@ export default function AdminPage() {
 
                     <Link
                         href="/dashboard/users-information"
-                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200 group"
                     >
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
@@ -408,7 +408,7 @@ export default function AdminPage() {
                         value={totalDistricts}
                         avg={avgPropertiesPerDistrict}
                         icon={MapPin}
-                        color="blue"
+                        color="green"
                         loading={isLoading}
                     />
                 </Link>
