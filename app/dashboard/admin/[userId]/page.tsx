@@ -7,7 +7,23 @@ import { useEffect, useMemo, useState } from "react"
 import { setUsers, setUserLoader } from "../../../features/user/userAuthSlice"
 import { fetchProperties } from "../../../features/Properties/propertySlice"
 import { fetchDistrict } from "../../../features/district/districtSlice"
-import { RefreshCw, Home, MapPin, Users, TrendingUp, AlertCircle, CheckCircle, XCircle } from "lucide-react"
+import {
+    RefreshCw,
+    Home,
+    MapPin,
+    Users,
+    TrendingUp,
+    AlertCircle,
+    CheckCircle,
+    XCircle,
+    PlusCircle,
+    FileText,
+    Building,
+    BarChart3,
+    Activity,
+    Shield,
+    Settings
+} from "lucide-react"
 import StatCardSkeleton from "../../components/StatCardSkeleton"
 import DistributionSkeleton from "../../components/DistributionSkeleton"
 import StatCard from "../../components/StatCard"
@@ -267,83 +283,275 @@ export default function AdminPage() {
     }
 
     return (
-        <div className="min-h-screen/30 px-1 lg:px-10 py-10">
-            <NextHead title="Dashboard - Nestify" />
+        <div className="min-h-screen bg-gray-50 px-4 lg:px-8 py-8">
+            <NextHead title="Admin Dashboard - Nestify" />
 
             {/* Header */}
-            <div className="mb-8 grid md:grid-cols-2 justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-                    <p className="text-gray-500 mt-2">
-                        Welcome back, {session.user.name}!
-                        {session.user.role && ` (${session.user.role})`}
-                    </p>
+            <div className="mb-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                    <div className="mb-4 lg:mb-0">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <Shield className="h-6 w-6 text-blue-600" />
+                            </div>
+                            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                        </div>
+                        <p className="text-gray-600">
+                            Welcome back, <span className="font-semibold text-blue-600">{session.user.name}</span>!
+                            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                {session.user.role}
+                            </span>
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="hidden lg:flex items-center gap-2 text-sm text-gray-500">
+                            <Activity className="h-4 w-4 text-green-500" />
+                            <span>Last updated: {new Date().toLocaleTimeString()}</span>
+                        </div>
+                        <button
+                            onClick={handleRefresh}
+                            disabled={refreshing}
+                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 transition-all duration-200 shadow-sm"
+                        >
+                            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+                            {refreshing ? "Refreshing..." : "Refresh"}
+                        </button>
+                    </div>
                 </div>
-                <button
-                    onClick={handleRefresh}
-                    disabled={refreshing}
-                    className="mt-2 flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
-                >
-                    <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
-                    {refreshing ? "Refreshing..." : "Refresh Data"}
-                </button>
             </div>
 
-            {/* Stats */}
+            {/* Quick Actions */}
+            <div className="mb-8">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Settings className="h-5 w-5 text-gray-500" />
+                    Quick Actions
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Link
+                        href="/dashboard/add-properties"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
+                                <PlusCircle className="h-5 w-5 text-green-600" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900">Add Property</h3>
+                                <p className="text-sm text-gray-500">Create new listing</p>
+                            </div>
+                        </div>
+                    </Link>
+
+                    <Link
+                        href="/dashboard/add-city"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                                <Building className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900">Add City</h3>
+                                <p className="text-sm text-gray-500">Manage locations</p>
+                            </div>
+                        </div>
+                    </Link>
+
+                    <Link
+                        href="/dashboard/add-blog"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
+                                <FileText className="h-5 w-5 text-purple-600" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900">Add Blog</h3>
+                                <p className="text-sm text-gray-500">Create content</p>
+                            </div>
+                        </div>
+                    </Link>
+
+                    <Link
+                        href="/dashboard/users-information"
+                        className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                                <Users className="h-5 w-5 text-orange-600" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900">Manage Users</h3>
+                                <p className="text-sm text-gray-500">User administration</p>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+            </div>
+
+            {/* Main Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <Link href={"/Properties"}>
+                <Link href="/Properties" className="block">
                     <StatCard
                         title="Total Properties"
                         value={totalProperties}
                         growth={propertyGrowth}
                         icon={Home}
                         color="green"
+                        loading={isLoading}
                     />
                 </Link>
-                <Link href={"/SeeAllDistrict"}>
+
+                <Link href="/SeeAllDistrict" className="block">
                     <StatCard
                         title="Districts Covered"
                         value={totalDistricts}
                         avg={avgPropertiesPerDistrict}
                         icon={MapPin}
-                        color="green"
+                        color="blue"
+                        loading={isLoading}
                     />
                 </Link>
-                <Link href={"/dashboard/users-information"}>
+
+                <Link href="/dashboard/users-information" className="block">
                     <StatCard
                         title="Total Users"
                         value={totalUsers}
                         growth={userGrowth}
                         icon={Users}
                         color="purple"
+                        loading={isLoading}
                     />
                 </Link>
+
                 <StatCard
                     title="Platform Health"
                     value={healthConfig.value}
                     status={healthConfig.status}
                     icon={healthConfig.icon}
                     color={healthConfig.color}
+                    loading={isLoading}
                 />
             </div>
 
-            {/* Charts and Activity */}
+            {/* Charts and Analytics Section */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+                <div className="xl:col-span-2">
+                    <PropertiesDistribution
+                        districts={districts}
+                        properties={properties}
+                        totalProperties={totalProperties}
+                    />
+                </div>
+                <div className="xl:col-span-1">
+                    <RecentActivity />
+                </div>
+            </div>
+
+            {/* User Overview and System Health */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <PropertiesDistribution
-                    districts={districts}
-                    properties={properties}
-                    totalProperties={totalProperties}
+                <UserOverview
+                    totalUsers={userCounts.total}
+                    adminCount={userCounts.adminCount}
+                    real_esate_developerCount={userCounts.real_esate_developerCount}
                 />
-                <RecentActivity />
+
+                {/* System Health Details */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <Activity className="h-5 w-5 text-gray-500" />
+                            System Health
+                        </h3>
+                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${systemHealth.status === "healthy" ? "bg-green-100 text-green-800" :
+                            systemHealth.status === "degraded" ? "bg-orange-100 text-orange-800" :
+                                "bg-red-100 text-red-800"
+                            }`}>
+                            {systemHealth.status.charAt(0).toUpperCase() + systemHealth.status.slice(1)}
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-700">Overall Status</span>
+                            <span className="text-sm font-semibold">{systemHealth.percentage}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                                className={`h-2 rounded-full transition-all duration-500 ${systemHealth.status === "healthy" ? "bg-green-500" :
+                                    systemHealth.status === "degraded" ? "bg-orange-500" :
+                                        "bg-red-500"
+                                    }`}
+                                style={{ width: `${systemHealth.percentage}%` }}
+                            ></div>
+                        </div>
+                        <p className="text-sm text-gray-600">{systemHealth.message}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mt-6">
+                        <div className={`p-3 rounded-lg border ${!propertiesError && !districtsError
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-red-50 border-red-200'
+                            }`}>
+                            <div className="flex items-center gap-2 mb-1">
+                                {!propertiesError && !districtsError ? (
+                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                ) : (
+                                    <XCircle className="h-4 w-4 text-red-600" />
+                                )}
+                                <span className="text-sm font-medium">Database</span>
+                            </div>
+                            <p className="text-xs text-gray-600">
+                                {!propertiesError && !districtsError ? 'Connected' : 'Issues detected'}
+                            </p>
+                        </div>
+
+                        <div className={`p-3 rounded-lg border ${Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts)
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-red-50 border-red-200'
+                            }`}>
+                            <div className="flex items-center gap-2 mb-1">
+                                {Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts) ? (
+                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                ) : (
+                                    <XCircle className="h-4 w-4 text-red-600" />
+                                )}
+                                <span className="text-sm font-medium">API</span>
+                            </div>
+                            <p className="text-xs text-gray-600">
+                                {Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts) ? 'Responsive' : 'Slow'}
+                            </p>
+                        </div>
+
+                        <div className={`p-3 rounded-lg border ${users.length > 0 || properties.length > 0 || districts.length > 0
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-yellow-50 border-yellow-200'
+                            }`}>
+                            <div className="flex items-center gap-2 mb-1">
+                                {users.length > 0 || properties.length > 0 || districts.length > 0 ? (
+                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                ) : (
+                                    <AlertCircle className="h-4 w-4 text-yellow-600" />
+                                )}
+                                <span className="text-sm font-medium">Data</span>
+                            </div>
+                            <p className="text-xs text-gray-600">
+                                {users.length > 0 || properties.length > 0 || districts.length > 0 ? 'Loaded' : 'No data'}
+                            </p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border bg-green-50 border-green-200">
+                            <div className="flex items-center gap-2 mb-1">
+                                <CheckCircle className="h-4 w-4 text-green-600" />
+                                <span className="text-sm font-medium">Performance</span>
+                            </div>
+                            <p className="text-xs text-gray-600">Optimal</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <UserOverview
-                totalUsers={userCounts.total}
-                adminCount={userCounts.adminCount}
-                real_esate_developerCount={userCounts.real_esate_developerCount}
-            />
-
-            {/* Error */}
+            {/* Error Display */}
             {(propertiesError || districtsError) && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
                     <div className="flex items-center gap-3">
@@ -355,71 +563,6 @@ export default function AdminPage() {
                     </div>
                 </div>
             )}
-
-            {/* System Health Details */}
-            <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className={`p-4 rounded-lg border ${!propertiesError && !districtsError
-                        ? 'bg-green-50 border-green-200'
-                        : 'bg-red-50 border-red-200'
-                        }`}>
-                        <div className="flex items-center gap-2 mb-2">
-                            {!propertiesError && !districtsError ? (
-                                <CheckCircle className="h-5 w-5 text-green-600" />
-                            ) : (
-                                <XCircle className="h-5 w-5 text-red-600" />
-                            )}
-                            <span className="font-medium">Database</span>
-                        </div>
-                        <p className="text-sm text-gray-600">
-                            {!propertiesError && !districtsError ? 'Connected' : 'Connection issues'}
-                        </p>
-                    </div>
-
-                    <div className={`p-4 rounded-lg border ${Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts)
-                        ? 'bg-green-50 border-green-200'
-                        : 'bg-red-50 border-red-200'
-                        }`}>
-                        <div className="flex items-center gap-2 mb-2">
-                            {Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts) ? (
-                                <CheckCircle className="h-5 w-5 text-green-600" />
-                            ) : (
-                                <XCircle className="h-5 w-5 text-red-600" />
-                            )}
-                            <span className="font-medium">API</span>
-                        </div>
-                        <p className="text-sm text-gray-600">
-                            {Array.isArray(users) && Array.isArray(properties) && Array.isArray(districts) ? 'Responsive' : 'Slow response'}
-                        </p>
-                    </div>
-
-                    <div className={`p-4 rounded-lg border ${users.length > 0 || properties.length > 0 || districts.length > 0
-                        ? 'bg-green-50 border-green-200'
-                        : 'bg-yellow-50 border-yellow-200'
-                        }`}>
-                        <div className="flex items-center gap-2 mb-2">
-                            {users.length > 0 || properties.length > 0 || districts.length > 0 ? (
-                                <CheckCircle className="h-5 w-5 text-green-600" />
-                            ) : (
-                                <AlertCircle className="h-5 w-5 text-yellow-600" />
-                            )}
-                            <span className="font-medium">Data</span>
-                        </div>
-                        <p className="text-sm text-gray-600">
-                            {users.length > 0 || properties.length > 0 || districts.length > 0 ? 'Loaded' : 'No data'}
-                        </p>
-                    </div>
-
-                    <div className="p-4 rounded-lg border bg-green-50 border-green-200">
-                        <div className="flex items-center gap-2 mb-2">
-                            <CheckCircle className="h-5 w-5 text-green-600" />
-                            <span className="font-medium">Performance</span>
-                        </div>
-                        <p className="text-sm text-gray-600">Optimal</p>
-                    </div>
-                </div>
-            </div>
         </div>
     )
 }

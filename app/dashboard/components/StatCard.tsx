@@ -8,6 +8,7 @@ interface StatCardProps {
     status?: string
     icon: LucideIcon
     color: "green" | "purple" | "orange" | "gray" | "blue" | "red"
+    loading : boolean
 }
 
 export default function StatCard({ title, value, growth, avg, status, icon: Icon, color }: StatCardProps) {
