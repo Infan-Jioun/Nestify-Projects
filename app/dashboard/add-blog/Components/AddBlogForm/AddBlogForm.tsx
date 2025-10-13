@@ -225,10 +225,10 @@ export default function AddBlogForm() {
                     className="space-y-8 bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-200"
                 >
                     {/* Progress Indicator */}
-                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-blue-900">Completion Status</span>
-                            <span className="text-sm text-blue-700">
+                            <span className="text-sm font-medium text-green-900">Completion Status</span>
+                            <span className="text-sm text-green-700">
                                 {[
                                     watchedTitle?.length > 0,
                                     watchedSlug?.length > 0,
@@ -237,9 +237,9 @@ export default function AddBlogForm() {
                                 ].filter(Boolean).length}/4
                             </span>
                         </div>
-                        <div className="w-full bg-blue-200 rounded-full h-2">
+                        <div className="w-full bg-green-200 rounded-full h-2">
                             <div
-                                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                className="bg-green-600 h-2 rounded-full transition-all duration-300"
                                 style={{
                                     width: `${([
                                         watchedTitle?.length > 0,
@@ -257,10 +257,10 @@ export default function AddBlogForm() {
                         {/* Left Column - Main Content (3/4 width) */}
                         <div className="xl:col-span-3 space-y-6">
                             {/* Title */}
-                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                            <div className="bg-gradient-to-br from-green-50 to-indigo-50 rounded-xl p-6 border border-green-200">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                                        <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                         Title & Content
@@ -380,7 +380,7 @@ export default function AddBlogForm() {
                             </div>
 
                             {/* Author Info Card */}
-                            <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-200 mt-3">
+                            <div className="bg-gradient-to-br from-cyan-50 to-green-50 rounded-xl p-6 border border-cyan-200 mt-3">
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                     <svg className="w-5 h-5 text-cyan-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -409,7 +409,7 @@ export default function AddBlogForm() {
                 {/* Quick Stats */}
                 <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 text-center">
-                        <div className="text-xl font-bold text-blue-600">{categories.length}/5</div>
+                        <div className="text-xl font-bold text-green-600">{categories.length}/5</div>
                         <div className="text-sm text-gray-600">Categories</div>
                     </div>
                     <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 text-center">
