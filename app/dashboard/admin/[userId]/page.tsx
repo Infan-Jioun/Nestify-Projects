@@ -243,20 +243,8 @@ export default function AdminPage() {
     }
 
     return (
-        <div className="min-h-screen/30 px-1">
+        <div className="min-h-screen/30 px-1 lg:px-10 py-10">
             <NextHead title="Dashboard - Nestify" />
-
-            {/* Debug Info - Only in development */}
-            {process.env.NODE_ENV === "development" && (
-                <div className="bg-yellow-100 border border-yellow-400 rounded-lg p-4 mb-4">
-                    <h3 className="font-bold text-yellow-800">Debug Info</h3>
-                    <p className="text-sm text-yellow-700">
-                        Role: {session.user.role || "undefined"} |
-                        ID: {session.user.id} |
-                        Name: {session.user.name}
-                    </p>
-                </div>
-            )}
 
             {/* Header */}
             <div className="mb-8 grid md:grid-cols-2 justify-between items-center">
