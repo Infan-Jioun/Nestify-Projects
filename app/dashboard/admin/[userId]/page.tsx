@@ -328,7 +328,7 @@ export default function AdminPage() {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <Link
-                        href="/dashboard/add-properties"
+                        href="/dashboard/add-property"
                         className="bg-white p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
                     >
                         <div className="flex items-center gap-3">
