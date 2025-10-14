@@ -13,6 +13,10 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/lib/store'
+import { updateBookingStatus, refetchProperties } from '@/app/features/Properties/propertySlice'
+import { toast } from 'react-hot-toast'
 
 interface BookingDetailsModalProps {
     booking: Booking;
@@ -34,8 +38,35 @@ export default function BookingDetailsModal({
     onUpdateStatus,
     updating
 }: BookingDetailsModalProps) {
+    const dispatch = useDispatch<AppDispatch>()
+
     const handleStatusChange = async (newStatus: string) => {
-        await onUpdateStatus(booking._id, newStatus)
+        try {
+            // Property ID পাওয়া যায় booking object থেকে
+            const propertyId = booking.propertyId;
+
+            // updateBookingStatus dispatch করুন
+            const result = await dispatch(updateBookingStatus({
+                bookingId: booking._id,
+                status: newStatus,
+                propertyId
+            })).unwrap();
+
+            console.log('Update result:', result);
+            toast.success(`Booking status updated to ${newStatus}`);
+
+            // Optionally refetch properties
+            await dispatch(refetchProperties());
+
+            // Call the parent's onUpdateStatus if provided
+            if (onUpdateStatus) {
+                onUpdateStatus(booking._id, newStatus);
+            }
+
+        } catch (error) {
+            console.error('Failed to update booking status:', error);
+            toast.error('Failed to update booking status');
+        }
     }
 
     const getStatusVariant = (status: string) => {

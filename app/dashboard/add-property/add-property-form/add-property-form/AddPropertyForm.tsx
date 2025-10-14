@@ -132,15 +132,7 @@ const ButtonSkeleton = () => (
 export default function AddPropertyFormPage() {
   const dispatch = useDispatch<AppDispatch>();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const { register, handleSubmit, watch, setValue, control, reset, formState: { errors }, } = useForm<Inputs>();
 
   const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
   const skeletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);

@@ -84,7 +84,7 @@ export default function SearchLocation({ value = "", onChange }: SearchHomeLocat
         dispatch(setResults([]));
         setShowDropdown(false);
         
-        // Call parent's onChange if provided
+   
         if (onChange) {
             onChange(item);
         }
@@ -96,7 +96,6 @@ export default function SearchLocation({ value = "", onChange }: SearchHomeLocat
         dispatch(setLocation(""));
         setShowDropdown(false);
         
-        // Call parent's onChange if provided
         if (onChange) {
             onChange("");
         }

@@ -150,18 +150,20 @@ export default function PropertyCard({
         <div className="flex gap-2">
           <p
             className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.listingStatus === "Sale"
-              ? "bg-red-100 text-red-600"
-              : "bg-yellow-100 text-yellow-600"
+                ? "bg-red-100 text-red-600"
+                : "bg-yellow-100 text-yellow-600"
               }`}
           >
             {property.listingStatus}
           </p>
           <p
             className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
-              ? "bg-green-100 text-green-600"
-              : property.status === "Sold"
-                ? "bg-red-100 text-red-600"
-                : "bg-yellow-100 text-yellow-600"
+                ? "bg-green-100 text-green-600"
+                : property.status === "Sold"
+                  ? "bg-red-100 text-red-600"
+                  : property.status === "Pending"
+                    ? "bg-yellow-100 text-yellow-600"
+                    : "bg-blue-100 text-blue-600" // Rented
               }`}
           >
             {property.status}

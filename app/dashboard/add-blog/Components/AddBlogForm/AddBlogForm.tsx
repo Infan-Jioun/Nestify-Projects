@@ -16,6 +16,7 @@ import ImageFeatured from "./Components/ImageFeatured";
 import AuthorName from "./Components/AuthorName";
 import { Tags } from "./Components/Tags";
 import Categories from "./Components/Categories";
+import toast from "react-hot-toast";
 
 export default function AddBlogForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -113,7 +114,7 @@ export default function AddBlogForm() {
                 setTags([]);
 
                 // Show success message
-                alert("Blog post published successfully!");
+                toast.success("Blog post published successfully!");
 
             } else {
                 throw new Error(result.payload as string);
@@ -121,7 +122,7 @@ export default function AddBlogForm() {
 
         } catch (err) {
             console.error("Error creating blog:", err);
-            alert("Failed to publish blog post. Please try again.");
+            toast.error("Failed to publish blog post. Please try again.");
         } finally {
             dispatch(setButtonLoader(false));
         }

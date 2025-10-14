@@ -15,7 +15,7 @@ import { useRoleGuard } from "@/app/hook/useRoleGuard";
 import { UserRole } from "@/app/Types/auth";
 interface UpdateUserData {
     _id: string;
-    name?: string;                                  
+    name?: string;
     bio?: string | null;
     location?: string | null;
     website?: string | null;

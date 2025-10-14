@@ -8,9 +8,14 @@ import BookingsList from './components/BookingsList'
 import BookingDetailsModal from './components/BookingDetailsModal'
 import BookingsSkeleton from './components/BookingsSkeleton'
 import { Booking, BookingStats } from '@/app/Types/Booking'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/lib/store'
+import { updateBookingStatus as updateBookingStatusAction, refetchProperties } from '@/app/features/Properties/propertySlice'
+import { toast } from 'react-hot-toast'
 
 export default function BookingsPage() {
     const { data: session, status } = useSession();
+    const dispatch = useDispatch<AppDispatch>();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(true);
@@ -94,45 +99,43 @@ export default function BookingsPage() {
         setFilteredBookings(filtered);
     }, [bookings, statusFilter, searchTerm]);
 
-    // Update booking status
-    const updateBookingStatus = async (bookingId: string, newStatus: string) => {
+    // Update booking status with Redux integration
+    const handleUpdateBookingStatus = async (bookingId: string, newStatus: string) => {
         try {
             setUpdatingBookingId(bookingId);
             setUpdateError(null);
             setUpdateSuccess(null);
 
-            const response = await fetch(`/api/bookings/${bookingId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    status: newStatus
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to update booking status');
+            // Find the booking to get propertyId
+            const bookingToUpdate = bookings.find(booking => booking._id === bookingId);
+            if (!bookingToUpdate) {
+                throw new Error('Booking not found');
             }
 
-            // Remove unused variable 'result'
-            await response.json();
+            // Use Redux thunk to update booking status and sync property status
+            const result = await dispatch(updateBookingStatusAction({
+                bookingId,
+                status: newStatus,
+                propertyId: bookingToUpdate.propertyId
+            })).unwrap();
+
+            console.log('Update result:', result);
 
             // Update local state with proper type
             setBookings(prevBookings =>
                 prevBookings.map(booking =>
                     booking._id === bookingId
-                        ? { 
-                            ...booking, 
-                            status: newStatus as Booking['status'], 
-                            updatedAt: new Date().toISOString() 
+                        ? {
+                            ...booking,
+                            status: newStatus as Booking['status'],
+                            updatedAt: new Date().toISOString()
                         }
                         : booking
                 )
             );
 
             setUpdateSuccess(`Booking status updated to ${newStatus} successfully`);
+            toast.success(`Booking status updated to ${newStatus}`);
 
             // Refresh stats with proper type
             const updatedBookings = bookings.map(booking =>
@@ -155,16 +158,31 @@ export default function BookingsPage() {
                 cancelled
             });
 
+            // Optionally refetch properties to ensure sync
+            await dispatch(refetchProperties());
+
             // Auto hide success message after 3 seconds
             setTimeout(() => {
                 setUpdateSuccess(null);
             }, 3000);
 
         } catch (err) {
-            setUpdateError(err instanceof Error ? err.message : 'Failed to update booking status');
+            const errorMessage = err instanceof Error ? err.message : 'Failed to update booking status';
+            setUpdateError(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setUpdatingBookingId(null);
         }
+    };
+
+    // Handle booking selection for modal
+    const handleViewDetails = (booking: Booking) => {
+        setSelectedBooking(booking);
+    };
+
+    // Handle modal close
+    const handleCloseModal = () => {
+        setSelectedBooking(null);
     };
 
     if (status === 'loading' || loading) {
@@ -179,7 +197,7 @@ export default function BookingsPage() {
             {/* Stats Grid */}
             <StatsGrid stats={stats} />
 
-            {/* Success and Error Messages */}
+          
             {updateSuccess && (
                 <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
                     <strong>Success:</strong> {updateSuccess}
@@ -188,7 +206,7 @@ export default function BookingsPage() {
 
             {updateError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
-                    <strong>Error:</strong> {updateSuccess}
+                    <strong>Error:</strong> {updateError}
                 </div>
             )}
 
@@ -209,8 +227,8 @@ export default function BookingsPage() {
             {/* Bookings List */}
             <BookingsList
                 bookings={filteredBookings}
-                onViewDetails={setSelectedBooking}
-                onUpdateStatus={updateBookingStatus}
+                onViewDetails={handleViewDetails}
+                onUpdateStatus={handleUpdateBookingStatus}
                 updatingBookingId={updatingBookingId}
             />
 
@@ -218,8 +236,8 @@ export default function BookingsPage() {
             {selectedBooking && (
                 <BookingDetailsModal
                     booking={selectedBooking}
-                    onClose={() => setSelectedBooking(null)}
-                    onUpdateStatus={updateBookingStatus}
+                    onClose={handleCloseModal}
+                    onUpdateStatus={handleUpdateBookingStatus}
                     updating={updatingBookingId === selectedBooking._id}
                 />
             )}

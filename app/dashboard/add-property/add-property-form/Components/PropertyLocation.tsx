@@ -12,6 +12,7 @@ import { FaSearch } from "react-icons/fa"
 import { Circles } from "react-loader-spinner"
 import { setGeoCountryLocationLoading } from "@/app/features/loader/loaderSlice"
 import { Label } from "@/components/ui/label"
+import { useSession } from "next-auth/react"
 
 interface LocationProps {
     register: UseFormRegister<Inputs>
@@ -23,6 +24,7 @@ type props = {
    setValue : UseFormSetValue<Inputs>
 }
 export default function PropertyLocation({ register, errors, setValue }: LocationProps,) {
+    const {data : session} = useSession();
     const dispatch = useDispatch<AppDispatch>()
     const { query, results } = useSelector((state: RootState) => state.searchLocation)
     const { geoCountryLocationLoading } = useSelector((state: RootState) => state.loader)

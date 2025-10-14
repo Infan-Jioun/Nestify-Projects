@@ -120,7 +120,7 @@ export const updatePropertyStatus = createAsyncThunk<
   }
 });
 
-// Update property - ADD THIS MISSING ACTION
+// Update property
 export const updateProperty = createAsyncThunk<
   PropertyType,
   { propertyId: string; propertyData: Partial<PropertyType> },
@@ -137,6 +137,53 @@ export const updateProperty = createAsyncThunk<
     return rejectWithValue(
       error.response?.data?.message ||
       "Failed to update property"
+    );
+  }
+});
+
+// Update booking status and sync with property status
+export const updateBookingStatus = createAsyncThunk<
+  { booking: BookingResponse; propertyStatus: string },
+  { bookingId: string; status: string; propertyId: string },
+  { rejectValue: string }
+>("properties/updateBookingStatus", async ({ bookingId, status, propertyId }, { rejectWithValue, dispatch }) => {
+  try {
+    // First update the booking status
+    const bookingResponse = await axios.put<BookingResponse>(`/api/bookings/${bookingId}`, {
+      status
+    });
+
+    // Determine property status based on booking status - handle both spellings
+    let propertyStatus: "Available" | "Rented" | "Sold" | "Pending" = "Available";
+
+    // Normalize status for case-insensitive comparison
+    const normalizedStatus = status.toLowerCase().trim();
+
+    if (normalizedStatus === 'confirmed' || normalizedStatus === 'completed') {
+      propertyStatus = "Sold";
+    } else if (normalizedStatus === 'pending') {
+      propertyStatus = "Pending";
+    } else if (normalizedStatus.includes('cancel')) {
+      propertyStatus = "Available";
+    }
+
+    console.log(`Booking status: ${status}, Property status: ${propertyStatus}`);
+
+    // Update property status
+    if (propertyId) {
+      await dispatch(updatePropertyStatus({ propertyId, status: propertyStatus })).unwrap();
+    }
+
+    return {
+      booking: bookingResponse.data,
+      propertyStatus
+    };
+
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ message: string }>;
+    return rejectWithValue(
+      error.response?.data?.message ||
+      "Failed to update booking status"
     );
   }
 });
@@ -173,6 +220,24 @@ export const deleteProperty = createAsyncThunk<
     return rejectWithValue(
       error.response?.data?.message ||
       "Failed to delete property"
+    );
+  }
+});
+
+// Refetch properties after status update
+export const refetchProperties = createAsyncThunk<
+  PropertyType[],
+  void,
+  { rejectValue: string }
+>("properties/refetch", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.get<PropertyType[]>("/api/properties");
+    return response.data;
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ message: string }>;
+    return rejectWithValue(
+      error.response?.data?.message ||
+      "Failed to refetch properties"
     );
   }
 });
@@ -238,7 +303,38 @@ const propertySlice = createSlice({
       if (state.currentProperty && state.currentProperty._id === propertyId) {
         state.currentProperty.status = "Sold";
       }
-    }
+    },
+    // New action to sync property status with booking status
+    syncPropertyStatusWithBooking: (
+      state,
+      action: PayloadAction<{ propertyId: string; bookingStatus: string }>
+    ) => {
+      const { propertyId, bookingStatus } = action.payload;
+    
+      let propertyStatus: "Available" | "Rented" | "Sold" | "Pending" = "Available";
+    
+      // Normalize status for case-insensitive comparison
+      const normalizedStatus = bookingStatus.toLowerCase().trim();
+
+      if (normalizedStatus === 'confirmed' || normalizedStatus === 'completed') {
+        propertyStatus = "Sold";
+      } else if (normalizedStatus === 'pending') {
+        propertyStatus = "Pending";
+      } else if (normalizedStatus.includes('cancel')) {
+        propertyStatus = "Available";
+      }
+    
+      console.log(`Syncing - Booking: ${bookingStatus}, Property: ${propertyStatus}`);
+    
+      const index = state.properties.findIndex(p => p._id === propertyId);
+      if (index !== -1) {
+        state.properties[index].status = propertyStatus;
+      }
+    
+      if (state.currentProperty && state.currentProperty._id === propertyId) {
+        state.currentProperty.status = propertyStatus;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -320,7 +416,7 @@ const propertySlice = createSlice({
         state.error = action.payload || "Failed to update property status";
       })
 
-      // Update property - ADD THIS MISSING CASE
+      // Update property
       .addCase(updateProperty.pending, (state) => {
         state.loading = true;
       })
@@ -340,6 +436,19 @@ const propertySlice = createSlice({
       .addCase(updateProperty.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update property";
+      })
+
+      // Update booking status
+      .addCase(updateBookingStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateBookingStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        // Property status is already updated via the thunk
+      })
+      .addCase(updateBookingStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update booking status";
       })
 
       // Add property
@@ -369,13 +478,24 @@ const propertySlice = createSlice({
           state.currentProperty = null;
         }
       })
-
       .addCase(deleteProperty.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to delete property";
       })
-     
-   
+
+      // Refetch properties
+      .addCase(refetchProperties.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(refetchProperties.fulfilled, (state, action) => {
+        state.loading = false;
+        state.properties = action.payload;
+      })
+      .addCase(refetchProperties.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to refetch properties";
+      });
   },
 });
 
@@ -386,7 +506,18 @@ export const {
   clearProperties,
   updatePropertyStatusLocal,
   setPropertyAvailable,
-  setPropertySold
+  setPropertySold,
+  syncPropertyStatusWithBooking
 } = propertySlice.actions;
 
 export default propertySlice.reducer;
+
+
+interface BookingResponse {
+  success: boolean;
+  booking: {
+    _id: string;
+    status: string;
+  
+  };
+}
