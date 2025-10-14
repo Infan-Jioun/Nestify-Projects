@@ -1,120 +1,264 @@
-
-# Nestify - Real Estate Platform
+# 🏠 Nestify - Real Estate Platform
 
 ![Nestify Logo](https://i.ibb.co.com/mFbMTzHT/Nestify.png)
 
-Nestify is a modern real estate platform built with Next.js, providing users with property listings, agent profiles, and various real estate services.
+## 📅 2 Weeks Progress Report
 
-## Features
+---
 
-- Property listings by city and type
-- Featured agents section
-- Property search functionality
-- User authentication (Google, GitHub, email/password)
-- Responsive design for all devices
-- Interactive property browsing experience
+## 🚀 Development Progress
 
-## Technologies Used
+### 🧱 Foundation & Core Features
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS, DaisyUI
-- **State Management**: React hooks, React Hook Form
-- **Authentication**: NextAuth.js
-- **Database**: MongoDB with Mongoose
-- **UI Components**: ShadCN UI, Radix UI
-- **Animation**: Framer Motion
-- **Other Libraries**: Swiper.js, React Fast Marquee, React Helmet Async
+#### ✅ Authentication System
+- **Multi-provider Authentication**
+  - Email/Password with OTP verification  
+  - Google OAuth integration  
+  - GitHub OAuth integration  
+- **OTP Verification System**
+  - Secure email OTP sending  
+  - OTP expiration handling (5 minutes)  
+  - Resend OTP functionality  
+- **User Roles & Permissions**
+  - Admin, Developer, and User roles  
+  - Role-based access control  
+  - Protected routes implementation  
 
-## Project Structure
+---
 
-```
-nestify/
-├── app/                   # App router directory
-│   ├── About/             # About page
-│   ├── AddProperty/       # Property submission page
-│   ├── Contact/           # Contact page
-│   ├── Footer/            # Global footer component
-│   ├── Home/              # Homepage sections
-│   ├── Hooks/             # Custom hooks
-│   ├── LoginPage/         # Login page
-│   ├── NavbarPage/        # Navigation component
-│   ├── Properties/        # Property listings
-│   ├── RegisterPage/      # User registration
-│   ├── api/               # API routes
-│   ├── components/        # Reusable components
-│   └── models/            # Database models
-├── components/            # UI components
-├── lib/                   # Utility functions
-├── public/                # Static assets
-└── styles/                # Global styles
-```
+### 🏘️ Property Management
 
-## Getting Started
+#### ✅ Property CRUD Operations
+- Add new properties with a rich form  
+- Edit property details using a modal  
+- Delete properties with confirmation  
+- Manage property status: **Available, Sold, Rented, Pending**  
 
-### Prerequisites
+#### ✅ Advanced Property Forms
+- Dynamic category-based fields  
+- Image upload with preview  
+- Location search with autocomplete  
+- Facilities selection with icons  
 
-- Node.js 18+
-- MongoDB Atlas account or local MongoDB instance
-- Google/GitHub OAuth credentials (for social login)
+#### ✅ Property Categories
+- **Residential:** Apartment, Villa, House  
+- **Commercial:** Office, Shop, Factory  
+- **Land:** Residential, Commercial, Agricultural  
 
-### Installation
+---
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/nestify.git
-   cd nestify
-   ```
+### 🎨 UI / UX Development
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+#### ✅ Responsive Design
+- Mobile-first approach  
+- Optimized for tablets and desktops  
+- Touch-friendly interfaces  
 
-3. Create a `.env` file in the root directory with the following variables:
-   ```
-   MONGODB_URL=your_mongodb_connection_string
-   NEXTAUTH_SECRET=your_secret_key
-   GOOGLE_ID=your_google_client_id
-   GOOGLE_SECRET=your_google_client_secret
-   GITHUB_ID=your_github_client_id
-   GITHUB_SECRET=your_github_client_secret
-   ```
+#### ✅ Component Library
+- ShadCN UI integration  
+- Custom modal components  
+- Loading states and skeletons  
+- Toast notifications  
 
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
+---
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+### 🧾 Booking & Reservation System *(New)*
 
-## Scripts
+#### ✅ Complete Booking Flow
+- Property booking with date/time selection  
+- Booking status management: Pending, Confirmed, Completed, Cancelled  
+- Automatic property status synchronization  
+- Booking cancellation restores property availability  
 
-- `npm run dev`: Starts the development server
-- `npm run build`: Builds the application for production
-- `npm start`: Starts the production server
-- `npm run lint`: Runs ESLint
+#### ✅ Booking-Property Status Sync
 
-## Deployment
+| Booking Status | Property Status |
+|----------------|-----------------|
+| Pending | Pending |
+| Confirmed / Completed | Sold |
+| Cancelled | Available |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### ✅ Booking Management
+- Developer booking dashboard  
+- Booking statistics and analytics  
+- Client communication system  
+- Booking timeline tracking  
 
-## Contributing
+---
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
+### 📍 Search & Location Features *(Enhanced)*
 
-## License
+#### ✅ Advanced Location Search
+- Integrated **Bangladesh geographical data**
+- Division → District → Upazila → Union hierarchy  
+- Real-time search suggestions  
+- Redux-powered search state management  
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
+#### ✅ Smart Property Search
+- Multi-criteria filtering  
+- Price range filtering  
+- Property type filtering  
+- Location-based search  
 
-This README provides a comprehensive overview of your project, including:
-1. Project description and features
-2. Technology stack
-3. Directory structure
-4. Installation instructions
-5. Environment variables needed
-6. Available scripts
-7. Deployment information
-8. Contribution guidelines
+---
 
-You can customize it further by adding screenshots, demo links, or more detailed documentation about specific features.
+### ⚡ State Management & Performance *(Optimized)*
+
+#### ✅ Redux Integration
+- Property state management  
+- Booking synchronization  
+- Search state persistence  
+- User session management  
+
+#### ✅ Performance Optimizations
+- Image lazy loading  
+- Component memoization  
+- Efficient re-rendering  
+- API response caching  
+
+---
+
+### 👷 Developer Features *(New)*
+
+#### ✅ Developer Registration
+- Specialized developer signup  
+- Role-based dashboard  
+- Property management interface  
+
+#### ✅ Developer Dashboard
+- Property performance analytics  
+- Booking management  
+- Client communication hub  
+- Earnings tracking  
+
+---
+
+### 💡 Enhanced User Experience *(Improved)*
+
+#### ✅ Interactive Components
+- Booking modals with form validation  
+- Property image carousels  
+- Real-time status updates  
+- Smooth animations with Framer Motion  
+
+#### ✅ Notification System
+- Success and error toasts  
+- Booking confirmation alerts  
+- Status change notifications  
+
+#### ✅ Form Handling
+- React Hook Form integration  
+- Comprehensive form validation  
+- Auto-save functionality  
+- Error boundary implementation  
+
+---
+
+## 🔐 OTP Verification Process
+
+1. User registers with email/password  
+2. System sends a **6-digit OTP** via email  
+3. User verifies OTP within **5 minutes**  
+4. Account activates after successful verification  
+5. Failed attempts trigger the **Resend OTP** option  
+
+---
+
+## 🎯 Key Achievements
+
+### ✅ Completed Features
+- Full-stack Authentication System  
+- Complete Property Management  
+- Advanced Booking System  
+- Real-time Search & Filters  
+- Responsive UI/UX Design  
+- State Management with Redux  
+- Database Integration (MongoDB)  
+- API Route Optimization  
+
+### ✅ User Experience
+- Seamless page navigation  
+- Intuitive form interactions  
+- Real-time feedback and notifications  
+- Mobile-optimized interfaces  
+- Fast loading times  
+
+### ✅ Code Quality
+- TypeScript implementation  
+- Reusable components  
+- Robust error handling  
+- Performance optimization  
+- Clean code architecture  
+
+---
+
+## 🚀 Next Steps & Future Enhancements
+
+### 🧩 Planned Features
+- Payment Integration (**bKash, Nagad, Stripe**)  
+- Real-time Chat between Clients and Developers  
+- Advanced Analytics Dashboard  
+- Property Recommendation Engine  
+- Multi-language Support  
+- PWA Implementation  
+- Advanced Reporting System  
+
+### ⚙️ Technical Improvements
+- Testing Suite (**Jest, Cypress**)  
+- API Documentation (**Swagger**)  
+- Performance Monitoring  
+- SEO Optimization  
+- Accessibility Improvements  
+
+---
+
+## 📊 Progress Metrics
+
+| Metric | Count |
+|--------|--------|
+| Total Components | 45+ |
+| API Routes | 25+ |
+| Pages | 15+ |
+| Database Models | 8+ |
+| Authentication Providers | 3 |
+| Test Coverage | Planning phase |
+
+---
+
+## 💬 Summary
+
+**Nestify** is evolving into a complete real estate platform with secure authentication, dynamic property management, advanced booking systems, and a seamless user experience.  
+The foundation is solid, and upcoming milestones focus on **payment integration**, **analytics**, and **real-time communication** to make Nestify even more powerful.
+
+---
+
+### 🧠 Tech Stack Overview
+
+| Category | Technologies |
+|-----------|---------------|
+| Frontend | Next.js, TypeScript, Redux, Tailwind CSS, ShadCN UI, Framer Motion |
+| Backend | Node.js, Express.js |
+| Database | MongoDB, Mongoose |
+| Authentication | NextAuth.js (Google, GitHub, Email/OTP) |
+| State Management | Redux Toolkit |
+| Forms | React Hook Form |
+| Deployment | Vercel (Frontend), Render / Railway (Backend) |
+| Tools | Axios, React Query, Toastify, ESLint, Prettier |
+
+---
+
+### 👨‍💻 Author
+
+**Developer:** Infan  
+**Role:** Frontend Developer  
+**Project:** Nestify - Real Estate Platform  
+**Duration:** 2 Weeks Progress Report  
+
+---
+
+### ⭐ Support
+
+If you like this project, don’t forget to **star** the repository to show your support!
+
+---
+
