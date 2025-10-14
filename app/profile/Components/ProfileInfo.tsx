@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { User } from "@/app/Types/user";
+import SearchLocation from "./SearchLocation"; // Adjust path as needed
 
 interface ProfileInfoProps {
     currentUser: User;
@@ -19,8 +20,22 @@ interface ProfileInfoProps {
     onCancelEdit: () => void;
 }
 
+export default function ProfileInfo({
+    currentUser,
+    isEditing,
+    editForm,
+    saveLoading,
+    imageUploading,
+    onInputChange,
+    onSaveProfile,
+    onCancelEdit
+}: ProfileInfoProps) {
 
-export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoading, imageUploading, onInputChange, onSaveProfile, onCancelEdit }: ProfileInfoProps) {
+    // Handle location change from SearchHomeLocation
+    const handleLocationChange = (value: string) => {
+        onInputChange("location", value);
+    };
+
     return (
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -95,13 +110,12 @@ export default function ProfileInfo({ currentUser, isEditing, editForm, saveLoad
                             Location
                         </label>
                         {isEditing ? (
-                            <input
-                                type="text"
-                                value={editForm.location}
-                                onChange={(e) => onInputChange("location", e.target.value)}
-                                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
-                                placeholder="Enter your location"
-                            />
+                            <div className="mt-1">
+                                <SearchLocation
+                                    value={editForm.location}
+                                    onChange={handleLocationChange}
+                                />
+                            </div>
                         ) : (
                             <p className="text-lg font-semibold text-gray-900 mt-1">
                                 {currentUser.location || "Not specified"}
