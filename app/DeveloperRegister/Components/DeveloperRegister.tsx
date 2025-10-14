@@ -21,12 +21,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     setButtonLoader,
     setSkletonLoader,
-    setGoogleLoader,
-    setGithubLoader
 } from '@/app/features/loader/loaderSlice'
 import { RootState } from '@/lib/store'
 import { Eye, EyeOff } from 'lucide-react'
 import NextHead from '@/app/components/NextHead/NextHead'
+import SearchLocation from './SearchLocation'
 
 type Inputs = {
     name: string
@@ -35,8 +34,6 @@ type Inputs = {
     mobile: string | null;
     location: string | null;
     role: "real_estate_developer"
-
-
 }
 
 export default function DeveloperRegister() {
@@ -52,11 +49,15 @@ export default function DeveloperRegister() {
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm<Inputs>();
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<Inputs>();
+
+
+    const locationValue = watch("location");
+
+
+    const handleLocationChange = (value: string) => {
+        setValue("location", value, { shouldValidate: true });
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -71,7 +72,7 @@ export default function DeveloperRegister() {
     const onSubmit: SubmitHandler<Inputs> = async (formData) => {
         dispatch(setButtonLoader(true));
         try {
-            const payload = {...formData, role: "real_estate_developer"};
+            const payload = { ...formData, role: "real_estate_developer" };
             const res = await fetch("/api/auth/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -84,7 +85,7 @@ export default function DeveloperRegister() {
                 setSuccess(data.message || "Account created successfully");
                 setError(null);
 
-                
+
                 localStorage.setItem("verificationEmail", formData.email);
                 router.push("/verify-email");
             } else if (res.status === 400) {
@@ -156,10 +157,9 @@ export default function DeveloperRegister() {
                                 height={80} />
                         </CardTitle>
                         <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
-                            {"Create Your Nestify Developer Account – Join as a Real Estate Partne"}
+                            {"Create Your Nestify Developer Account – Join as a Real Estate Partner"}
                         </CardDescription>
                     </CardHeader>
-
 
                     {!!success && (
                         <div className='px-3'>
@@ -197,24 +197,27 @@ export default function DeveloperRegister() {
                                 />
                                 {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
                             </div>
+
+                            {/* Location Field with SearchLocation */}
                             <div className="grid gap-1">
                                 <Label htmlFor="location">Location</Label>
-                                <Input {...register("location", { required: "Location is required" })}
-                                    id="location"
-                                    type="text"
-                                    placeholder="exp : Cox'sBazar "
+                                <SearchLocation
+                                    value={locationValue || ""}
+                                    onChange={handleLocationChange}
                                 />
                                 {errors.location && <p className="text-sm text-red-500">{errors.location.message}</p>}
                             </div>
+
                             <div className="grid gap-1">
                                 <Label htmlFor="mobile">Phone</Label>
-                                <Input {...register("mobile", { required: "Name is required" })}
+                                <Input {...register("mobile", { required: "Phone number is required" })}
                                     id="mobile"
                                     type="text"
                                     placeholder="exp : 0123233232323 "
                                 />
                                 {errors.mobile && <p className="text-sm text-red-500">{errors.mobile.message}</p>}
                             </div>
+
                             <div className="grid gap-1 relative">
                                 <Label htmlFor="password">Password</Label>
                                 <div className="relative">
@@ -253,7 +256,7 @@ export default function DeveloperRegister() {
                                         Creating Account...
                                     </div>
                                 ) : (
-                                    "Create Devleoper Account"
+                                    "Create Developer Account"
                                 )}
                             </Button>
 
@@ -265,8 +268,6 @@ export default function DeveloperRegister() {
                             </p>
                         </CardFooter>
                     </form>
-
-           
                 </Card>
             </div>
         </div>
