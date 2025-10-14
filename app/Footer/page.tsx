@@ -38,10 +38,10 @@ export default function Footer() {
           </ul>
           <h3 className="font-semibold mt-6 mb-3">Discover</h3>
           <ul className="space-y-2 text-sm">
-            <li>Miami</li>
-            <li>Los Angeles</li>
-            <li>Chicago</li>
-            <li>New York</li>
+            <li>Dhaka</li>
+            <li>Chattogram</li>
+            <li>Sylhet</li>
+            <li>Rajshahi</li>
           </ul>
         </div>
 
