@@ -11,6 +11,7 @@ import { setGeoCountryLocationLoading } from "@/app/features/loader/loaderSlice"
 import { Circles } from "react-loader-spinner";
 import { setLocation } from "@/app/features/filter/filterSlice";
 
+
 export default function SearchHomeLocation() {
     const dispatch = useDispatch<AppDispatch>();
     const { query, results } = useSelector((state: RootState) => state.searchLocation);

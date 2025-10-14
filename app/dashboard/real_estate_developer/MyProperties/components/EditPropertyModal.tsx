@@ -1,4 +1,3 @@
-// app/dashboard/real_estate_developer/MyProperties/components/EditPropertyModal.tsx
 "use client"
 import React, { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
@@ -31,6 +30,8 @@ import {
 } from 'lucide-react'
 import { FaSwimmingPool } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
+import SearchHomeLocation from '@/app/components/SearchHomeLocation/SearchHomeLocation'
+import ControlledSearchLocation from './ControlledSearchLocation'
 
 interface EditPropertyModalProps {
     property: PropertyType | null
@@ -554,11 +555,14 @@ export default function EditPropertyModal({
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                                    <SimplePropertyLocation
+
+                                    <label className="text-sm font-medium text-foreground">Location *</label>
+                                    <ControlledSearchLocation
                                         value={watch('geoCountryLocation')}
                                         onChange={(value) => setValue('geoCountryLocation', value, { shouldValidate: true })}
                                         error={errors.geoCountryLocation?.message}
                                     />
+
                                 </div>
                             </div>
                         </div>
@@ -737,7 +741,7 @@ export default function EditPropertyModal({
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
