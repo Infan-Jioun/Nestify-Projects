@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import NextHead from "../components/NextHead/NextHead";
 import { motion } from "framer-motion";
+import ContactPage from "../Contact/page";
 
 export default function AboutPage() {
   const [loading, setLoading] = useState(true);
@@ -242,35 +243,7 @@ export default function AboutPage() {
 
       {/* Contact Section */}
       <section className="bg-white py-24 px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-            Get in Touch
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-            {"Have questions or want to list your property? We'd love to hear from you."}
-          </p>
-
-          <form className="grid md:grid-cols-2 gap-6 text-left">
-            <input
-              type="text"
-              placeholder="Your Name"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400"
-            />
-            <input
-              type="email"
-              placeholder="Your Email"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400"
-            />
-            <textarea
-              placeholder="Your Message"
-              rows={4}
-              className="md:col-span-2 w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-400"
-            ></textarea>
-            <button className="md:col-span-2 w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition">
-              Send Message
-            </button>
-          </form>
-        </div>
+       <ContactPage/>
       </section>
 
       {/* Property Seller Section */}

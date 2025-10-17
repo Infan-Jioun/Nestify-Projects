@@ -1,4 +1,3 @@
-// components/UserBookings.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -573,10 +572,12 @@ const UserBookings = () => {
                     <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 md:mb-10 max-w-md mx-auto leading-relaxed">
                         Sign in to view and manage your property viewing appointments, track your schedule, and explore available properties.
                     </p>
-                    <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg sm:shadow-2xl shadow-green-500/30 px-6 sm:px-8 md:px-10 py-3 h-12 sm:h-14 text-base sm:text-lg font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105 w-full sm:w-auto">
-                        Sign In to Continue
-                        <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
-                    </Button>
+                    <Link href={"/LoginPage"}>
+                        <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg sm:shadow-2xl shadow-green-500/30 px-6 sm:px-8 md:px-10 py-3 h-12 sm:h-14 text-base sm:text-lg font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105 w-full sm:w-auto">
+                            Sign In to Continue
+                            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
+                        </Button>
+                    </Link>
                 </CardContent>
             </Card>
         );

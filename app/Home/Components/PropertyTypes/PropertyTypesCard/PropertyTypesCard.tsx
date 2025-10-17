@@ -2,7 +2,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import { Swiper as SwiperType } from "swiper";
 import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,8 +13,24 @@ import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 import { RootState } from "@/lib/store";
 import Link from "next/link";
 
-// Base apartment categories with images
-const apartmentCategories = [
+interface ApartmentCategory {
+  title: string;
+  categoryName: string;
+  image: string;
+}
+
+interface ApartmentCategoryWithCount extends ApartmentCategory {
+  subtitle: string;
+  count: number;
+}
+
+interface Property {
+  category?: {
+    name: string;
+  };
+}
+
+const apartmentCategories: ApartmentCategory[] = [
   {
     title: "Apartments",
     categoryName: "Apartment",
@@ -47,6 +66,7 @@ const apartmentCategories = [
     categoryName: "Warehouse",
     image: "https://i.ibb.co/fmdmZCq/Image-2.jpg",
   },
+ 
 ];
 
 export default function ApartmentTypes() {
@@ -54,20 +74,21 @@ export default function ApartmentTypes() {
   const skletonLoader = useSelector(
     (state: RootState) => state.loader.skletonLoader
   );
-  const [loading, setLoading] = useState(true);
-  const prevRef = useRef<HTMLButtonElement | null>(null);
-  const nextRef = useRef<HTMLButtonElement | null>(null);
-  const [swiperInitialized, setSwiperInitialized] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const [swiperInitialized, setSwiperInitialized] = useState<boolean>(false);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   const { properties } = useSelector((state: RootState) => state.properties);
 
-  const getPropertiesCountByCategory = (categoryName: string) => {
+  const getPropertiesCountByCategory = (categoryName: string): number => {
     return properties.filter(
-      (property) => property.category?.name === categoryName
+      (property: Property) => property.category?.name === categoryName
     ).length;
   };
 
-  const apartmentData = apartmentCategories.map((category) => ({
+  const apartmentData: ApartmentCategoryWithCount[] = apartmentCategories.map((category) => ({
     ...category,
     subtitle: `${getPropertiesCountByCategory(
       category.categoryName
@@ -75,8 +96,7 @@ export default function ApartmentTypes() {
     count: getPropertiesCountByCategory(category.categoryName)
   }));
 
-
-  const filteredApartmentData = apartmentData.filter(item => item.count > 0);
+  const filteredApartmentData: ApartmentCategoryWithCount[] = apartmentData.filter(item => item.count > 0);
 
   useEffect(() => {
     dispatch(setSkletonLoader(true));
@@ -91,7 +111,7 @@ export default function ApartmentTypes() {
     return () => clearTimeout(timer);
   }, [dispatch, properties]);
 
-  const SkeletonSlide = () => (
+  const SkeletonSlide: React.FC = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow">
       <div className="w-full h-48 bg-gray-200 animate-pulse"></div>
       <div className="p-4">
@@ -133,7 +153,7 @@ export default function ApartmentTypes() {
             >
               <GoArrowLeft />
             </button>
-            <div className="custom-pagination flex gap-2" />
+            <div className="custom-pagination flex gap-2"></div>
             <button
               ref={nextRef}
               className="text-black hover:text-green-500 text-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -162,16 +182,26 @@ export default function ApartmentTypes() {
         // Actual swiper with data
         <Swiper
           modules={[Navigation, Pagination]}
-          navigation={swiperInitialized ? {
+          navigation={{
             prevEl: prevRef.current,
             nextEl: nextRef.current,
-          } : false}
-          pagination={swiperInitialized ? {
+          }}
+          pagination={{
             clickable: true,
             el: ".custom-pagination",
-          } : false}
-          onInit={(swiper) => {
+            renderBullet: function (index: number, className: string) {
+              return `<span class="${className} bg-gray-300 w-2 h-2 rounded-full transition-all duration-300"></span>`;
+            },
+          }}
+          onInit={(swiper: SwiperType) => {
+            swiperRef.current = swiper;
             setSwiperInitialized(true);
+            // Update navigation after init
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }}
+          onSwiper={(swiper: SwiperType) => {
+            swiperRef.current = swiper;
           }}
           spaceBetween={20}
           breakpoints={{
@@ -183,7 +213,7 @@ export default function ApartmentTypes() {
           }}
           className="pb-10"
         >
-          {filteredApartmentData.map((item, index) => (
+          {filteredApartmentData.map((item: ApartmentCategoryWithCount, index: number) => (
             <SwiperSlide key={index}>
               <Link
                 href={`/category/${encodeURIComponent(item.categoryName)}`}
@@ -218,15 +248,23 @@ export default function ApartmentTypes() {
       {/* Custom Pagination Styles */}
       <style jsx global>{`
         .custom-pagination .swiper-pagination-bullet {
-          width: 10px;
-          height: 10px;
-          background: #ccc;
-          border-radius: 9999px;
+          width: 8px;
+          height: 8px;
+          background: #d1d5db;
+          border-radius: 50%;
           opacity: 1;
           transition: all 0.3s ease;
         }
         .custom-pagination .swiper-pagination-bullet-active {
           background: #000;
+          width: 20px;
+          border-radius: 4px;
+        }
+        
+        /* Swiper navigation styles */
+        .swiper-button-disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
       `}</style>
     </div>
