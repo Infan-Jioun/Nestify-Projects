@@ -17,7 +17,7 @@ import PropertiesByDistrict from '../Components/PropertiesByDistrict/PropertiesB
 
 export default function HomePage() {
 
-  return (    
+  return (
     <div>
       <NextHead title='Nestify' />
       <Banner />

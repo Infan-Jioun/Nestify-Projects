@@ -245,28 +245,7 @@ export default function ApartmentTypes() {
         </Swiper>
       )}
 
-      {/* Custom Pagination Styles */}
-      <style jsx global>{`
-        .custom-pagination .swiper-pagination-bullet {
-          width: 8px;
-          height: 8px;
-          background: #d1d5db;
-          border-radius: 50%;
-          opacity: 1;
-          transition: all 0.3s ease;
-        }
-        .custom-pagination .swiper-pagination-bullet-active {
-          background: #000;
-          width: 20px;
-          border-radius: 4px;
-        }
-        
-        /* Swiper navigation styles */
-        .swiper-button-disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-      `}</style>
+ 
     </div>
   );
 }

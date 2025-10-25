@@ -136,8 +136,8 @@ export default function ContactPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`p-4 rounded-lg mb-6 ${submitStatus.type === "success"
-                  ? "bg-green-100 text-green-800 border border-green-200"
-                  : "bg-red-100 text-red-800 border border-red-200"
+                ? "bg-green-100 text-green-800 border border-green-200"
+                : "bg-red-100 text-red-800 border border-red-200"
                 }`}
             >
               {submitStatus.message}
