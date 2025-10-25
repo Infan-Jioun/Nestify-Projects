@@ -172,12 +172,14 @@ export default function SeeAllDistrict() {
 
             {/* Footer CTA */}
             <div className="text-center mt-12">
-                <p className="text-gray-500 dark:text-gray-400">
-                    {"Can't find your district?"}
-                    <button className="text-green-500 hover:text-green-600 font-semibold underline underline-offset-4 transition-colors ml-2">
-                        Contact our specialists
-                    </button>
-                </p>
+                <Link href={"/Contact"}>
+                    <p className="text-gray-500 dark:text-gray-400">
+                        {"Can't find your district?"}
+                        <button className="text-green-500 hover:text-green-600 font-semibold underline underline-offset-4 transition-colors ml-2">
+                            Contact our specialists
+                        </button>
+                    </p>
+                </Link>
             </div>
         </div>
     );

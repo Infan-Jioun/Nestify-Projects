@@ -243,7 +243,7 @@ export default function AboutPage() {
 
       {/* Contact Section */}
       <section className="bg-white py-24 px-6">
-       <ContactPage/>
+        <ContactPage />
       </section>
 
       {/* Property Seller Section */}
