@@ -31,72 +31,36 @@ interface Property {
 }
 
 const apartmentCategories: ApartmentCategory[] = [
-  {
-    title: "Apartments",
-    categoryName: "Apartment",
-    image: "https://i.ibb.co/F4B27j7m/Apartment-3.jpg",
-  },
-  {
-    title: "Office Space",
-    categoryName: "Office Space",
-    image: "https://i.ibb.co/XZY199mw/Image-1.jpg",
-  },
-  {
-    title: "House",
-    categoryName: "House",
-    image: "https://i.ibb.co/n8Y1h3sZ/Bedrooms-4-Prompt-A-semi-furnished-modern-bedroom-with-a-double-bed-wardrobe-and-bedside-table-Cozy.jpg",
-  },
-  {
-    title: "Duplex",
-    categoryName: "Duplex",
-    image: "https://i.ibb.co/VcMtQyjD/Image-1.jpg",
-  },
-  {
-    title: "Land",
-    categoryName: "Land",
-    image: "https://i.ibb.co/W4p8pdvY/land-1.jpg",
-  },
-  {
-    title: "Shop",
-    categoryName: "Shop",
-    image: "https://i.ibb.co/fmdmZCq/Image-2.jpg",
-  },
-  {
-    title: "Warehouse",
-    categoryName: "Warehouse",
-    image: "https://i.ibb.co/fmdmZCq/Image-2.jpg",
-  },
- 
+  { title: "Apartments", categoryName: "Apartment", image: "https://i.ibb.co/F4B27j7m/Apartment-3.jpg" },
+  { title: "Office Space", categoryName: "Office Space", image: "https://i.ibb.co/XZY199mw/Image-1.jpg" },
+  { title: "House", categoryName: "House", image: "https://i.ibb.co/n8Y1h3sZ/Bedrooms-4-Prompt-A-semi-furnished-modern-bedroom-with-a-double-bed-wardrobe-and-bedside-table-Cozy.jpg" },
+  { title: "Duplex", categoryName: "Duplex", image: "https://i.ibb.co/VcMtQyjD/Image-1.jpg" },
+  { title: "Land", categoryName: "Land", image: "https://i.ibb.co/W4p8pdvY/land-1.jpg" },
+  { title: "Shop", categoryName: "Shop", image: "https://i.ibb.co/fmdmZCq/Image-2.jpg" },
+  { title: "Warehouse", categoryName: "Warehouse", image: "https://i.ibb.co/fmdmZCq/Image-2.jpg" },
 ];
 
 export default function ApartmentTypes() {
   const dispatch = useDispatch();
-  const skletonLoader = useSelector(
-    (state: RootState) => state.loader.skletonLoader
-  );
+  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const [loading, setLoading] = useState<boolean>(true);
+
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const [swiperInitialized, setSwiperInitialized] = useState<boolean>(false);
   const swiperRef = useRef<SwiperType | null>(null);
 
   const { properties } = useSelector((state: RootState) => state.properties);
 
-  const getPropertiesCountByCategory = (categoryName: string): number => {
-    return properties.filter(
-      (property: Property) => property.category?.name === categoryName
-    ).length;
-  };
+  const getPropertiesCountByCategory = (categoryName: string) =>
+    properties.filter((p: Property) => p.category?.name === categoryName).length;
 
-  const apartmentData: ApartmentCategoryWithCount[] = apartmentCategories.map((category) => ({
-    ...category,
-    subtitle: `${getPropertiesCountByCategory(
-      category.categoryName
-    )} Properties`,
-    count: getPropertiesCountByCategory(category.categoryName)
-  }));
-
-  const filteredApartmentData: ApartmentCategoryWithCount[] = apartmentData.filter(item => item.count > 0);
+  const filteredApartmentData: ApartmentCategoryWithCount[] = apartmentCategories
+    .map((category) => ({
+      ...category,
+      count: getPropertiesCountByCategory(category.categoryName),
+      subtitle: `${getPropertiesCountByCategory(category.categoryName)} Properties`,
+    }))
+    .filter((item) => item.count > 0);
 
   useEffect(() => {
     dispatch(setSkletonLoader(true));
@@ -105,13 +69,12 @@ export default function ApartmentTypes() {
     const timer = setTimeout(() => {
       setLoading(false);
       dispatch(setSkletonLoader(false));
-      setSwiperInitialized(true);
     }, 2000);
 
     return () => clearTimeout(timer);
   }, [dispatch, properties]);
 
-  const SkeletonSlide: React.FC = () => (
+  const SkeletonSlide = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow">
       <div className="w-full h-48 bg-gray-200 animate-pulse"></div>
       <div className="p-4">
@@ -123,7 +86,6 @@ export default function ApartmentTypes() {
 
   return (
     <div className="mt-20 px-4 md:px-4 lg:px-44">
-      {/* Title Section */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-3">
         <div>
           {loading || skletonLoader ? (
@@ -143,65 +105,53 @@ export default function ApartmentTypes() {
           )}
         </div>
 
-        {/* Arrows + Pagination */}
         {!loading && !skletonLoader && filteredApartmentData.length > 0 && (
           <div className="flex justify-center items-center gap-4">
-            <button
-              ref={prevRef}
-              className="text-black hover:text-green-500 text-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={filteredApartmentData.length <= 1}
-            >
+            <button ref={prevRef} className="text-black hover:text-green-500 text-xl transition">
               <GoArrowLeft />
             </button>
             <div className="custom-pagination flex gap-2"></div>
-            <button
-              ref={nextRef}
-              className="text-black hover:text-green-500 text-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={filteredApartmentData.length <= 1}
-            >
+            <button ref={nextRef} className="text-black hover:text-green-500 text-xl transition">
               <GoArrowRight />
             </button>
           </div>
         )}
       </div>
 
-      {/* Swiper Section */}
       {loading || skletonLoader ? (
-        // Skeleton loader for the swiper
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-10">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <SkeletonSlide key={index} />
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonSlide key={i} />
           ))}
         </div>
       ) : filteredApartmentData.length === 0 ? (
-        // No properties message
         <div className="text-center py-10">
           <p className="text-gray-500">No properties available in any category.</p>
         </div>
       ) : (
-        // Actual swiper with data
         <Swiper
           modules={[Navigation, Pagination]}
-          navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
-          }}
           pagination={{
-            clickable: true,
             el: ".custom-pagination",
-            renderBullet: function (index: number, className: string) {
-              return `<span class="${className} bg-gray-300 w-2 h-2 rounded-full transition-all duration-300"></span>`;
-            },
+            clickable: true,
+            renderBullet: (index, className) =>
+              `<span class="${className} bg-gray-300 w-2 h-2 rounded-full transition-all duration-300"></span>`,
           }}
-          onInit={(swiper: SwiperType) => {
+          onInit={(swiper) => {
             swiperRef.current = swiper;
-            setSwiperInitialized(true);
-            // Update navigation after init
-            swiper.navigation.init();
-            swiper.navigation.update();
-          }}
-          onSwiper={(swiper: SwiperType) => {
-            swiperRef.current = swiper;
+            setTimeout(() => {
+              if (
+                swiper.params.navigation &&
+                prevRef.current &&
+                nextRef.current &&
+                typeof swiper.params.navigation !== "boolean"
+              ) {
+                swiper.params.navigation.prevEl = prevRef.current;
+                swiper.params.navigation.nextEl = nextRef.current;
+                swiper.navigation.init();
+                swiper.navigation.update();
+              }
+            });
           }}
           spaceBetween={20}
           breakpoints={{
@@ -213,13 +163,10 @@ export default function ApartmentTypes() {
           }}
           className="pb-10"
         >
-          {filteredApartmentData.map((item: ApartmentCategoryWithCount, index: number) => (
-            <SwiperSlide key={index}>
-              <Link
-                href={`/category/${encodeURIComponent(item.categoryName)}`}
-                className="block"
-              >
-                <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300 group cursor-pointer h-full">
+          {filteredApartmentData.map((item, i) => (
+            <SwiperSlide key={i}>
+              <Link href={`/category/${encodeURIComponent(item.categoryName)}`}>
+                <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition h-full cursor-pointer">
                   <div className="relative overflow-hidden">
                     <Image
                       src={item.image}
@@ -244,8 +191,6 @@ export default function ApartmentTypes() {
           ))}
         </Swiper>
       )}
-
- 
     </div>
   );
 }
