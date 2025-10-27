@@ -4,7 +4,7 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/f
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
-
+import Link from 'next/link';
 interface NewsletterState {
   email: string;
   isLoading: boolean;
@@ -89,12 +89,16 @@ export default function Footer() {
             <Image src="https://i.ibb.co/RpTRch3g/Nestify.png" width={80} height={80} alt="logo" />
           </div>
           <p className="text-sm font-semibold">
-            329 Queensberry Street, North Melbourne VIC 3051, Australia.
+            Panchlish, Chattogram, Bangladesh
           </p>
           <p className="mt-4 text-sm">Total Free Customer Care</p>
-          <p className="font-semibold text-sm">+(0) 123 050 945 02</p>
+          <p className="font-semibold text-sm">+8801610240096 </p>
           <p className="mt-4 text-sm">Need Live Support?</p>
-          <p className="text-sm font-medium text-blue-500">hi@Nestify.com</p>
+          <p className="text-sm font-medium text-green-600">
+            <Link
+              href="/contact">Contact Us</Link>
+
+          </p>
         </div>
 
         {/* Column 2: Popular Search + Discover */}
