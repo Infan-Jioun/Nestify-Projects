@@ -1,10 +1,11 @@
 "use client"
 import React, { useState, FormEvent } from 'react';
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaMapMarkerAlt, FaPhone, FaEnvelope, FaArrowRight } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+
 interface NewsletterState {
   email: string;
   isLoading: boolean;
@@ -72,7 +73,7 @@ export default function Footer() {
     setNewsletter(prev => ({
       ...prev,
       email: e.target.value,
-      status: { type: null, message: '' } 
+      status: { type: null, message: '' }
     }));
   };
 
@@ -80,140 +81,206 @@ export default function Footer() {
     return null;
   }
 
+  const districts = [
+    { name: "Dhaka", href: "/DetailsDistrict/Dhaka" },
+    { name: "Chattogram", href: "/DetailsDistrict/Chattogram" },
+    { name: "Sylhet", href: "/DetailsDistrict/Sylhet" },
+    { name: "Rajshahi", href: "/DetailsDistrict/Rajshahi" },
+    { name: "Khulna", href: "/DetailsDistrict/Khulna" },
+    { name: "Barishal", href: "/DetailsDistrict/Barishal" },
+    { name: "Rangpur", href: "/DetailsDistrict/Rangpur" },
+    { name: "Mymensingh", href: "/DetailsDistrict/Mymensingh" },
+  ];
+
+  const quickLinks = [
+    { name: "About Us", href: "/About" },
+    { name: "Properties", href: "/Properties" },
+    { name: "Blog", href: "/Blog" },
+    { name: "Contact", href: "/Contact" }
+  ];
+
+  const popularSearches = [
+    { name: "Apartment", href: "/category/Apartment" },
+    { name: "House", href: "/category/House" },
+    { name: "Warehouse", href: "/category/Warehouse" },
+    { name: "Shop", href: "/category/Shop" },
+  ];
+
+  const legalLinks = [
+    { name: "Terms of Use", href: "/" },
+    { name: "Privacy Policy", href: "/" },
+    { name: "Cookie Policy", href: "/" },
+    { name: "Disclaimer", href: "/" }
+  ];
 
   return (
-    <footer className="bg-white text-gray-700 border-t mt-20">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
-        {/* Column 1: Address and Contact */}
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <Image src="https://i.ibb.co/RpTRch3g/Nestify.png" width={80} height={80} alt="logo" />
-          </div>
-          <p className="text-sm font-semibold">
-            Panchlish, Chattogram, Bangladesh
-          </p>
-          <p className="mt-4 text-sm">Total Free Customer Care</p>
-          <p className="font-semibold text-sm">+8801610240096 </p>
-          <p className="mt-4 text-sm">Need Live Support?</p>
-          <p className="text-sm font-medium text-green-600">
-            <Link
-              href="/Contact">Contact Us</Link>
-
-          </p>
-        </div>
-
-        {/* Column 2: Popular Search + Discover */}
-        <div>
-          <h3 className="font-semibold mb-3">Popular Search</h3>
-          <ul className="space-y-2 text-sm">
-            <li>Apartment for Rent</li>
-            <li>Apartment Low to Hide</li>
-            <li>Offices for Buy</li>
-            <li>Offices for Rent</li>
-          </ul>
-          <h3 className="font-semibold mt-6 mb-3">Discover</h3>
-          <ul className="space-y-2 text-sm grid grid-cols-2 gap-2">
-
-            <div>
-              <Link href={"/DetailsDistrict/Dhaka"}>
-                <li>Dhaka</li>
-              </Link>
-              <Link href={"/DetailsDistrict/Chattogram"}>
-                <li>Chattogram</li>
-              </Link>
-              <Link href={"/DetailsDistrict/Sylhet"}>
-
-                <li>Sylhet</li>
-              </Link>
-              <Link href={"/DetailsDistrict/Rajshahi"}>
-                <li>Rajshahi</li>
-              </Link>
-            </div>
-
-            <div>
-              <Link href={"/DetailsDistrict/Khulna"}>
-                <li>Khulna</li>
-              </Link>
-              <Link href={"/DetailsDistrict/Barishal"}>
-                <li>Barishal</li>
-              </Link>
-              <Link href={"/DetailsDistrict/Rangpur"}>
-                <li>Rangpur</li>
-              </Link>
-              <Link href={"/DetailsDistrict/Mymensingh"}>
-                <li>Mymensingh</li>
-              </Link>
-            </div>
-          </ul>
-        </div>
-
-        {/* Column 3: Quick Links */}
-        <div>
-          <h3 className="font-semibold mb-3">Quick Links</h3>
-          <ul className="space-y-2 text-sm">
-            <li>Terms of Use</li>
-            <li>Privacy Policy</li>
-            <li>Pricing Plans</li>
-            <li>Our Services</li>
-            <li>Contact Support</li>
-            <li>Careers</li>
-            <li>FAQs</li>
-          </ul>
-        </div>
-
-        {/* Column 4: Newsletter + App Buttons */}
-        <div>
-          <h3 className="font-semibold mb-3">Keep Yourself Up to Date</h3>
-
-          {/* Status Message */}
-          {newsletter.status.message && (
-            <div className={`p-3 rounded-lg mb-4 text-sm ${newsletter.status.type === 'success'
-              ? 'bg-green-100 text-green-800 border border-green-200'
-              : 'bg-red-100 text-red-800 border border-red-200'
-              }`}>
-              {newsletter.status.message}
-            </div>
-          )}
-
-          <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-            <div className="flex items-center border border-gray-300 rounded overflow-hidden">
-              <Input
-                type="email"
-                placeholder="Your Email"
-                value={newsletter.email}
-                onChange={handleEmailChange}
-                className="w-full px-4 py-2 text-sm outline-none border-none"
-                disabled={newsletter.isLoading}
-                required
+    <footer className="bg-white text-gray-800 border-t">
+      {/* Main Footer Content */}
+      <div className="px-4 md:px-5 lg:px-44 py-16">
+        {/* Top Section - Company Info & Links */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-12 mb-16">
+          {/* Company Info */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-3 mb-6">
+              <Image
+                src="https://i.ibb.co/RpTRch3g/Nestify.png"
+                width={120}
+                height={45}
+                alt="Nestify Logo"
+                className=""
               />
-              <button
-                type="submit"
-                disabled={newsletter.isLoading}
-                className="bg-green-500 text-white px-4 py-2 text-sm hover:bg-green-600 disabled:bg-gray-400 transition min-w-[60px] flex items-center justify-center"
-              >
-                {newsletter.isLoading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  '➤'
-                )}
-              </button>
             </div>
-          </form>
+           
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-gray-600">
+                <FaMapMarkerAlt className="w-4 h-4 text-green-500" />
+                <span className="text-sm">Panchlish, Chattogram, Bangladesh</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-600">
+                <FaPhone className="w-4 h-4 text-green-500" />
+                <span className="text-sm font-medium">+8801610240096</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-600">
+                <FaEnvelope className="w-4 h-4 text-green-500" />
+                <span className="text-sm">info@nestify.com</span>
+              </div>
+            </div>
+          </div>
 
-          <p className="text-xs text-gray-500 mt-2">
-            Subscribe to get updates on new properties and exclusive offers
-          </p>
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-bold text-lg mb-6 text-gray-900">Quick Links</h3>
+            <ul className="space-y-3">
+              {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-600 hover:text-green-500 transition-colors duration-200 text-sm flex items-center gap-2 group"
+                  >
+                    <FaArrowRight className="w-3 h-3 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Popular Searches */}
+          <div>
+            <h3 className="font-bold text-lg mb-6 text-gray-900">Popular Searches</h3>
+            <ul className="space-y-3">
+              {popularSearches.map((search) => (
+                <li key={search.name}>
+                  <Link
+                    href={search.href}
+                    className="text-gray-600 hover:text-green-500 transition-colors duration-200 text-sm flex items-center gap-2 group"
+                  >
+                    <FaArrowRight className="w-3 h-3 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {search.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h3 className="font-bold text-lg mb-6 text-gray-900">Stay Updated</h3>
+            <p className="text-gray-600 text-sm mb-6">
+              Subscribe to get updates on new properties and exclusive offers
+            </p>
+
+            {newsletter.status.message && (
+              <div className={`p-3 rounded-lg mb-4 text-sm ${newsletter.status.type === 'success'
+                ? 'bg-green-50 text-green-700 border border-green-200'
+                : 'bg-red-50 text-red-700 border border-red-200'
+                }`}>
+                {newsletter.status.message}
+              </div>
+            )}
+
+            <form onSubmit={handleNewsletterSubmit} className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={newsletter.email}
+                  onChange={handleEmailChange}
+                  className="flex-1 px-4 py-3 text-sm bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                  disabled={newsletter.isLoading}
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={newsletter.isLoading}
+                  className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[120px] flex items-center justify-center shadow-sm hover:shadow-md"
+                >
+                  {newsletter.isLoading ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    'Subscribe'
+                  )}
+                </button>
+              </div>
+            </form>
+
+            <div className="mt-8">
+              <h4 className="font-semibold mb-4 text-gray-900">Follow Us</h4>
+              <div className="flex space-x-3">
+                <a href="#" className="bg-gray-100 hover:bg-green-500 hover:text-white p-3 rounded-lg transition-all duration-200 text-gray-600 hover:scale-105">
+                  <FaFacebookF className="w-4 h-4" />
+                </a>
+                <a href="#" className="bg-gray-100 hover:bg-green-500 hover:text-white p-3 rounded-lg transition-all duration-200 text-gray-600 hover:scale-105">
+                  <FaTwitter className="w-4 h-4" />
+                </a>
+                <a href="#" className="bg-gray-100 hover:bg-green-500 hover:text-white p-3 rounded-lg transition-all duration-200 text-gray-600 hover:scale-105">
+                  <FaInstagram className="w-4 h-4" />
+                </a>
+                <a href="https://www.linkedin.com/in/infan-jioun-rahman" className="bg-gray-100 hover:bg-green-500 hover:text-white p-3 rounded-lg transition-all duration-200 text-gray-600 hover:scale-105">
+                  <FaLinkedinIn className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t text-sm py-6 px-6 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
-        <p>© Nestify 2025 – All rights reserved</p>
-        <div className="flex space-x-4 mt-4 md:mt-0">
-          <FaFacebookF className="hover:text-blue-600 cursor-pointer w-5 h-5" />
-          <FaTwitter className="hover:text-blue-400 cursor-pointer w-5 h-5" />
-          <FaInstagram className="hover:text-pink-500 cursor-pointer w-5 h-5" />
-          <FaLinkedinIn className="hover:text-blue-700 cursor-pointer w-5 h-5" />
+        {/* Districts Section */}
+        <div className="border-t border-gray-200 pt-12 mb-12">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+            {districts.map((district) => (
+              <Link
+                key={district.name}
+                href={district.href}
+                className="bg-gray-50 hover:bg-green-500 hover:text-white text-gray-800 px-4 py-3 rounded-lg text-center transition-all duration-200 cursor-pointer font-medium text-sm hover:scale-105 hover:shadow-lg border border-gray-200 hover:border-green-500"
+              >
+                {district.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-200 pt-8">
+          <div className="flex flex-col lg:flex-row justify-between items-center">
+            <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12 mb-4 lg:mb-0">
+              <p className="text-gray-500 text-sm">© 2025 Nestify. All rights reserved.</p>
+              <div className="flex items-center gap-8">
+                {legalLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className="text-gray-500 hover:text-green-500 text-sm transition-colors duration-200 hover:underline"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <span>Proudly serving</span>
+              <span className="text-green-500 font-semibold">Bangladesh</span>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
