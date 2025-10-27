@@ -294,6 +294,144 @@ export default function AboutPage() {
         </div>
 
       </section>
+      <section className="py-12 bg-gradient-to-r from-green-50 to-blue-50 border-t border-gray-200">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-black mb-3">Property Seller Demo Access</h2>
+              <p className="text-gray-600">
+                Use these credentials to test the seller dashboard and property management features
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Login Credentials */}
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-black">Seller Login</h3>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-gray-500 block mb-1">Email</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value="infanjiounrahman20606@gmail.com"
+                        readOnly
+                        className="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 font-mono cursor-pointer"
+                        onClick={(e) => e.currentTarget.select()}
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText('infanjiounrahman20606@gmail.com')}
+                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition-colors duration-200"
+                        title="Copy to clipboard"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-500 block mb-1">Password</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="password"
+                        value="12345678"
+                        readOnly
+                        className="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 font-mono cursor-pointer"
+                        onClick={(e) => e.currentTarget.select()}
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText('12345678')}
+                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition-colors duration-200"
+                        title="Copy to clipboard"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Features Access */}
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-black">Available Features</h3>
+                </div>
+
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Property Listings Management
+                  </li>
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Add/Edit Property Details
+                  </li>
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    View Property Analytics
+                  </li>
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Manage Buyer Inquiries
+                  </li>
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Track Property Views
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <a
+                href="/LoginPage"
+                className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Login as Seller
+              </a>
+
+              <a
+                href="/RegisterPage"
+                className="border border-green-500 text-green-500 hover:bg-green-500 hover:text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Create New Account
+              </a>
+            </div>
+
+            {/* Security Note */}
+            <div className="mt-6 text-center">
+              <p className="text-xs text-gray-500">
+                🔒 This is a demo account. Please do not change the password or use for personal purposes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Developer Section */}
       <section className="py-16 bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
