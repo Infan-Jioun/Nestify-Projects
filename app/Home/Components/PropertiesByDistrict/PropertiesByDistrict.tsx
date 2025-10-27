@@ -123,10 +123,10 @@ const PropertiesByDistrict: React.FC = () => {
           ) : (
             <>
               <h2 className="text-xl text-center sm:text-left font-bold mb-1">
-              Choose Your District
+                Choose Your District
               </h2>
               <p className="text-gray-600 mt-2">
-              Browse available properties in your preferred area.
+                Browse available properties in your preferred area.
               </p>
             </>
           )}
@@ -175,12 +175,12 @@ const PropertiesByDistrict: React.FC = () => {
             </div>
           )
         ) : visibledistrict.length === 0 ? (
-          
+
           <p className="text-center text-gray-500 col-span-full py-8">
             Unavailable district
           </p>
         ) : isMobile ? (
-          
+
           <Swiper
             modules={[Autoplay]}
             spaceBetween={20}
@@ -205,7 +205,7 @@ const PropertiesByDistrict: React.FC = () => {
             })}
           </Swiper>
         ) : isTablet ? (
-          
+
           <Swiper
             modules={[Autoplay]}
             spaceBetween={20}
@@ -230,7 +230,7 @@ const PropertiesByDistrict: React.FC = () => {
             })}
           </Swiper>
         ) : (
-          
+
           <div className="grid grid-cols-8 gap-6">
             {visibledistrict.map((district) => {
               const districtName = district.districtName || "";

@@ -80,6 +80,7 @@ export default function Footer() {
     return null;
   }
 
+
   return (
     <footer className="bg-white text-gray-700 border-t mt-20">
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
@@ -111,11 +112,38 @@ export default function Footer() {
             <li>Offices for Rent</li>
           </ul>
           <h3 className="font-semibold mt-6 mb-3">Discover</h3>
-          <ul className="space-y-2 text-sm">
-            <li>Dhaka</li>
-            <li>Chattogram</li>
-            <li>Sylhet</li>
-            <li>Rajshahi</li>
+          <ul className="space-y-2 text-sm grid grid-cols-2 gap-2">
+
+            <div>
+              <Link href={"/DetailsDistrict/Dhaka"}>
+                <li>Dhaka</li>
+              </Link>
+              <Link href={"/DetailsDistrict/Chattogram"}>
+                <li>Chattogram</li>
+              </Link>
+              <Link href={"/DetailsDistrict/Sylhet"}>
+
+                <li>Sylhet</li>
+              </Link>
+              <Link href={"/DetailsDistrict/Rajshahi"}>
+                <li>Rajshahi</li>
+              </Link>
+            </div>
+
+            <div>
+              <Link href={"/DetailsDistrict/Khulna"}>
+                <li>Khulna</li>
+              </Link>
+              <Link href={"/DetailsDistrict/Barishal"}>
+                <li>Barishal</li>
+              </Link>
+              <Link href={"/DetailsDistrict/Rangpur"}>
+                <li>Rangpur</li>
+              </Link>
+              <Link href={"/DetailsDistrict/Mymensingh"}>
+                <li>Mymensingh</li>
+              </Link>
+            </div>
           </ul>
         </div>
 
