@@ -26,7 +26,7 @@ export default function SidebarFooter() {
             <Link className='text-sm' href={""}><Facebook /> </Link>
             <Link className='text-sm' href={""}><Twitter /> </Link>
             <Link className='text-sm' href={""}><Instagram /> </Link>
-            <Link className='text-sm' href={""}><LinkedinIcon /> </Link>
+            <Link className='text-sm' href={"https://linkedin.com/in/infan-jioun-rahman"}><LinkedinIcon /> </Link>
           </div>
         </div>
       </SidebarContent>

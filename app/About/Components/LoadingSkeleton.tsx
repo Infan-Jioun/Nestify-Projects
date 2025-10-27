@@ -50,18 +50,7 @@ export default function LoadingSkeleton() {
             </div>
 
             {/* Contact Section Skeleton */}
-            <div className="bg-white py-24 px-6">
-                <div className="max-w-5xl mx-auto text-center">
-                    <div className="h-10 bg-gray-200 rounded animate-pulse w-1/4 mx-auto mb-6"></div>
-                    <div className="h-5 bg-gray-200 rounded animate-pulse w-1/2 mx-auto mb-10"></div>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
-                        <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
-                        <div className="md:col-span-2 h-32 bg-gray-200 rounded animate-pulse"></div>
-                        <div className="md:col-span-2 h-12 bg-gray-200 rounded animate-pulse"></div>
-                    </div>
-                </div>
-            </div>
+           
 
             {/* Property Seller Section Skeleton */}
             <div className="bg-gradient-to-r from-yellow-50 to-green-50 py-24 px-6">
