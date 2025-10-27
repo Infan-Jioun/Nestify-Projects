@@ -72,7 +72,7 @@ export default function Footer() {
     setNewsletter(prev => ({
       ...prev,
       email: e.target.value,
-      status: { type: null, message: '' } // Clear status when user starts typing
+      status: { type: null, message: '' } 
     }));
   };
 
@@ -97,7 +97,7 @@ export default function Footer() {
           <p className="mt-4 text-sm">Need Live Support?</p>
           <p className="text-sm font-medium text-green-600">
             <Link
-              href="/contact">Contact Us</Link>
+              href="/Contact">Contact Us</Link>
 
           </p>
         </div>

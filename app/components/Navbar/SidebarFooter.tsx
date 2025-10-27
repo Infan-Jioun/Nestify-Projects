@@ -14,8 +14,8 @@ export default function SidebarFooter() {
           </div>
           <div className='flex justify-between'>
 
-            <p className='text-sm'>+(0) 123 050 945 02</p>
-            <p className='text-sm'>hi@nestify.com</p>
+            <p className='text-sm'>+8801610240096 </p>
+            <Link href="/Contact" className='text-sm font-medium text-green-600'> Contact Us</Link>
           </div>
         </div>
         <div className='flex justify-between pt-7 px-2'>
