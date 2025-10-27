@@ -29,8 +29,8 @@ export function Navbar() {
     ...(session && (session.user.role === UserRole.ADMIN || session.user.role === UserRole.REAL_ESTATE_DEVELOPER)
       ? [{ name: "Dashboard", href: `/dashboard/${userRole.toLowerCase()}/${userId}` }]
       : []),
-    { name: "About", href: "/About" },
     { name: "Blog", href: "/Blog" },
+    { name: "About", href: "/About" },
     { name: "Contact", href: "/Contact" },
   ];
   const links = [
