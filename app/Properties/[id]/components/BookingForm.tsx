@@ -22,7 +22,7 @@ interface BookingFormProps {
         address: string;
         price: number;
         currency: string;
-        email?: string;
+        email: string;
         images?: string[];
         status?: string;
         listingStatus?: string;
@@ -58,6 +58,7 @@ export const BookingForm = ({
                         id="name"
                         name="name"
                         value={formData.name}
+                        readOnly={!!currentUser?.name}
                         onChange={handleInputChange}
                         required
                         disabled={isPropertySold}
@@ -91,6 +92,7 @@ export const BookingForm = ({
                     value={formData.email}
                     onChange={handleInputChange}
                     required
+                    readOnly
                     disabled={isPropertySold}
                     placeholder="your@email.com"
                     className={isPropertySold ? "bg-gray-100 cursor-not-allowed" : ""}
@@ -155,8 +157,8 @@ export const BookingForm = ({
                     type="submit"
                     disabled={isLoading || isPropertySold}
                     className={`w-full font-semibold py-3 h-auto text-base shadow-lg ${isPropertySold
-                            ? "bg-gray-400 cursor-not-allowed hover:bg-gray-400"
-                            : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+                        ? "bg-gray-400 cursor-not-allowed hover:bg-gray-400"
+                        : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
                         }`}
                 >
                     {isPropertySold ? (

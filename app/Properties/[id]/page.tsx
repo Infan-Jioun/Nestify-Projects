@@ -107,7 +107,7 @@ export default function PropertyDetailsPage() {
                 onPrevImage={prevImage}
                 onGoToImage={goToImage}
                 categoryType={categoryType}
-            />
+            /> 
 
             <PropertyHeader
                 property={property}

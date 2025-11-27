@@ -1,10 +1,13 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
 import { PropertyType } from "@/app/Types/properties";
 import { Button } from "@/components/ui/button";
+
 import { FaBookmark, FaInfoCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
+
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
@@ -23,17 +26,11 @@ interface PropertyCardProps {
   showDeveloperInfo?: boolean;
 }
 
-export default function PropertyCard({ 
-  property, 
-  isLoading, 
-  isError, 
-  viewMode = "grid", 
-  showDeveloperInfo = true 
+export default function PropertyCard({ property, isLoading, isError, viewMode = "grid", showDeveloperInfo = true,
 }: PropertyCardProps) {
   const dispatch = useAppDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { data: session } = useSession();
-  
   // Get bookmarked properties from Redux store
   const bookmarkedProperties = useAppSelector((state) => state.bookmarks.bookmarkedProperties);
 
@@ -54,60 +51,23 @@ export default function PropertyCard({
     dispatch(toggleBookmark(property));
   };
 
-  // Skeleton Loader
   if (isLoading) {
     return (
       <div className={cn(
-        "border rounded-2xl shadow-md overflow-hidden bg-white",
+        "border rounded-2xl shadow-md overflow-hidden bg-white animate-pulse",
         viewMode === "list" && "flex"
       )}>
-        {/* Image Skeleton */}
-        <div className={cn(
-          "bg-gray-200 animate-pulse",
-          viewMode === "grid" ? "h-48 w-full" : "w-64 h-48 flex-shrink-0"
-        )} />
-        
+        {viewMode === "list" && (
+          <div className="w-64 h-48 bg-gray-200 flex-shrink-0" />
+        )}
         <div className="p-4 flex-1">
-          {/* Price Skeleton */}
-          <div className="flex justify-between items-start mb-3">
-            <div className="space-y-2 flex-1">
-              <div className="h-5 bg-gray-200 rounded w-3/4 animate-pulse" />
-              <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse" />
-            </div>
-            <div className="h-7 bg-gray-200 rounded w-20 animate-pulse" />
-          </div>
-
-          {/* Features Skeleton */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {[...Array(4)].map((_, index) => (
-              <div 
-                key={index}
-                className="h-6 bg-gray-200 rounded-full w-16 animate-pulse" 
-              />
-            ))}
-          </div>
-
-          {/* Status Skeleton */}
-          <div className="flex gap-2 mb-4">
-            <div className="h-6 bg-gray-200 rounded-full w-16 animate-pulse" />
-            <div className="h-6 bg-gray-200 rounded-full w-20 animate-pulse" />
-          </div>
-
-          {/* Developer Info Skeleton */}
-          {showDeveloperInfo && (
-            <div className="pt-3 border-t border-gray-200 mt-3">
-              <div className="h-3 bg-gray-200 rounded w-24 animate-pulse" />
-            </div>
+          {viewMode === "grid" && (
+            <div className="h-48 bg-gray-200 mb-4 rounded-lg" />
           )}
-
-          {/* Buttons Skeleton */}
-          <div className="flex gap-3 mt-4">
-            <div className="h-10 bg-gray-200 rounded flex-1 animate-pulse" />
-            <div className="h-10 bg-gray-200 rounded w-10 animate-pulse" />
-            {session?.user?.role === UserRole.ADMIN && (
-              <div className="h-10 bg-gray-200 rounded w-20 animate-pulse" />
-            )}
-          </div>
+          <div className="h-5 bg-gray-200 mb-2 w-3/4 rounded" />
+          <div className="h-4 bg-gray-200 mb-3 w-1/2 rounded" />
+          <div className="h-3 bg-gray-200 mb-2 rounded" />
+          <div className="h-3 bg-gray-200 w-2/3 rounded" />
         </div>
       </div>
     );
