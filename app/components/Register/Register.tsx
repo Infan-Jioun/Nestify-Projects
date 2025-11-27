@@ -6,29 +6,18 @@ import { signIn } from 'next-auth/react'
 import { BiError } from "react-icons/bi";
 import { MdOutlineCheck } from "react-icons/md";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from 'next/link'
 import Image from 'next/image'
 import NextHead from '../NextHead/NextHead'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  setButtonLoader,
-  setSkletonLoader,
-  setGoogleLoader,
-  setGithubLoader
-} from '@/app/features/loader/loaderSlice'
+import { setButtonLoader, setSkletonLoader, setGoogleLoader, setGithubLoader } from '@/app/features/loader/loaderSlice'
 import { RootState } from '@/lib/store'
 import { Eye, EyeOff } from 'lucide-react'
-
+import { FcGoogle } from 'react-icons/fc'
+import { FaGithub } from 'react-icons/fa'
 type Inputs = {
   name: string
   email: string
@@ -129,11 +118,11 @@ export default function Register() {
         <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
           <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
             <CardHeader className="text-center space-y-2">
-              <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
+
+              <div className="w-24 h-10 bg-gray-200 rounded-full mx-auto"></div>
+              <div className="h-2 bg-gray-200 rounded w-3/4 mx-auto"></div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               <div className="grid gap-1">
                 <div className="h-4 bg-gray-200 rounded w-16"></div>
                 <div className="h-10 bg-gray-200 rounded"></div>
@@ -147,7 +136,7 @@ export default function Register() {
                 <div className="h-10 bg-gray-200 rounded"></div>
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col gap-3 mt-7">
+            <CardFooter className="flex flex-col gap-3 mt-5">
               <div className="h-10 bg-gray-200 rounded w-full"></div>
               <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
             </CardFooter>
@@ -268,7 +257,7 @@ export default function Register() {
             </CardFooter>
           </form>
 
-          <div className='px-6 pb-6'>
+          <div className="px-6 pb-6">
             <Button
               onClick={handelGoogleRegister}
               variant="outline"
@@ -281,7 +270,7 @@ export default function Register() {
                   Continuing with Google...
                 </div>
               ) : (
-                "Continue with Google"
+                <p className="flex items-center justify-center gap-3">  <FcGoogle />  Continue with Google</p>
               )}
             </Button>
             <Button
@@ -296,7 +285,7 @@ export default function Register() {
                   Continuing with GitHub...
                 </div>
               ) : (
-                "Continue with Github"
+                <p className="flex items-center justify-center gap-3"> <FaGithub /> Continue with GitHub</p>
               )}
             </Button>
           </div>
