@@ -104,66 +104,66 @@ export default function PropertyCard({
         {/* Title & Address */}
         <h2 className="text-lg font-semibold mb-1">{property.title}</h2>
         <p className="text-gray-600 text-sm mb-3">
-          {property.address}, {property.geoCountryLocation}
+          {property.geoCountryLocation.split(", ").slice(0, 2).join(", ")}
         </p>
 
         {/* Features */}
         <div className="flex flex-wrap gap-2 text-sm text-gray-600 mb-3">
           {property.bedrooms && (
-            <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded">
+            <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded flex-shrink-0">
               {property.bedrooms} Bed
             </span>
           )}
           {property.bathrooms && (
-            <span className="px-2 py-1 bg-purple-50 text-purple-600 rounded">
+            <span className="px-2 py-1 bg-purple-50 text-purple-600 rounded flex-shrink-0">
               {property.bathrooms} Bath
             </span>
           )}
           {property.kitchen && (
-            <span className="px-2 py-1 bg-orange-50 text-orange-600 rounded">
+            <span className="px-2 py-1 bg-orange-50 text-orange-600 rounded flex-shrink-0">
               {property.kitchen} Kitchen
             </span>
           )}
           {property.propertySize && (
-            <span className="px-2 py-1 bg-pink-50 text-pink-600 rounded">
+            <span className="px-2 py-1 bg-pink-50 text-pink-600 rounded flex-shrink-0">
               {property.propertySize} sqft
             </span>
           )}
           {property.floorArea && (
-            <span className="px-2 py-1 bg-teal-50 text-teal-600 rounded">
+            <span className="px-2 py-1 bg-teal-50 text-teal-600 rounded flex-shrink-0">
               {property.floorArea} sqft
             </span>
           )}
           {property.parkingSpaces && (
-            <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded">
+            <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded flex-shrink-0">
               {property.parkingSpaces} Parking
             </span>
           )}
           {property.roomsSections && (
-            <span className="px-2 py-1 bg-rose-50 text-rose-600 rounded">
+            <span className="px-2 py-1 bg-rose-50 text-rose-600 rounded flex-shrink-0">
               {property.roomsSections} Rooms
             </span>
           )}
         </div>
 
         {/* Status */}
-        <div className="flex gap-2">
+        <div className="flex gap-2  mb-2">
           <p
             className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.listingStatus === "Sale"
-                ? "bg-red-100 text-red-600"
-                : "bg-yellow-100 text-yellow-600"
+              ? "bg-red-100 text-red-600"
+              : "bg-yellow-100 text-yellow-600"
               }`}
           >
             {property.listingStatus}
           </p>
           <p
             className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${property.status === "Available"
-                ? "bg-green-100 text-green-600"
-                : property.status === "Sold"
-                  ? "bg-red-100 text-red-600"
-                  : property.status === "Pending"
-                    ? "bg-yellow-100 text-yellow-600"
-                    : "bg-blue-100 text-blue-600" // Rented
+              ? "bg-green-100 text-green-600"
+              : property.status === "Sold"
+                ? "bg-red-100 text-red-600"
+                : property.status === "Pending"
+                  ? "bg-yellow-100 text-yellow-600"
+                  : "bg-blue-100 text-blue-600" // Rented
               }`}
           >
             {property.status}
@@ -172,7 +172,7 @@ export default function PropertyCard({
 
         {/* Developer Info (Optional) */}
         {showDeveloperInfo && property.ownerId && (
-          <div className="pt-3 border-t border-gray-200 mt-3">
+          <div className="pt-3 border-t border-gray-200 mt-3 min-h-[2.5rem]">
             <p className="text-xs text-gray-500">
               Listed by Developer
             </p>
@@ -180,32 +180,35 @@ export default function PropertyCard({
         )}
 
         {/* Action Buttons */}
-        <div className="flex gap-3 mt-4">
-          <Link href={`/Properties/${property._id}`} className="flex-1">
-            <Button
-              variant="outline"
-              className="w-full flex items-center justify-center gap-2"
-            >
-              <FaInfoCircle /> Details
-            </Button>
-          </Link>
-          <Button
-            variant={isBookmarked ? "secondary" : "ghost"}
-            className="flex items-center justify-center"
-            onClick={handleToggleBookmark}
-          >
-            <FaBookmark className={isBookmarked ? "text-yellow-500 fill-yellow-500" : "text-gray-500"} />
-          </Button>
-          {
-            session?.user?.role === UserRole.ADMIN && (
+        <div className="mt-auto">
+          <div className="flex gap-3">
+            <Link href={`/Properties/${property._id}`} className="flex-1">
               <Button
-                variant="destructive"
-                onClick={() => setShowDeleteModal(true)}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2 h-10"
               >
-                Delete
+                <FaInfoCircle /> Details
               </Button>
-            )
-          }
+            </Link>
+            <Button
+              variant={isBookmarked ? "secondary" : "ghost"}
+              className="flex items-center justify-center h-10 w-10 flex-shrink-0"
+              onClick={handleToggleBookmark}
+            >
+              <FaBookmark className={isBookmarked ? "text-yellow-500 fill-yellow-500" : "text-gray-500"} />
+            </Button>
+            {
+              session?.user?.role === UserRole.ADMIN && (
+                <Button
+                  variant="destructive"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="h-10 flex-shrink-0"
+                >
+                  Delete
+                </Button>
+              )
+            }
+          </div>
         </div>
       </div>
 

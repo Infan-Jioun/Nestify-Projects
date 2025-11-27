@@ -39,7 +39,7 @@ export default function Carousal({ images, title,  aspectRatio = "video" }: Caro
     }
 
     return (
-        <Carousel className="w-full">
+        <Carousel className="w-full ">
             <CarouselContent
                 style={{
                     transform: `translateX(-${currentIndex * 100}%)`,
