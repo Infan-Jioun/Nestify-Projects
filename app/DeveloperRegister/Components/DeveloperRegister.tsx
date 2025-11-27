@@ -111,32 +111,37 @@ export default function DeveloperRegister() {
                 <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
                     <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
                         <CardHeader className="text-center space-y-2">
-                            <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto"></div>
-                            <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-                            <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                            <div className="w-[80px] h-9 bg-gray-200 animate-pulse  rounded-full mx-auto"></div>
+                            <div className="h-2 bg-gray-200 animate-pulse rounded  w-full mx-auto"></div>
+                            <div className="h-2 bg-gray-200 animate-pulse rounded  w-1/2 mx-auto"></div>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid gap-1">
-                                <div className="h-4 bg-gray-200 rounded w-16"></div>
-                                <div className="h-10 bg-gray-200 rounded"></div>
+                                <div className="h-4 bg-gray-200 animate-pulse  rounded w-16"></div>
+                                <div className="h-9 bg-gray-200 animate-pulse  rounded"></div>
                             </div>
                             <div className="grid gap-1">
-                                <div className="h-4 bg-gray-200 rounded w-16"></div>
-                                <div className="h-10 bg-gray-200 rounded"></div>
+                                <div className="h-4 bg-gray-200 animate-pulse rounded w-16"></div>
+                                <div className="h-9 bg-gray-200 animate-pulse rounded"></div>
                             </div>
                             <div className="grid gap-1">
-                                <div className="h-4 bg-gray-200 rounded w-20"></div>
-                                <div className="h-10 bg-gray-200 rounded"></div>
+                                <div className="h-4 bg-gray-200 animate-pulse rounded w-20"></div>
+                                <div className="h-9 bg-gray-200 animate-pulse rounded"></div>
+                            </div>
+                            <div className="grid gap-1">
+                                <div className="h-4 bg-gray-200 animate-pulse rounded w-20"></div>
+                                <div className="h-9 bg-gray-200 animate-pulse rounded"></div>
+                            </div>
+                            <div className="grid gap-1">
+                                <div className="h-4 bg-gray-200 animate-pulse rounded w-20"></div>
+                                <div className="h-9 bg-gray-200 animate-pulse rounded"></div>
                             </div>
                         </CardContent>
-                        <CardFooter className="flex flex-col gap-3 mt-7">
-                            <div className="h-10 bg-gray-200 rounded w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
+                        <CardFooter className="flex flex-col gap-3 mt-4">
+                            <div className="h-9 bg-gray-200 animate-pulse rounded w-full"></div>
+                            <div className="h-4 bg-gray-200 animate-pulse rounded w-2/3 mx-auto"></div>
                         </CardFooter>
-                        <div className='px-6 pb-6 space-y-2'>
-                            <div className="h-10 bg-gray-200 rounded w-full"></div>
-                            <div className="h-10 bg-gray-200 rounded w-full"></div>
-                        </div>
+
                     </Card>
                 </div>
             </div>
@@ -226,7 +231,7 @@ export default function DeveloperRegister() {
                                         id="password"
                                         placeholder='Type your password'
                                         type={showPassword ? "text" : "password"}
-                                        className="pr-10"
+                                        className="pr-9"
                                     />
                                     <button
                                         type="button"

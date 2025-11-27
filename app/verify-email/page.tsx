@@ -9,7 +9,6 @@ import { MdOutlineMarkEmailRead } from "react-icons/md";
 import { OTPInput, SlotProps } from "input-otp";
 import { MinusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 export default function VerifyEmail() {
     const [otp, setOtp] = useState("");
     const [email, setEmail] = useState("");
