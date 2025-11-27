@@ -77,7 +77,7 @@ export default function Footer() {
     }));
   };
 
-  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister" || pathname === "verify-email" || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
+  if (pathname === "/LoginPage" || pathname === "/RegisterPage" || pathname === "/Authentication" || pathname === "/DeveloperRegister" || pathname.startsWith("/verify-email") || pathname.startsWith("/ResetPassword") || pathname.startsWith("/dashboard")) {
     return null;
   }
 
@@ -130,7 +130,7 @@ export default function Footer() {
                 className=""
               />
             </div>
-           
+
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-gray-600">
                 <FaMapMarkerAlt className="w-4 h-4 text-green-500" />
