@@ -264,7 +264,7 @@ export function Login() {
         <NextHead title="Login | Nestify" />
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
           <CardHeader className="text-center space-y-2">
-            <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto"></div>
+            <div className="w-24 h-10 bg-gray-200 rounded-xl mx-auto"></div>
             <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
             <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
           </CardHeader>
