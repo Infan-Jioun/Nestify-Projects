@@ -2,32 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { PropertyType, CategoryField } from '@/app/Types/properties'
-import {
-    X,
-    Save,
-    Upload,
-    MapPin,
-    Home,
-    DollarSign,
-    Ruler,
-    Phone,
-    Building,
-    Star,
-    Image as ImageIcon,
-    Loader2,
-    BadgeCheck,
-    Trash2,
-    Dumbbell,
-    Car,
-    Shield,
-    TreePine,
-    Square,
-    ArrowUp,
-    ThermometerSun,
-    Wifi,
-    PawPrint,
-    Sofa
-} from 'lucide-react'
+import { X, Save, Upload, MapPin, Home, DollarSign, Ruler, Phone, Building, Star, Image as ImageIcon, Loader2, BadgeCheck, Trash2, Dumbbell, Car, Shield, TreePine, Square, ArrowUp, ThermometerSun, Wifi, PawPrint, Sofa } from 'lucide-react'
 import { FaSwimmingPool } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
 import SearchHomeLocation from '@/app/components/SearchHomeLocation/SearchHomeLocation'
@@ -235,7 +210,7 @@ export default function EditPropertyModal({
             setCategoryFields(property.category.fields || [])
             setHasChanges(false)
         }
-    }, [property, isOpen, reset])
+    }, [property, isOpen, reset, setCategoryFields])
 
     // Handle category field changes
     const handleCategoryFieldChange = (fieldId: string, value: string | number | boolean) => {

@@ -39,23 +39,7 @@ export default function PropertiesPage() {
   // Redux states
   const { properties, loading, error } = useSelector((state: RootState) => state.properties
   );
-  const {
-    location,
-    listingStatus,
-    propertyType,
-    currency,
-    priceRange,
-    bedrooms,
-    bathrooms,
-    squareFeat,
-    yearBuild,
-    otherFeatures,
-    sortOption,
-    sortedProperties,
-    currentPage,
-    itemsPerPage,
-    totalPages,
-  } = useSelector((state: RootState) => state.filter);
+  const { location,listingStatus,propertyType, currency,   priceRange, bedrooms,bathrooms,squareFeat,yearBuild,otherFeatures,sortOption,sortedProperties,  currentPage, itemsPerPage,totalPages,  } = useSelector((state: RootState) => state.filter);
 
   useEffect(() => {
     dispatch(fetchProperties());
