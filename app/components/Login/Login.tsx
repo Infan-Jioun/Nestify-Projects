@@ -256,7 +256,7 @@ export function Login() {
           <CardHeader className="text-center space-y-2">
 
             {/* Skeleton for Logo */}
-            <div className="w-24 h-10 bg-gray-200 rounded-xl mx-auto"></div>
+            <div className="w-[80px] h-9 bg-gray-200 animate-pulse  rounded-full mx-auto"></div>
             {/* Skeleton for Description */}
             <div className=" h-2 bg-gray-200 rounded w-80 mx-auto"></div>
 

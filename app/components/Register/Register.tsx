@@ -118,31 +118,30 @@ export default function Register() {
         <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
           <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
             <CardHeader className="text-center space-y-2">
-
-              <div className="w-24 h-10 bg-gray-200 rounded-full mx-auto"></div>
-              <div className="h-2 bg-gray-200 rounded w-3/4 mx-auto"></div>
+              <div className="w-[80px] h-9 bg-gray-200 animate-pulse   rounded-full mx-auto"></div>
+              <div className="w-80 h-2 bg-gray-200 animate-pulse rounded  mx-auto"></div>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="grid gap-1">
-                <div className="h-4 bg-gray-200 rounded w-16"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 animate-pulse rounded w-16"></div>
+                <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
               </div>
               <div className="grid gap-1">
-                <div className="h-4 bg-gray-200 rounded w-16"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 animate-pulse rounded w-16"></div>
+                <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
               </div>
               <div className="grid gap-1">
-                <div className="h-4 bg-gray-200 rounded w-20"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 animate-pulse rounded w-20"></div>
+                <div className="h-10 bg-gray-200 animate-pulse rounded"></div>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-3 mt-5">
-              <div className="h-10 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
+              <div className="h-10 bg-gray-200 animate-pulse rounded w-full"></div>
+              <div className="h-4 bg-gray-200 animate-pulse rounded w-2/3 mx-auto"></div>
             </CardFooter>
             <div className='px-6 pb-6 space-y-2'>
-              <div className="h-10 bg-gray-200 rounded w-full"></div>
-              <div className="h-10 bg-gray-200 rounded w-full"></div>
+              <div className="h-10 bg-gray-200 animate-pulse rounded w-full"></div>
+              <div className="h-10 bg-gray-200 animate-pulse rounded w-full"></div>
             </div>
           </Card>
         </div>

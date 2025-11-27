@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 import type { RootState } from "@/lib/store";
 import Link from "next/link";
-import {motion} from "framer-motion"
+import { motion } from "framer-motion"
 import { GoArrowUpRight } from "react-icons/go";
 const agents = [
   {
