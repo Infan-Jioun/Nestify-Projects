@@ -21,14 +21,11 @@ import NextHead from "../NextHead/NextHead";
 import { Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  setButtonLoader,
-  setSkletonLoader,
-  setGoogleLoader,
-  setGithubLoader,
-} from "@/app/features/loader/loaderSlice";
+import { setButtonLoader, setSkletonLoader, setGoogleLoader, setGithubLoader } from "@/app/features/loader/loaderSlice";
 import { RootState } from "@/lib/store";
 import { UserRole } from "@/app/Types/auth";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 
 type Inputs = {
   email: string;
@@ -264,27 +261,31 @@ export function Login() {
         <NextHead title="Login | Nestify" />
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
           <CardHeader className="text-center space-y-2">
+
+            {/* Skeleton for Logo */}
             <div className="w-24 h-10 bg-gray-200 rounded-xl mx-auto"></div>
-            <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            {/* Skeleton for Description */}
+            <div className=" h-2 bg-gray-200 rounded w-80 mx-auto"></div>
+
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-1">
+
               <div className="h-4 bg-gray-200 rounded w-16"></div>
-              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
             </div>
             <div className="grid gap-1">
               <div className="h-4 bg-gray-200 rounded w-20"></div>
-              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-3 mt-3">
-            <div className="h-10 bg-gray-200 rounded w-full"></div>
+            <div className="h-8 bg-gray-200 rounded w-full"></div>
             <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
           </CardFooter>
-          <div className="px-6 pb-6 space-y-2">
-            <div className="h-10 bg-gray-200 rounded w-full"></div>
-            <div className="h-10 bg-gray-200 rounded w-full"></div>
+          <div className="px-6 pb-6 space-y-3">
+            <div className="h-8 bg-gray-200 rounded w-full"></div>
+            <div className="h-8 bg-gray-200 rounded w-full"></div>
           </div>
         </Card>
       </div>
@@ -396,7 +397,7 @@ export function Login() {
                 Continuing with Google...
               </div>
             ) : (
-              "Continue with Google"
+              <p className="flex items-center justify-center gap-3">  <FcGoogle />  Continue with Google</p>
             )}
           </Button>
           <Button
@@ -411,7 +412,7 @@ export function Login() {
                 Continuing with GitHub...
               </div>
             ) : (
-              "Continue with Github"
+              <p className="flex items-center justify-center gap-3"> <FaGithub /> Continue with GitHub</p>
             )}
           </Button>
         </div>
