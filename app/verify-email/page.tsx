@@ -46,11 +46,11 @@ export default function VerifyEmail() {
             const data = await res.json();
 
             if (res.ok) {
-                setSuccess("Email verified successfully! Redirecting to Home...");
+                setSuccess("Email verified successfully! Redirecting to login...");
                 localStorage.removeItem("verificationEmail");
                 setTimeout(() => {
-                    router.push("/");
-                }, 2000);
+                    router.push("/LoginPage");
+                }, 1000);
             } else {
                 setError(data.error || "Verification failed");
             }
