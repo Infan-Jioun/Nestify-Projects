@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
             to: process.env.EMAIL_USER,
             subject: `New Newsletter Subscription - Nestify`,
             html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 10px;">
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 10px;">  
           <div style="text-align: center; background: linear-gradient(135deg, #10B981, #059669); padding: 20px; border-radius: 10px 10px 0 0; color: white;">
             <h2 style="margin: 0;">New Newsletter Subscriber!</h2>
           </div>

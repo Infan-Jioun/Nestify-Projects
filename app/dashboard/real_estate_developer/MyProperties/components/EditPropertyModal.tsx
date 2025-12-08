@@ -1,11 +1,35 @@
 "use client"
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { PropertyType, CategoryField } from '@/app/Types/properties'
-import { X, Save, Upload, MapPin, Home, DollarSign, Ruler, Phone, Building, Star, Image as ImageIcon, Loader2, BadgeCheck, Trash2, Dumbbell, Car, Shield, TreePine, Square, ArrowUp, ThermometerSun, Wifi, PawPrint, Sofa } from 'lucide-react'
+import {
+    X,
+    Save,
+    Upload,
+    MapPin,
+    Home,
+    DollarSign,
+    Ruler,
+    Phone,
+    Building,
+    Star,
+    Image as ImageIcon,
+    Loader2,
+    BadgeCheck,
+    Trash2,
+    Dumbbell,
+    Car,
+    Shield,
+    TreePine,
+    Square,
+    ArrowUp,
+    ThermometerSun,
+    Wifi,
+    PawPrint,
+    Sofa
+} from 'lucide-react'
 import { FaSwimmingPool } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
-import SearchHomeLocation from '@/app/components/SearchHomeLocation/SearchHomeLocation'
 import ControlledSearchLocation from './ControlledSearchLocation'
 
 interface EditPropertyModalProps {
@@ -16,7 +40,6 @@ interface EditPropertyModalProps {
     loading?: boolean
 }
 
-// EditPropertyModal এর জন্য আলাদা Inputs interface
 interface EditPropertyInputs {
     title: string
     status: 'Available' | 'Rented' | 'Sold' | 'Pending'
@@ -33,7 +56,6 @@ interface EditPropertyInputs {
     propertyFacilities: string[]
 }
 
-// Simple PropertyLocation Component
 const SimplePropertyLocation: React.FC<{
     value: string;
     onChange: (value: string) => void;
@@ -48,11 +70,9 @@ const SimplePropertyLocation: React.FC<{
         setLocalQuery(newValue)
         onChange(newValue)
 
-        // Simulate search functionality
         if (newValue.trim()) {
             setIsLoading(true)
             setShowDropdown(true)
-            // Simulate API call delay
             setTimeout(() => {
                 setIsLoading(false)
             }, 500)
@@ -125,7 +145,8 @@ export default function EditPropertyModal({
         watch,
         setValue,
         reset,
-        formState: { errors },
+        formState: { errors, isDirty },
+        getValues,
     } = useForm<EditPropertyInputs>({
         defaultValues: {
             title: '',
@@ -140,59 +161,26 @@ export default function EditPropertyModal({
             videos: [],
             email: '',
             propertyFacilities: []
-        }
+        },
+        mode: 'onChange'
     })
 
     const [categoryFields, setCategoryFields] = useState<CategoryField[]>([])
     const [imageUploading, setImageUploading] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [initialFormData, setInitialFormData] = useState<EditPropertyInputs | null>(null)
+    const [initialCategoryFields, setInitialCategoryFields] = useState<CategoryField[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null)
 
-    // Watch for form changes
+    // Watch all form values
     const watchedValues = watch()
 
-    // Check for changes
-    useEffect(() => {
-        if (property) {
-            const currentValues = {
-                title: watchedValues.title,
-                status: watchedValues.status,
-                price: watchedValues.price,
-                currency: watchedValues.currency,
-                propertySize: watchedValues.propertySize,
-                contactNumber: watchedValues.contactNumber,
-                address: watchedValues.address,
-                geoCountryLocation: watchedValues.geoCountryLocation,
-                districtName: watchedValues.districtName,
-                images: watchedValues.images,
-                propertyFacilities: watchedValues.propertyFacilities
-            }
-
-            const originalValues = {
-                title: property.title || '',
-                status: property.status || 'Available',
-                price: property.price || 0,
-                currency: property.currency || 'USD',
-                propertySize: property.propertySize || 0,
-                contactNumber: property.contactNumber || '',
-                address: property.address || '',
-                geoCountryLocation: property.geoCountryLocation || '',
-                districtName: property.districtName || '',
-                images: property.images || [],
-                propertyFacilities: property.propertyFacilities || []
-            }
-
-            const hasFormChanges = JSON.stringify(currentValues) !== JSON.stringify(originalValues)
-            const hasCategoryChanges = JSON.stringify(categoryFields) !== JSON.stringify(property.category.fields || [])
-
-            setHasChanges(hasFormChanges || hasCategoryChanges)
-        }
-    }, [watchedValues, categoryFields, property])
-
-    // Initialize form data when property changes
+    // Initialize form with property data and store initial state
     useEffect(() => {
         if (property && isOpen) {
-            reset({
+            console.log('Initializing form with property:', property)
+
+            const formData = {
                 title: property.title || '',
                 status: property.status || 'Available',
                 price: property.price || 0,
@@ -206,35 +194,74 @@ export default function EditPropertyModal({
                 videos: property.videos || [],
                 email: property.email || '',
                 propertyFacilities: property.propertyFacilities || []
-            })
-            setCategoryFields(property.category.fields || [])
+            }
+
+            const categoryFieldsData = property.category.fields || []
+
+            reset(formData)
+            setCategoryFields([...categoryFieldsData])
+            
+            // Store initial data for comparison
+            setInitialFormData(formData)
+            setInitialCategoryFields([...categoryFieldsData])
+            
             setHasChanges(false)
         }
-    }, [property, isOpen, reset, setCategoryFields])
+    }, [property, isOpen, reset])
 
-    // Handle category field changes
-    const handleCategoryFieldChange = (fieldId: string, value: string | number | boolean) => {
+    // Enhanced change detection - use getValues() for real-time values
+    useEffect(() => {
+        if (property && isOpen && initialFormData) {
+            const currentFormValues = getValues()
+            
+            const hasFormChanges = 
+                currentFormValues.title !== initialFormData.title ||
+                currentFormValues.status !== initialFormData.status ||
+                currentFormValues.price !== initialFormData.price ||
+                currentFormValues.currency !== initialFormData.currency ||
+                currentFormValues.propertySize !== initialFormData.propertySize ||
+                currentFormValues.contactNumber !== initialFormData.contactNumber ||
+                currentFormValues.address !== initialFormData.address ||
+                currentFormValues.geoCountryLocation !== initialFormData.geoCountryLocation ||
+                currentFormValues.districtName !== initialFormData.districtName ||
+                JSON.stringify(currentFormValues.images) !== JSON.stringify(initialFormData.images) ||
+                JSON.stringify(currentFormValues.videos) !== JSON.stringify(initialFormData.videos) ||
+                currentFormValues.email !== initialFormData.email ||
+                JSON.stringify(currentFormValues.propertyFacilities) !== JSON.stringify(initialFormData.propertyFacilities)
+
+            const hasCategoryChanges = JSON.stringify(categoryFields) !== JSON.stringify(initialCategoryFields)
+            
+            console.log('Form changes detected:', hasFormChanges)
+            console.log('Category changes detected:', hasCategoryChanges)
+            console.log('React Hook Form dirty:', isDirty)
+            
+            setHasChanges(hasFormChanges || hasCategoryChanges || isDirty)
+        }
+    }, [watchedValues, categoryFields, property, isOpen, isDirty, initialFormData, initialCategoryFields, getValues])
+
+    const handleCategoryFieldChange = useCallback((fieldId: string, value: string | number | boolean) => {
         setCategoryFields(prev =>
             prev.map(field =>
                 field.id === fieldId ? { ...field, value } : field
             )
         )
-    }
+    }, [])
 
-    // Handle facilities change
-    const handleFacilitiesChange = (facility: string, checked: boolean) => {
+    const handleFacilitiesChange = useCallback((facility: string, checked: boolean) => {
         const currentFacilities = watch('propertyFacilities') || []
         const updatedFacilities = checked
             ? [...currentFacilities, facility]
             : currentFacilities.filter(f => f !== facility)
 
-        setValue('propertyFacilities', updatedFacilities, { shouldDirty: true })
-    }
+        setValue('propertyFacilities', updatedFacilities, {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+    }, [watch, setValue])
 
-    // Handle image upload
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
-        if (!files) return
+        if (!files || files.length === 0) return
 
         setImageUploading(true)
 
@@ -244,12 +271,17 @@ export default function EditPropertyModal({
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i]
-                // Simulate upload - replace with actual cloud storage upload
+                // In a real application, you would upload the file to your server
+                // For now, we'll create object URLs for demonstration
                 const imageUrl = URL.createObjectURL(file)
                 newImages.push(imageUrl)
             }
 
-            setValue('images', [...currentImages, ...newImages], { shouldDirty: true })
+            setValue('images', [...currentImages, ...newImages], {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+            toast.success(`${newImages.length} image(s) uploaded successfully`)
         } catch (error) {
             console.error('Error uploading images:', error)
             toast.error('Failed to upload images')
@@ -261,14 +293,24 @@ export default function EditPropertyModal({
         }
     }
 
-    // Remove image
-    const removeImage = (index: number) => {
+    const removeImage = useCallback((index: number) => {
         const currentImages = watch('images') || []
         const updatedImages = currentImages.filter((_, i) => i !== index)
-        setValue('images', updatedImages, { shouldDirty: true })
-    }
+        setValue('images', updatedImages, {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+        toast.success('Image removed')
+    }, [watch, setValue])
 
-    // Handle form submission
+    // Handle direct input changes to set dirty state
+    const handleInputChange = useCallback((field: keyof EditPropertyInputs, value: any) => {
+        setValue(field, value, {
+            shouldValidate: true,
+            shouldDirty: true
+        })
+    }, [setValue])
+
     const onSubmit = async (data: EditPropertyInputs) => {
         if (!property) {
             toast.error('No property selected')
@@ -303,11 +345,12 @@ export default function EditPropertyModal({
 
             console.log('Updated property to save:', updatedProperty)
 
-            // Call the onSave function passed from parent
             await onSave(updatedProperty)
-
-            // Reset form state after successful save
             setHasChanges(false)
+            // Reset initial data after successful save
+            setInitialFormData(data)
+            setInitialCategoryFields([...categoryFields])
+            toast.success('Property updated successfully')
 
         } catch (error) {
             console.error('Error in form submission:', error)
@@ -315,18 +358,30 @@ export default function EditPropertyModal({
         }
     }
 
-    // Handle close with confirmation if there are changes
     const handleClose = () => {
-        if (hasChanges) {
+        if (hasChanges && !loading) {
             const confirmClose = window.confirm(
                 'You have unsaved changes. Are you sure you want to close?'
             )
             if (!confirmClose) return
         }
+        setInitialFormData(null)
+        setInitialCategoryFields([])
         onClose()
     }
 
-    // Common facilities options with icons
+    // Close modal on escape key
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen) {
+                handleClose()
+            }
+        }
+
+        document.addEventListener('keydown', handleEscape)
+        return () => document.removeEventListener('keydown', handleEscape)
+    }, [isOpen, hasChanges, loading])
+
     const commonFacilities = [
         { id: 'pool', name: 'Swimming Pool', icon: FaSwimmingPool },
         { id: 'gym', name: 'Gym', icon: Dumbbell },
@@ -356,13 +411,13 @@ export default function EditPropertyModal({
                         <div>
                             <h2 className="text-lg sm:text-xl font-semibold text-foreground">Edit Property</h2>
                             <p className="text-muted-foreground text-xs sm:text-sm">
-                                {hasChanges ? 'You have unsaved changes' : 'Update property details and images'}
+                                {hasChanges ? 'You have unsaved changes' : 'All changes saved'}
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={handleClose}
-                        className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+                        className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none p-1"
                         disabled={loading}
                     >
                         <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -394,6 +449,7 @@ export default function EditPropertyModal({
                                                     message: 'Title must be at least 5 characters'
                                                 }
                                             })}
+                                            onChange={(e) => handleInputChange('title', e.target.value)}
                                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                             placeholder="Enter property title"
                                         />
@@ -410,6 +466,7 @@ export default function EditPropertyModal({
                                         <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                         <select
                                             {...register('status')}
+                                            onChange={(e) => handleInputChange('status', e.target.value)}
                                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                         >
                                             <option value="Available">Available</option>
@@ -433,6 +490,7 @@ export default function EditPropertyModal({
                                                 min: { value: 0, message: 'Price must be positive' },
                                                 valueAsNumber: true
                                             })}
+                                            onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
                                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                             placeholder="Enter price"
                                         />
@@ -447,6 +505,7 @@ export default function EditPropertyModal({
                                     <label className="text-sm font-medium text-foreground">Currency *</label>
                                     <select
                                         {...register('currency')}
+                                        onChange={(e) => handleInputChange('currency', e.target.value)}
                                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         <option value="USD">USD</option>
@@ -468,6 +527,7 @@ export default function EditPropertyModal({
                                                 min: { value: 0, message: 'Property size must be positive' },
                                                 valueAsNumber: true
                                             })}
+                                            onChange={(e) => handleInputChange('propertySize', parseFloat(e.target.value) || 0)}
                                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                             placeholder="Enter property size"
                                         />
@@ -491,6 +551,7 @@ export default function EditPropertyModal({
                                                     message: 'Please enter a valid phone number'
                                                 }
                                             })}
+                                            onChange={(e) => handleInputChange('contactNumber', e.target.value)}
                                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                             placeholder="Enter contact number"
                                         />
@@ -521,6 +582,7 @@ export default function EditPropertyModal({
                                                 message: 'Address should be at least 10 characters'
                                             }
                                         })}
+                                        onChange={(e) => handleInputChange('address', e.target.value)}
                                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                         placeholder="Enter full address"
                                     />
@@ -530,14 +592,17 @@ export default function EditPropertyModal({
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
-
                                     <label className="text-sm font-medium text-foreground">Location *</label>
                                     <ControlledSearchLocation
                                         value={watch('geoCountryLocation')}
-                                        onChange={(value) => setValue('geoCountryLocation', value, { shouldValidate: true })}
+                                        onChange={(value) => {
+                                            setValue('geoCountryLocation', value, {
+                                                shouldValidate: true,
+                                                shouldDirty: true
+                                            })
+                                        }}
                                         error={errors.geoCountryLocation?.message}
                                     />
-
                                 </div>
                             </div>
                         </div>
@@ -559,14 +624,19 @@ export default function EditPropertyModal({
                                                 field.name.toLowerCase().includes('bathrooms') ? (
                                                 <input
                                                     type="number"
-                                                    value={field.value as number}
-                                                    onChange={(e) => handleCategoryFieldChange(field.id, Number(e.target.value))}
+                                                    value={field.value as number || ''}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value === '' ? 0 : Number(e.target.value)
+                                                        handleCategoryFieldChange(field.id, value)
+                                                    }}
                                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 />
                                             ) : field.name.toLowerCase().includes('furnishing') ? (
                                                 <select
-                                                    value={field.value as string}
-                                                    onChange={(e) => handleCategoryFieldChange(field.id, e.target.value)}
+                                                    value={field.value as string || ''}
+                                                    onChange={(e) => {
+                                                        handleCategoryFieldChange(field.id, e.target.value)
+                                                    }}
                                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                     <option value="Furnished">Furnished</option>
@@ -576,8 +646,10 @@ export default function EditPropertyModal({
                                             ) : (
                                                 <input
                                                     type="text"
-                                                    value={field.value as string}
-                                                    onChange={(e) => handleCategoryFieldChange(field.id, e.target.value)}
+                                                    value={field.value as string || ''}
+                                                    onChange={(e) => {
+                                                        handleCategoryFieldChange(field.id, e.target.value)
+                                                    }}
                                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 />
                                             )}
@@ -611,7 +683,7 @@ export default function EditPropertyModal({
                                                 type="checkbox"
                                                 checked={isChecked}
                                                 onChange={(e) => handleFacilitiesChange(facility.name, e.target.checked)}
-                                                className="rounded border-primary text-primary focus:ring-primary"
+                                                className="rounded border-primary text-primary focus:ring-primary sr-only"
                                             />
                                             <span className="flex items-center gap-1 sm:gap-2">
                                                 <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -644,7 +716,7 @@ export default function EditPropertyModal({
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
-                                    disabled={imageUploading}
+                                    disabled={imageUploading || loading}
                                     className="flex flex-col items-center justify-center w-full p-4 sm:p-6 border-2 border-dashed border-muted-foreground/25 rounded-md hover:border-muted-foreground/50 transition-colors bg-muted/50 hover:bg-muted disabled:opacity-50"
                                 >
                                     {imageUploading ? (
@@ -680,6 +752,7 @@ export default function EditPropertyModal({
                                                 <button
                                                     type="button"
                                                     onClick={() => removeImage(index)}
+                                                    disabled={loading}
                                                     className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                                                 >
                                                     <Trash2 className="w-2 h-2 sm:w-3 sm:h-3" />
@@ -716,7 +789,7 @@ export default function EditPropertyModal({
                         </button>
                     </div>
                 </form>
-            </div >
-        </div >
+            </div>
+        </div>
     )
 }

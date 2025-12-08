@@ -12,7 +12,7 @@ export default function Banner() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
- 
+
     dispatch(setSkletonLoader(true));
   }, [dispatch]);
 
