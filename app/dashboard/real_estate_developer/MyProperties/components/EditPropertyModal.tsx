@@ -303,7 +303,6 @@ export default function EditPropertyModal({
         toast.success('Image removed')
     }, [watch, setValue])
 
-    // Handle direct input changes to set dirty state
     const handleInputChange = useCallback((field: keyof EditPropertyInputs, value: string | number) => {
         setValue(field, value, {
             shouldValidate: true,
