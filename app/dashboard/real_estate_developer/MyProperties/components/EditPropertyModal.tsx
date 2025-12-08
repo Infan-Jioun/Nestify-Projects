@@ -180,7 +180,7 @@ export default function EditPropertyModal({
         if (property && isOpen) {
             console.log('Initializing form with property:', property)
 
-            const formData = {
+            const formData: EditPropertyInputs = {
                 title: property.title || '',
                 status: property.status || 'Available',
                 price: property.price || 0,
@@ -200,11 +200,11 @@ export default function EditPropertyModal({
 
             reset(formData)
             setCategoryFields([...categoryFieldsData])
-            
+
             // Store initial data for comparison
             setInitialFormData(formData)
             setInitialCategoryFields([...categoryFieldsData])
-            
+
             setHasChanges(false)
         }
     }, [property, isOpen, reset])
@@ -213,8 +213,8 @@ export default function EditPropertyModal({
     useEffect(() => {
         if (property && isOpen && initialFormData) {
             const currentFormValues = getValues()
-            
-            const hasFormChanges = 
+
+            const hasFormChanges =
                 currentFormValues.title !== initialFormData.title ||
                 currentFormValues.status !== initialFormData.status ||
                 currentFormValues.price !== initialFormData.price ||
@@ -230,11 +230,11 @@ export default function EditPropertyModal({
                 JSON.stringify(currentFormValues.propertyFacilities) !== JSON.stringify(initialFormData.propertyFacilities)
 
             const hasCategoryChanges = JSON.stringify(categoryFields) !== JSON.stringify(initialCategoryFields)
-            
+
             console.log('Form changes detected:', hasFormChanges)
             console.log('Category changes detected:', hasCategoryChanges)
             console.log('React Hook Form dirty:', isDirty)
-            
+
             setHasChanges(hasFormChanges || hasCategoryChanges || isDirty)
         }
     }, [watchedValues, categoryFields, property, isOpen, isDirty, initialFormData, initialCategoryFields, getValues])
@@ -304,7 +304,7 @@ export default function EditPropertyModal({
     }, [watch, setValue])
 
     // Handle direct input changes to set dirty state
-    const handleInputChange = useCallback((field: keyof EditPropertyInputs, value: any) => {
+    const handleInputChange = useCallback((field: keyof EditPropertyInputs, value: string | number) => {
         setValue(field, value, {
             shouldValidate: true,
             shouldDirty: true
@@ -352,7 +352,7 @@ export default function EditPropertyModal({
             setInitialCategoryFields([...categoryFields])
             toast.success('Property updated successfully')
 
-        } catch (error) {
+        } catch (error: unknown) {
             console.error('Error in form submission:', error)
             toast.error('Failed to save property changes')
         }
@@ -734,15 +734,15 @@ export default function EditPropertyModal({
                             </div>
 
                             {/* Images Grid */}
-                            {watch('images') && watch('images')!.length > 0 && (
+                            {watch('images') && watch('images').length > 0 && (
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-foreground">
-                                            {watch('images')!.length} image(s) uploaded
+                                            {watch('images').length} image(s) uploaded
                                         </span>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-                                        {watch('images')!.map((image, index) => (
+                                        {watch('images').map((image, index) => (
                                             <div key={index} className="relative group">
                                                 <img
                                                     src={image}
