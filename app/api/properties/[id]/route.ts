@@ -4,20 +4,19 @@ import { authOptions } from '@/lib/auth-options';
 import connectToDatabase from '@/lib/mongodb';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
-import { SessionUser } from '@/app/Types/properties';
 
 // GET - Get single property by ID
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     await connectToDatabase();
     try {
         const { id } = await context.params;
-        
+
         if (!id) {
             return NextResponse.json({ message: "ID is required" }, { status: 400 });
         }
 
         const property = await Property.findById(id);
-        
+
         if (!property) {
             return NextResponse.json({ message: "Property not found" }, { status: 404 });
         }
@@ -39,7 +38,7 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
         }
 
         await connectToDatabase();
-        
+
         const { id } = await context.params;
 
         if (!id) {
@@ -47,23 +46,23 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
         }
 
         const deletedProperty = await Property.findByIdAndDelete(id);
-        
+
         if (!deletedProperty) {
             return NextResponse.json({ message: "Property not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ 
+        return NextResponse.json({
             success: true,
-            message: "Property deleted successfully", 
-            property: deletedProperty 
+            message: "Property deleted successfully",
+            property: deletedProperty
         }, { status: 200 });
     } catch (error: unknown) {
         console.error("Failed to delete property:", error);
-        
+
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-        return NextResponse.json({ 
+        return NextResponse.json({
             error: "Failed to delete property",
-            details: errorMessage 
+            details: errorMessage
         }, { status: 500 });
     }
 }
@@ -87,15 +86,16 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
         }
 
         const body = await req.json();
-        console.log('Update request body:', body);
+        console.log('Update request body:', JSON.stringify(body, null, 2));
 
-        // Define allowed fields for update
+        // Define allowed fields for update (including category)
         const allowedFields = [
             'status', 'title', 'price', 'currency', 'propertySize', 'address',
             'geoCountryLocation', 'yearBuild', 'images', 'videos', 'contactNumber',
             'bedrooms', 'bathrooms', 'drawingRoom', 'kitchen', 'floor', 'furnishing',
             'floorArea', 'parkingSpaces', 'roomsSections', 'landArea', 'plotNumber',
-            'landType', 'facilities', 'propertyFacilities', 'districtName'
+            'landType', 'facilities', 'propertyFacilities', 'districtName',
+            'email', 'category'  // Add email and category
         ];
 
         const updateData: Record<string, unknown> = {};
@@ -116,6 +116,17 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
             if (!validStatuses.includes(updateData.status as string)) {
                 return NextResponse.json(
                     { error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Validate email if provided
+        if (updateData.email) {
+            const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+            if (!emailRegex.test(updateData.email as string)) {
+                return NextResponse.json(
+                    { error: 'Please enter a valid email' },
                     { status: 400 }
                 );
             }

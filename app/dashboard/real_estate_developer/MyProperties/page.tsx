@@ -6,8 +6,8 @@ import { AppDispatch, RootState } from '@/lib/store'
 import { fetchPropertiesByEmail, deleteProperty, updatePropertyStatus, updateProperty } from '@/app/features/Properties/propertySlice'
 import { PropertyType, SessionUser } from '@/app/Types/properties'
 import Link from 'next/link'
-import EditPropertyModal from './components/EditPropertyModal'
 import PropertyCard from './components/PropertyCard'
+import EditPropertyModal from './components/EditPropertyModal'
 
 // Skeleton Loader Component
 function PropertiesSkeleton() {
@@ -79,10 +79,18 @@ export default function MyProperties() {
 
     // Handle property deletion
     const handleDeleteProperty = async (propertyId: string) => {
+        if (!propertyId) return
+
         try {
+            console.log('Deleting property:', propertyId)
             await dispatch(deleteProperty(propertyId)).unwrap()
             setDeleteConfirm(null)
             console.log('Property deleted successfully')
+
+            // Refresh properties after deletion
+            if (session?.user?.email) {
+                dispatch(fetchPropertiesByEmail(session.user.email))
+            }
         } catch (error) {
             console.error('Failed to delete property:', error)
         }
@@ -90,17 +98,26 @@ export default function MyProperties() {
 
     // Handle status update
     const handleStatusUpdate = async (propertyId: string) => {
+        if (!propertyId) return
+
         const newStatus = statusUpdate[propertyId]
         if (!newStatus) return
 
         try {
+            console.log('Updating status for:', propertyId, 'to:', newStatus)
             await dispatch(updatePropertyStatus({
                 propertyId,
                 status: newStatus as "Available" | "Rented" | "Sold" | "Pending"
             })).unwrap()
+
             setEditingProperty(null)
             setStatusUpdate(prev => ({ ...prev, [propertyId]: '' }))
             console.log('Property status updated successfully')
+
+            // Refresh properties after status update
+            if (session?.user?.email) {
+                dispatch(fetchPropertiesByEmail(session.user.email))
+            }
         } catch (error) {
             console.error('Failed to update property status:', error)
         }
@@ -108,27 +125,44 @@ export default function MyProperties() {
 
     // Handle edit property modal
     const handleEditProperty = (property: PropertyType) => {
+        console.log('Editing property:', property)
         setSelectedProperty(property)
         setEditModalOpen(true)
     }
 
     // Handle save edited property
     const handleSaveProperty = async (propertyData: PropertyType) => {
-        if (!selectedProperty?._id) return
+        if (!selectedProperty?._id) {
+            console.error('No property ID found for update')
+            return
+        }
 
         setUpdateLoading(true)
         try {
+            console.log('Saving property update for:', selectedProperty._id)
+
+            // Ensure we're sending the full property data with category
+            const updatedPropertyData = {
+                ...propertyData,
+                _id: selectedProperty._id, // Ensure ID is included
+                category: propertyData.category || selectedProperty.category // Ensure category exists
+            }
+
+            console.log('Updated property data:', updatedPropertyData)
+
             await dispatch(updateProperty({
                 propertyId: selectedProperty._id,
-                propertyData
+                propertyData: updatedPropertyData
             })).unwrap()
+
+            console.log('Property updated successfully via API')
 
             setEditModalOpen(false)
             setSelectedProperty(null)
-            console.log('Property updated successfully')
 
-            // Refresh the properties list
+            // Refresh the properties list after successful update
             if (session?.user?.email) {
+                console.log('Refreshing properties list...')
                 dispatch(fetchPropertiesByEmail(session.user.email))
             }
         } catch (error) {
@@ -136,6 +170,13 @@ export default function MyProperties() {
         } finally {
             setUpdateLoading(false)
         }
+    }
+
+    // Handle modal close
+    const handleModalClose = () => {
+        setEditModalOpen(false)
+        setSelectedProperty(null)
+        setUpdateLoading(false)
     }
 
     if (status === 'loading' || loading) {
@@ -147,6 +188,13 @@ export default function MyProperties() {
             <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm sm:text-base">
                     <strong>Error:</strong> {error}
+                </div>
+                <div className="mt-4">
+                    <Link href={"/"}>
+                        <button className='w-full mx-auto bg-green-500 hover:bg-green-600 p-3 text-white rounded-2xl drop-shadow-2xl font-medium'>
+                            Back to Home
+                        </button>
+                    </Link>
                 </div>
             </div>
         )
@@ -166,12 +214,20 @@ export default function MyProperties() {
                             Email: {session?.user?.email} • Role: {sessionUser?.role || 'Real Estate Developer'}
                         </p>
                     </div>
-                    <Link
-                        href="/dashboard/real_estate_developer/add-property"
-                        className="bg-green-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-green-600 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto text-center"
-                    >
-                        + Add New Property
-                    </Link>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                        <Link
+                            href="/dashboard/real_estate_developer/add-property"
+                            className="bg-green-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-green-600 transition-colors font-medium text-sm sm:text-base w-full text-center"
+                        >
+                            + Add New Property
+                        </Link>
+                        <Link
+                            href="/"
+                            className="bg-gray-200 text-gray-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium text-sm sm:text-base w-full text-center"
+                        >
+                            Back to Home
+                        </Link>
+                    </div>
                 </div>
 
                 {/* Stats Cards */}
@@ -198,24 +254,26 @@ export default function MyProperties() {
             {properties && properties.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                     {properties.map((property: PropertyType) => (
-                        <PropertyCard
-                            key={property._id}
-                            property={property}
-                            isEditing={editingProperty === property._id}
-                            isDeleting={deleteConfirm === property._id}
-                            statusValue={statusUpdate[property._id!] || property.status}
-                            onEditClick={() => handleEditProperty(property)}
-                            onDeleteClick={() => setDeleteConfirm(property._id!)}
-                            onStatusChange={(value: string) => setStatusUpdate(prev => ({ ...prev, [property._id!]: value }))}
-                            onStatusUpdate={() => handleStatusUpdate(property._id!)}
-                            onCancelEdit={() => {
-                                setEditingProperty(null)
-                                setStatusUpdate(prev => ({ ...prev, [property._id!]: '' }))
-                            }}
-                            onStartEdit={() => setEditingProperty(property._id!)}
-                            onCancelDelete={() => setDeleteConfirm(null)}
-                            onConfirmDelete={() => handleDeleteProperty(property._id!)}
-                        />
+                        property._id && (
+                            <PropertyCard
+                                key={property._id}
+                                property={property}
+                                isEditing={editingProperty === property._id}
+                                isDeleting={deleteConfirm === property._id}
+                                statusValue={statusUpdate[property._id] || property.status}
+                                onEditClick={() => handleEditProperty(property)}
+                                onDeleteClick={() => setDeleteConfirm(property._id)}
+                                onStatusChange={(value: string) => setStatusUpdate(prev => ({ ...prev, [property._id!]: value }))}
+                                onStatusUpdate={() => handleStatusUpdate(property._id!)}
+                                onCancelEdit={() => {
+                                    setEditingProperty(null)
+                                    setStatusUpdate(prev => ({ ...prev, [property._id!]: '' }))
+                                }}
+                                onStartEdit={() => setEditingProperty(property._id!)}
+                                onCancelDelete={() => setDeleteConfirm(null)}
+                                onConfirmDelete={() => handleDeleteProperty(property._id!)}
+                            />
+                        )
                     ))}
                 </div>
             ) : (
@@ -223,31 +281,33 @@ export default function MyProperties() {
                     <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🏠</div>
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">No Properties Found</h3>
                     <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-lg">{"You haven't added any properties yet."}</p>
-                    <Link
-                        href="/dashboard/real_estate_developer/add-property"
-                        className="bg-green-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-green-600 transition-colors font-semibold text-sm sm:text-lg w-full sm:w-auto inline-block"
-                    >
-                        Add Your First Property
-                    </Link>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Link
+                            href="/dashboard/real_estate_developer/add-property"
+                            className="bg-green-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-green-600 transition-colors font-semibold text-sm sm:text-lg w-full sm:w-auto inline-block text-center"
+                        >
+                            Add Your First Property
+                        </Link>
+                        <Link
+                            href="/"
+                            className="bg-gray-200 text-gray-700 px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-gray-300 transition-colors font-semibold text-sm sm:text-lg w-full sm:w-auto inline-block text-center"
+                        >
+                            Back to Home
+                        </Link>
+                    </div>
                 </div>
             )}
 
             {/* Edit Property Modal */}
-            <EditPropertyModal
-                property={selectedProperty}
-                isOpen={editModalOpen}
-                onClose={() => {
-                    setEditModalOpen(false)
-                    setSelectedProperty(null)
-                }}
-                onSave={handleSaveProperty}
-                loading={updateLoading}
-            />
-            <div>
-                <Link href={"/"}>
-                    <button className='w-full mx-auto bg-green-500 hover:bg-green-600 p-2 text-white rounded-2xl drop-shadow-2xl'>Home</button>
-                </Link>
-            </div>
+            {editModalOpen && (
+                <EditPropertyModal
+                    property={selectedProperty}
+                    isOpen={editModalOpen}
+                    onClose={handleModalClose}
+                    onSave={handleSaveProperty}
+                    loading={updateLoading}
+                />
+            )}
         </div>
     )
 }

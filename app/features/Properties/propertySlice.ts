@@ -127,6 +127,8 @@ export const updateProperty = createAsyncThunk<
   { rejectValue: string }
 >("properties/update", async ({ propertyId, propertyData }, { rejectWithValue }) => {
   try {
+    console.log('Updating property with category:', propertyData.category);
+
     const response = await axios.put<{ property: PropertyType }>(
       `/api/properties/${propertyId}`,
       propertyData
@@ -134,6 +136,7 @@ export const updateProperty = createAsyncThunk<
     return response.data.property;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message: string }>;
+    console.error('Update property error:', error.response?.data);
     return rejectWithValue(
       error.response?.data?.message ||
       "Failed to update property"
@@ -310,9 +313,9 @@ const propertySlice = createSlice({
       action: PayloadAction<{ propertyId: string; bookingStatus: string }>
     ) => {
       const { propertyId, bookingStatus } = action.payload;
-    
+
       let propertyStatus: "Available" | "Rented" | "Sold" | "Pending" = "Available";
-    
+
       // Normalize status for case-insensitive comparison
       const normalizedStatus = bookingStatus.toLowerCase().trim();
 
@@ -323,14 +326,14 @@ const propertySlice = createSlice({
       } else if (normalizedStatus.includes('cancel')) {
         propertyStatus = "Available";
       }
-    
+
       console.log(`Syncing - Booking: ${bookingStatus}, Property: ${propertyStatus}`);
-    
+
       const index = state.properties.findIndex(p => p._id === propertyId);
       if (index !== -1) {
         state.properties[index].status = propertyStatus;
       }
-    
+
       if (state.currentProperty && state.currentProperty._id === propertyId) {
         state.currentProperty.status = propertyStatus;
       }
@@ -518,6 +521,6 @@ interface BookingResponse {
   booking: {
     _id: string;
     status: string;
-  
+
   };
 }

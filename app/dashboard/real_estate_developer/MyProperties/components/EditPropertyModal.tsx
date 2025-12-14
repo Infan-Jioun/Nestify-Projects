@@ -180,7 +180,7 @@ export default function EditPropertyModal({
         if (property && isOpen) {
             console.log('Initializing form with property:', property)
 
-            const formData: EditPropertyInputs = {
+            const formData = {
                 title: property.title || '',
                 status: property.status || 'Available',
                 price: property.price || 0,
@@ -196,7 +196,7 @@ export default function EditPropertyModal({
                 propertyFacilities: property.propertyFacilities || []
             }
 
-            const categoryFieldsData = property.category.fields || []
+            const categoryFieldsData = property.category?.fields || []
 
             reset(formData)
             setCategoryFields([...categoryFieldsData])
@@ -303,7 +303,8 @@ export default function EditPropertyModal({
         toast.success('Image removed')
     }, [watch, setValue])
 
-    const handleInputChange = useCallback((field: keyof EditPropertyInputs, value: string | number) => {
+    // Handle direct input changes to set dirty state
+    const handleInputChange = useCallback((field: keyof EditPropertyInputs, value: any) => {
         setValue(field, value, {
             shouldValidate: true,
             shouldDirty: true
@@ -351,7 +352,7 @@ export default function EditPropertyModal({
             setInitialCategoryFields([...categoryFields])
             toast.success('Property updated successfully')
 
-        } catch (error: unknown) {
+        } catch (error) {
             console.error('Error in form submission:', error)
             toast.error('Failed to save property changes')
         }
@@ -361,7 +362,7 @@ export default function EditPropertyModal({
         if (hasChanges && !loading) {
             const confirmClose = window.confirm(
                 'You have unsaved changes. Are you sure you want to close?'
-            )
+            )               
             if (!confirmClose) return
         }
         setInitialFormData(null)
@@ -559,6 +560,27 @@ export default function EditPropertyModal({
                                         <p className="text-sm text-destructive">{errors.contactNumber.message}</p>
                                     )}
                                 </div>
+
+                                {/* Email */}
+                                <div className="space-y-2 col-span-1 sm:col-span-2">
+                                    <label className="text-sm font-medium text-foreground">Email *</label>
+                                    <input
+                                        type="email"
+                                        {...register('email', {
+                                            required: 'Email is required',
+                                            pattern: {
+                                                value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                                                message: 'Please enter a valid email address'
+                                            }
+                                        })}
+                                        onChange={(e) => handleInputChange('email', e.target.value)}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        placeholder="Enter email address"
+                                    />
+                                    {errors.email && (
+                                        <p className="text-sm text-destructive">{errors.email.message}</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -603,6 +625,18 @@ export default function EditPropertyModal({
                                         error={errors.geoCountryLocation?.message}
                                     />
                                 </div>
+
+                                {/* District Name */}
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-foreground">District Name</label>
+                                    <input
+                                        type="text"
+                                        {...register('districtName')}
+                                        onChange={(e) => handleInputChange('districtName', e.target.value)}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        placeholder="Enter district name (optional)"
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -611,7 +645,7 @@ export default function EditPropertyModal({
                             <div className="space-y-3 sm:space-y-4">
                                 <h3 className="text-base sm:text-lg font-medium text-foreground flex items-center gap-2">
                                     <Building className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                    {property?.category.name} Details
+                                    {property?.category?.name} Details
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     {categoryFields.map((field) => (
@@ -620,7 +654,13 @@ export default function EditPropertyModal({
                                             {field.name.toLowerCase().includes('area') ||
                                                 field.name.toLowerCase().includes('rooms') ||
                                                 field.name.toLowerCase().includes('bedrooms') ||
-                                                field.name.toLowerCase().includes('bathrooms') ? (
+                                                field.name.toLowerCase().includes('bathrooms') ||
+                                                field.name.toLowerCase().includes('floor') ||
+                                                field.name.toLowerCase().includes('kitchen') ||
+                                                field.name.toLowerCase().includes('drawing') ||
+                                                field.name.toLowerCase().includes('parking') ||
+                                                field.name.toLowerCase().includes('sections') ||
+                                                field.name.toLowerCase().includes('land') ? (
                                                 <input
                                                     type="number"
                                                     value={field.value as number || ''}
@@ -638,10 +678,22 @@ export default function EditPropertyModal({
                                                     }}
                                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
+                                                    <option value="">Select Furnishing</option>
                                                     <option value="Furnished">Furnished</option>
                                                     <option value="Semi-Furnished">Semi-Furnished</option>
                                                     <option value="Unfurnished">Unfurnished</option>
                                                 </select>
+                                            ) : field.name.toLowerCase().includes('plot') ||
+                                                field.name.toLowerCase().includes('number') ? (
+                                                <input
+                                                    type="text"
+                                                    value={field.value as string || ''}
+                                                    onChange={(e) => {
+                                                        handleCategoryFieldChange(field.id, e.target.value)
+                                                    }}
+                                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    placeholder={`Enter ${field.name.toLowerCase()}`}
+                                                />
                                             ) : (
                                                 <input
                                                     type="text"
@@ -650,6 +702,7 @@ export default function EditPropertyModal({
                                                         handleCategoryFieldChange(field.id, e.target.value)
                                                     }}
                                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    placeholder={`Enter ${field.name}`}
                                                 />
                                             )}
                                         </div>
@@ -733,15 +786,15 @@ export default function EditPropertyModal({
                             </div>
 
                             {/* Images Grid */}
-                            {watch('images') && watch('images').length > 0 && (
+                            {watch('images') && watch('images')!.length > 0 && (
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-foreground">
-                                            {watch('images').length} image(s) uploaded
+                                            {watch('images')!.length} image(s) uploaded
                                         </span>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-                                        {watch('images').map((image, index) => (
+                                        {watch('images')!.map((image, index) => (
                                             <div key={index} className="relative group">
                                                 <img
                                                     src={image}

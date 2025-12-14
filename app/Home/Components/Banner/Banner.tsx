@@ -8,31 +8,31 @@ import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
 
 export default function Banner() {
   const dispatch = useDispatch<AppDispatch>();
-  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  // const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const [imageLoaded, setImageLoaded] = useState(false);
+ const  [isLoading , setIsLoading] = useState(true);
+  // useEffect(() => {
 
-  useEffect(() => {
-
-    dispatch(setSkletonLoader(true));
-  }, [dispatch]);
+  //   dispatch(setSkletonLoader(true));
+  // }, [dispatch]);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
-    dispatch(setSkletonLoader(false));
+    setIsLoading(false);
   };
 
   return (
     <div className="px-4 mx-auto drop-shadow-2xl lg:px-15 relative mt-5">
 
-      {skletonLoader && (
-        <div className="rounded-xl lg:rounded-3xl bg-gray-200 animate-pulse h-[300px] md:h-[400px] lg:h-[500px] w-full"></div>
+      {isLoading && (
+        <div className="rounded-xl lg:rounded-3xl bg-gray-200 animate-pulse h-[300px] md:h-[700px] lg:h-[700px] w-full"></div>
       )}
 
 
       <Image
-        width={2000}
+        width={1200}
         height={500}
-        className={`rounded-xl lg:rounded-3xl shadow w-full ${skletonLoader ? "hidden" : "block"
+        className={`rounded-xl lg:rounded-3xl shadow w-full ${isLoading ? "hidden" : "block"
           }`}
         style={{
           height: "auto",
@@ -43,7 +43,7 @@ export default function Banner() {
         onLoad={handleImageLoad}
         onError={() => {
           setImageLoaded(true);
-          dispatch(setSkletonLoader(false));
+           setIsLoading(false); 
         }}
         priority
       />
