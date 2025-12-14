@@ -25,7 +25,7 @@ export default function Banner() {
     <div className="px-4 mx-auto drop-shadow-2xl lg:px-15 relative mt-5">
 
       {isLoading && (
-        <div className="rounded-xl lg:rounded-3xl bg-gray-200 animate-pulse h-[300px] md:h-[700px] lg:h-[700px] w-full"></div>
+        <div className="rounded-xl lg:rounded-3xl bg-gray-200 animate-pulse h-[300px] md:h-[650px] lg:h-[650px] w-full"></div>
       )}
 
 
