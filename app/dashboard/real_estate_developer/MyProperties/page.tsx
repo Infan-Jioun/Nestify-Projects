@@ -262,7 +262,7 @@ export default function MyProperties() {
                                 isDeleting={deleteConfirm === property._id}
                                 statusValue={statusUpdate[property._id] || property.status}
                                 onEditClick={() => handleEditProperty(property)}
-                                onDeleteClick={() => setDeleteConfirm(property._id)}
+                                onDeleteClick={() => setDeleteConfirm(property._id!)}
                                 onStatusChange={(value: string) => setStatusUpdate(prev => ({ ...prev, [property._id!]: value }))}
                                 onStatusUpdate={() => handleStatusUpdate(property._id!)}
                                 onCancelEdit={() => {
