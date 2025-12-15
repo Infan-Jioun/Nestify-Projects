@@ -121,28 +121,7 @@ export const updatePropertyStatus = createAsyncThunk<
 });
 
 // Update property
-export const updateProperty = createAsyncThunk<
-  PropertyType,
-  { propertyId: string; propertyData: Partial<PropertyType> },
-  { rejectValue: string }
->("properties/update", async ({ propertyId, propertyData }, { rejectWithValue }) => {
-  try {
-    console.log('Updating property with category:', propertyData.category);
-
-    const response = await axios.put<{ property: PropertyType }>(
-      `/api/properties/${propertyId}`,
-      propertyData
-    );
-    return response.data.property;
-  } catch (err: unknown) {
-    const error = err as AxiosError<{ message: string }>;
-    console.error('Update property error:', error.response?.data);
-    return rejectWithValue(
-      error.response?.data?.message ||
-      "Failed to update property"
-    );
-  }
-});
+// Update property
 
 // Update booking status and sync with property status
 export const updateBookingStatus = createAsyncThunk<
@@ -226,6 +205,31 @@ export const deleteProperty = createAsyncThunk<
     );
   }
 });
+export const updateProperty = createAsyncThunk<
+  PropertyType,
+  { id: string; propertyData: Partial<PropertyType> },
+  { rejectValue: string }
+>("properties/update", async ({ id, propertyData }, { rejectWithValue }) => {
+  try {
+    // Remove fields that shouldn't be sent to API
+    const { _id, createdAt, updatedAt, isFavorite, ...cleanData } = propertyData
+
+    const response = await axios.put<{ property: PropertyType }>(
+      `/api/properties/${id}`,
+      cleanData
+    )
+
+    return response.data.property
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ error?: string; message?: string }>
+    console.error('Update property error:', error.response?.data)
+    return rejectWithValue(
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      'Failed to update property'
+    )
+  }
+})
 
 // Refetch properties after status update
 export const refetchProperties = createAsyncThunk<
@@ -368,7 +372,28 @@ const propertySlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to load properties";
       })
+      .addCase(updateProperty.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProperty.fulfilled, (state, action) => {
+        state.loading = false;
 
+        const updatedProperty = action.payload;
+        const index = state.properties.findIndex(p => p._id === updatedProperty._id);
+
+        if (index !== -1) {
+          state.properties[index] = updatedProperty;
+        }
+
+        if (state.currentProperty && state.currentProperty._id === updatedProperty._id) {
+          state.currentProperty = updatedProperty;
+        }
+      })
+      .addCase(updateProperty.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update property";
+      })
       // Fetch by category
       .addCase(fetchPropertiesByCategory.pending, (state) => {
         state.loading = true;
@@ -419,27 +444,6 @@ const propertySlice = createSlice({
         state.error = action.payload || "Failed to update property status";
       })
 
-      // Update property
-      .addCase(updateProperty.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(updateProperty.fulfilled, (state, action) => {
-        state.loading = false;
-
-        const updatedProperty = action.payload;
-        const index = state.properties.findIndex(p => p._id === updatedProperty._id);
-        if (index !== -1) {
-          state.properties[index] = updatedProperty;
-        }
-
-        if (state.currentProperty && state.currentProperty._id === updatedProperty._id) {
-          state.currentProperty = updatedProperty;
-        }
-      })
-      .addCase(updateProperty.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to update property";
-      })
 
       // Update booking status
       .addCase(updateBookingStatus.pending, (state) => {

@@ -1,64 +1,77 @@
 import React from 'react'
 import { MapPin } from 'lucide-react'
-import { UseFormRegister, FieldErrors } from 'react-hook-form'
+import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { EditPropertyInputs } from './types/property-form.types'
 import ControlledSearchLocation from './ControlledSearchLocation'
-
 
 interface LocationSectionProps {
     register: UseFormRegister<EditPropertyInputs>
     errors: FieldErrors<EditPropertyInputs>
-    onInputChange: (field: keyof EditPropertyInputs, value: string) => void
-    onLocationChange: (value: string) => void
-    locationValue: string
+    watch: UseFormWatch<EditPropertyInputs>
+    setValue: UseFormSetValue<EditPropertyInputs>
 }
 
-const LocationSection: React.FC<LocationSectionProps> = ({
+export function LocationSection({
     register,
     errors,
-    onInputChange,
-    onLocationChange,
-    locationValue
-}) => {
+    watch,
+    setValue
+}: LocationSectionProps) {
     return (
         <div className="space-y-3 sm:space-y-4">
             <h3 className="text-base sm:text-lg font-medium text-foreground flex items-center gap-2">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 Location Details
             </h3>
-            <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                {/* Address */}
+            <div className="space-y-3">
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">Address *</label>
-                    <input
-                        type="text"
+                    <label className="text-sm font-medium text-foreground">
+                        Full Address *
+                    </label>
+                    <textarea
                         {...register('address', {
-                            required: 'Address is required',
-                            minLength: {
-                                value: 10,
-                                message: 'Address should be at least 10 characters'
-                            }
+                            required: 'Address is required'
                         })}
-                        onChange={(e) => onInputChange('address', e.target.value)}
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        placeholder="Enter full address"
+                        rows={2}
+                        className="w-full px-3 py-2 border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="Enter complete address"
                     />
                     {errors.address && (
-                        <p className="text-sm text-destructive">{errors.address.message}</p>
+                        <p className="text-sm text-red-500">{errors.address.message}</p>
                     )}
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                    <label className="text-sm font-medium text-foreground">Location *</label>
-                    <ControlledSearchLocation
-                        value={locationValue}
-                        onChange={onLocationChange}
-                        error={errors.geoCountryLocation?.message}
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">
+                            District/Area
+                        </label>
+                        <input
+                            type="text"
+                            {...register('districtName')}
+                            className="w-full px-3 py-2 border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            placeholder="Enter district name"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">
+                            Country Location *
+                        </label>
+                        <ControlledSearchLocation
+                            value={watch('geoCountryLocation') || ''}
+                            onChange={(value) => setValue('geoCountryLocation', value, {
+                                shouldValidate: true,
+                                shouldDirty: true
+                            })}
+                            // placeholder="Enter country or city"
+                        />
+                        {errors.geoCountryLocation && (
+                            <p className="text-sm text-red-500">{errors.geoCountryLocation.message}</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
     )
 }
-
-export default LocationSection

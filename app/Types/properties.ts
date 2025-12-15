@@ -48,6 +48,7 @@ export interface PropertyType {
     updatedAt?: string;
     isFavorite?: boolean;
     districtName?: string;
+    views?: number;
 }
 export interface PropertiesResponse {
     email: string;

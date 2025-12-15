@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { Star } from 'lucide-react'
 import {
@@ -9,7 +10,7 @@ import { FacilityType } from './types/property-form.types'
 
 
 interface FacilitiesSectionProps {
-    facilities: string[]
+    facilities?: string[]
     onFacilityChange: (facility: string, checked: boolean) => void
 }
 
@@ -29,7 +30,7 @@ const commonFacilities: FacilityType[] = [
 ]
 
 const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({
-    facilities,
+    facilities = [], // ✅ Default empty array
     onFacilityChange
 }) => {
     return (
@@ -41,7 +42,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                 {commonFacilities.map((facility) => {
                     const IconComponent = facility.icon
-                    const isChecked = facilities.includes(facility.name)
+                    const isChecked = facilities.includes(facility.name) // ✅ Now safe
 
                     return (
                         <label
@@ -70,4 +71,4 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({
     )
 }
 
-export default FacilitiesSection;
+export default FacilitiesSection

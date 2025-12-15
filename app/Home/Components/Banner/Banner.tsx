@@ -10,7 +10,7 @@ export default function Banner() {
   const dispatch = useDispatch<AppDispatch>();
   // const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
   const [imageLoaded, setImageLoaded] = useState(false);
- const  [isLoading , setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   // useEffect(() => {
 
   //   dispatch(setSkletonLoader(true));
@@ -43,7 +43,7 @@ export default function Banner() {
         onLoad={handleImageLoad}
         onError={() => {
           setImageLoaded(true);
-           setIsLoading(false); 
+          setIsLoading(false);
         }}
         priority
       />
