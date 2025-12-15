@@ -189,7 +189,7 @@ export default function EditPropertyModal({
         }
         document.addEventListener('keydown', handleEscape)
         return () => document.removeEventListener('keydown', handleEscape)
-    }, [isOpen, hasChanges, loading])
+    }, [isOpen, hasChanges, loading, handleClose])
 
     if (!isOpen) return null
 
