@@ -25,7 +25,6 @@ const BookingModal = ({ property, children }: BookingModalProps & { property: Pa
     const { loading, error, success } = useAppSelector((state: RootState) => state.booking);
     const formData = useAppSelector((state: RootState) => state.booking.formData);
     const isAutoFilled = useAppSelector((state: RootState) => state.booking.isAutoFilled);
-    const router = useRouter();
     const [open, setOpen] = useState(false);
     const [hasCheckedUser, setHasCheckedUser] = useState(false);
 
@@ -61,7 +60,6 @@ const BookingModal = ({ property, children }: BookingModalProps & { property: Pa
         if (error) toast.error(error);
         if (success) {
             toast.success("Booking request submitted successfully! We will contact you within 24 hours.");
-            // router.push("/Properties/UserBookings")
             setOpen(false);
 
             if (property._id) {
