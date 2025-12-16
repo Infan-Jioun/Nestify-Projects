@@ -1,3 +1,4 @@
+// components/BookingForm.tsx (updated interface)
 "use client";
 
 import { motion } from "framer-motion";
@@ -14,7 +15,6 @@ interface BookingFormProps {
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     handleSelectChange: (field: keyof FormDataType, value: string) => void;
     handleSubmit: (e: React.FormEvent) => Promise<void>;
-    
     isLoading: boolean;
     currentUser?: { name?: string | null };
     property: {
@@ -23,7 +23,7 @@ interface BookingFormProps {
         address: string;
         price: number;
         currency: string;
-        email: string;
+        email?: string; // optional করুন
         images?: string[];
         status?: string;
         listingStatus?: string;
@@ -31,7 +31,6 @@ interface BookingFormProps {
     };
     isPropertySold?: boolean;
 }
-
 
 export const BookingForm = ({
     formData,
@@ -41,7 +40,7 @@ export const BookingForm = ({
     isLoading,
     currentUser,
     property,
-    isPropertySold,
+    isPropertySold = false,
 }: BookingFormProps) => {
     const timeSlots = [
         "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
