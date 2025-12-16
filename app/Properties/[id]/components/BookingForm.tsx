@@ -14,6 +14,7 @@ interface BookingFormProps {
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     handleSelectChange: (field: keyof FormDataType, value: string) => void;
     handleSubmit: (e: React.FormEvent) => Promise<void>;
+    
     isLoading: boolean;
     currentUser?: { name?: string | null };
     property: {

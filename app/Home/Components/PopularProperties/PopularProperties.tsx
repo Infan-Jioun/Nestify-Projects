@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { fetchProperties } from "@/app/features/Properties/propertySlice";
 
 export default function PopularProperties() {
-  const tabs = ["House", "Duplex", "Office Space", "Apartment"];
+  const tabs = ["House", "Duplex", "Shop", "Apartment"];
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
 
   const dispatch = useDispatch<AppDispatch>();

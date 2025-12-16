@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             propertyId: body.propertyId,
             name: body.name,
             email: body.email,
-            propertyEmail: body.propertyEmail // Check if propertyEmail is coming
+            propertyEmail: body.propertyEmail 
         });
 
         // Validate required fields

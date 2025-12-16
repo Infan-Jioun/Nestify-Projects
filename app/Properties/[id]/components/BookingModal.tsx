@@ -10,30 +10,33 @@ import { BookingModalProps, FormDataType } from "@/app/Types/Booking";
 import { BookingHeader } from "./BookingHeader";
 import { PropertySummary } from "./PropertySummary";
 import { BookingForm } from "./BookingForm";
-import { submitBooking, resetBookingForm, setBookingFormData, updateBookingFormField } from "../../../features/booking/bookingSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { RootState } from "@/lib/store";
 import { updatePropertyStatusLocal } from "../../../features/Properties/propertySlice";
 import { PropertyType } from "@/app/Types/properties";
 import { useRouter } from "next/navigation";
 
-const BookingModal = ({ property, children }: BookingModalProps & { property: Partial<PropertyType> }) => {
+const BookingModal = ({ property, children }: BookingModalProps) => {
     const { data: session } = useSession();
     const currentUser = session?.user;
     const dispatch = useAppDispatch();
-
-    const { loading, error, success } = useAppSelector((state: RootState) => state.booking);
-    const formData = useAppSelector((state: RootState) => state.booking.formData);
-    const isAutoFilled = useAppSelector((state: RootState) => state.booking.isAutoFilled);
     const [open, setOpen] = useState(false);
     const [hasCheckedUser, setHasCheckedUser] = useState(false);
+    const [formData, setFormData] = useState<FormDataType>({
+        name: "",
+        email: "",
+        mobile: "",
+        date: "",
+        time: "",
+        message: "",
+    });
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
-    const isPropertySold = property.status === "Sold";
-
-    // Auto-fill booking form if user is logged in
+    // Auto-fill form when modal opens and user is logged in
     useEffect(() => {
-        if (open && currentUser && !isPropertySold) {
-            const autoFillData: FormDataType = {
+        if (open && currentUser) {
+            const autoFillData = {
                 name: currentUser.name || "",
                 email: currentUser.email || "",
                 mobile: "",
@@ -41,73 +44,125 @@ const BookingModal = ({ property, children }: BookingModalProps & { property: Pa
                 time: "",
                 message: `Hello, I'm interested in viewing "${property.title}" located at ${property.address}. Please contact me to schedule a visit.`,
             };
-            dispatch(setBookingFormData(autoFillData));
+            setFormData(autoFillData);
         }
-    }, [open, currentUser, property, isPropertySold, dispatch]);
+    }, [open, currentUser, property]);
 
     // Reset form when modal closes
     useEffect(() => {
         if (!open) {
             setHasCheckedUser(false);
             setTimeout(() => {
-                dispatch(resetBookingForm());
+                setFormData({
+                    name: "",
+                    email: "",
+                    mobile: "",
+                    date: "",
+                    time: "",
+                    message: "",
+                });
             }, 300);
         }
-    }, [open, dispatch]);
+    }, [open]);
 
-    // Handle success/error notifications
-    useEffect(() => {
-        if (error) toast.error(error);
-        if (success) {
-            toast.success("Booking request submitted successfully! We will contact you within 24 hours.");
-            setOpen(false);
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
+    const handleSelectChange = (field: keyof FormDataType, value: string) => {
+        setFormData({ ...formData, [field]: value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Check if user is logged in
+        if (!currentUser) {
+            setHasCheckedUser(true);
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("/api/bookings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    // User form data
+                    name: formData.name,
+                    email: formData.email,
+                    mobile: formData.mobile,
+                    date: formData.date,
+                    time: formData.time,
+                    message: formData.message,
+
+                    // Property data
+                    propertyId: property._id,
+                    propertyTitle: property.title,
+                    propertyAddress: property.address,
+                    propertyPrice: property.price,
+                    propertyEmail: property.email || "info@property.com",
+                    propertyCurrency: property.currency,
+                    propertyImages: property.images || [],
+                    propertyStatus: property.status,
+                    propertyListingStatus: property.listingStatus,
+                    propertyContact: property.contactNumber,
+
+                    // User info from session
+                    userId: currentUser.id,
+                    userImage: currentUser.image,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit booking");
+            }
+
+            const result = await response.json();
+            console.log("Booking submitted successfully:", result);
+
+            // Update property status locally to "Sold"
             if (property._id) {
                 dispatch(updatePropertyStatusLocal({
                     propertyId: property._id,
                     status: "Sold"
                 }));
             }
-        }
-    }, [error, success, property._id, dispatch]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        if (isPropertySold) return;
-        dispatch(updateBookingFormField({
-            field: e.target.name as keyof FormDataType,
-            value: e.target.value
-        }));
-    };
+            // Reset form and close modal
+            setFormData({
+                name: "",
+                email: "",
+                mobile: "",
+                date: "",
+                time: "",
+                message: "",
+            });
+            setOpen(false);
 
-    const handleSelectChange = (field: keyof FormDataType, value: string) => {
-        if (isPropertySold) return;
-        dispatch(updateBookingFormField({ field, value }));
-    };
+            // Show success message
+            toast.success("Booking request submitted successfully! We'll contact you within 24 hours.");
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+            // Redirect to user bookings page after a delay
+            setTimeout(() => {
+                router.push("/Properties/UserBookings");
+            }, 1000);
 
-        if (isPropertySold) {
-            toast.error("This property has already been sold. Booking is unavailable.");
-            return;
-        }
-
-        if (!currentUser) {
-            setHasCheckedUser(true);
-            return;
-        }
-
-        if (currentUser.id && currentUser.email) {
-            dispatch(submitBooking({
-                formData,
-                property: property as PropertyType,
-                currentUser: {
-                    id: currentUser.id,
-                    name: currentUser.name,
-                    email: currentUser.email,
-                    image: currentUser.image
-                }
-            }));
+        } catch (error: unknown) {
+            console.error("Booking failed:", error);
+            if (error instanceof Error) {
+                toast.error(error.message || "Failed to submit booking. Please try again or contact us directly.");
+            } else {
+                toast.error("Failed to submit booking. Please try again or contact us directly.");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -121,15 +176,18 @@ const BookingModal = ({ property, children }: BookingModalProps & { property: Pa
         setOpen(false);
     };
 
-    // Show login prompt if user not logged in
+    const isAutoFilled = !!currentUser?.name && !!currentUser?.email && formData.name === currentUser.name;
+
+    // Show login prompt if user is not logged in and has tried to submit
     if (!currentUser && hasCheckedUser) {
         return (
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>{children}</DialogTrigger>
                 <DialogContent className="max-w-lg w-[95vw] max-h-[95vh] overflow-y-auto rounded-2xl p-0 border-0">
+                    {/* Scrollable container for mobile */}
                     <div className="h-full overflow-y-auto">
                         <LoginPrompt
-                            property={property as PropertyType}
+                            property={property}
                             onLoginRedirect={handleLoginRedirect}
                             onClose={handleCloseLoginPrompt}
                         />
@@ -142,27 +200,28 @@ const BookingModal = ({ property, children }: BookingModalProps & { property: Pa
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
+
             <DialogContent className="max-w-lg w-[95vw] max-h-[95vh] overflow-y-auto rounded-2xl p-0 border-0">
+                {/* Scrollable container for mobile */}
                 <div className="h-full overflow-y-auto">
                     <BookingHeader
                         isAutoFilled={isAutoFilled}
                         currentUser={currentUser}
-                        isPropertySold={isPropertySold}
                     />
-                    <PropertySummary
-                        property={property as PropertyType}
-                        isPropertySold={isPropertySold}
-                    />
-                    {currentUser && <UserInfoBadge currentUser={currentUser} />}
+                    <PropertySummary property={property} />
+
+                    {currentUser && (
+                        <UserInfoBadge currentUser={currentUser} />
+                    )}
+
                     <BookingForm
                         formData={formData}
                         handleInputChange={handleInputChange}
                         handleSelectChange={handleSelectChange}
                         handleSubmit={handleSubmit}
-                        isLoading={loading}
+                        isLoading={isLoading}
                         currentUser={currentUser}
-                        property={property as PropertyType}
-                        isPropertySold={isPropertySold}
+                        property={property}
                     />
                 </div>
             </DialogContent>
