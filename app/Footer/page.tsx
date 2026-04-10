@@ -106,12 +106,12 @@ export default function Footer() {
     { name: "Shop", href: "/category/Shop" },
   ];
 
-  const legalLinks = [
-    { name: "Terms of Use", href: "/" },
-    { name: "Privacy Policy", href: "/" },
-    { name: "Cookie Policy", href: "/" },
-    { name: "Disclaimer", href: "/" }
-  ];
+const legalLinks = [
+  { name: "Terms of Use", href: "/legal/terms-of-use" },
+  { name: "Privacy Policy", href: "/legal/privacy-policy" },
+  { name: "Cookie Policy", href: "/legal/cookie-policy" },
+  { name: "Disclaimer", href: "/legal/disclaimer" },
+];
 
   return (
     <footer className="bg-white text-gray-800 border-t">
