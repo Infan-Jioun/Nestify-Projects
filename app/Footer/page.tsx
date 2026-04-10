@@ -263,7 +263,9 @@ export default function Footer() {
         <div className="border-t border-gray-200 pt-8">
           <div className="flex flex-col lg:flex-row justify-between items-center">
             <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12 mb-4 lg:mb-0">
-              <p className="text-gray-500 text-sm">© 2025 Nestify. All rights reserved.</p>
+              <p className="text-gray-500 text-sm">
+                © {new Date().getFullYear()} Nestify. All rights reserved.
+              </p>
               <div className="flex items-center gap-8">
                 {legalLinks.map((link) => (
                   <Link

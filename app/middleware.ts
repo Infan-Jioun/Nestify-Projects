@@ -3,27 +3,6 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { UserRole } from './Types/auth'
 
-const roleRoutes: Record<UserRole, string[]> = {
-    [UserRole.USER]: [
-        "/profile",
-    ],
-    [UserRole.REAL_ESTATE_DEVELOPER]: [
-        "/profile",
-        "/dashboard",
-        "/dashboard/add-properties",
-        "/dashboard/add-blog",
-        // Remove admin-specific routes from real estate developer
-    ],
-    [UserRole.ADMIN]: [
-        "/profile",
-        "/dashboard/admin",
-        "/dashboard/users-information", 
-        "/dashboard/add-city",
-        "/dashboard/add-properties",
-        "/dashboard/add-blog"
-    ]
-}
-
 const publicRoutes = [
     "/",
     "/LoginPage",
@@ -35,34 +14,57 @@ const publicRoutes = [
     "/Bookmark",
 ]
 
+// Route permissions map
+const routePermissions: { path: string; roles: UserRole[] }[] = [
+    { path: '/dashboard/real_estate_developer', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER] },
+    { path: '/dashboard/admin', roles: [UserRole.ADMIN] },
+    { path: '/dashboard/users-information', roles: [UserRole.ADMIN] },
+    { path: '/dashboard/add-city', roles: [UserRole.ADMIN] },
+    { path: '/dashboard/add-properties', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER] },
+    { path: '/dashboard/add-blog', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER] },
+    { path: '/dashboard', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER] },
+    { path: '/profile', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER, UserRole.USER] },
+    { path: '/my-properties', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER] },
+    { path: '/bookings', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER, UserRole.USER] },
+]
+
+// Helper: redirect to login with callbackUrl
+function redirectToLogin(request: NextRequest, pathname: string) {
+    const loginUrl = new URL('/LoginPage', request.url)
+    loginUrl.searchParams.set('callbackUrl', pathname)
+    return NextResponse.redirect(loginUrl)
+}
+
+// Helper: redirect to unauthorized
+function redirectToUnauthorized(request: NextRequest) {
+    return NextResponse.redirect(new URL('/unauthorized', request.url))
+}
+
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
-    // Debug logging
     if (process.env.NODE_ENV === 'development') {
         console.log('=== Middleware Debug ===')
         console.log('Requested path:', pathname)
     }
 
-    // Check public routes first
+    // ─── STEP 1: Public routes — সবার আগে check করো ──────────────────────────
     const isPublicRoute = publicRoutes.some(route =>
         pathname === route || pathname.startsWith(route + '/')
     )
-
     if (isPublicRoute) {
         return NextResponse.next()
     }
 
-    // Check authentication
+    // ─── STEP 2: Token check — লগইন না থাকলে login এ পাঠাও ──────────────────
     const token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
     })
 
     if (!token) {
-        const loginUrl = new URL('/LoginPage', request.url)
-        loginUrl.searchParams.set('callbackUrl', pathname)
-        return NextResponse.redirect(loginUrl)
+        console.log('No token found, redirecting to login with callbackUrl:', pathname)
+        return redirectToLogin(request, pathname)  // ← callback URL সহ login এ
     }
 
     const userRole = token.role as UserRole
@@ -72,74 +74,37 @@ export async function middleware(request: NextRequest) {
         console.log('Token data:', { id: token.id, email: token.email, role: token.role })
     }
 
-    // Special case: /dashboard/admin routes - ONLY ADMIN can access
-    if (pathname.startsWith('/dashboard/admin')) {
-        if (userRole === UserRole.ADMIN) {
-            console.log('Access granted to admin route for ADMIN role')
+    // ─── STEP 3: Role valid কিনা check করো ───────────────────────────────────
+    if (!userRole || !Object.values(UserRole).includes(userRole)) {
+        console.log('Invalid role found:', userRole)
+        return redirectToLogin(request, pathname)
+    }
+
+    // ─── STEP 4: Route permission check ──────────────────────────────────────
+    // সবচেয়ে specific (লম্বা) path আগে match হবে
+    const matchedRoute = routePermissions.find(route =>
+        pathname === route.path ||
+        pathname.startsWith(route.path + '/') ||
+        pathname.startsWith(route.path)
+    )
+
+    if (matchedRoute) {
+        if (matchedRoute.roles.includes(userRole)) {
+            console.log(`Access GRANTED — role: ${userRole}, path: ${pathname}`)
             return NextResponse.next()
         } else {
-            console.log('Access denied to admin route for role:', userRole)
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
+            console.log(`Access DENIED — role: ${userRole}, path: ${pathname}`)
+            return redirectToUnauthorized(request)
         }
     }
 
-    // Special case: /dashboard/users-information - ONLY ADMIN can access
-    if (pathname.startsWith('/dashboard/users-information')) {
-        if (userRole === UserRole.ADMIN) {
-            console.log('Access granted to users-information for ADMIN role')
-            return NextResponse.next()
-        } else {
-            console.log('Access denied to users-information for role:', userRole)
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Special case: /dashboard/add-city - ONLY ADMIN can access
-    if (pathname.startsWith('/dashboard/add-city')) {
-        if (userRole === UserRole.ADMIN) {
-            console.log('Access granted to add-city for ADMIN role')
-            return NextResponse.next()
-        } else {
-            console.log('Access denied to add-city for role:', userRole)
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Special case: /dashboard route access
-    if (pathname === '/dashboard' || pathname === '/dashboard/') {
-        // REAL_ESTATE_DEVELOPER and ADMIN can access /dashboard
-        if (userRole === UserRole.REAL_ESTATE_DEVELOPER || userRole === UserRole.ADMIN) {
-            console.log('Access granted to /dashboard for role:', userRole)
-            return NextResponse.next()
-        } else {
-            console.log('Access denied to /dashboard for role:', userRole)
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Check role-specific routes
-    if (userRole && roleRoutes[userRole]) {
-        const hasAccess = roleRoutes[userRole].some(route =>
-            pathname.startsWith(route)
-        )
-
-        if (hasAccess) {
-            console.log('Access granted for role:', userRole, 'to path:', pathname)
-            return NextResponse.next()
-        } else {
-            console.log('Access denied for role:', userRole, 'to path:', pathname)
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // No valid role found or route not found in allowed routes
-    console.log('No valid role or route not allowed, redirecting to unauthorized')
-    return NextResponse.redirect(new URL('/unauthorized', request.url))
+    // ─── STEP 5: কোনো route match না হলে unauthorized ────────────────────────
+    console.log('No matching route found, redirecting to unauthorized')
+    return redirectToUnauthorized(request)
 }
 
 export const config = {
     matcher: [
-        // Protect all dashboard and admin routes
         '/profile/:path*',
         '/dashboard/:path*',
         '/my-properties/:path*',

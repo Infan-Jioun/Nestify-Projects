@@ -33,20 +33,59 @@ interface CustomSessionUser {
   role: UserRole;
 }
 
+// ─── Route Permission Helpers ──────────────────────────────────────────────────
+
+function isAuthorizedRoute(path: string, role: string): boolean {
+  // callbackUrl যদি "/" বা empty হয় তাহলে default route এ যাবে
+  if (!path || path === '/') return false;
+
+  const roleRoutes: Record<string, string[]> = {
+    [UserRole.USER]: [
+      "/profile",
+      "/bookings",
+    ],
+    [UserRole.REAL_ESTATE_DEVELOPER]: [
+      "/profile",
+      "/dashboard",
+      "/dashboard/real_estate_developer",
+      "/dashboard/add-properties",
+      "/dashboard/add-blog",
+      "/bookings",
+    ],
+    [UserRole.ADMIN]: [
+      "/profile",
+      "/dashboard",
+      "/dashboard/admin",
+      "/dashboard/users-information",
+      "/dashboard/add-city",
+      "/dashboard/add-properties",
+      "/dashboard/add-blog",
+      "/dashboard/real_estate_developer",
+    ]
+  };
+
+  const allowedRoutes = roleRoutes[role] || [];
+  return allowedRoutes.some(route => path === route || path.startsWith(route + '/'));
+}
+
+function getDefaultRoute(role: string): string {
+  const defaultRoutes: Record<string, string> = {
+    [UserRole.USER]: "/",
+    [UserRole.REAL_ESTATE_DEVELOPER]: "/",
+    [UserRole.ADMIN]: "/",
+  };
+
+  return defaultRoutes[role] || "/";
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 export function Login() {
   const dispatch = useDispatch();
-  const buttonLoader = useSelector(
-    (state: RootState) => state.loader.buttonLoader
-  );
-  const skletonLoader = useSelector(
-    (state: RootState) => state.loader.skletonLoader
-  );
-  const googleLoader = useSelector(
-    (state: RootState) => state.loader.googleLoader
-  );
-  const githubLoader = useSelector(
-    (state: RootState) => state.loader.githubLoader
-  );
+  const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
+  const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  const googleLoader = useSelector((state: RootState) => state.loader.googleLoader);
+  const githubLoader = useSelector((state: RootState) => state.loader.githubLoader);
   const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -64,7 +103,7 @@ export function Login() {
 
   const isLoading = loading || skletonLoader;
 
-  // Update the onSubmit function in your Login component
+  // ─── Credentials Login ───────────────────────────────────────────────────────
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     dispatch(setButtonLoader(true));
 
@@ -83,30 +122,21 @@ export function Login() {
         console.log("Session:", session);
 
         if (session?.user) {
-          const user = session.user as CustomSessionUser & { emailVerified?: boolean };
-
-          // Check if email is verified
-          // if (!user.emailVerified) {
-          //   // Store email for verification
-          //   localStorage.setItem("verificationEmail", data.email);
-          //   // Redirect to verification page
-          //   router.push("/verify-email");
-          //   toast.error("Please verify your email before logging in.");
-          //   return;
-          // }
-
+          const user = session.user as CustomSessionUser;
           const userRole = user.role || UserRole.USER;
           const defaultRoute = getDefaultRoute(userRole);
 
+          // callbackUrl টা এই role এর জন্য authorized কিনা check করো
           const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
           const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
+
+          console.log('Role:', userRole, '| callbackUrl:', callbackUrl, '| redirecting to:', redirectUrl);
 
           toast.success("Successfully logged in!");
           router.push(redirectUrl);
           router.refresh();
         }
       } else {
-        // Handle specific error cases
         if (result?.error === 'CredentialsSignin' || result?.error === 'INVALID_CREDENTIALS') {
           toast.error("Invalid email or password");
         } else if (result?.error) {
@@ -123,10 +153,10 @@ export function Login() {
     }
   };
 
+  // ─── Google Login ────────────────────────────────────────────────────────────
   const handelGoogleLogin = async () => {
     dispatch(setGoogleLoader(true));
     try {
-      // First, perform Google sign-in (this will fetch user information)
       const result = await signIn("google", {
         callbackUrl,
         redirect: false
@@ -135,13 +165,11 @@ export function Login() {
       console.log("Google signIn result:", result);
 
       if (result?.error) {
-        // If there's any other error
         toast.error("Google login failed");
         return;
       }
 
       if (result?.ok) {
-        // Get the user email from the session
         const session = await getSession();
         const userEmail = session?.user?.email;
 
@@ -150,20 +178,26 @@ export function Login() {
           return;
         }
 
-        // Check if the user exists in the database
         const checkResponse = await fetch(`/api/check-user?email=${encodeURIComponent(userEmail)}`);
         const checkResult = await checkResponse.json();
 
         if (!checkResult.userExists) {
           toast.error("Account not found. Please register first.");
-          // Sign out to clear the session
           await signOut({ redirect: false });
           return;
         }
 
-        // Everything is fine, redirect the user
+        const user = session.user as CustomSessionUser;
+        const userRole = user.role || UserRole.USER;
+        const defaultRoute = getDefaultRoute(userRole);
+        const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
+        const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
+
+        console.log('Google | Role:', userRole, '| redirecting to:', redirectUrl);
+
         toast.success("Logged in successfully!");
-        router.push(callbackUrl);
+        router.push(redirectUrl);
+        router.refresh();
       }
     } catch (error) {
       console.error('Google login error:', error);
@@ -173,10 +207,10 @@ export function Login() {
     }
   };
 
+  // ─── GitHub Login ────────────────────────────────────────────────────────────
   const handelGithubLogin = async () => {
     dispatch(setGithubLoader(true));
     try {
-      // First, perform GitHub sign-in
       const result = await signIn("github", {
         callbackUrl,
         redirect: false
@@ -190,7 +224,6 @@ export function Login() {
       }
 
       if (result?.ok) {
-        // Get the user email from the session
         const session = await getSession();
         const userEmail = session?.user?.email;
 
@@ -199,20 +232,26 @@ export function Login() {
           return;
         }
 
-        // Check if the user exists in the database
         const checkResponse = await fetch(`/api/check-user?email=${encodeURIComponent(userEmail)}`);
         const checkResult = await checkResponse.json();
 
         if (!checkResult.userExists) {
           toast.error("Account not found. Please register first.");
-          // Sign out to clear the session
           await signOut({ redirect: false });
           return;
         }
 
-        // Everything is fine, redirect the user
+        const user = session.user as CustomSessionUser;
+        const userRole = user.role || UserRole.USER;
+        const defaultRoute = getDefaultRoute(userRole);
+        const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
+        const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
+
+        console.log('GitHub | Role:', userRole, '| redirecting to:', redirectUrl);
+
         toast.success("Logged in successfully!");
-        router.push(callbackUrl);
+        router.push(redirectUrl);
+        router.refresh();
       }
     } catch (error) {
       console.error('GitHub login error:', error);
@@ -222,48 +261,22 @@ export function Login() {
     }
   };
 
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  function isAuthorizedRoute(path: string, role: string): boolean {
-    const roleRoutes: Record<string, string[]> = {
-      user: ["/", "/properties"],
-      real_estate_developer: ["/", "/properties"],
-      admin: ["/", "/admin"]
-    };
-
-    const allowedRoutes = roleRoutes[role] || [];
-    return allowedRoutes.some(route => path.startsWith(route));
-  }
-
-  function getDefaultRoute(role: string): string {
-    const defaultRoutes: Record<string, string> = {
-      user: "/",
-      real_estate_developer: "/",
-      admin: "/"
-    };
-
-    return defaultRoutes[role] || "/";
-  }
-
+  // ─── Skeleton Loader ─────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 overflow-hidden">
         <NextHead title="Login | Nestify" />
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
           <CardHeader className="text-center space-y-2">
-
-            {/* Skeleton for Logo */}
-            <div className="w-[80px] h-9 bg-gray-200 animate-pulse  rounded-full mx-auto"></div>
-            {/* Skeleton for Description */}
-            <div className=" h-2 bg-gray-200 rounded w-80 mx-auto"></div>
-
+            <div className="w-[80px] h-9 bg-gray-200 animate-pulse rounded-full mx-auto"></div>
+            <div className="h-2 bg-gray-200 rounded w-80 mx-auto"></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-1">
-
               <div className="h-4 bg-gray-200 rounded w-16"></div>
               <div className="h-8 bg-gray-200 rounded"></div>
             </div>
@@ -285,6 +298,7 @@ export function Login() {
     );
   }
 
+  // ─── Main UI ─────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-green-100 flex items-center justify-center dark:bg-gray-900 px-4 overflow-hidden">
       <NextHead title="Login | Nestify" />
@@ -377,6 +391,7 @@ export function Login() {
             </p>
           </CardFooter>
         </form>
+
         <div className="px-6 pb-6">
           <Button
             onClick={handelGoogleLogin}
@@ -390,7 +405,7 @@ export function Login() {
                 Continuing with Google...
               </div>
             ) : (
-              <p className="flex items-center justify-center gap-3">  <FcGoogle />  Continue with Google</p>
+              <p className="flex items-center justify-center gap-3"><FcGoogle /> Continue with Google</p>
             )}
           </Button>
           <Button
@@ -405,7 +420,7 @@ export function Login() {
                 Continuing with GitHub...
               </div>
             ) : (
-              <p className="flex items-center justify-center gap-3"> <FaGithub /> Continue with GitHub</p>
+              <p className="flex items-center justify-center gap-3"><FaGithub /> Continue with GitHub</p>
             )}
           </Button>
         </div>
