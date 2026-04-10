@@ -1,4 +1,5 @@
 "use client"
+import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 
@@ -12,7 +13,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .replace(/\b\w/g, (char) => char.toUpperCase())
     return (
         <SidebarProvider>
-            {/* <AppSidebar /> */}
+            <AppSidebar />
             <SidebarInset>
                 {/* Dashboard Header */}
                 {/* <header className=" h-16 shrink-0 items-center gap-2 px-4 border-b">

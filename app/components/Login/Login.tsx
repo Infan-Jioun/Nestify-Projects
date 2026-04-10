@@ -76,11 +76,11 @@ export function Login() {
         callbackUrl,
       });
 
-      console.log("SignIn result:", result); // Debug log
+      console.log("SignIn result:", result);
 
       if (result?.ok) {
         const session = await getSession();
-        console.log("Session:", session); // Debug log
+        console.log("Session:", session);
 
         if (session?.user) {
           const user = session.user as CustomSessionUser & { emailVerified?: boolean };
@@ -230,8 +230,8 @@ export function Login() {
   function isAuthorizedRoute(path: string, role: string): boolean {
     const roleRoutes: Record<string, string[]> = {
       user: ["/", "/properties"],
-      real_estate_developer: ["/dashboard", "/dashboard/properties"],
-      admin: ["/dashboard", "/admin"]
+      real_estate_developer: ["/", "/properties"],
+      admin: ["/", "/admin"]
     };
 
     const allowedRoutes = roleRoutes[role] || [];

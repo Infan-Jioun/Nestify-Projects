@@ -67,10 +67,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER],
         items: [
           {
-            title: "Developers",
-            url: `/dashboard/developer/${userId}`,
-          },
-          {
             title: "Add Property",
             url: "/dashboard/add-property",
           },

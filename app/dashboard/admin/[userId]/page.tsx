@@ -201,7 +201,7 @@ export default function AdminPage() {
                             Required Role: <span className="font-medium">ADMIN</span>
                         </p>
                         <Link
-                            href="/dashboard"
+                            href={`/dashboard/${session?.user.role}/${session?.user?.id}`}
                             className="inline-block px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                         >
                             Go to User Dashboard

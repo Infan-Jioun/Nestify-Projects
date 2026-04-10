@@ -34,7 +34,7 @@ const iconVariants = {
     },
 }
 
-// Color constant
+
 
 const green = '#22c52e';
 
