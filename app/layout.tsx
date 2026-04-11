@@ -10,6 +10,7 @@ import NavbarPage from "./NavbarPage/page";
 import DisplayLoader from "./DisplayLoader/page";
 import Providers from "./Providers/providers";
 import TanstackProvider from "./Providers/tanstack-provider";
+import CookieConsent from "./components/CookieConsent/CookieConsent";
 
 
 const poppins = Poppins({
@@ -43,6 +44,7 @@ export default async function RootLayout({
               <DisplayLoader>
 
                 {children}
+                <CookieConsent />
                 <Analytics />
                 <SpeedInsights />
               </DisplayLoader>

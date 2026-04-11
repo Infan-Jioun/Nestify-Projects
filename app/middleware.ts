@@ -14,7 +14,6 @@ const publicRoutes = [
     "/Bookmark",
 ]
 
-// Route permissions map
 const routePermissions: { path: string; roles: UserRole[] }[] = [
     { path: '/dashboard/real_estate_developer', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER] },
     { path: '/dashboard/admin', roles: [UserRole.ADMIN] },
@@ -28,14 +27,21 @@ const routePermissions: { path: string; roles: UserRole[] }[] = [
     { path: '/bookings', roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER, UserRole.USER] },
 ]
 
-// Helper: redirect to login with callbackUrl
-function redirectToLogin(request: NextRequest, pathname: string) {
+function redirectToLogin(request: NextRequest, pathname: string, expired = false) {
     const loginUrl = new URL('/LoginPage', request.url)
     loginUrl.searchParams.set('callbackUrl', pathname)
-    return NextResponse.redirect(loginUrl)
+    if (expired) {
+        loginUrl.searchParams.set('expired', 'true') 
+    }
+    const response = NextResponse.redirect(loginUrl)
+    if (expired) {
+        response.cookies.delete('next-auth.session-token')
+        response.cookies.delete('next-auth.callback-url')
+        response.cookies.delete('next-auth.csrf-token')
+    }
+    return response
 }
 
-// Helper: redirect to unauthorized
 function redirectToUnauthorized(request: NextRequest) {
     return NextResponse.redirect(new URL('/unauthorized', request.url))
 }
@@ -48,7 +54,6 @@ export async function middleware(request: NextRequest) {
         console.log('Requested path:', pathname)
     }
 
-    // ─── STEP 1: Public routes — সবার আগে check করো ──────────────────────────
     const isPublicRoute = publicRoutes.some(route =>
         pathname === route || pathname.startsWith(route + '/')
     )
@@ -56,15 +61,21 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next()
     }
 
-    // ─── STEP 2: Token check — লগইন না থাকলে login এ পাঠাও ──────────────────
     const token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
     })
 
     if (!token) {
-        console.log('No token found, redirecting to login with callbackUrl:', pathname)
-        return redirectToLogin(request, pathname)  // ← callback URL সহ login এ
+        console.log('No token found, redirecting to login')
+        return redirectToLogin(request, pathname)
+    }
+
+
+    const now = Math.floor(Date.now() / 1000)
+    if (token.exp && (token.exp as number) < now) {
+        console.log('Token expired, clearing cookie and redirecting to login')
+        return redirectToLogin(request, pathname, true) 
     }
 
     const userRole = token.role as UserRole
@@ -72,16 +83,15 @@ export async function middleware(request: NextRequest) {
     if (process.env.NODE_ENV === 'development') {
         console.log('User Role from token:', userRole)
         console.log('Token data:', { id: token.id, email: token.email, role: token.role })
+        console.log('Token expires at:', new Date((token.exp as number) * 1000).toLocaleTimeString())
     }
 
-    // ─── STEP 3: Role valid কিনা check করো ───────────────────────────────────
+
     if (!userRole || !Object.values(UserRole).includes(userRole)) {
         console.log('Invalid role found:', userRole)
         return redirectToLogin(request, pathname)
     }
 
-    // ─── STEP 4: Route permission check ──────────────────────────────────────
-    // সবচেয়ে specific (লম্বা) path আগে match হবে
     const matchedRoute = routePermissions.find(route =>
         pathname === route.path ||
         pathname.startsWith(route.path + '/') ||
@@ -97,8 +107,6 @@ export async function middleware(request: NextRequest) {
             return redirectToUnauthorized(request)
         }
     }
-
-    // ─── STEP 5: কোনো route match না হলে unauthorized ────────────────────────
     console.log('No matching route found, redirecting to unauthorized')
     return redirectToUnauthorized(request)
 }

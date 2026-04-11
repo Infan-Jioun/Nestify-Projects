@@ -23,7 +23,45 @@ interface ExtendedUser {
 }
 
 export const authOptions: NextAuthOptions = {
-    session: { strategy: "jwt" },
+    session: {
+        strategy: "jwt",
+        maxAge: 30 * 60
+
+    },
+
+
+    // ✅ Custom cookie configuration
+    cookies: {
+        sessionToken: {
+            name: "next-auth.session-token",
+            options: {
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
+                secure: process.env.NODE_ENV === "production",
+                maxAge: 30 * 60,
+            },
+        },
+        callbackUrl: {
+            name: "next-auth.callback-url",
+            options: {
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
+                secure: process.env.NODE_ENV === "production",
+            },
+        },
+        csrfToken: {
+            name: "next-auth.csrf-token",
+            options: {
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
+                secure: process.env.NODE_ENV === "production",
+            },
+        },
+    },
+
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -49,7 +87,6 @@ export const authOptions: NextAuthOptions = {
                         throw new Error("INVALID_CREDENTIALS");
                     }
 
-                    // ✅ emailVerified check - verified না হলেও login হবে কিন্তু flag দিয়ে
                     return {
                         id: (userDoc._id as Types.ObjectId).toString(),
                         name: userDoc.name,
@@ -64,7 +101,7 @@ export const authOptions: NextAuthOptions = {
                         provider: userDoc.provider || "credentials",
                         createdAt: userDoc.createdAt?.toISOString?.() || undefined,
                         emailVerified: userDoc.emailVerified || false,
-                        needsVerification: !userDoc.emailVerified, // ✅ এই flag দিয়ে client redirect করবে
+                        needsVerification: !userDoc.emailVerified,
                     };
                 } catch (error) {
                     if (error instanceof Error) throw error;
@@ -106,7 +143,6 @@ export const authOptions: NextAuthOptions = {
                     provider: account.provider,
                     providerAccountId: account.providerAccountId || extendedProfile?.id?.toString() || null,
                     role: existingUser?.role || UserRole.USER,
-                    // ✅ OAuth user রা auto-verified
                     emailVerified: true,
                 };
 
@@ -119,7 +155,6 @@ export const authOptions: NextAuthOptions = {
                     if (!existingUser.image && userData.image) updates.image = userData.image;
                     if (existingUser.name !== userData.name) updates.name = userData.name;
                     if (!existingUser.role) updates.role = userData.role;
-                    // ✅ OAuth এ সবসময় emailVerified true
                     updates.emailVerified = true;
 
                     if (Object.keys(updates).length > 0) {
@@ -136,15 +171,14 @@ export const authOptions: NextAuthOptions = {
 
         async jwt({ token, user, account, trigger }) {
             try {
-                // ✅ নতুন login এ user data token এ সেট করো
                 if (user) {
                     token.id = user.id;
                     token.role = (user as ExtendedUser).role || UserRole.USER;
                     token.emailVerified = (user as ExtendedUser).emailVerified || false;
                     token.needsVerification = (user as ExtendedUser).needsVerification || false;
+                    token.exp = Math.floor(Date.now() / 1000) + 30 * 60;
                 }
 
-                // ✅ Trigger update এ DB থেকে fresh data নাও
                 if (trigger === "update") {
                     await connectToDatabase();
                     const dbUser = await UserModel.findOne({ email: token.email });
@@ -155,7 +189,6 @@ export const authOptions: NextAuthOptions = {
                     }
                 }
 
-                // ✅ OAuth provider এ role sync (শুধু প্রথম login এ account থাকে)
                 if (account?.provider === "google" || account?.provider === "github") {
                     if (token.email) {
                         await connectToDatabase();

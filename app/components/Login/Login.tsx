@@ -76,6 +76,7 @@ export function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const isExpired = searchParams.get("expired") === "true"; // ✅ সঠিক জায়গায়
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
@@ -87,7 +88,6 @@ export function Login() {
   }, [dispatch]);
 
   const isLoading = loading || skletonLoader;
-
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     dispatch(setButtonLoader(true));
@@ -173,7 +173,6 @@ export function Login() {
         const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
         const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
 
-        // ✅ Google user রা সবসময় verified - সরাসরি home
         toast.success("Logged in successfully!");
         router.push(redirectUrl);
         router.refresh();
@@ -221,7 +220,6 @@ export function Login() {
         const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
         const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
 
-        // ✅ GitHub user রা সবসময় verified - সরাসরি home
         toast.success("Logged in successfully!");
         router.push(redirectUrl);
         router.refresh();
@@ -281,6 +279,16 @@ export function Login() {
           <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
             Login to Nestify – Access Your Dashboard Securely
           </CardDescription>
+
+          {/* ✅ Session expired message */}
+          {isExpired && (
+            <div className="flex items-center gap-2 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-md px-3 py-2 mt-2">
+              <span className="text-red-500 text-lg">⚠️</span>
+              <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                Your session has expired. Please log in again.
+              </p>
+            </div>
+          )}
         </CardHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>

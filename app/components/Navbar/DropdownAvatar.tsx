@@ -64,8 +64,8 @@ export function DropdownAvatar() {
             <Image
               src={profileImage}
               alt="Profile"
-              width={40}
-              height={40}
+              width={100}
+              height={100}
               className="rounded-full border-2"
             />
           </AvatarFallback>

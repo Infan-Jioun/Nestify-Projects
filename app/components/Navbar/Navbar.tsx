@@ -21,7 +21,6 @@ export function Navbar() {
   const userRole = session?.user?.role as UserRole
   const userId = session?.user?.id;
   const [scrolled, setScrolled] = useState(false);
-
   const navlinks = [
     { name: "Home", href: "/" },
     { name: "Properties", href: "/Properties" },
