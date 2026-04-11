@@ -182,14 +182,14 @@ export const authOptions: NextAuthOptions = {
                     }
                 }
 
-                if (token.email) {
-                    await connectToDatabase();
-                    const dbUser = await UserModel.findOne({ email: token.email })
-                    if (dbUser) {
-                        token.role = dbUser.role ?? token.role ?? UserRole.USER;
-                        token.emailVerified = dbUser.emailVerified ?? token.emailVerified ?? false;
-                    }
-                }
+                // if (token.email) {
+                //     await connectToDatabase();
+                //     const dbUser = await UserModel.findOne({ email: token.email })
+                //     if (dbUser) {
+                //         token.role = dbUser.role ?? token.role ?? UserRole.USER;
+                //         token.emailVerified = dbUser.emailVerified ?? token.emailVerified ?? false;
+                //     }
+                // }
 
                 return token;
             } catch (error) {

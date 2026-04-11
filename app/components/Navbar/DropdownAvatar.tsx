@@ -1,61 +1,55 @@
 "use client"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuGroup,
+  DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { signOut, useSession } from "next-auth/react"
-import { BookOpenIcon, LogOutIcon, Save } from "lucide-react";
-import Image from "next/image";
+import { BookOpenIcon, LogOutIcon, Save } from "lucide-react"
+import Image from "next/image"
 import profileImage from './../../../public/image/businessman-character-avatar-isolated.png'
-import Link from "next/link";
-import { CgProfile } from "react-icons/cg";
-import { AppDispatch, RootState } from "@/lib/store";
-import { useEffect, useState } from "react";
-import { setCurrentUser } from "@/app/features/user/userAuthSlice";
-import { useDispatch, useSelector } from "react-redux"
+import Link from "next/link"
+import { CgProfile } from "react-icons/cg"
+import { useEffect, useState } from "react"
 
 type DisplayUser = {
-  _id?: string;
-  name?: string;
-  email?: string;
-  image?: string | null;
-  slug?: string | null;
-};
+  _id?: string
+  name?: string
+  email?: string
+  image?: string | null
+  slug?: string | null
+}
 
 export function DropdownAvatar() {
-  const users = useSelector((state: RootState) => state?.user?.users || []);
-  const currentUser = useSelector((state: RootState) => state?.user?.currentUser);
-  const { data: session } = useSession();
-  const dispatch = useDispatch<AppDispatch>();
-  const [fetchedUser, setFetchedUser] = useState<DisplayUser | null>(null);
 
-  useEffect(() => {
-    if (users.length > 0 && !currentUser) {
-      dispatch(setCurrentUser(users[0]));
-    }
-  }, [users, currentUser, dispatch]);
+  const { data: session } = useSession()
+  const [fetchedUser, setFetchedUser] = useState<DisplayUser | null>(null)
 
   useEffect(() => {
     async function fetchUser() {
       if (session?.user?.email) {
         try {
-          const res = await fetch(`/api/users/${session.user.email}`);
-          if (!res.ok) throw new Error("User not found");
-          const data = await res.json();
-          setFetchedUser(data);
+          const res = await fetch(`/api/users/${session.user.email}`)
+          if (!res.ok) throw new Error("User not found")
+          const data = await res.json()
+          setFetchedUser(data)
         } catch (err) {
-          console.error("Error fetching user:", err);
+          console.error("Error fetching user:", err)
         }
       }
     }
-    fetchUser();
-  }, [session?.user?.id]);
+    fetchUser()
+  }, [session?.user?.email])
 
-  const displayUser: DisplayUser = currentUser || fetchedUser || {
-    _id: session?.user?.id,
-    name: session?.user?.name,
-    email: session?.user?.email,
-    image: session?.user?.image,
-    slug: null
-  };
+
+  const displayUser: DisplayUser = {
+    _id: fetchedUser?._id || session?.user?.id,
+    name: fetchedUser?.name || session?.user?.name,
+    email: fetchedUser?.email || session?.user?.email,
+    image: fetchedUser?.image || session?.user?.image,
+    slug: fetchedUser?.slug || null,
+  }
 
   return (
     <DropdownMenu>
@@ -90,33 +84,31 @@ export function DropdownAvatar() {
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link
-              href={displayUser?.slug ? `/profile/${displayUser.slug}` : `/profile/${displayUser._id}`}
+              href={displayUser?.slug
+                ? `/profile/${displayUser.slug}`
+                : `/profile/${displayUser._id}`}
               className="flex items-center w-full"
             >
-              <CgProfile size={16} className="opacity-60 mr-2" aria-hidden="true" />
+              <CgProfile size={16} className="opacity-60 mr-2" />
               Profile
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/Bookmark" className="flex items-center w-full">
-              <BookOpenIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+              <BookOpenIcon size={16} className="opacity-60 mr-2" />
               <span>Bookmark</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild className="flex lg:hidden">
-            <Link href="/Properties/UserBookings" className="flex items-center w-full ">
-              <Save size={16} className="opacity-60 mr-2" aria-hidden="true" />
+            <Link href="/Properties/UserBookings" className="flex items-center w-full">
+              <Save size={16} className="opacity-60 mr-2" />
               <span>My Bookings</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => signOut()}
-          className="cursor-pointer"
-        >
-          <LogOutIcon size={16} className="opacity-60 mr-2" aria-hidden="true" />
+        <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
+          <LogOutIcon size={16} className="opacity-60 mr-2" />
           <span>Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

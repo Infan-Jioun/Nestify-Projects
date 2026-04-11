@@ -36,7 +36,6 @@ interface CustomSessionUser {
 // ─── Route Permission Helpers ──────────────────────────────────────────────────
 
 function isAuthorizedRoute(path: string, role: string): boolean {
-  // callbackUrl যদি "/" বা empty হয় তাহলে default route এ যাবে
   if (!path || path === '/') return false;
 
   const roleRoutes: Record<string, string[]> = {
