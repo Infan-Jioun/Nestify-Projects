@@ -118,7 +118,7 @@ export default function PropertyDetailsPage() {
 
             <FeaturesGrid features={featureIcons} />
 
-            <PropertyDetailsGrid
+        <PropertyDetailsGrid
                 property={property}
                 propertyDetails={propertyDetails}
                 categoryType={categoryType}

@@ -23,7 +23,7 @@ interface BookingFormProps {
         address: string;
         price: number;
         currency: string;
-        email?: string; // optional করুন
+        email?: string; 
         images?: string[];
         status?: string;
         listingStatus?: string;

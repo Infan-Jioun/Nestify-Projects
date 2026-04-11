@@ -32,95 +32,65 @@ export async function PUT(
     context: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = await context.params
+        const { id } = await context.params;
+        await connectToDatabase();
 
-        if (!id) {
-            return NextResponse.json(
-                { error: 'Property ID is required' },
-                { status: 400 }
-            )
-        }
-
-        await connectToDatabase()
-
-        // Check if property exists
-        const existingProperty = await Property.findById(id)
+        const existingProperty = await Property.findById(id);
         if (!existingProperty) {
-            return NextResponse.json(
-                { error: 'Property not found' },
-                { status: 404 }
-            )
+            return NextResponse.json({ error: 'Property not found' }, { status: 404 });
         }
 
-        const body = await req.json()
+        const body = await req.json();
 
-        // Validate required fields
+        if (Object.keys(body).length === 1 && body.status) {
+            const validStatuses = ['Available', 'Rented', 'Sold', 'Pending'];
+            if (!validStatuses.includes(body.status)) {
+                return NextResponse.json({ error: 'Invalid status value' }, { status: 400 });
+            }
+
+            const updatedProperty = await Property.findByIdAndUpdate(
+                id,
+                { status: body.status },
+                { new: true }
+            );
+
+            return NextResponse.json({
+                success: true,
+                message: 'Property status updated successfully',
+                property: updatedProperty
+            });
+        }
         const requiredFields = [
-            'title',
-            'category',
-            'price',
-            'currency',
-            'propertySize',
-            'contactNumber',
-            'address',
-            'geoCountryLocation',
-            'email',
-            'status'
-        ]
+            'title', 'category', 'price', 'currency',
+            'propertySize', 'contactNumber', 'address',
+            'geoCountryLocation', 'email', 'status'
+        ];
 
         for (const field of requiredFields) {
             if (!body[field]) {
-                return NextResponse.json(
-                    { error: `${field} is required` },
-                    { status: 400 }
-                )
+                return NextResponse.json({ error: `${field} is required` }, { status: 400 });
             }
         }
 
-        // Validate category
         if (!body.category || !body.category.name) {
-            return NextResponse.json(
-                { error: 'Category is required' },
-                { status: 400 }
-            )
+            return NextResponse.json({ error: 'Category is required' }, { status: 400 });
         }
 
-        // Validate status
-        const validStatuses = ['Available', 'Rented', 'Sold', 'Pending']
-        if (!validStatuses.includes(body.status)) {
-            return NextResponse.json(
-                { error: 'Invalid status value' },
-                { status: 400 }
-            )
-        }
-
-        // Update the property
         const updatedProperty = await Property.findByIdAndUpdate(
             id,
             body,
             { new: true, runValidators: true }
-        )
+        );
 
         return NextResponse.json({
             success: true,
             message: 'Property updated successfully',
             property: updatedProperty
-        })
+        });
 
     } catch (error) {
-        console.error('Error updating property:', error)
-
-        if (error instanceof Error && error.name === 'ValidationError') {
-            return NextResponse.json(
-                { error: 'Validation error', details: error.message },
-                { status: 400 }
-            )
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to update property' },
-            { status: 500 }
-        )
+        console.error('Error updating property:', error);
+        return NextResponse.json({ error: 'Failed to update property' }, { status: 500 });
     }
 }
 // DELETE - Delete property by ID

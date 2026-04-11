@@ -78,7 +78,6 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Check if user is logged in
         if (!currentUser) {
             setHasCheckedUser(true);
             return;
@@ -87,21 +86,17 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
         setIsLoading(true);
 
         try {
+            // Step 1: Booking submit করো
             const response = await fetch("/api/bookings", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    // User form data
                     name: formData.name,
                     email: formData.email,
                     mobile: formData.mobile,
                     date: formData.date,
                     time: formData.time,
                     message: formData.message,
-
-                    // Property data
                     propertyId: property._id,
                     propertyTitle: property.title,
                     propertyAddress: property.address,
@@ -112,8 +107,6 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
                     propertyStatus: property.status,
                     propertyListingStatus: property.listingStatus,
                     propertyContact: property.contactNumber,
-
-                    // User info from session
                     userId: currentUser.id,
                     userImage: currentUser.image,
                 }),
@@ -126,12 +119,19 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
 
             const result = await response.json();
             console.log("Booking submitted successfully:", result);
-
-            // Update property status locally to "Sold"
             if (property._id) {
+                const statusResponse = await fetch(`/api/properties/${property._id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status: "Pending" }), // শুধু status পাঠাও
+                });
+
+                const statusResult = await statusResponse.json();
+                console.log("Property status update:", statusResult);
+
                 dispatch(updatePropertyStatusLocal({
                     propertyId: property._id,
-                    status: "Sold"
+                    status: "Pending",
                 }));
             }
 
@@ -146,10 +146,8 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
             });
             setOpen(false);
 
-            // Show success message
             toast.success("Booking request submitted successfully! We'll contact you within 24 hours.");
 
-            // Redirect to user bookings page after a delay
             setTimeout(() => {
                 router.push("/Properties/UserBookings");
             }, 1000);
@@ -165,7 +163,6 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
             setIsLoading(false);
         }
     };
-
     const handleLoginRedirect = () => {
         window.location.href = "/LoginPage?redirect=" + encodeURIComponent(window.location.pathname);
         setOpen(false);
@@ -184,7 +181,6 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>{children}</DialogTrigger>
                 <DialogContent className="max-w-lg w-[95vw] max-h-[95vh] overflow-y-auto rounded-2xl p-0 border-0">
-                    {/* Scrollable container for mobile */}
                     <div className="h-full overflow-y-auto">
                         <LoginPrompt
                             property={property}
@@ -202,7 +198,6 @@ const BookingModal = ({ property, children }: BookingModalProps) => {
             <DialogTrigger asChild>{children}</DialogTrigger>
 
             <DialogContent className="max-w-lg w-[95vw] max-h-[95vh] overflow-y-auto rounded-2xl p-0 border-0">
-                {/* Scrollable container for mobile */}
                 <div className="h-full overflow-y-auto">
                     <BookingHeader
                         isAutoFilled={isAutoFilled}

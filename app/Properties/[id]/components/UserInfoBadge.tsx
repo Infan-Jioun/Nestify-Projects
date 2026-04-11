@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface Props {
   currentUser?: { name?: string | null; email?: string | null; image?: string | null };
 }
@@ -19,9 +21,10 @@ const UserInfoBadge = ({ currentUser }: Props) => {
     <div className="px-4 sm:px-6 pb-4">
       <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg border border-green-200">
         {currentUser.image ? (
-          <img
+          <Image
             src={currentUser.image}
             alt={currentUser.name || "User"}
+            width={100} height={100}
             className="w-8 h-8 rounded-full flex-shrink-0"
           />
         ) : (
