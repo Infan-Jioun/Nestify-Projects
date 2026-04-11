@@ -113,7 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       roles: [UserRole.ADMIN, UserRole.REAL_ESTATE_DEVELOPER],
       items: [
         { title: "Add Property", url: "/dashboard/add-property" },
-        { title: "MyProperties", url: "/dashboard/MyProperties" },
+        { title: "MyProperties", url: "/dashboard/real_estate_developer/MyProperties" },
       ],
     },
     {
