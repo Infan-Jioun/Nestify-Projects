@@ -16,7 +16,7 @@ export default function LeftSidebar({ navlinks }: Props) {
                 <SheetTrigger>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 lg:h-10 w-7 lg:w-10 text-black"
+                        className="h-8 lg:h-10 w-7 mt-1 lg:w-10 text-black"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"

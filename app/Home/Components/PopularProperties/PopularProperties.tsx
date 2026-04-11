@@ -71,7 +71,7 @@ export default function PopularProperties() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-2 py-2 rounded-md border ${activeTab === tab
-                ? "bg-black text-white"
+                ? "bg-green-500 text-white"
                 : "bg-white text-black hover:bg-gray-100"
                 }`}
             >
