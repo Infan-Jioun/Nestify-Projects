@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
     },
 
 
-    // ✅ Custom cookie configuration
+
     cookies: {
         sessionToken: {
             name: "next-auth.session-token",

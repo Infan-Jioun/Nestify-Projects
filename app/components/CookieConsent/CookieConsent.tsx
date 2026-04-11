@@ -53,7 +53,7 @@ export default function CookieConsent() {
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex w-full sm:w-auto justify-center sm:justify-end items-center gap-2 shrink-0">
                     <Button variant="outline" size="sm" onClick={handleDecline}
                         className="text-xs border-gray-300 dark:border-gray-700">
                         Decline
