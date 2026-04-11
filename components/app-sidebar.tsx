@@ -69,7 +69,7 @@ function SidebarInner({ status, teams, filterNav, user, role }: SidebarInnerProp
             <Link href={"/"}><Home className="text-white" /></Link>
           </div>
           {role && (
-            <span className="ml-auto text-[10px] rounded-full border border-green-800 bg-green-950 px-2 py-0.5 text-green-400">
+            <span className=" text-[10px] rounded-full border border-green-800 bg-green-950 px-2 py-0.5 text-green-400">
               {role}
             </span>
           )}
@@ -176,11 +176,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="p-0 w-64 bg-zinc-950 border-zinc-800"
+            className="p-0 w-64"
           >
             <Sidebar
               collapsible="none"
-              className="h-full border-none bg-zinc-950"
+              className="h-full border-none "
             >
               <SidebarInner {...innerProps} />
             </Sidebar>

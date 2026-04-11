@@ -7,6 +7,7 @@ import { UserRole } from "@/app/Types/auth";
 interface ProfileHeaderProps {
     currentUser: User;
     isEditing: boolean;
+    isOwnProfile: boolean;
     editForm: {
         name: string;
         bio: string;
@@ -34,6 +35,7 @@ export function getRoleLabel(role?: UserRole | string): string {
 export default function ProfileHeader({
     currentUser,
     isEditing,
+    isOwnProfile,
     editForm,
     imagePreview,
     imageUploading,
@@ -49,27 +51,17 @@ export default function ProfileHeader({
 
     const displayImage = imagePreview || currentUser.image || "/image/businessman-character-avatar-isolated.png";
 
-    // Properly typed variants
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            transition: {
-                duration: 0.6,
-                staggerChildren: 0.1
-            }
-        }
+            transition: { duration: 0.6, staggerChildren: 0.1 },
+        },
     };
 
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.5
-            }
-        }
+        visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
     };
 
     const imageVariants = {
@@ -77,30 +69,19 @@ export default function ProfileHeader({
         visible: {
             scale: 1,
             opacity: 1,
-            transition: {
-                type: "spring" as const,
-                stiffness: 100,
-                damping: 15
-            }
+            transition: { type: "spring" as const, stiffness: 100, damping: 15 },
         },
         hover: {
             scale: 1.05,
-            transition: {
-                type: "spring" as const,
-                stiffness: 400,
-                damping: 10
-            }
-        }
+            transition: { type: "spring" as const, stiffness: 400, damping: 10 },
+        },
     };
 
     const statusIndicatorVariants = {
         animate: {
             scale: [1, 1.2, 1],
-            transition: {
-                duration: 2,
-                repeat: Infinity
-            }
-        }
+            transition: { duration: 2, repeat: Infinity },
+        },
     };
 
     return (
@@ -112,16 +93,16 @@ export default function ProfileHeader({
         >
             {/* Animated Background Elements */}
             <div className="absolute top-10 left-10 w-40 h-40 bg-green-200/40 rounded-full blur-3xl animate-float"></div>
-            <div className="absolute bottom-10 right-10 w-52 h-52 bg-emerald-200/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute bottom-10 right-10 w-52 h-52 bg-emerald-200/30 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }}></div>
             <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-teal-200/20 rounded-full blur-3xl animate-pulse"></div>
 
-            {/* Header Content */}
             <div className="relative z-10 max-w-6xl mx-auto">
-                {/* Role and Edit Button */}
+                {/* Role Badge + Edit Button Row */}
                 <motion.div
                     className="flex flex-col sm:flex-row justify-between items-center mb-8 lg:mb-12 gap-4"
                     variants={itemVariants}
                 >
+                    {/* Role Badge */}
                     <motion.span
                         className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm border ${currentUser.role === "admin"
                             ? "bg-amber-100 text-amber-800 border-amber-200"
@@ -134,38 +115,27 @@ export default function ProfileHeader({
                         Role: {getRoleLabel(currentUser.role)}
                     </motion.span>
 
-                    <motion.button
-                        onClick={onEnterEditMode}
-                        disabled={isEditing}
-                        className="inline-flex items-center px-6 py-3 bg-white/80 hover:bg-white text-green-500 rounded-2xl text-sm font-medium transition-all duration-300 backdrop-blur-sm border border-green-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                    >
-                        <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                    {/* ✅ Edit Button শুধু নিজের profile এ দেখাবে */}
+                    {isOwnProfile && (
+                        <motion.button
+                            onClick={onEnterEditMode}
+                            disabled={isEditing}
+                            className="inline-flex items-center px-6 py-3 bg-white/80 hover:bg-white text-green-500 rounded-2xl text-sm font-medium transition-all duration-300 backdrop-blur-sm border border-green-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                            />
-                        </svg>
-                        Edit Profile
-                    </motion.button>
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Edit Profile
+                        </motion.button>
+                    )}
                 </motion.div>
 
                 {/* Profile Image and Info */}
                 <div className="flex flex-col items-center">
                     {/* Profile Image */}
-                    <motion.div
-                        className="relative mb-8"
-                        variants={imageVariants}
-                        whileHover="hover"
-                    >
+                    <motion.div className="relative mb-8" variants={imageVariants} whileHover="hover">
                         <motion.div className="relative">
                             <motion.img
                                 src={displayImage}
@@ -175,48 +145,31 @@ export default function ProfileHeader({
                                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                             />
 
+                            {/* ✅ Image upload overlay শুধু নিজের profile + editing mode এ */}
                             <AnimatePresence>
-                                {isEditing && (
+                                {isEditing && isOwnProfile && (
                                     <motion.div
                                         className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full backdrop-blur-sm"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
                                     >
-                                        <div className="flex gap-3">
-                                            <motion.button
-                                                onClick={triggerFileInput}
-                                                disabled={imageUploading}
-                                                className="p-3 bg-white/90 rounded-full hover:bg-white transition-all duration-200 disabled:opacity-50 shadow-lg"
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.9 }}
-                                            >
-                                                {imageUploading ? (
-                                                    <div className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-                                                ) : (
-                                                    <svg
-                                                        className="w-6 h-6 text-green-500"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth={2}
-                                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                                                        />
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth={2}
-                                                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                                                        />
-                                                    </svg>
-                                                )}
-                                            </motion.button>
-
-                                        </div>
+                                        <motion.button
+                                            onClick={triggerFileInput}
+                                            disabled={imageUploading}
+                                            className="p-3 bg-white/90 rounded-full hover:bg-white transition-all duration-200 disabled:opacity-50 shadow-lg"
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                        >
+                                            {imageUploading ? (
+                                                <div className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                                            ) : (
+                                                <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                            )}
+                                        </motion.button>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -230,18 +183,22 @@ export default function ProfileHeader({
                         />
                     </motion.div>
 
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={onImageSelect}
-                        accept="image/*"
-                        className="hidden"
-                    />
+                    {/* ✅ File input শুধু নিজের profile এ */}
+                    {isOwnProfile && (
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={onImageSelect}
+                            accept="image/*"
+                            className="hidden"
+                        />
+                    )}
 
                     {/* Name */}
                     <motion.div className="mb-4" variants={itemVariants}>
                         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-green-800 mb-3">
-                            {isEditing ? (
+                            {/* ✅ Name input শুধু নিজের profile + editing mode এ */}
+                            {isEditing && isOwnProfile ? (
                                 <motion.input
                                     type="text"
                                     value={editForm.name}
@@ -251,10 +208,7 @@ export default function ProfileHeader({
                                     whileFocus={{ scale: 1.02 }}
                                 />
                             ) : (
-                                <motion.span
-                                    className="inline-block"
-                                    whileHover={{ scale: 1.05 }}
-                                >
+                                <motion.span className="inline-block" whileHover={{ scale: 1.05 }}>
                                     {currentUser.name}
                                 </motion.span>
                             )}
@@ -274,14 +228,15 @@ export default function ProfileHeader({
                     {/* Bio */}
                     <motion.div className="w-full max-w-2xl" variants={itemVariants}>
                         <AnimatePresence mode="wait">
-                            {(currentUser.bio || isEditing) && (
+                            {(currentUser.bio || (isEditing && isOwnProfile)) && (
                                 <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: "auto" }}
                                     exit={{ opacity: 0, height: 0 }}
                                     className="text-green-500 text-lg"
                                 >
-                                    {isEditing ? (
+                                    {/* ✅ Bio textarea শুধু নিজের profile + editing mode এ */}
+                                    {isEditing && isOwnProfile ? (
                                         <motion.textarea
                                             value={editForm.bio}
                                             onChange={(e) => onInputChange("bio", e.target.value)}

@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
 import { User } from "@/app/Types/user";
-import SearchLocation from "./SearchLocation"; // Adjust path as needed
+import SearchLocation from "./SearchLocation";
 
 interface ProfileInfoProps {
     currentUser: User;
     isEditing: boolean;
+    isOwnProfile: boolean;
     editForm: {
         name: string;
         bio: string;
@@ -23,15 +24,15 @@ interface ProfileInfoProps {
 export default function ProfileInfo({
     currentUser,
     isEditing,
+    isOwnProfile,
     editForm,
     saveLoading,
     imageUploading,
     onInputChange,
     onSaveProfile,
-    onCancelEdit
+    onCancelEdit,
 }: ProfileInfoProps) {
 
-    // Handle location change from SearchHomeLocation
     const handleLocationChange = (value: string) => {
         onInputChange("location", value);
     };
@@ -39,28 +40,22 @@ export default function ProfileInfo({
     return (
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <svg
-                    className="w-5 h-5 mr-2 text-green-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
+                <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 Profile Information
             </h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Column */}
                 <div className="space-y-4">
+                    {/* Full Name */}
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Full Name
                         </label>
-                        {isEditing ? (
+                        {/* ✅ isEditing AND isOwnProfile দুটোই true হলেই input দেখাবে */}
+                        {isEditing && isOwnProfile ? (
                             <input
                                 type="text"
                                 value={editForm.name}
@@ -74,6 +69,8 @@ export default function ProfileInfo({
                             </p>
                         )}
                     </div>
+
+                    {/* Email - সবসময় read-only */}
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Email Address
@@ -82,18 +79,17 @@ export default function ProfileInfo({
                             {currentUser.email}
                         </p>
                     </div>
+
+                    {/* Mobile */}
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Mobile Number
                         </label>
-                        {isEditing ? (
+                        {isEditing && isOwnProfile ? (
                             <input
                                 type="tel"
                                 value={editForm.mobile}
-                                onChange={(e) => {
-                                    console.log("Mobile input:", e.target.value);
-                                    onInputChange("mobile", e.target.value);
-                                }}
+                                onChange={(e) => onInputChange("mobile", e.target.value)}
                                 className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
                                 placeholder="Enter your mobile number"
                             />
@@ -104,12 +100,15 @@ export default function ProfileInfo({
                         )}
                     </div>
                 </div>
+
+                {/* Right Column */}
                 <div className="space-y-4">
+                    {/* Location */}
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Location
                         </label>
-                        {isEditing ? (
+                        {isEditing && isOwnProfile ? (
                             <div className="mt-1">
                                 <SearchLocation
                                     value={editForm.location}
@@ -122,11 +121,13 @@ export default function ProfileInfo({
                             </p>
                         )}
                     </div>
+
+                    {/* Website */}
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Website
                         </label>
-                        {isEditing ? (
+                        {isEditing && isOwnProfile ? (
                             <input
                                 type="url"
                                 value={editForm.website}
@@ -141,7 +142,7 @@ export default function ProfileInfo({
                                         href={currentUser.website}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-green-500 hover:text-green-500 transition duration-200 break-all"
+                                        className="text-green-500 hover:text-green-600 transition duration-200 break-all"
                                     >
                                         {currentUser.website}
                                     </a>
@@ -151,11 +152,13 @@ export default function ProfileInfo({
                             </p>
                         )}
                     </div>
+
+                    {/* Bio */}
                     <div>
                         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Bio
                         </label>
-                        {isEditing ? (
+                        {isEditing && isOwnProfile ? (
                             <textarea
                                 value={editForm.bio}
                                 onChange={(e) => onInputChange("bio", e.target.value)}
@@ -172,8 +175,8 @@ export default function ProfileInfo({
                 </div>
             </div>
 
-            {/* Edit Mode Actions */}
-            {isEditing && (
+            {/* ✅ Save/Cancel শুধু নিজের profile + editing mode এ */}
+            {isEditing && isOwnProfile && (
                 <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
                     <button
                         onClick={onSaveProfile}
@@ -187,18 +190,8 @@ export default function ProfileInfo({
                             </>
                         ) : (
                             <>
-                                <svg
-                                    className="w-4 h-4 mr-2"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 13l4 4L19 7"
-                                    />
+                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                 </svg>
                                 Save Changes
                             </>

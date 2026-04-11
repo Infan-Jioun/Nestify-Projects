@@ -2,17 +2,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { useSession } from "next-auth/react";
 import { fetchUserBySlug, updateUser } from "../../features/user/userAuthSlice";
 import { AppDispatch, RootState } from "@/lib/store";
-import { User } from "@/app/Types/user";
 import { imageUpload } from "@/hooks/useImageUpload";
 import SkeletonLoader from "../Components/SkeletonLoader";
 import UserNotFound from "../Components/UserNotFound";
 import ProfileHeader from "../Components/ProfileHeader";
 import ProfileTabs from "../Components/ProfileTabs";
 import ProfileInfo from "../Components/ProfileInfo";
-import { useRoleGuard } from "@/app/hook/useRoleGuard";
-import { UserRole } from "@/app/Types/auth";
+
 interface UpdateUserData {
     _id: string;
     name?: string;
@@ -24,16 +23,19 @@ interface UpdateUserData {
 }
 
 export default function ProfilePage() {
-    useRoleGuard({
-        allowedRoles: [UserRole.USER, UserRole.REAL_ESTATE_DEVELOPER, UserRole.ADMIN],
-        callbackUrl: "/"
-    })
     const params = useParams();
     const slug = params?.slug as string;
     const dispatch = useDispatch<AppDispatch>();
+    const { data: session } = useSession();
     const { currentUser, loading, error } = useSelector(
         (state: RootState) => state.user
     );
+
+    // ✅ নিজের profile কিনা check করো
+    const isOwnProfile =
+        !!session &&
+        (session.user?.id === currentUser?._id ||
+            session.user?.email === currentUser?.email);
 
     const [copied, setCopied] = useState(false);
     const [activeTab, setActiveTab] = useState("overview");
@@ -66,31 +68,20 @@ export default function ProfilePage() {
         const text = `Check out ${currentUser?.name}'s profile!`;
 
         const shareUrls = {
-            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                text
-            )}&url=${encodeURIComponent(profileUrl)}`,
-            facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                profileUrl
-            )}`,
-            linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                profileUrl
-            )}`,
-            whatsapp: `https://wa.me/?text=${encodeURIComponent(
-                text + " " + profileUrl
-            )}`,
+            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(profileUrl)}`,
+            facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`,
+            linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`,
+            whatsapp: `https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`,
         };
 
         if (shareUrls[platform as keyof typeof shareUrls]) {
-            window.open(
-                shareUrls[platform as keyof typeof shareUrls],
-                "_blank",
-                "width=600,height=400"
-            );
+            window.open(shareUrls[platform as keyof typeof shareUrls], "_blank", "width=600,height=400");
         }
     };
 
     // Handle image selection
     const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!isOwnProfile) return;
         const file = event.target.files?.[0];
         if (!file) return;
 
@@ -105,17 +96,11 @@ export default function ProfilePage() {
         }
 
         setImageUploading(true);
-
         try {
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
-
             const imageUrl = await imageUpload(file);
-
-            setEditForm((prev) => ({
-                ...prev,
-                image: imageUrl,
-            }));
+            setEditForm((prev) => ({ ...prev, image: imageUrl }));
         } catch (error) {
             console.error("Failed to upload image:", error);
             alert("Failed to upload image. Please try again.");
@@ -127,18 +112,15 @@ export default function ProfilePage() {
 
     // Remove image
     const removeImage = () => {
+        if (!isOwnProfile) return;
         setImagePreview(null);
-        setEditForm((prev) => ({
-            ...prev,
-            image: "",
-        }));
+        setEditForm((prev) => ({ ...prev, image: "" }));
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
-    // Enter edit mode
+    // Enter edit mode - শুধু নিজের profile এ
     const enterEditMode = () => {
-        if (!currentUser) return;
-
+        if (!currentUser || !isOwnProfile) return;
         setEditForm({
             name: currentUser.name || "",
             bio: currentUser.bio || "",
@@ -153,15 +135,13 @@ export default function ProfilePage() {
 
     // Handle form input changes
     const handleInputChange = (field: keyof typeof editForm, value: string) => {
-        setEditForm((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
+        if (!isOwnProfile) return;
+        setEditForm((prev) => ({ ...prev, [field]: value }));
     };
 
     // Save profile
     const saveProfile = async () => {
-        if (!currentUser?._id) return;
+        if (!currentUser?._id || !isOwnProfile) return;
 
         setSaveLoading(true);
         try {
@@ -176,7 +156,6 @@ export default function ProfilePage() {
             if (editForm.mobile.trim() !== currentUser.mobile) {
                 updateData.mobile = editForm.mobile.trim() || "";
             }
-
             if (editForm.image && editForm.image !== currentUser.image) {
                 updateData.image = editForm.image;
             } else if (!editForm.image && currentUser.image) {
@@ -186,7 +165,6 @@ export default function ProfilePage() {
             if (Object.keys(updateData).length > 1) {
                 await dispatch(updateUser(updateData)).unwrap();
                 setIsEditing(false);
-
                 if (imagePreview && imagePreview !== currentUser.image) {
                     URL.revokeObjectURL(imagePreview);
                 }
@@ -206,7 +184,6 @@ export default function ProfilePage() {
     const cancelEdit = () => {
         setIsEditing(false);
         if (!currentUser) return;
-
         setEditForm({
             name: currentUser.name || "",
             bio: currentUser.bio || "",
@@ -249,16 +226,18 @@ export default function ProfilePage() {
     }, [imagePreview, currentUser?.image]);
 
     if (loading) return <SkeletonLoader />;
-
     if (!currentUser || error) return <UserNotFound error={error || undefined} />;
 
     return (
-        <div className="relative py-20 lg:py-32 px-4 sm:px-6 text-center bg-gradient-to-br from-green-50 via-white to-emerald-50 overflow-hidden">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+                    {/* Profile Header */}
                     <ProfileHeader
                         currentUser={currentUser}
-                        isEditing={isEditing}
+                        isEditing={isOwnProfile ? isEditing : false}
+                        isOwnProfile={isOwnProfile}
                         editForm={editForm}
                         imagePreview={imagePreview}
                         imageUploading={imageUploading}
@@ -268,6 +247,7 @@ export default function ProfilePage() {
                         onRemoveImage={removeImage}
                     />
 
+                    {/* Tab Navigation */}
                     <div className="border-b border-gray-200 bg-white">
                         <div className="px-8">
                             <nav className="flex space-x-8">
@@ -287,12 +267,14 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
+                    {/* Main Content */}
                     <div className="px-8 py-8">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             <div className="lg:col-span-2 space-y-8">
                                 <ProfileInfo
                                     currentUser={currentUser}
-                                    isEditing={isEditing}
+                                    isEditing={isOwnProfile ? isEditing : false}
+                                    isOwnProfile={isOwnProfile}
                                     editForm={editForm}
                                     saveLoading={saveLoading}
                                     imageUploading={imageUploading}
@@ -313,6 +295,7 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
