@@ -16,4 +16,6 @@ export interface User {
     website?: string | null
     createdAt?: Date
     updatedAt?: Date
+    emailVerified?: boolean;
+    needsVerification?: boolean;
 }

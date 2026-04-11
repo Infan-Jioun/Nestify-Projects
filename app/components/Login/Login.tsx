@@ -31,40 +31,29 @@ interface CustomSessionUser {
   email: string;
   image?: string | null;
   role: UserRole;
+  emailVerified?: boolean;
+  needsVerification?: boolean;
 }
 
-// ─── Route Permission Helpers ──────────────────────────────────────────────────
-
 function isAuthorizedRoute(path: string, role: string): boolean {
-  if (!path || path === '/') return false;
+  if (!path || path === "/") return false;
 
   const roleRoutes: Record<string, string[]> = {
-    [UserRole.USER]: [
-      "/profile",
-      "/bookings",
-    ],
+    [UserRole.USER]: ["/profile", "/bookings"],
     [UserRole.REAL_ESTATE_DEVELOPER]: [
-      "/profile",
-      "/dashboard",
-      "/dashboard/real_estate_developer",
-      "/dashboard/add-properties",
-      "/dashboard/add-blog",
-      "/bookings",
+      "/profile", "/dashboard", "/dashboard/real_estate_developer",
+      "/dashboard/add-properties", "/dashboard/add-blog", "/bookings",
     ],
     [UserRole.ADMIN]: [
-      "/profile",
-      "/dashboard",
-      "/dashboard/admin",
-      "/dashboard/users-information",
-      "/dashboard/add-city",
-      "/dashboard/add-properties",
-      "/dashboard/add-blog",
+      "/profile", "/dashboard", "/dashboard/admin",
+      "/dashboard/users-information", "/dashboard/add-city",
+      "/dashboard/add-properties", "/dashboard/add-blog",
       "/dashboard/real_estate_developer",
-    ]
+    ],
   };
 
   const allowedRoutes = roleRoutes[role] || [];
-  return allowedRoutes.some(route => path === route || path.startsWith(route + '/'));
+  return allowedRoutes.some(route => path === route || path.startsWith(route + "/"));
 }
 
 function getDefaultRoute(role: string): string {
@@ -73,11 +62,8 @@ function getDefaultRoute(role: string): string {
     [UserRole.REAL_ESTATE_DEVELOPER]: "/",
     [UserRole.ADMIN]: "/",
   };
-
   return defaultRoutes[role] || "/";
 }
-
-// ──────────────────────────────────────────────────────────────────────────────
 
 export function Login() {
   const dispatch = useDispatch();
@@ -89,7 +75,7 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
@@ -102,10 +88,9 @@ export function Login() {
 
   const isLoading = loading || skletonLoader;
 
-  // ─── Credentials Login ───────────────────────────────────────────────────────
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     dispatch(setButtonLoader(true));
-
     try {
       const result = await signIn("credentials", {
         redirect: false,
@@ -114,29 +99,30 @@ export function Login() {
         callbackUrl,
       });
 
-      console.log("SignIn result:", result);
-
       if (result?.ok) {
         const session = await getSession();
-        console.log("Session:", session);
 
         if (session?.user) {
           const user = session.user as CustomSessionUser;
+
+          if (user.needsVerification || user.emailVerified === false) {
+            localStorage.setItem("verificationEmail", user.email);
+            toast.error("Please verify your email first!");
+            router.push("/verify-email");
+            return;
+          }
+
           const userRole = user.role || UserRole.USER;
           const defaultRoute = getDefaultRoute(userRole);
-
-          // callbackUrl টা এই role এর জন্য authorized কিনা check করো
           const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
           const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
-
-          console.log('Role:', userRole, '| callbackUrl:', callbackUrl, '| redirecting to:', redirectUrl);
 
           toast.success("Successfully logged in!");
           router.push(redirectUrl);
           router.refresh();
         }
       } else {
-        if (result?.error === 'CredentialsSignin' || result?.error === 'INVALID_CREDENTIALS') {
+        if (result?.error === "CredentialsSignin" || result?.error === "INVALID_CREDENTIALS") {
           toast.error("Invalid email or password");
         } else if (result?.error) {
           toast.error(result.error);
@@ -145,23 +131,18 @@ export function Login() {
         }
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       toast.error("Login failed. Please try again.");
     } finally {
       dispatch(setButtonLoader(false));
     }
   };
 
-  // ─── Google Login ────────────────────────────────────────────────────────────
+  // ─── Google Login ─────────────────────────────────────────────────────────────
   const handelGoogleLogin = async () => {
     dispatch(setGoogleLoader(true));
     try {
-      const result = await signIn("google", {
-        callbackUrl,
-        redirect: false
-      });
-
-      console.log("Google signIn result:", result);
+      const result = await signIn("google", { callbackUrl, redirect: false });
 
       if (result?.error) {
         toast.error("Google login failed");
@@ -192,30 +173,24 @@ export function Login() {
         const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
         const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
 
-        console.log('Google | Role:', userRole, '| redirecting to:', redirectUrl);
-
+        // ✅ Google user রা সবসময় verified - সরাসরি home
         toast.success("Logged in successfully!");
         router.push(redirectUrl);
         router.refresh();
       }
     } catch (error) {
-      console.error('Google login error:', error);
+      console.error("Google login error:", error);
       toast.error("Google login failed");
     } finally {
       dispatch(setGoogleLoader(false));
     }
   };
 
-  // ─── GitHub Login ────────────────────────────────────────────────────────────
+  // ─── GitHub Login ─────────────────────────────────────────────────────────────
   const handelGithubLogin = async () => {
     dispatch(setGithubLoader(true));
     try {
-      const result = await signIn("github", {
-        callbackUrl,
-        redirect: false
-      });
-
-      console.log("GitHub signIn result:", result);
+      const result = await signIn("github", { callbackUrl, redirect: false });
 
       if (result?.error) {
         toast.error("GitHub login failed");
@@ -246,25 +221,22 @@ export function Login() {
         const isAuthorized = isAuthorizedRoute(callbackUrl, userRole);
         const redirectUrl = isAuthorized ? callbackUrl : defaultRoute;
 
-        console.log('GitHub | Role:', userRole, '| redirecting to:', redirectUrl);
-
+        // ✅ GitHub user রা সবসময় verified - সরাসরি home
         toast.success("Logged in successfully!");
         router.push(redirectUrl);
         router.refresh();
       }
     } catch (error) {
-      console.error('GitHub login error:', error);
+      console.error("GitHub login error:", error);
       toast.error("GitHub login failed");
     } finally {
       dispatch(setGithubLoader(false));
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  // ─── Skeleton Loader ─────────────────────────────────────────────────────────
+  // ─── Skeleton Loader ──────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 overflow-hidden">
@@ -297,20 +269,14 @@ export function Login() {
     );
   }
 
-  // ─── Main UI ─────────────────────────────────────────────────────────────────
+  // ─── Main UI ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-green-100 flex items-center justify-center dark:bg-gray-900 px-4 overflow-hidden">
       <NextHead title="Login | Nestify" />
       <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl font-bold">
-            <Image
-              className="mx-auto"
-              src="https://i.ibb.co/RpTRch3g/Nestify.png"
-              alt="logo"
-              width={80}
-              height={80}
-            />
+            <Image className="mx-auto" src="https://i.ibb.co/RpTRch3g/Nestify.png" alt="logo" width={80} height={80} />
           </CardTitle>
           <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
             Login to Nestify – Access Your Dashboard Securely
@@ -321,70 +287,36 @@ export function Login() {
           <CardContent className="space-y-4">
             <div className="grid gap-1">
               <Label htmlFor="email">Email</Label>
-              <Input
-                {...register("email", { required: true })}
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                required
-              />
+              <Input {...register("email", { required: true })} id="email" type="email" placeholder="you@example.com" required />
             </div>
             <div className="grid gap-1">
               <div className="flex justify-between items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link
-                  href="/ResetPassword"
-                  className="text-sm relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded mb-2"
-                >
+                <Link href="/ResetPassword" className="text-sm relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded mb-2">
                   Reset password?
                 </Link>
               </div>
               <div className="relative">
-                <Input
-                  {...register("password", { required: true })}
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Type your password"
-                  className="pr-10"
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                  onClick={togglePasswordVisibility}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-green-500" />
-                  )}
+                <Input {...register("password", { required: true })} id="password" type={showPassword ? "text" : "password"} placeholder="Type your password" className="pr-10" required />
+                <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600" onClick={togglePasswordVisibility}>
+                  {showPassword ? <EyeOff className="h-4 w-4 text-green-500" /> : <Eye className="h-4 w-4 text-green-500" />}
                 </button>
               </div>
             </div>
           </CardContent>
 
           <CardFooter className="flex flex-col gap-3 mt-3">
-            <Button
-              type="submit"
-              className="w-full bg-green-500 hover:bg-green-600"
-              disabled={buttonLoader}
-            >
+            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600" disabled={buttonLoader}>
               {buttonLoader ? (
                 <div className="flex items-center">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                   Logging in...
                 </div>
-              ) : (
-                "Login"
-              )}
+              ) : "Login"}
             </Button>
-
             <p className="text-sm text-center text-muted-foreground">
               {"Don't have an account?"}{" "}
-              <Link
-                href={"/Authentication"}
-                className="relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded"
-              >
+              <Link href={"/Authentication"} className="relative inline-block duration-300 before:content-[''] before:absolute before:bottom-[-4px] before:w-full before:h-[2px] before:origin-left before:bg-green-500 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 rounded">
                 Sign Up
               </Link>
             </p>
@@ -392,12 +324,7 @@ export function Login() {
         </form>
 
         <div className="px-6 pb-6">
-          <Button
-            onClick={handelGoogleLogin}
-            variant="outline"
-            className="w-full mb-2"
-            disabled={googleLoader}
-          >
+          <Button onClick={handelGoogleLogin} variant="outline" className="w-full mb-2" disabled={googleLoader}>
             {googleLoader ? (
               <div className="flex items-center justify-center">
                 <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -407,12 +334,7 @@ export function Login() {
               <p className="flex items-center justify-center gap-3"><FcGoogle /> Continue with Google</p>
             )}
           </Button>
-          <Button
-            onClick={handelGithubLogin}
-            variant="outline"
-            className="w-full"
-            disabled={githubLoader}
-          >
+          <Button onClick={handelGithubLogin} variant="outline" className="w-full" disabled={githubLoader}>
             {githubLoader ? (
               <div className="flex items-center justify-center">
                 <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>

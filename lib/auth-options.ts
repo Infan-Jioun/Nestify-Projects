@@ -14,10 +14,12 @@ interface ExtendedProfile {
     id?: string | number;
     name?: string;
 }
+
 interface ExtendedUser {
     id?: string;
     role?: UserRole;
     emailVerified?: boolean;
+    needsVerification?: boolean;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -29,45 +31,25 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
-            // Update your authOptions - the authorize function
             authorize: async (credentials) => {
                 try {
                     if (!credentials?.email || !credentials.password) {
-                        throw new Error('MISSING_CREDENTIALS');
+                        throw new Error("MISSING_CREDENTIALS");
                     }
 
                     await connectToDatabase();
                     const userDoc = await UserModel.findOne({ email: credentials.email });
 
                     if (!userDoc || !userDoc.password) {
-                        throw new Error('INVALID_CREDENTIALS');
-                    }
-
-                    // Check if email is verified for credential users
-                    if (userDoc.provider === 'credentials' && !userDoc.emailVerified) {
-                        // Return user data but with a special flag
-                        return {
-                            id: (userDoc._id as Types.ObjectId).toString(),
-                            name: userDoc.name,
-                            email: userDoc.email,
-                            image: userDoc.image || null,
-                            role: userDoc.role || UserRole.USER,
-                            bio: userDoc.bio || null,
-                            location: userDoc.location || null,
-                            website: userDoc.website || null,
-                            mobile: userDoc.mobile || null,
-                            slug: userDoc.slug || null,
-                            provider: userDoc.provider || null,
-                            createdAt: userDoc.createdAt?.toISOString?.() || undefined,
-                            emailVerified: false // Add this flag
-                        };
+                        throw new Error("INVALID_CREDENTIALS");
                     }
 
                     const isValid = await bcrypt.compare(credentials.password, userDoc.password);
                     if (!isValid) {
-                        throw new Error('INVALID_CREDENTIALS');
+                        throw new Error("INVALID_CREDENTIALS");
                     }
 
+                    // ✅ emailVerified check - verified না হলেও login হবে কিন্তু flag দিয়ে
                     return {
                         id: (userDoc._id as Types.ObjectId).toString(),
                         name: userDoc.name,
@@ -79,16 +61,14 @@ export const authOptions: NextAuthOptions = {
                         website: userDoc.website || null,
                         mobile: userDoc.mobile || null,
                         slug: userDoc.slug || null,
-                        provider: userDoc.provider || null,
+                        provider: userDoc.provider || "credentials",
                         createdAt: userDoc.createdAt?.toISOString?.() || undefined,
-                        emailVerified: true // Add this flag
+                        emailVerified: userDoc.emailVerified || false,
+                        needsVerification: !userDoc.emailVerified, // ✅ এই flag দিয়ে client redirect করবে
                     };
                 } catch (error) {
-                    if (error instanceof Error) {
-                        throw error;
-                    }
-                    console.error("Authorization error:", error);
-                    throw new Error('LOGIN_FAILED');
+                    if (error instanceof Error) throw error;
+                    throw new Error("LOGIN_FAILED");
                 }
             },
         }),
@@ -113,35 +93,34 @@ export const authOptions: NextAuthOptions = {
 
                 await connectToDatabase();
                 const email = user.email;
-
-                if (!email) {
-                    return false;
-                }
+                if (!email) return false;
 
                 const existingUser = await UserModel.findOne({ email });
                 const extendedProfile = profile as ExtendedProfile;
-
                 const image = user.image || extendedProfile?.picture || extendedProfile?.avatar_url || null;
 
                 const userData = {
                     name: user.name || extendedProfile?.name || "User",
-                    email: email,
-                    image: image,
+                    email,
+                    image,
                     provider: account.provider,
                     providerAccountId: account.providerAccountId || extendedProfile?.id?.toString() || null,
                     role: existingUser?.role || UserRole.USER,
+                    // ✅ OAuth user রা auto-verified
+                    emailVerified: true,
                 };
 
                 if (!existingUser) {
                     await UserModel.create(userData);
                 } else {
                     const updates: Record<string, unknown> = {};
-
                     if (!existingUser.provider) updates.provider = userData.provider;
                     if (!existingUser.providerAccountId) updates.providerAccountId = userData.providerAccountId;
                     if (!existingUser.image && userData.image) updates.image = userData.image;
                     if (existingUser.name !== userData.name) updates.name = userData.name;
                     if (!existingUser.role) updates.role = userData.role;
+                    // ✅ OAuth এ সবসময় emailVerified true
+                    updates.emailVerified = true;
 
                     if (Object.keys(updates).length > 0) {
                         await UserModel.updateOne({ _id: existingUser._id }, { $set: updates });
@@ -154,42 +133,41 @@ export const authOptions: NextAuthOptions = {
                 return false;
             }
         },
-        // Update the jwt callback in authOptions
+
         async jwt({ token, user, account, trigger }) {
             try {
+                // ✅ নতুন login এ user data token এ সেট করো
                 if (user) {
                     token.id = user.id;
-                    token.role = user.role || UserRole.USER;
+                    token.role = (user as ExtendedUser).role || UserRole.USER;
                     token.emailVerified = (user as ExtendedUser).emailVerified || false;
+                    token.needsVerification = (user as ExtendedUser).needsVerification || false;
                 }
 
-                // Handle email verification updates
+                // ✅ Trigger update এ DB থেকে fresh data নাও
                 if (trigger === "update") {
                     await connectToDatabase();
                     const dbUser = await UserModel.findOne({ email: token.email });
                     if (dbUser) {
                         token.emailVerified = dbUser.emailVerified;
-                    }
-                }
-
-                if ((account?.provider === "google" || account?.provider === "github") && token.email) {
-                    await connectToDatabase();
-                    const dbUser = await UserModel.findOne({ email: token.email });
-                    if (dbUser) {
+                        token.needsVerification = !dbUser.emailVerified;
                         token.role = dbUser.role || UserRole.USER;
-                        token.id = (dbUser._id as Types.ObjectId).toString();
-                        token.emailVerified = dbUser.emailVerified || true; // OAuth users are auto-verified
                     }
                 }
 
-                // if (token.email) {
-                //     await connectToDatabase();
-                //     const dbUser = await UserModel.findOne({ email: token.email })
-                //     if (dbUser) {
-                //         token.role = dbUser.role ?? token.role ?? UserRole.USER;
-                //         token.emailVerified = dbUser.emailVerified ?? token.emailVerified ?? false;
-                //     }
-                // }
+                // ✅ OAuth provider এ role sync (শুধু প্রথম login এ account থাকে)
+                if (account?.provider === "google" || account?.provider === "github") {
+                    if (token.email) {
+                        await connectToDatabase();
+                        const dbUser = await UserModel.findOne({ email: token.email });
+                        if (dbUser) {
+                            token.role = dbUser.role || UserRole.USER;
+                            token.id = (dbUser._id as Types.ObjectId).toString();
+                            token.emailVerified = true;
+                            token.needsVerification = false;
+                        }
+                    }
+                }
 
                 return token;
             } catch (error) {
@@ -200,9 +178,11 @@ export const authOptions: NextAuthOptions = {
 
         async session({ session, token }) {
             try {
-                if (session.user && token.id && token.role) {
-                    session.user.id = token.id;
-                    session.user.role = token.role;
+                if (session.user) {
+                    session.user.id = token.id as string;
+                    session.user.role = token.role as UserRole;
+                    session.user.emailVerified = token.emailVerified as boolean;
+                    session.user.needsVerification = token.needsVerification as boolean;
                 }
                 return session;
             } catch (error) {
