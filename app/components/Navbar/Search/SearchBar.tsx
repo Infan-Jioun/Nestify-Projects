@@ -38,20 +38,17 @@ const SearchBox: React.FC = () => {
         }
     }, [highlightedIndex]);
 
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setQuery(e.target.value));
         setShowDropdown(true);
         setHighlightedIndex(-1);
     };
 
-
     const clearInput = () => {
         dispatch(setQuery(""));
         dispatch(clearSuggestions());
         setHighlightedIndex(-1);
     };
-
 
     const handleSelect = useCallback(
         (item: Suggestion | string) => {
@@ -73,9 +70,20 @@ const SearchBox: React.FC = () => {
         [dispatch, router]
     );
 
+    // ✅ FIX 1: allItems = recent (when no query) OR suggestions + "see all" (when query exists)
+    // This ensures keyboard navigation index is always correct
+    const getDropdownItems = () => {
+        if (!query) return recent;
+        return suggestions;
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        const totalItems = suggestions.length + (query ? 1 : 0);
+        const items = getDropdownItems();
+        // +1 for "See all results" button when query exists and suggestions present
+        const totalItems = query && suggestions.length > 0
+            ? suggestions.length + 1
+            : items.length;
+
         if (e.key === "ArrowDown") {
             e.preventDefault();
             setHighlightedIndex((prev) => (prev < totalItems - 1 ? prev + 1 : 0));
@@ -84,12 +92,21 @@ const SearchBox: React.FC = () => {
             setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : totalItems - 1));
         } else if (e.key === "Enter") {
             e.preventDefault();
-            if (highlightedIndex === -1) handleSelect(query);
-            else if (highlightedIndex < suggestions.length) handleSelect(suggestions[highlightedIndex]);
-            else handleSelect(query);
+            if (highlightedIndex === -1 || highlightedIndex === suggestions.length) {
+                // "See all results" or no highlight → search by query string
+                handleSelect(query);
+            } else if (!query && highlightedIndex < recent.length) {
+                // Recent item selected
+                handleSelect(recent[highlightedIndex]);
+            } else if (query && highlightedIndex < suggestions.length) {
+                // Suggestion selected
+                handleSelect(suggestions[highlightedIndex]);
+            }
+        } else if (e.key === "Escape") {
+            setShowDropdown(false);
+            setHighlightedIndex(-1);
         }
     };
-
 
     const handleFocus = () => setShowDropdown(true);
     const handleBlur = () => setTimeout(() => setShowDropdown(false), 150);
@@ -123,14 +140,16 @@ const SearchBox: React.FC = () => {
 
             {showDropdown && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-50">
+
+                    {/* ✅ FIX 2: Loading state - proper spinner message */}
                     {loading && (
                         <div className="p-4 flex items-center justify-center text-gray-500">
                             <Loader className="h-4 w-4 animate-spin mr-2" />
-                            {`No results found for "${query}"`}
+                            <span>Searching...</span>
                         </div>
                     )}
 
-                    {/* Recent searches */}
+                    {/* Recent searches - only when no query */}
                     {!loading && !query && recent.length > 0 && (
                         <div className="p-2 border-b">
                             <div className="flex justify-between items-center mb-2">
@@ -199,22 +218,22 @@ const SearchBox: React.FC = () => {
                                 </div>
                             ))}
 
-                            {/* See all results */}
+                            {/* ✅ FIX 3: "See all results" - correct text */}
                             <button
                                 className={`search-item w-full text-center px-3 py-2 mt-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-md text-sm font-medium ${highlightedIndex === suggestions.length ? "bg-green-100" : ""
                                     }`}
                                 onMouseDown={() => handleSelect(query)}
                                 onMouseEnter={() => setHighlightedIndex(suggestions.length)}
                             >
-                                {`No results found for "${query}"`}
+                                See all results for &quot;{query}&quot;
                             </button>
                         </div>
                     )}
 
-                    {/* No results found */}
+                    {/* ✅ FIX 4: No results - only show when not loading */}
                     {!loading && query.length >= 2 && suggestions.length === 0 && (
                         <div className="p-4 text-center text-gray-500">
-                            {`No results found for "${query}"`}
+                            No results found for &quot;{query}&quot;
                         </div>
                     )}
                 </div>
