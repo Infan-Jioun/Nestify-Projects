@@ -106,8 +106,10 @@ export default function Chatbot() {
 
                         {loading && (
                             <div className="flex justify-start">
-                                <div className="bg-gray-100 px-4 py-2 rounded-xl rounded-bl-none text-sm text-gray-500">
-                                    ● ● ●
+                                <div className="bg-gray-100 px-4 py-2 rounded-xl rounded-bl-none flex items-center gap-1">
+                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                                 </div>
                             </div>
                         )}
@@ -120,11 +122,9 @@ export default function Chatbot() {
                         <input
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) =>
-                                e.key === "Enter" && sendMessage()
-                            }
-                            placeholder="Ask about properties..."
-                            className="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-green-400"
+                            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                            placeholder="Type your message..."
+                            className="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-red-400"
                         />
                         <button
                             onClick={sendMessage}
