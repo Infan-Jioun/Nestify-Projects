@@ -9,12 +9,15 @@ import { Button } from "@/components/ui/button";
 import {
     Calendar, Clock, Eye, Heart, Search, ArrowRight, Home,
     Tag, BookOpen, TrendingUp, Building, HomeIcon,
-    Building2
+    Building2,
+    Book,
+    BookA
 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { BlogPost } from "../Types/BlogPost";
+import { MdArticle } from "react-icons/md";
 
 // Skeleton Loader Components
 const BlogCardSkeleton = () => (
@@ -189,7 +192,7 @@ export default function BlogComponents() {
                         <div className="mb-16">
                             {/* Premium Badge */}
                             <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-full shadow-2xl mb-8 border border-green-400/30 backdrop-blur-sm">
-                         
+
                                 <span className="font-semibold tracking-wide flex gap-2"><Building2 /> INDUSTRY INSIGHTS</span>
                             </div>
 
@@ -210,7 +213,7 @@ export default function BlogComponents() {
                         </div>
 
                         {/* Scroll Indicator */}
-                       
+
                     </div>
                 </div>
 
@@ -233,24 +236,31 @@ export default function BlogComponents() {
                 </div>
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex flex-wrap gap-3 justify-center">
+
+                        {/* All Articles */}
                         <Button
-                            variant={selectedCategory === "" ? "default" : "outline"}
                             onClick={() => setSelectedCategory("")}
-                            className="rounded-full px-6 py-2.5 transition-all duration-300 border-green-200 hover:border-green-400"
+                            className={`rounded-full px-6 py-2.5 transition-all duration-300 border-green-200 
+      hover:border-green-400 hover:bg-green-500 hover:text-white
+      ${selectedCategory === "" ? "bg-green-500 text-white" : "bg-white text-green-500"}`}
                         >
-                            📖 All Articles
+                            <MdArticle /> All Articles
                         </Button>
+
+                        {/* Categories */}
                         {categories.map((category) => (
                             <Button
                                 key={category.name}
-                                variant={selectedCategory === category.name ? "default" : "outline"}
                                 onClick={() => setSelectedCategory(category.name)}
-                                className="rounded-full px-5 py-2.5 transition-all duration-300 border-green-200 hover:border-green-400 flex items-center gap-2"
+                                className={`rounded-full px-5 py-2.5 transition-all duration-300 border-green-200 
+        hover:border-green-400 hover:bg-green-500 hover:text-white flex items-center gap-2
+        ${selectedCategory === category.name ? "bg-green-500 text-white" : "bg-white text-green-500"}`}
                             >
                                 {category.icon}
                                 {category.name}
                             </Button>
                         ))}
+
                     </div>
                 </div>
             </section>
@@ -482,7 +492,7 @@ export default function BlogComponents() {
 
             {/* Newsletter Section */}
             <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-20 relative overflow-hidden">
-         
+
 
                 <div className="relative container mx-auto px-4 text-center">
                     <div className="max-w-3xl mx-auto">
@@ -493,8 +503,8 @@ export default function BlogComponents() {
                         <p className="text-green-500 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
                             Get the latest real estate trends, investment opportunities, and expert advice delivered directly to your inbox.
                         </p>
-                       
-                      
+
+
                     </div>
                 </div>
             </section>
