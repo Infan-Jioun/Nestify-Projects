@@ -24,6 +24,16 @@ const PropertyDetailsGrid = ({ property, propertyDetails, categoryType }: Proper
         }
     };
 
+    // Disable booking when status is Pending or Sold
+    const isBookingDisabled =
+        property.status === "Pending" || property.status === "Sold";
+
+    const getStatusLabel = () => {
+        if (property.status === "Pending") return "Booking Pending";
+        if (property.status === "Sold") return "Already Sold";
+        return null;
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -76,19 +86,39 @@ const PropertyDetailsGrid = ({ property, propertyDetails, categoryType }: Proper
                     </motion.div>
                 </div>
 
-                <BookingModal property={property}>
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="w-full"
-                    >
-                        <Button className="w-[250px] mx-auto rounded-full mt-10 bg-green-500 hover:bg-green-700 text-white py-2.5">
-                            Book Visit <span className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeStyles(categoryType)}`}>
+                {isBookingDisabled ? (
+                    // Disabled state — no modal wrapper needed
+                    <div className="flex flex-col items-center mt-10 gap-2">
+                        <Button
+                            disabled
+                            className="w-[250px] mx-auto rounded-full bg-gray-300 text-gray-500 cursor-not-allowed py-2.5"
+                        >
+                            Book Visit{" "}
+                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeStyles(categoryType)}`}>
                                 {property.category?.name || 'Property'}
                             </span>
                         </Button>
-                    </motion.button>
-                </BookingModal>
+                        <p className="text-sm text-red-500 font-medium bg-red-100 p-2 w-44 justify-center items-center mx-auto text-center rounded-full">
+                            {getStatusLabel()}
+                        </p>
+                    </div>
+                ) : (
+                    // Active state — modal enabled
+                    <BookingModal property={property}>
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full"
+                        >
+                            <Button className="w-[250px] mx-auto rounded-full mt-10 bg-green-500 hover:bg-green-700 text-white py-2.5">
+                                Book Visit{" "}
+                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeStyles(categoryType)}`}>
+                                    {property.category?.name || 'Property'}
+                                </span>
+                            </Button>
+                        </motion.button>
+                    </BookingModal>
+                )}
             </motion.div>
         </motion.div>
     );
