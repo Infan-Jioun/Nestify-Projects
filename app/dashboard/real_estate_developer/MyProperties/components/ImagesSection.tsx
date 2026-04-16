@@ -45,7 +45,8 @@ export function ImagesSection({
             })
             toast.success(`${newImages.length} image(s) added successfully`)
         } catch (error) {
-            console.error('Error uploading images:', error)
+            
+            
             toast.error('Failed to upload images')
         } finally {
             setImageUploading(false)
@@ -65,7 +66,7 @@ export function ImagesSection({
 
     return (
         <div className="space-y-3 sm:space-y-4">
-            {/* ── Section heading ─────────────────────────────────────── */}
+     
             <h3 className="text-base sm:text-lg font-medium text-foreground flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 Property Images
@@ -124,10 +125,7 @@ export function ImagesSection({
                                                p-1.5 rounded-full
                                                bg-red-500 hover:bg-red-600
                                                text-white shadow-md
-                                               opacity-0 group-hover:opacity-100
-                                               transition-all duration-200
-                                               focus:opacity-100 focus:outline-none
-                                               focus:ring-2 focus:ring-red-400"
+                                               "
                                 >
                                     <Trash2 className="w-3 h-3" />
                                 </button>

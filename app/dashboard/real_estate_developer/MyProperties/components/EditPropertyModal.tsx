@@ -143,19 +143,47 @@ export default function EditPropertyModal({
     }
 
     const handleClose = () => {
-        if (hasChanges && !loading) {
-            if (!window.confirm('You have unsaved changes. Are you sure you want to close?')) return
-        }
-        setInitialFormData(null)
-        onClose()
-    }
+        if (hasChanges) {
+            toast((t) => (
+                <div className="flex flex-col gap-2">
+                    <p className="text-sm font-medium">
+                        Are you sure you want to close?
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Unsaved changes will be lost.
+                    </p>
 
+                    <div className="flex gap-2 mt-2">
+                        <button
+                            onClick={() => {
+                                toast.dismiss(t.id)
+                                onClose()
+                            }}
+                            className="px-3 py-1 text-xs bg-red-500 text-white rounded"
+                        >
+                            Yes
+                        </button>
+
+                        <button
+                            onClick={() => toast.dismiss(t.id)}
+                            className="px-3 py-1 text-xs bg-gray-200 rounded"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            ), { duration: 5000 })
+        } else {
+            onClose()
+        }
+    }
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) handleClose()
         }
         document.addEventListener('keydown', handleEscape)
         return () => document.removeEventListener('keydown', handleEscape)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, hasChanges, loading])
 
     if (!isOpen) return null
