@@ -34,7 +34,6 @@ export default function BookingsPage() {
     const [updateError, setUpdateError] = useState<string | null>(null);
     const [updateSuccess, setUpdateSuccess] = useState<string | null>(null);
 
-    // Fetch bookings for the developer
     useEffect(() => {
         const fetchBookings = async () => {
             if (status === 'authenticated' && session?.user?.email) {
@@ -42,29 +41,20 @@ export default function BookingsPage() {
                     setLoading(true);
                     const response = await fetch(`/api/bookings/developer?email=${session.user.email}`);
 
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch bookings');
-                    }
+                    if (!response.ok) throw new Error('Failed to fetch bookings');
 
                     const data = await response.json();
-                    setBookings(data.bookings || []);
-                    setFilteredBookings(data.bookings || []);
+                    const fetchedBookings = data.bookings || [];
 
-                    // Calculate stats
-                    const total = data.bookings?.length || 0;
-                    const pending = data.bookings?.filter((b: Booking) => b.status === 'pending').length || 0;
-                    const confirmed = data.bookings?.filter((b: Booking) => b.status === 'confirmed').length || 0;
-                    const completed = data.bookings?.filter((b: Booking) => b.status === 'completed').length || 0;
-                    const cancelled = data.bookings?.filter((b: Booking) => b.status === 'cancelled').length || 0;
-
+                    setBookings(fetchedBookings);
+                    setFilteredBookings(fetchedBookings);
                     setStats({
-                        total,
-                        pending,
-                        confirmed,
-                        completed,
-                        cancelled
+                        total: fetchedBookings.length,
+                        pending: fetchedBookings.filter((b: Booking) => b.status === 'pending').length,
+                        confirmed: fetchedBookings.filter((b: Booking) => b.status === 'confirmed').length,
+                        completed: fetchedBookings.filter((b: Booking) => b.status === 'completed').length,
+                        cancelled: fetchedBookings.filter((b: Booking) => b.status === 'cancelled').length,
                     });
-
                 } catch (err) {
                     setError(err instanceof Error ? err.message : 'Failed to fetch bookings');
                 } finally {
@@ -76,163 +66,136 @@ export default function BookingsPage() {
         fetchBookings();
     }, [status, session?.user?.email]);
 
-    // Filter bookings based on search and status
     useEffect(() => {
         let filtered = bookings;
 
-        // Apply status filter
         if (statusFilter !== 'all') {
-            filtered = filtered.filter(booking => booking.status === statusFilter);
+            filtered = filtered.filter(b => b.status === statusFilter);
         }
 
-        // Apply search filter
         if (searchTerm) {
-            const searchLower = searchTerm.toLowerCase();
-            filtered = filtered.filter(booking =>
-                booking.propertyDetails.title.toLowerCase().includes(searchLower) ||
-                booking.userName.toLowerCase().includes(searchLower) ||
-                booking.userEmail.toLowerCase().includes(searchLower) ||
-                booking.propertyDetails.address.toLowerCase().includes(searchLower)
+            const q = searchTerm.toLowerCase();
+            filtered = filtered.filter(b =>
+                b.propertyDetails.title.toLowerCase().includes(q) ||
+                b.userName.toLowerCase().includes(q) ||
+                b.userEmail.toLowerCase().includes(q) ||
+                b.propertyDetails.address.toLowerCase().includes(q)
             );
         }
 
         setFilteredBookings(filtered);
     }, [bookings, statusFilter, searchTerm]);
 
-    // Update booking status with Redux integration
     const handleUpdateBookingStatus = async (bookingId: string, newStatus: string) => {
         try {
             setUpdatingBookingId(bookingId);
             setUpdateError(null);
             setUpdateSuccess(null);
 
-            // Find the booking to get propertyId
-            const bookingToUpdate = bookings.find(booking => booking._id === bookingId);
-            if (!bookingToUpdate) {
-                throw new Error('Booking not found');
-            }
+            const bookingToUpdate = bookings.find(b => b._id === bookingId);
+            if (!bookingToUpdate) throw new Error('Booking not found');
 
-            // Use Redux thunk to update booking status and sync property status
-            const result = await dispatch(updateBookingStatusAction({
+            await dispatch(updateBookingStatusAction({
                 bookingId,
                 status: newStatus,
                 propertyId: bookingToUpdate.propertyId
             })).unwrap();
 
-            console.log('Update result:', result);
-
-            // Update local state with proper type
-            setBookings(prevBookings =>
-                prevBookings.map(booking =>
-                    booking._id === bookingId
-                        ? {
-                            ...booking,
-                            status: newStatus as Booking['status'],
-                            updatedAt: new Date().toISOString()
-                        }
-                        : booking
-                )
+            const updatedBookings = bookings.map(b =>
+                b._id === bookingId
+                    ? { ...b, status: newStatus as Booking['status'], updatedAt: new Date().toISOString() }
+                    : b
             );
+
+            setBookings(updatedBookings);
+            setStats({
+                total: updatedBookings.length,
+                pending: updatedBookings.filter(b => b.status === 'pending').length,
+                confirmed: updatedBookings.filter(b => b.status === 'confirmed').length,
+                completed: updatedBookings.filter(b => b.status === 'completed').length,
+                cancelled: updatedBookings.filter(b => b.status === 'cancelled').length,
+            });
 
             setUpdateSuccess(`Booking status updated to ${newStatus} successfully`);
             toast.success(`Booking status updated to ${newStatus}`);
-
-            // Refresh stats with proper type
-            const updatedBookings = bookings.map(booking =>
-                booking._id === bookingId
-                    ? { ...booking, status: newStatus as Booking['status'] }
-                    : booking
-            );
-
-            const total = updatedBookings.length;
-            const pending = updatedBookings.filter(b => b.status === 'pending').length;
-            const confirmed = updatedBookings.filter(b => b.status === 'confirmed').length;
-            const completed = updatedBookings.filter(b => b.status === 'completed').length;
-            const cancelled = updatedBookings.filter(b => b.status === 'cancelled').length;
-
-            setStats({
-                total,
-                pending,
-                confirmed,
-                completed,
-                cancelled
-            });
-
-            // Optionally refetch properties to ensure sync
             await dispatch(refetchProperties());
 
-            // Auto hide success message after 3 seconds
-            setTimeout(() => {
-                setUpdateSuccess(null);
-            }, 3000);
-
+            setTimeout(() => setUpdateSuccess(null), 3000);
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to update booking status';
-            setUpdateError(errorMessage);
-            toast.error(errorMessage);
+            const msg = err instanceof Error ? err.message : 'Failed to update booking status';
+            setUpdateError(msg);
+            toast.error(msg);
         } finally {
             setUpdatingBookingId(null);
         }
     };
 
-    // Handle booking selection for modal
-    const handleViewDetails = (booking: Booking) => {
-        setSelectedBooking(booking);
-    };
+    const handleViewDetails = (booking: Booking) => setSelectedBooking(booking);
+    const handleCloseModal = () => setSelectedBooking(null);
 
-    // Handle modal close
-    const handleCloseModal = () => {
-        setSelectedBooking(null);
-    };
-
-    if (status === 'loading' || loading) {
-        return <BookingsSkeleton />;
-    }
+    if (status === 'loading' || loading) return <BookingsSkeleton />;
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-            {/* Header */}
-            <BookingsHeader stats={stats} />
+ 
 
-            {/* Stats Grid */}
-            <StatsGrid stats={stats} />
+        <div className="min-h-screen bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
 
-          
-            {updateSuccess && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
-                    <strong>Success:</strong> {updateSuccess}
+                <BookingsHeader stats={stats} />
+
+     
+                <div className="mt-6 sm:mt-8">
+                    <StatsGrid stats={stats} />
                 </div>
-            )}
 
-            {updateError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
-                    <strong>Error:</strong> {updateError}
+           
+                {updateSuccess && (
+                    <div className="mt-4 flex items-start gap-2 bg-green-50 border border-green-200 text-green-800
+                                    px-4 py-3 rounded-lg text-sm sm:text-base">
+                        <span className="shrink-0 font-medium">Success:</span>
+                        <span>{updateSuccess}</span>
+                    </div>
+                )}
+                {updateError && (
+                    <div className="mt-4 flex items-start gap-2 bg-red-50 border border-red-200 text-red-800
+                                    px-4 py-3 rounded-lg text-sm sm:text-base">
+                        <span className="shrink-0 font-medium">Error:</span>
+                        <span>{updateError}</span>
+                    </div>
+                )}
+                {error && (
+                    <div className="mt-4 flex items-start gap-2 bg-red-50 border border-red-200 text-red-800
+                                    px-4 py-3 rounded-lg text-sm sm:text-base">
+                        <span className="shrink-0 font-medium">Error:</span>
+                        <span>{error}</span>
+                    </div>
+                )}
+
+                <div className="mt-6 sm:mt-8">
+                    <SearchFilters
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        statusFilter={statusFilter}
+                        setStatusFilter={setStatusFilter}
+                    />
                 </div>
-            )}
 
-            {/* Filters and Search */}
-            <SearchFilters
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-            />
-
-            {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
-                    <strong>Error:</strong> {error}
+                <div className="mt-6 sm:mt-8">
+                    <BookingsList
+                        bookings={filteredBookings}
+                        onViewDetails={handleViewDetails}
+                        onUpdateStatus={handleUpdateBookingStatus}
+                        updatingBookingId={updatingBookingId}
+                    />
                 </div>
-            )}
+            </div>
 
-            {/* Bookings List */}
-            <BookingsList
-                bookings={filteredBookings}
-                onViewDetails={handleViewDetails}
-                onUpdateStatus={handleUpdateBookingStatus}
-                updatingBookingId={updatingBookingId}
-            />
-
-            {/* Booking Details Modal */}
+            {/* ── Details modal ──────────────────────────────────────── */}
+            {/* BookingDetailsModal should use:
+                - w-[95vw] max-w-lg on mobile  (nearly full width)
+                - max-w-2xl on md+
+                - max-h-[90vh] overflow-y-auto
+                - p-4 sm:p-6 inner padding */}
             {selectedBooking && (
                 <BookingDetailsModal
                     booking={selectedBooking}

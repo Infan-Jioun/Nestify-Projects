@@ -52,10 +52,7 @@ export default function EditPropertyModal({
             videos: [],
             email: '',
             propertyFacilities: [],
-            category: {
-                name: '',
-                fields: []
-            }
+            category: { name: '', fields: [] }
         },
         mode: 'onChange'
     })
@@ -64,17 +61,14 @@ export default function EditPropertyModal({
     const [hasChanges, setHasChanges] = useState(false)
     const [initialFormData, setInitialFormData] = useState<EditPropertyInputs | null>(null)
 
-    // Watch category name to determine which fields to show
     const categoryName = watch('category.name')
     const watchedValues = watch()
 
-    // Get category fields based on selected category
     const getCategoryFields = useCallback(() => {
         if (!categoryName || !propertyCategoryData[categoryName]) return []
-        return propertyCategoryData[categoryName] as CategoryField[] 
+        return propertyCategoryData[categoryName] as CategoryField[]
     }, [categoryName])
 
-    // Initialize form with property data
     useEffect(() => {
         if (property && isOpen) {
             const formData: EditPropertyInputs = {
@@ -92,7 +86,6 @@ export default function EditPropertyModal({
                 email: property.email || '',
                 propertyFacilities: property.propertyFacilities || [],
                 category: property.category || { name: '', fields: [] },
-                // Map category-specific fields
                 bedrooms: property.bedrooms,
                 bathrooms: property.bathrooms,
                 drawingRoom: property.drawingRoom,
@@ -107,56 +100,35 @@ export default function EditPropertyModal({
                 landType: property.landType,
                 facilities: property.facilities
             }
-
             reset(formData)
             setInitialFormData(formData)
             setHasChanges(false)
         }
     }, [property, isOpen, reset])
 
-    // Detect form changes
     useEffect(() => {
         if (property && isOpen && initialFormData) {
-            const currentFormValues = getValues()
-            const hasFormChanges = !areObjectsEqual(currentFormValues, initialFormData)
-            setHasChanges(hasFormChanges || isDirty)
+            const current = getValues()
+            setHasChanges(JSON.stringify(current) !== JSON.stringify(initialFormData) || isDirty)
         }
     }, [watchedValues, property, isOpen, isDirty, initialFormData, getValues])
 
-    // Helper function to compare objects
-    const areObjectsEqual = (obj1: unknown, obj2: unknown): boolean => {
-        return JSON.stringify(obj1) === JSON.stringify(obj2)
-    }
-
     const onSubmit = async (data: EditPropertyInputs) => {
-        if (!property) {
-            toast.error('No property selected')
-            return
-        }
+        if (!property) { toast.error('No property selected'); return }
 
         try {
-            // Prepare category fields
             const categoryFields: OriginalCategoryField[] = []
-            const categoryFieldNames = getCategoryFields()
-
-            categoryFieldNames.forEach(field => {
-                const fieldValue = data[field.name as keyof EditPropertyInputs]
-                if (fieldValue !== undefined && fieldValue !== '') {
-                    categoryFields.push({
-                        id: field.name,
-                        name: field.label,
-                        value: fieldValue as string | number | boolean
-                    })
+            getCategoryFields().forEach(field => {
+                const val = data[field.name as keyof EditPropertyInputs]
+                if (val !== undefined && val !== '') {
+                    categoryFields.push({ id: field.name, name: field.label, value: val as string | number | boolean })
                 }
             })
 
             const updatedProperty: PropertyType = {
                 ...property,
                 ...data,
-                category: {
-                    name: data.category.name,
-                    fields: categoryFields
-                },
+                category: { name: data.category.name, fields: categoryFields },
                 updatedAt: new Date().toISOString()
             }
 
@@ -172,10 +144,7 @@ export default function EditPropertyModal({
 
     const handleClose = () => {
         if (hasChanges && !loading) {
-            const confirmClose = window.confirm(
-                'You have unsaved changes. Are you sure you want to close?'
-            )
-            if (!confirmClose) return
+            if (!window.confirm('You have unsaved changes. Are you sure you want to close?')) return
         }
         setInitialFormData(null)
         onClose()
@@ -183,48 +152,77 @@ export default function EditPropertyModal({
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isOpen) {
-                handleClose()
-            }
+            if (e.key === 'Escape' && isOpen) handleClose()
         }
         document.addEventListener('keydown', handleEscape)
         return () => document.removeEventListener('keydown', handleEscape)
-    }, [isOpen, hasChanges, loading, handleClose])
+    }, [isOpen, hasChanges, loading])
 
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-            <div className="bg-card rounded-lg border shadow-lg w-full max-w-2xl lg:max-w-5xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden mx-2 sm:mx-0">
+        // ── Backdrop ──────────────────────────────────────────────────────
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center
+                        bg-black/60 backdrop-blur-sm
+                        p-0 sm:p-4">
+
+            {/*
+              ── Modal shell ─────────────────────────────────────────────
+              Mobile  : slides up from bottom, full width, rounded top corners
+              sm+     : centered, max-w-2xl
+              lg+     : wider, max-w-5xl, two-column form sections
+            */}
+            <div className="bg-white dark:bg-gray-900 w-full
+                            rounded-t-2xl sm:rounded-2xl
+                            shadow-xl border border-gray-200 dark:border-gray-700
+                            sm:max-w-2xl lg:max-w-5xl
+                            max-h-[95vh] sm:max-h-[92vh]
+                            flex flex-col overflow-hidden">
+
                 <ModalHeader
                     hasChanges={hasChanges}
                     onClose={handleClose}
                     loading={loading}
                 />
 
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto max-h-[calc(95vh-140px)] sm:max-h-[calc(90vh-200px)]">
-                        <BasicInformationSection
-                            register={register}
-                            errors={errors}
-                            propertyCategories={Object.keys(propertyCategoryData)}
-                        />
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex flex-col flex-1 overflow-hidden"
+                >
+                    {/* ── Scrollable body ────────────────────────────── */}
+                    <div className="flex-1 overflow-y-auto overscroll-contain
+                                    px-4 py-4
+                                    sm:px-6 sm:py-5
+                                    space-y-5 sm:space-y-6">
 
-                        <CategoryFieldsSection
-                            categoryName={categoryName}
-                            categoryFields={getCategoryFields()}
-                            register={register}
-                        />
+                        {/*
+                          On lg screens the sections sit side-by-side where it makes
+                          sense (Basic + Category  |  Pricing + Contact).
+                          On mobile they're a single column.
+                        */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+                            <BasicInformationSection
+                                register={register}
+                                errors={errors}
+                                propertyCategories={Object.keys(propertyCategoryData)}
+                            />
+                            <CategoryFieldsSection
+                                categoryName={categoryName}
+                                categoryFields={getCategoryFields()}
+                                register={register}
+                            />
+                        </div>
 
-                        <PricingSizeSection
-                            register={register}
-                            errors={errors}
-                        />
-
-                        <ContactInformationSection
-                            register={register}
-                            errors={errors}
-                        />
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+                            <PricingSizeSection
+                                register={register}
+                                errors={errors}
+                            />
+                            <ContactInformationSection
+                                register={register}
+                                errors={errors}
+                            />
+                        </div>
 
                         <LocationSection
                             register={register}
@@ -236,18 +234,16 @@ export default function EditPropertyModal({
                         <FacilitiesSection
                             facilities={watch('propertyFacilities') || []}
                             onFacilityChange={(facility, checked) => {
-                                const currentFacilities = watch('propertyFacilities') || []
-                                const updatedFacilities = checked
-                                    ? [...currentFacilities, facility]
-                                    : currentFacilities.filter(f => f !== facility)
-
-                                setValue('propertyFacilities', updatedFacilities, {
-                                    shouldValidate: true,
-                                    shouldDirty: true
-                                })
+                                const current = watch('propertyFacilities') || []
+                                setValue(
+                                    'propertyFacilities',
+                                    checked ? [...current, facility] : current.filter(f => f !== facility),
+                                    { shouldValidate: true, shouldDirty: true }
+                                )
                             }}
                         />
 
+                        {/* ImagesSection — delete + add handled inside */}
                         <ImagesSection
                             watch={watch}
                             setValue={setValue}
@@ -256,6 +252,7 @@ export default function EditPropertyModal({
                         />
                     </div>
 
+                    {/* ── Sticky footer ──────────────────────────────── */}
                     <ModalFooter
                         loading={loading}
                         hasChanges={hasChanges}

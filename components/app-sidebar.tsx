@@ -114,6 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       items: [
         { title: "Add Property", url: "/dashboard/add-property" },
         { title: "MyProperties", url: "/dashboard/real_estate_developer/MyProperties" },
+        { title: "Bookings", url: "/dashboard/real_estate_developer/bookings" },
       ],
     },
     {

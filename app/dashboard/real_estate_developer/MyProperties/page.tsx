@@ -12,12 +12,11 @@ import {
     Plus,
     Filter,
     Search,
-    MoreVertical,
     Eye,
     Edit,
     Trash2,
     CheckCircle,
-    XCircle,
+
     Calendar,
     DollarSign,
     MapPin,
@@ -253,7 +252,7 @@ export default function MyProperties() {
                             <h1 className="text-3xl font-bold text-gray-900">My Properties</h1>
                         </div>
                         <p className="text-gray-600">Manage and track all your property listings in one place</p>
-                        <div className="flex items-center gap-3 mt-2">
+                        <div className="grid md:grid-cols-2 items-center gap-3 mt-2">
                             <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
                                 {session?.user?.email}
                             </span>
@@ -265,7 +264,7 @@ export default function MyProperties() {
 
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Link
-                            href="/dashboard/real_estate_developer/add-property"
+                            href="/dashboard/add-property"
                             className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl font-medium"
                         >
                             <Plus className="w-5 h-5" />
@@ -444,7 +443,7 @@ export default function MyProperties() {
                                     {/* Action Buttons */}
                                     <div className="flex gap-2 pt-4 border-t border-gray-100">
                                         <Link
-                                            href={`/properties/${property._id}`}
+                                            href={`/Properties/${property._id}`}
                                             className="flex-1 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg font-medium transition-all duration-300"
                                         >
                                             <Eye className="w-4 h-4" />
