@@ -2,46 +2,30 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "i.ibb.co",
-        port: "",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: 'lh3.googleusercontent.com',
-        port: "",
-        pathname: "/**"
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: 'avatars.githubusercontent.com',
-        port: "",
-        pathname: "/**"
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: 'images.unsplash.com',
-        port: "",
-        pathname: "/**"
+        hostname: "images.unsplash.com",
+        pathname: "/**",
       },
-
-
-    ]
-
-  },
-  webpack: (config, { dev }) => {
-    if (dev) {
-      config.ignoreWarnings = [
-        { message: /Failed to parse source map/ },
-        { message: /Invalid source map/ },
-      ];
-    }
-    return config;
+    ],
   },
 };
-
 
 export default nextConfig;
