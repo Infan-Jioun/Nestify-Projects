@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.log(` User found: ${user.email}`);
+        console.log(`User found: ${user.email}`);
 
         // Generate secure token
         const resetToken = crypto.randomBytes(32).toString("hex");

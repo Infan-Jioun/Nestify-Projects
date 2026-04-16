@@ -10,8 +10,6 @@ import {
     Calendar, Clock, Eye, Heart, Search, ArrowRight, Home,
     Tag, BookOpen, TrendingUp, Building, HomeIcon,
     Building2,
-    Book,
-    BookA
 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";

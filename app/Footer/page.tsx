@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import React, { useState, FormEvent } from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaMapMarkerAlt, FaPhone, FaEnvelope, FaArrowRight } from 'react-icons/fa';
@@ -48,6 +49,7 @@ export default function Footer() {
       const data = await response.json();
 
       if (response.ok) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         setNewsletter(prev => ({
           email: '',
           isLoading: false,

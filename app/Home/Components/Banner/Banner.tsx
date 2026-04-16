@@ -1,14 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
-import { setSkletonLoader } from "@/app/features/loader/loaderSlice";
+import React, { useState } from "react";
+
 
 export default function Banner() {
-  const dispatch = useDispatch<AppDispatch>();
   // const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   // useEffect(() => {

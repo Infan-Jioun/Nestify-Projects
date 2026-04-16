@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef } from 'react'
 import { ImageIcon, Upload, Loader2, Trash2, Images } from 'lucide-react'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'

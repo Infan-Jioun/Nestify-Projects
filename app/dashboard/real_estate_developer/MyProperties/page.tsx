@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/lib/store'
-import { fetchPropertiesByEmail, deleteProperty, updatePropertyStatus, updateProperty } from '@/app/features/Properties/propertySlice' // Added updateProperty
+import { fetchPropertiesByEmail, deleteProperty, updateProperty } from '@/app/features/Properties/propertySlice' // Added updateProperty
 import { PropertyType, SessionUser } from '@/app/Types/properties'
 import Link from 'next/link'
 import EditPropertyModal from './components/EditPropertyModal'
@@ -91,9 +91,9 @@ export default function MyProperties() {
     const dispatch = useDispatch<AppDispatch>()
     const { properties, loading: reduxLoading } = useSelector((state: RootState) => state.properties) // Changed from loading to reduxLoading
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [editingProperty, setEditingProperty] = useState<string | null>(null)
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
-    const [statusUpdate, setStatusUpdate] = useState<{ [key: string]: string }>({})
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [selectedProperty, setSelectedProperty] = useState<PropertyType | null>(null)
     const [updateLoading, setUpdateLoading] = useState(false)
@@ -133,32 +133,7 @@ export default function MyProperties() {
         }
     }
 
-    // Handle status update
-    const handleStatusUpdate = async (propertyId: string) => {
-        if (!propertyId) return
 
-        const newStatus = statusUpdate[propertyId]
-        if (!newStatus) return
-
-        try {
-            console.log('Updating status for:', propertyId, 'to:', newStatus)
-            await dispatch(updatePropertyStatus({
-                propertyId,
-                status: newStatus as "Available" | "Rented" | "Sold" | "Pending"
-            })).unwrap()
-
-            setEditingProperty(null)
-            setStatusUpdate(prev => ({ ...prev, [propertyId]: '' }))
-            console.log('Property status updated successfully')
-
-            // Refresh properties after status update
-            if (session?.user?.email) {
-                dispatch(fetchPropertiesByEmail(session.user.email))
-            }
-        } catch (error) {
-            console.error('Failed to update property status:', error)
-        }
-    }
 
     // Handle edit property modal
     const handleEditProperty = (property: PropertyType) => {

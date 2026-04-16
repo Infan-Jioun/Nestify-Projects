@@ -1,4 +1,5 @@
 "use client";
+
 import { MessageCircle, X } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
@@ -12,12 +13,21 @@ export default function Chatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "Hello! I'm the Nestify AI assistant. How can I help you with properties today?"
-        }
+            content:
+                "Hello! I'm the Nestify AI assistant. How can I help you with properties today?",
+        },
     ]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
+
     const bottomRef = useRef<HTMLDivElement>(null);
+
+    const suggestions = [
+        "Buy apartment in Dhaka",
+        "Rent house in Mirpur",
+        "How to list property?",
+        "Price of flats in Bangladesh",
+    ];
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -28,6 +38,7 @@ export default function Chatbot() {
 
         const userMessage: Message = { role: "user", content: input };
         const updatedMessages = [...messages, userMessage];
+
         setMessages(updatedMessages);
         setInput("");
         setLoading(true);
@@ -61,6 +72,13 @@ export default function Chatbot() {
         }
     };
 
+    const handleSuggestion = (text: string) => {
+        setInput(text);
+        setTimeout(() => {
+            sendMessage();
+        }, 100);
+    };
+
     return (
         <>
             {/* Floating Button */}
@@ -73,7 +91,7 @@ export default function Chatbot() {
 
             {/* Chat Window */}
             {isOpen && (
-                <div className="fixed bottom-24 right-6 w-80 h-[420px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200">
+                <div className="fixed bottom-24 right-6 w-80 h-[450px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200">
 
                     {/* Header */}
                     <div className="bg-green-500 text-white p-3 rounded-t-2xl text-center">
@@ -81,6 +99,20 @@ export default function Chatbot() {
                         <div className="text-xs opacity-80">
                             Real Estate Help • Buy, Sell & Rent
                         </div>
+                    </div>
+
+                    {/* Suggestions */}
+                    <div className="p-2 flex flex-wrap gap-2 border-b">
+                        {suggestions.map((item, i) => (
+                            <button
+                                key={i}
+                                onClick={() => handleSuggestion(item)}
+                                className="text-xs bg-green-100 hover:bg-green-500 hover:text-white 
+                                text-green-700 px-3 py-1 rounded-full transition-all"
+                            >
+                                {item}
+                            </button>
+                        ))}
                     </div>
 
                     {/* Messages */}
@@ -104,6 +136,7 @@ export default function Chatbot() {
                             </div>
                         ))}
 
+                        {/* Loading */}
                         {loading && (
                             <div className="flex justify-start">
                                 <div className="bg-gray-100 px-4 py-2 rounded-xl rounded-bl-none flex items-center gap-1">
@@ -118,18 +151,23 @@ export default function Chatbot() {
                     </div>
 
                     {/* Input */}
-                    <div className="p-3 border-t flex gap-2">
+                    <div className="p-3 border-t flex flex-col sm:flex-row gap-2">
                         <input
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                            onKeyDown={(e) =>
+                                e.key === "Enter" && sendMessage()
+                            }
                             placeholder="Type your message..."
-                            className="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-red-400"
+                            className="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none 
+                            focus:border-green-400 w-full"
                         />
+
                         <button
                             onClick={sendMessage}
                             disabled={loading}
-                            className="bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white px-3 py-2 rounded-xl text-sm transition-all"
+                            className="bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white 
+                            px-4 py-2 rounded-xl text-sm transition-all w-full sm:w-auto"
                         >
                             ➤
                         </button>
