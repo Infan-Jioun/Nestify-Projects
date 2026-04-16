@@ -30,7 +30,18 @@ const nextConfig: NextConfig = {
 
 
     ]
+
+  },
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.ignoreWarnings = [
+        { message: /Failed to parse source map/ },
+        { message: /Invalid source map/ },
+      ];
+    }
+    return config;
   },
 };
+
 
 export default nextConfig;

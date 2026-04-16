@@ -49,7 +49,7 @@ export default function DuplexPage() {
 
   return (
     <div className="min-h-screen">
-      <NextHead title="Duplex - Nestify" />
+      <NextHead title="Duplex " />
       <div className={cn(
         "relative py-32 px-0 lg:px-[137px]  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
         isScrolled ? "py-4" : "py-10"
@@ -111,7 +111,7 @@ export default function DuplexPage() {
                 </svg>
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">No Duplex Properties Found</h2>
                 <p className="text-gray-600 mb-6">
-                 {" We couldn't find any Duplex properties matching your criteria."}
+                  {" We couldn't find any Duplex properties matching your criteria."}
                 </p>
                 <button
                   onClick={() => dispatch(fetchProperties())}

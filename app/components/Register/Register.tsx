@@ -114,7 +114,7 @@ export default function Register() {
   if (isLoading) {
     return (
       <div>
-        <NextHead title='Register - Nestify' />
+        <NextHead title='Register ' />
         <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
           <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
             <CardHeader className="text-center space-y-2">
@@ -151,7 +151,7 @@ export default function Register() {
 
   return (
     <div>
-      <NextHead title='Register - Nestify' />
+      <NextHead title='Register ' />
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
           <CardHeader className="text-center space-y-2">

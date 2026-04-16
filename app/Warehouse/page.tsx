@@ -49,7 +49,7 @@ export default function WarehousePage() {
 
     return (
         <div className="min-h-screen">
-            <NextHead title="Warehouse - Nestify" />
+            <NextHead title="Warehouse " />
             <div className={cn(
                 "relative py-32 px-0 lg:px-[137px]  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
                 isScrolled ? "py-4" : "py-10"

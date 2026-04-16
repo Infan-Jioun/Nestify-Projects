@@ -42,7 +42,7 @@ export default function UserInformation() {
     fetchUsers()
   }, [dispatch])
 
-  
+
   useEffect(() => {
     if (users.length > 0) {
       const sorted = [...users].sort((a, b) => {
@@ -70,7 +70,7 @@ export default function UserInformation() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 p-6">
-      <NextHead title="User Management - Nestify" />
+      <NextHead title="User Management " />
       <UserHeader totalUsers={users.length} />
 
       {userLoader ? <UserSkeletonGrid /> : sortedUsers.length > 0 ? (

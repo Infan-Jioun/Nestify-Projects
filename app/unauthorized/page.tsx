@@ -5,7 +5,7 @@ import NextHead from "../components/NextHead/NextHead"
 export default function UnauthorizedPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <NextHead title="Access Denied - Nestify" />
+            <NextHead title="Access Denied " />
             <div className="text-center max-w-md mx-4">
                 <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
                     <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">

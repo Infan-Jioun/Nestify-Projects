@@ -73,7 +73,7 @@ export default function ContactPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <NextHead title="Contact - Nestify" />
+      <NextHead title="Contact " />
 
       {/* Hero Section */}
       <section className="py-20 text-center bg-gray-100">

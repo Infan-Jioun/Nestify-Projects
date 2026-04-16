@@ -5,6 +5,6 @@ export default function usePageTitle(title?: string) {
     useEffect(() => {
         if (!title) return;
 
-        document.title = `${title} | Nestify`;
+        document.title = `${title} `;
     }, [title]);
 }

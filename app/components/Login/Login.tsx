@@ -76,7 +76,7 @@ export function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
-  const isExpired = searchParams.get("expired") === "true"; // ✅ সঠিক জায়গায়
+  const isExpired = searchParams.get("expired") === "true"; 
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
@@ -238,7 +238,7 @@ export function Login() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 overflow-hidden">
-        <NextHead title="Login | Nestify" />
+        <NextHead title="Login " />
         <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
           <CardHeader className="text-center space-y-2">
             <div className="w-[80px] h-9 bg-gray-200 animate-pulse rounded-full mx-auto"></div>
@@ -270,7 +270,7 @@ export function Login() {
   // ─── Main UI ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-green-100 flex items-center justify-center dark:bg-gray-900 px-4 overflow-hidden">
-      <NextHead title="Login | Nestify" />
+      <NextHead title="Login " />
       <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl font-bold">

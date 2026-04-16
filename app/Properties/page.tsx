@@ -39,7 +39,7 @@ export default function PropertiesPage() {
   // Redux states
   const { properties, loading, error } = useSelector((state: RootState) => state.properties
   );
-  const { location,listingStatus,propertyType, currency,   priceRange, bedrooms,bathrooms,squareFeat,yearBuild,otherFeatures,sortOption,sortedProperties,  currentPage, itemsPerPage,totalPages,  } = useSelector((state: RootState) => state.filter);
+  const { location, listingStatus, propertyType, currency, priceRange, bedrooms, bathrooms, squareFeat, yearBuild, otherFeatures, sortOption, sortedProperties, currentPage, itemsPerPage, totalPages, } = useSelector((state: RootState) => state.filter);
 
   useEffect(() => {
     dispatch(fetchProperties());
@@ -189,7 +189,7 @@ export default function PropertiesPage() {
 
   return (
     <div className="min-h-screen">
-      <NextHead title="Properties - Nestify" />
+      <NextHead title="Properties " />
 
       <div className={cn(
         "relative py-32 px-0 lg:px-[137px]  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",

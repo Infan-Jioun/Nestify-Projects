@@ -171,7 +171,7 @@ export default function AdminPage() {
     if (status === "loading" || roleLoading) {
         return (
             <div className="min-h-screen/30 p-6">
-                <NextHead title="Dashboard - Nestify" />
+                <NextHead title="Dashboard " />
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
                     <div className="ml-4 text-sm">
@@ -188,7 +188,7 @@ export default function AdminPage() {
     if (session?.user?.role !== UserRole.ADMIN) {
         return (
             <div className="min-h-screen/30 p-6">
-                <NextHead title="Unauthorized Access - Nestify" />
+                <NextHead title="Unauthorized Access " />
                 <div className="flex justify-center items-center h-64">
                     <div className="text-center">
                         <div className="bg-red-100 p-4 rounded-full mb-4 inline-block">
@@ -216,7 +216,7 @@ export default function AdminPage() {
     if (!session?.user) {
         return (
             <div className="min-h-screen/30 p-6">
-                <NextHead title="Dashboard - Nestify" />
+                <NextHead title="Dashboard " />
                 <div className="flex justify-center items-center h-64">
                     <p>Redirecting to login...</p>
                 </div>
@@ -262,7 +262,7 @@ export default function AdminPage() {
     if (isLoading && !refreshing) {
         return (
             <div className="min-h-screen/30 p-6">
-                <NextHead title="Dashboard - Nestify" />
+                <NextHead title="Dashboard " />
                 <div className="mb-8 animate-pulse">
                     <div className="h-8 bg-gray-200 rounded w-64 mb-2"></div>
                     <div className="h-4 bg-gray-200 rounded w-96"></div>
@@ -284,7 +284,7 @@ export default function AdminPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 px-4 lg:px-8 py-8">
-            <NextHead title="Admin Dashboard - Nestify" />
+            <NextHead title="Admin Dashboard " />
 
             {/* Header */}
             <div className="mb-8">

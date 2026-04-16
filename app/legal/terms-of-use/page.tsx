@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function TermsOfUse() {
     return (
         <>
-            <NextHead title="Terms of Use | Nestify" />
+            <NextHead title="Terms of Use " />
             <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16 px-4 md:px-8 lg:px-44">
                 <div className="max-w-4xl mx-auto bg-white dark:bg-gray-950 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-10">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Terms of Use</h1>

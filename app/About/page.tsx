@@ -28,7 +28,7 @@ export default function AboutPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <NextHead title="About - Nestify" />
+      <NextHead title="About " />
 
       <HeroSection />
       <MissionVision />

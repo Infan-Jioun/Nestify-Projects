@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import React, { useState, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -40,8 +41,6 @@ export default function DeveloperRegister() {
     const dispatch = useDispatch();
     const buttonLoader = useSelector((state: RootState) => state.loader.buttonLoader);
     const skletonLoader = useSelector((state: RootState) => state.loader.skletonLoader);
-    const googleLoader = useSelector((state: RootState) => state.loader.googleLoader);
-    const githubLoader = useSelector((state: RootState) => state.loader.githubLoader);
 
     const [loading, setLoading] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
@@ -107,7 +106,7 @@ export default function DeveloperRegister() {
     if (isLoading) {
         return (
             <div>
-                <NextHead title='Developer - Nestify' />
+                <NextHead title='Developer' />
                 <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
                     <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950 animate-pulse">
                         <CardHeader className="text-center space-y-2">
@@ -150,7 +149,7 @@ export default function DeveloperRegister() {
 
     return (
         <div>
-            <NextHead title='Developer - Nestify' />
+            <NextHead title='Developer ' />
             <div className="min-h-screen flex items-center justify-center bg-green-100 dark:bg-gray-900 px-4">
                 <Card className="w-full max-w-md shadow-lg border dark:border-gray-800 bg-white dark:bg-gray-950">
                     <CardHeader className="text-center space-y-2">

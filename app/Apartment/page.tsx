@@ -49,7 +49,7 @@ export default function ApartmentPage() {
 
   return (
     <div className="min-h-screen">
-      <NextHead title="Apartment - Nestify" />
+      <NextHead title="Apartment " />
       <div className={cn(
         "relative py-32 px-0 lg:px-[137px]  bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden",
         isScrolled ? "py-4" : "py-10"
