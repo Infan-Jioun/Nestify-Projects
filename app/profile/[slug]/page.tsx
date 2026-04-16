@@ -15,11 +15,5 @@ export async function generateMetadata() {
 }
 
 export default async function Page() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    return <div>Please login</div>;
-  }
-
   return <ProfilePage />;
 }
