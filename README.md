@@ -14,7 +14,7 @@
 - **Multi-provider Authentication**
   - Email/Password with OTP verification  
   - Google OAuth integration  
-  - GitHub OAuth integration  
+  - GitHub OAuth integration
 - **OTP Verification System**
   - Secure email OTP sending  
   - OTP expiration handling (5 minutes)  
@@ -38,7 +38,8 @@
 - Dynamic category-based fields  
 - Image upload with preview  
 - Location search with autocomplete  
-- Facilities selection with icons  
+- Facilities selection with icons
+- Metadata added 
 
 #### ✅ Property Categories
 - **Residential:** Apartment, Villa, House  
