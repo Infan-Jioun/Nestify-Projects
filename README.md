@@ -6,7 +6,7 @@
 
 ---
 
-## 🚀 Development Progress
+## 🚀 Development Progresss
 
 ### 🧱 Foundation & Core Features
 
